@@ -1,0 +1,11 @@
+{
+  "HomePage": {
+    "title": "اهلاً",
+    "about": "اذهب للصفحة الرئيسية",
+    "metadata": { "title": "الصفحة الرئيسية" }
+  },
+  "LocaleSwitcher": {
+    "label": "تغيير اللغة",
+    "locale": "{locale, select, en {English} ar {العربية} other {Unknown}}"
+  }
+}

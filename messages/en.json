@@ -1,0 +1,11 @@
+{
+  "HomePage": {
+    "title": "Hello world!",
+    "about": "Go to the about page",
+    "metadata": { "title": "Home Page" }
+  },
+  "LocaleSwitcher": {
+    "label": "Change Language",
+    "locale": "{locale, select, en {English} ar {العربية} other {Unknown}}"
+  }
+}
