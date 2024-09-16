@@ -1,6 +1,7 @@
 import { ReactNode, Suspense } from 'react';
 import { Open_Sans, Inter } from 'next/font/google';
-import Loading from '../loading';
+// import Loading from '../[locale]/loading';
+import { getLangDir } from 'rtl-detect';
 // import { StoreContextProvider } from '../context/store';
 
 import { NextIntlClientProvider } from 'next-intl';
@@ -16,6 +17,10 @@ import ConfigAntThemes from '@/components/Theme/ConfigAntThemes';
 import Header from '@/components/AppLayout/Header';
 import Main from '@/components/AppLayout/Main';
 import { getNavbarItems } from '@/services/navItems';
+// import Error from './error';
+import { ResponseGetNavbarLinksService } from '@/types/getNavItems';
+import ErrorComponent from './error';
+import Loading from './loading';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -58,47 +63,79 @@ export default async function LocaleLayout({
   children,
   params: { locale }
 }: PropsType) {
+  // // const { data, error } = await fetchNavItems();
+  // if (error) {
+  //   console.error(error);
+  // } else {
+  //   // console.log(JSON.parse(JSON.stringify(data)));
+  //   // setNavItems(data);
+  // }
   // Enable static rendering
   unstable_setRequestLocale(locale);
 
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages();
-  const { data, error } = await getNavbarItems(locale);
-  // const { data, error } = await fetchNavItems();
-  if (error) {
-    console.error(error);
-  } else {
-    console.log(data);
-    // setNavItems(data);
-  }
+  const direction = getLangDir(locale);
 
-  return (
-    <html
-      className={`${openSans.variable} ${inter.variable}`}
-      lang={locale}
-      dir={locale === 'ar' ? 'rtl' : 'lfr'}
-    >
-      <body className='flex h-full flex-col'>
-        <NextIntlClientProvider messages={messages}>
-          {/* <Navigation /> */}
-          {/* <StoreContextProvider> */}
-          <AntdRegistry>
-            <ConfigAntThemes>
-              <div
-                className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
-              >
-                <Header />
-                {/* <Suspense fallback={<Loading />}> */}
-                <Main>{children}</Main>
-                {/* </Suspense> */}
-                {/* <Footer /> */}
-              </div>
-            </ConfigAntThemes>
-          </AntdRegistry>
-          {/* </StoreContextProvider> */}
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+  try {
+    const { data: navLinks, error }: ResponseGetNavbarLinksService =
+      await getNavbarItems(locale);
+    if (error) {
+      throw new Error('Error fetching nav items');
+    }
+    console.log(navLinks);
+
+    return (
+      <html
+        className={`${openSans.variable} ${inter.variable}`}
+        lang={locale}
+        dir={direction}
+      >
+        <body className='flex h-full flex-col'>
+          <NextIntlClientProvider messages={messages}>
+            {/* <Navigation /> */}
+            {/* <StoreContextProvider> */}
+            <AntdRegistry>
+              <ConfigAntThemes>
+                <div
+                  className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
+                >
+                  {navLinks?.data && (
+                    <Header navLinks={navLinks.data} />
+                  )}
+                  <Suspense fallback={<Loading />}>
+                    <Main>{children}</Main>
+                  </Suspense>
+                  {/* <Footer /> */}
+                </div>
+              </ConfigAntThemes>
+            </AntdRegistry>
+            {/* </StoreContextProvider> */}
+          </NextIntlClientProvider>
+        </body>
+      </html>
+    );
+  } catch (e) {
+    return (
+      <html
+        className={`${openSans.variable} ${inter.variable}`}
+        lang={locale}
+        dir={locale === 'ar' ? 'rtl' : 'lfr'}
+      >
+        <body className='flex h-full flex-col'>
+          <NextIntlClientProvider messages={messages}>
+            {/* <Navigation /> */}
+            {/* <StoreContextProvider> */}
+            <AntdRegistry>
+              <ConfigAntThemes>
+                <ErrorComponent error={e as any} reset={() => {}} />
+              </ConfigAntThemes>
+            </AntdRegistry>
+            {/* </StoreContextProvider> */}
+          </NextIntlClientProvider>
+        </body>
+      </html>
+    );
+  }
 }

@@ -1,6 +1,6 @@
 'use client';
 import useScrollHandler from '@/hooks/useScrollHander';
-// import Navbar from '../UI/navbar/Navbar';
+import Navbar from '../UI/navbar/Navbar';
 import { useState } from 'react';
 import { TiShoppingCart } from 'react-icons/ti';
 import { UserOutlined } from '@ant-design/icons';
@@ -10,16 +10,21 @@ import HamburgerMenuIcon from '../UI/navbar/HamburgerMenuIcon';
 import { useLocale, useTranslations } from 'next-intl';
 import SelectLanguage from '../UI/navbar/SelectLanguage';
 import { Link, usePathname } from '@/navigation';
+import { NavbarLinkData } from '@/types/getNavItems';
 
-function Header() {
+interface PropsType {
+  navLinks: NavbarLinkData[];
+}
+
+function Header({ navLinks }: PropsType) {
   const locale = useLocale();
   const defaultValue = locale;
 
   const pathname = usePathname();
   const t = useTranslations('HomePage.Header');
 
-  // const [linkHovered, setLinkHovered] = useState('');
-  const [linkHovered] = useState('');
+  const [linkHovered, setLinkHovered] = useState('');
+  // const [linkHovered,] = useState('');
   useScrollHandler();
 
   return (
@@ -43,10 +48,11 @@ function Header() {
             </h1>
           </Link>
           {/* Navbar */}
-          {/* <Navbar
+          <Navbar
             linkHovered={linkHovered}
             setLinkHovered={setLinkHovered}
-          /> */}
+            navLinks={navLinks}
+          />
         </div>
 
         <div className='hidden items-center 2xl:flex'>

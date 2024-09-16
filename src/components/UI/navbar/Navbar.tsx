@@ -4,16 +4,23 @@ import ActiveLink from './ActiveLink';
 import NavSub from './NavSub';
 import { NavItemType } from '@/types';
 import { useLocale } from 'next-intl';
+import { NavbarLinkData } from '@/types/getNavItems';
+import { capitalize } from '@/utils/helpers';
 // import { clear } from 'console';
 // import { getNavbarItems } from '@/services/navItems';
 
-function Navbar({
-  linkHovered,
-  setLinkHovered
-}: {
+interface PropsType {
   linkHovered: string;
   setLinkHovered: Dispatch<SetStateAction<string>>;
-}) {
+  navLinks: NavbarLinkData[];
+}
+
+function Navbar({
+  linkHovered,
+  setLinkHovered,
+  navLinks
+}: PropsType) {
+  console.log(navLinks);
   // const locale = useLocale();
   const [navItems] = useState<NavItemType | null>(null);
 
@@ -38,12 +45,36 @@ function Navbar({
 
     loadNavItems();
   }, []);
-  // console.log(navItems);
 
   return (
     <nav className='hidden h-full items-center 2xl:flex'>
       <ul className='flex h-full items-stretch'>
-        <li
+        {navLinks[0] &&
+          navLinks[0].attributes.navbar.length > 0 &&
+          navLinks[0].attributes.navbar.map((item) => {
+            return (
+              <li
+                onMouseEnter={() => handleLinkHover(item.name)}
+                onMouseLeave={() => handleLinkHover('')}
+                key={item.id}
+                className={listStyles}
+              >
+                <ActiveLink
+                  href={`${item.slug}`}
+                  activeClassName='!text-red-shade-350'
+                  className={linksStyles}
+                >
+                  {item.name}
+                </ActiveLink>
+                {/* <NavSub
+                  name={item.name}
+                  currentHovered={linkHovered}
+                  items={item.children ?? []}
+                /> */}
+              </li>
+            );
+          })}
+        {/* <li
           onMouseEnter={() => handleLinkHover('products')}
           onMouseLeave={() => handleLinkHover('')}
           className={listStyles}
@@ -132,7 +163,7 @@ function Navbar({
             currentHovered={linkHovered}
             items={navItems?.support ?? []}
           />
-        </li>
+        </li> */}
       </ul>
     </nav>
   );

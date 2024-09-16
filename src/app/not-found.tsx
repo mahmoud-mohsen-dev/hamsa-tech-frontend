@@ -24,9 +24,9 @@
 //   );
 // }
 
-'use client';
+// 'use client';
 
-import Error from 'next/error';
+// import Error from 'next/error';
 
 // Render the default Next.js 404 page when a route
 // is requested that doesn't match the middleware and
@@ -36,7 +36,8 @@ export default function NotFound() {
   return (
     <html lang='en'>
       <body>
-        <Error statusCode={404} />
+        {/* <Error statusCode={404} /> */}
+        <div>Errrroor 404</div>
       </body>
     </html>
   );
