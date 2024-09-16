@@ -1,13 +1,25 @@
 import { MetadataRoute } from 'next';
-import { getTranslations } from 'next-intl/server';
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
-  const locale = 'en';
-  const t = await getTranslations({ locale, namespace: 'Manifest' });
-
   return {
-    name: t('name'),
-    start_url: '/',
-    theme_color: '#101E33'
+    name: 'My Awesome Web App',
+    short_name: 'MyApp',
+    description: 'An awesome web app for users',
+    start_url: '/index.html',
+    display: 'standalone',
+    background_color: '#ffffff',
+    theme_color: '#000000',
+    icons: [
+      {
+        src: '/icons/icon-192x192.png',
+        type: 'image/png',
+        sizes: '192x192'
+      },
+      {
+        src: '/icons/icon-512x512.png',
+        type: 'image/png',
+        sizes: '512x512'
+      }
+    ]
   };
 }

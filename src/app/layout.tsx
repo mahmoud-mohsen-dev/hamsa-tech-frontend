@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import './styles.css';
+import '@/styles/globals.css';
 
 type Props = {
   children: ReactNode;

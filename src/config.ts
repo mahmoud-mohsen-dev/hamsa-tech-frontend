@@ -5,9 +5,9 @@ export const locales = ['en', 'ar'] as const;
 
 export const pathnames: Pathnames<typeof locales> = {
   '/': '/',
-  '/pathnames': {
-    en: '/pathnames',
-    ar: '/المسارات'
+  '/products': {
+    en: '/products',
+    ar: '/المنتجات'
   }
 };
 

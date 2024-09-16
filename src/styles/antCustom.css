@@ -1,0 +1,129 @@
+.ant-modal .ant-modal-content {
+  min-height: 400px;
+}
+.ant-modal .ant-modal-content .ant-select-selector {
+  width: 85%;
+}
+/* ======= Search Input In Navbar ========= */
+.search-input-navbar .ant-input-group > .ant-input:first-child {
+  background: transparent;
+  width: 100%;
+  border-color: black;
+  color: white;
+  height: 32px;
+  font-size: 0.875rem;
+  /* border-color: white; */
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  transition: none;
+}
+
+.search-input-navbar .ant-input-group > .ant-input:first-child:focus {
+  border-color: rgb(189, 46, 46);
+  box-shadow: none;
+}
+.header .ant-input-group .ant-input-group-addon {
+  transition: none;
+}
+/* .search-input-navbar
+  .ant-input-group
+  > .ant-input:first-child:focus
+  + .ant-input-group-addon:last-child
+  .ant-input-search-button {
+  border-color: #3642c7;
+  color: #3642c7;
+  box-shadow: 0 0 0 2px rgba(0, 46, 210, 0.11);
+} */
+.search-input-navbar .ant-input-group > .ant-input::placeholder {
+  color: black;
+}
+
+.search-input-navbar.ant-input-group-wrapper
+  .ant-input-group-addon
+  .ant-input-search-button.ant-btn.ant-btn-primary {
+  transition: none;
+  background-color: black;
+  height: 32px;
+  border: 1px solid black;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+/* ======= Select Input In Navbar ========= */
+.header
+  .ant-select-outlined:not(.ant-select-customize-input)
+  .ant-select-selector {
+  background-color: transparent;
+  color: white;
+  border-radius: 4px;
+}
+.header
+  .ant-select-single.ant-select-show-arrow
+  .ant-select-selection-item {
+  color: white;
+}
+.header
+  .ant-select-outlined:not(.ant-select-customize-input)
+  .ant-select-selector {
+  border-color: transparent;
+}
+
+.ant-input-compact-item:not(
+    .ant-input-compact-last-item
+  ).ant-input-compact-first-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.footer
+  .ant-btn-compact-item:not(
+    .ant-btn-compact-first-item
+  ).ant-btn-compact-last-item {
+  background: rgba(220, 16, 149, 0.903);
+}
+
+/* Products antd sidebar BrandFilter */
+.brands-filter .ant-form {
+  margin-left: 24px;
+  margin-top: 12px;
+}
+.brands-filter .check-all {
+  width: calc(100% - 24px);
+  margin-left: 24px;
+  margin-top: 12px;
+}
+.brands-filter .ant-checkbox-group {
+  flex-direction: column;
+  margin-left: 24px;
+  gap: 5px;
+}
+
+.brands-filter .ant-checkbox .ant-checkbox-inner {
+  border-radius: 3px;
+}
+
+/* Product page  */
+/* Quantity Input */
+#product-page .ant-input-number .ant-input-number-handler-wrap {
+  width: 30px;
+  opacity: 1;
+}
+
+/* Tabs Section */
+.tabs-section .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
+  margin: 0 0 0 50px;
+}
+
+/* Ant reveiw rate */
+.review-tabs .ant-rate .ant-rate-star:not(:last-child) {
+  margin-inline-end: 4px;
+}
+
+.review-tabs
+  .ant-form-vertical
+  .ant-form-item:not(.ant-form-item-horizontal)
+  .ant-form-item-label
+  > label {
+  font-size: 1rem;
+  font-weight: 500;
+}

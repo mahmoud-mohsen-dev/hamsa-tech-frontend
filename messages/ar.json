@@ -1,43 +1,35 @@
 {
-  "Error": {
-    "description": "<p>للأسف، واجهنا خطأ.</p><p>يمكنك محاولة <retry>إعادة تحميل الصفحة</retry> التي كنت تزورها.</p>",
-    "title": "حدث خطأ ما!"
-  },
-  "IndexPage": {
-    "description": "هذا مثال أساسي يوضح كيفية استخدام <code>next-intl</code> مع Next.js App Router. حاول تغيير اللغة في الزاوية العلوية اليمنى وشاهد كيف يتغير المحتوى.",
-    "title": "مثال next-intl"
-  },
-  "LocaleLayout": {
-    "title": "مثال next-intl"
-  },
   "LocaleSwitcher": {
-    "label": "تغيير اللغة",
+    "label": "Change language",
     "locale": "{locale, select, ar {العربية} en {English} other {Unknown}}"
   },
-  "Navigation": {
-    "home": "الصفحة الرئيسية",
-    "pathnames": "مسارات"
-  },
-  "NotFoundPage": {
-    "description": "يرجى التحقق من شريط عنوان المتصفح أو استخدام التنقل للانتقال إلى صفحة معروفة.",
-    "title": "الصفحة غير موجودة"
-  },
-  "PageLayout": {
-    "links": {
-      "docs": {
-        "description": "تعرف على المزيد حول next-intl في الوثائق الرسمية.",
-        "href": "http://localhost",
-        "title": "الوثائق"
-      },
-      "source": {
-        "description": "تصفح الشفرة المصدرية لهذا المثال على GitHub.",
-        "href": "https://github.com/amannn/next-intl/tree/main/examples/example-app-router",
-        "title": "الشفرة المصدرية"
-      }
+  "Error": {
+    "heading": "<p>للأسف، واجهنا خطأ.</p><p>يمكنك محاولة <retry>إعادة تحميل الصفحة</retry> التي كنت تزورها.</p>",
+    "metaData": {
+      "title": "حدث خطأ ما!"
     }
   },
-  "PathnamesPage": {
-    "description": "<p>المسارات مُعربة أيضًا.</p><p>إذا كنت تستخدم اللغة الافتراضية الإنجليزية، ستشاهد <code>/en/pathnames</code> في شريط العنوان على هذه الصفحة.</p><p>إذا غيرت اللغة إلى الألمانية، سيتم تعديل الرابط وفقًا لذلك (<code>/de/pfadnamen</code>).</p>",
-    "title": "مسارات"
+  "NotFoundPage": {
+    "heading": "يرجى التحقق من شريط عنوان المتصفح أو استخدام التنقل للانتقال إلى صفحة معروفة.",
+    "metaData": {
+      "title": "الصفحة غير موجودة"
+    }
+  },
+  "HomePage": {
+    "Header": {
+      "logoPart1": "همسه",
+      "logoPart2": "تك",
+      "Navbar": [
+        "المنتجات",
+        "العروض",
+        "المدونة",
+        "معلومات عنا",
+        "الدعم"
+      ]
+    },
+    "metaData": {
+      "title": "متجر همسة تك لأجهزة الحماية وكاميرات المراقبة",
+      "description": "كاميرات المراقبة · أجهزة الباركود والكاشير · أنظمة الصوت · الشبكات · جهاز البصمة · كاميرات المراقبة · أجهزة الباركود والكاشير."
+    }
   }
 }

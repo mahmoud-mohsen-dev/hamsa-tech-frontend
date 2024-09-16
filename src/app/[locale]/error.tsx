@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@/components-old/PageLayout';
 
 type Props = {
   error: Error;
@@ -17,9 +17,9 @@ export default function Error({ error, reset }: Props) {
   }, [error]);
 
   return (
-    <PageLayout title={t('title')}>
+    <PageLayout title={t('metaData.title')}>
       <div>
-        {t.rich('description', {
+        {t.rich('heading', {
           p: (chunks) => <p className='mt-4'>{chunks}</p>,
           retry: (chunks) => (
             <button
