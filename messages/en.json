@@ -10,7 +10,9 @@
     }
   },
   "NotFoundPage": {
-    "heading": "Please double-check the browser address bar or use the navigation to go to a known page.",
+    "heading": "Error 404 - Page Not Found",
+    "subHeading": "Please double-check the browser address bar.",
+    "linkText": "go to home page",
     "metaData": {
       "title": "Page not found"
     }
@@ -18,8 +20,7 @@
   "HomePage": {
     "Header": {
       "logoPart1": "Hamsa",
-      "logoPart2": "Tech",
-      "Navbar": ["Products", "Offers", "Blog", "About Us", "Support"]
+      "logoPart2": "Tech"
     },
 
     "metaData": {

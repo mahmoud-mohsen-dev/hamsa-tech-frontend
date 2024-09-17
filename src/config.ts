@@ -5,10 +5,7 @@ export const locales = ['en', 'ar'] as const;
 
 export const pathnames: Pathnames<typeof locales> = {
   '/': '/',
-  '/products': {
-    en: '/products',
-    ar: '/المنتجات'
-  }
+  '/products': '/products'
 };
 
 export const localePrefix: LocalePrefix<typeof locales> = 'always';

@@ -3,35 +3,36 @@
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import PageLayout from '@/components-old/PageLayout';
+import { Link } from '@/navigation';
 
 type Props = {
   error: Error;
-  reset(): void;
+  reset?(): void;
 };
 
-export default function Error({ error, reset }: Props) {
+export default function Error({ error, reset = () => {} }: Props) {
   const t = useTranslations('Error');
 
   useEffect(() => {
-    console.error(error);
+    console.error(t('metaData.title'));
+    console.error(error.message);
   }, [error]);
 
   return (
-    <PageLayout title={t('metaData.title')}>
-      <div>
-        {t.rich('heading', {
-          p: (chunks) => <p className='mt-4'>{chunks}</p>,
-          retry: (chunks) => (
-            <button
-              className='text-white underline underline-offset-2'
-              onClick={reset}
-              type='button'
-            >
-              {chunks}
-            </button>
-          )
-        })}
-      </div>
-    </PageLayout>
+    <div>
+      {t.rich('heading', {
+        p: (chunks) => <p className='mt-4'>{chunks}</p>,
+        retry: (chunks) => (
+          <Link
+            href='/'
+            className='text-black-light underline underline-offset-2'
+            onClick={reset}
+            type='button'
+          >
+            {chunks}
+          </Link>
+        )
+      })}
+    </div>
   );
 }

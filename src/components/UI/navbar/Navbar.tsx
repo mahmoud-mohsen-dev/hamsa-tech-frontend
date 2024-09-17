@@ -20,9 +20,9 @@ function Navbar({
   setLinkHovered,
   navLinks
 }: PropsType) {
-  console.log(navLinks);
+  // console.log(navLinks);
   // const locale = useLocale();
-  const [navItems] = useState<NavItemType | null>(null);
+  // const [navItems] = useState<NavItemType | null>(null);
 
   const listStyles = 'h-full flex items-center';
   const linksStyles = `nav_link 2xl:px-3 3xl:px-5 font-medium relative after:left-1/2 after:-translate-x-1/2 after:bottom-0 uppercase text-sm text-white h-full block flex items-center  after:bg-transparent after:w-[80%] after:h-[2px] hover:after:bg-red-shade-300 after:absolute after:content-['']`;
@@ -31,20 +31,20 @@ function Navbar({
     setLinkHovered(link);
   };
 
-  useEffect(() => {
-    const loadNavItems = async () => {
-      // const { data, error } = await getNavbarItems(locale);
-      // // const { data, error } = await fetchNavItems();
-      // if (error) {
-      //   console.error(error);
-      // } else {
-      //   console.log(data);
-      //   // setNavItems(data);
-      // }
-    };
+  // useEffect(() => {
+  //   const loadNavItems = async () => {
+  // const { data, error } = await getNavbarItems(locale);
+  // // const { data, error } = await fetchNavItems();
+  // if (error) {
+  //   console.error(error);
+  // } else {
+  //   console.log(data);
+  //   // setNavItems(data);
+  // }
+  // };
 
-    loadNavItems();
-  }, []);
+  //   loadNavItems();
+  // }, []);
 
   return (
     <nav className='hidden h-full items-center 2xl:flex'>
@@ -52,6 +52,7 @@ function Navbar({
         {navLinks[0] &&
           navLinks[0].attributes.navbar.length > 0 &&
           navLinks[0].attributes.navbar.map((item) => {
+            // console.log(item);
             return (
               <li
                 onMouseEnter={() => handleLinkHover(item.name)}

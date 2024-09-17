@@ -21,6 +21,8 @@ import { getNavbarItems } from '@/services/navItems';
 import { ResponseGetNavbarLinksService } from '@/types/getNavItems';
 import ErrorComponent from './error';
 import Loading from './loading';
+import { notFound } from 'next/navigation';
+import NotFoundPage from './not-found';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -81,10 +83,15 @@ export default async function LocaleLayout({
   try {
     const { data: navLinks, error }: ResponseGetNavbarLinksService =
       await getNavbarItems(locale);
-    if (error) {
+    if (error || navLinks === null) {
       throw new Error('Error fetching nav items');
+      // console.log('='.repeat(20));
+      // console.error(error);
+      // console.error(JSON.stringify(navLinks));
+      // console.log('='.repeat(20));
+      // return <NotFoundPage />;
     }
-    console.log(navLinks);
+    console.log(JSON.stringify(navLinks));
 
     return (
       <html
@@ -92,8 +99,12 @@ export default async function LocaleLayout({
         lang={locale}
         dir={direction}
       >
-        <body className='flex h-full flex-col'>
-          <NextIntlClientProvider messages={messages}>
+        <body className='flex h-full flex-col bg-white text-black-light'>
+          <NextIntlClientProvider
+            locale={locale}
+            // Make sure to provide at least the messages for `Error`
+            messages={messages}
+          >
             {/* <Navigation /> */}
             {/* <StoreContextProvider> */}
             <AntdRegistry>
@@ -117,19 +128,28 @@ export default async function LocaleLayout({
       </html>
     );
   } catch (e) {
+    console.log('=*='.repeat(10));
+    console.log('error at layout');
+    console.log(e);
+    console.log('=*='.repeat(10));
     return (
       <html
         className={`${openSans.variable} ${inter.variable}`}
         lang={locale}
-        dir={locale === 'ar' ? 'rtl' : 'lfr'}
+        dir={direction}
       >
-        <body className='flex h-full flex-col'>
+        <body className='flex h-full flex-col bg-white pt-24 text-black-light'>
           <NextIntlClientProvider messages={messages}>
             {/* <Navigation /> */}
             {/* <StoreContextProvider> */}
             <AntdRegistry>
               <ConfigAntThemes>
-                <ErrorComponent error={e as any} reset={() => {}} />
+                <div className='container flex min-h-48 w-full items-center justify-center'>
+                  <ErrorComponent
+                    error={JSON.parse(JSON.stringify(e)) as any}
+                  />
+                </div>
+                {/* <NotFoundPage /> */}
               </ConfigAntThemes>
             </AntdRegistry>
             {/* </StoreContextProvider> */}

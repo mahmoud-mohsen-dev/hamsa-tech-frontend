@@ -4,17 +4,24 @@ import {
   ResponseStrapiError
 } from '@/types/getNavItems';
 import axiosInstance from './axio';
+import { fetchWithCache } from './cache';
 
 export const getNavbarItems = async (locale: string) => {
   try {
-    // const response = await fetch(
-    //   `${process.env.BASE_URL}/api/pages?locale=${locale ?? 'en'}&populate=*`
-    // );
-    const response: ResponseGetNavbarLinksService =
-      await axiosInstance.get(
-        `/api/pages?locale=${locale ?? 'en'}&populate=*`
-      );
-    return { data: response.data, error: null };
+    const response = await fetchWithCache(
+      `/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
+      // { revalidate: 60000 }
+    );
+    // const response: ResponseGetNavbarLinksService =
+    //   await axiosInstance.get(
+    //     `/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
+    //   );
+
+    console.log('=-='.repeat(5));
+    console.log('response from navItem service');
+    console.log(JSON.stringify(response));
+    console.log('=-='.repeat(5));
+    return { data: response, error: null };
   } catch (e) {
     const error = e as ResponseStrapiError;
     console.error('Error fetching data:', e);
