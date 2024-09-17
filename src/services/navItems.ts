@@ -12,10 +12,6 @@ export const getNavbarItems = async (locale: string) => {
       `/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
       // { revalidate: 60000 }
     );
-    // const response: ResponseGetNavbarLinksService =
-    //   await axiosInstance.get(
-    //     `/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
-    //   );
 
     console.log('=-='.repeat(5));
     console.log('response from navItem service');
