@@ -46,11 +46,6 @@ export interface NavbarLinkMeta {
   pagination: MetaPagination;
 }
 
-export interface NavbarLinkDataResponse {
-  data: NavbarLinkData[];
-  meta?: NavbarLinkMeta;
-}
-
 export interface ResponseStrapiError {
   status: number;
   name: string;
@@ -59,6 +54,12 @@ export interface ResponseStrapiError {
 }
 
 export interface ResponseGetNavbarLinksService {
-  data: NavbarLinkDataResponse | null;
-  error?: null | string;
+  data: NavbarLinkData[];
+  meta?: NavbarLinkMeta;
+  error?: null | ResponseStrapiError;
 }
+
+// export interface ResponseGetNavbarLinksService {
+//   data: NavbarLinkDataResponse | null;
+//   error?: null | string;
+// }

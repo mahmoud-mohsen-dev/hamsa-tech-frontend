@@ -43,6 +43,8 @@ type PropsType = {
   params: { locale: string };
 };
 
+export const revalidate = 60; // Revalidate the cache every 60 seconds
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -65,14 +67,6 @@ export default async function LocaleLayout({
   children,
   params: { locale }
 }: PropsType) {
-  // // const { data, error } = await fetchNavItems();
-  // if (error) {
-  //   console.error(error);
-  // } else {
-  //   // console.log(JSON.parse(JSON.stringify(data)));
-  //   // setNavItems(data);
-  // }
-  // Enable static rendering
   unstable_setRequestLocale(locale);
 
   // Providing all messages to the client
@@ -81,8 +75,7 @@ export default async function LocaleLayout({
   const direction = getLangDir(locale);
 
   try {
-    const { data: navLinks, error }: ResponseGetNavbarLinksService =
-      await getNavbarItems(locale);
+    const { data: navLinks, error } = await getNavbarItems(locale);
     if (error || navLinks === null) {
       throw new Error('Error fetching nav items');
       // console.log('='.repeat(20));
@@ -91,7 +84,7 @@ export default async function LocaleLayout({
       // console.log('='.repeat(20));
       // return <NotFoundPage />;
     }
-    console.log(JSON.stringify(navLinks));
+    // console.log(JSON.stringify(navLinks));
 
     return (
       <html
@@ -112,9 +105,7 @@ export default async function LocaleLayout({
                 <div
                   className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
                 >
-                  {navLinks?.data && (
-                    <Header navLinks={navLinks.data} />
-                  )}
+                  {navLinks && <Header navLinks={navLinks} />}
                   <Suspense fallback={<Loading />}>
                     <Main>{children}</Main>
                   </Suspense>
