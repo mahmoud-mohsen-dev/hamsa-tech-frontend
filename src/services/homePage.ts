@@ -10,17 +10,31 @@ export const getHomePageData = async (locale: string) => {
     //     `/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
     //   );
 
-    const response: StrapiResponseForHomePage = await fetchWithCache(
-      `/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
+    // const response: StrapiResponseForHomePage = await fetchWithCache(
+    //   `/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
+    // );
+    const response = await fetch(
+      `${process.env.API_BASE_URL}/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
     );
+    const data: StrapiResponseForHomePage = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        'Error fetching hero section data. Please try again later.'
+      );
+    }
+
     console.log('=-='.repeat(5));
     console.log('response from home page service');
     console.log(response ?? null);
     console.log('=-='.repeat(5));
-    return { data: response.data[0] ?? null, error: null };
+    return { data: data.data[0] ?? null, error: null };
   } catch (e) {
     const error = e as ResponseStrapiError;
     console.error('Error fetching data:', e);
-    return { data: null, error: error.message };
+    return {
+      data: null,
+      error: error.message ?? 'Error fetching hero section data'
+    };
   }
 };

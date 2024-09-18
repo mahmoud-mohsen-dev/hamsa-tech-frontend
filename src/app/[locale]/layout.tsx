@@ -43,7 +43,7 @@ type PropsType = {
   params: { locale: string };
 };
 
-export const revalidate = 60; // Revalidate the cache every 60 seconds
+export const revalidate = 3600; // invalidate every hour
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -74,79 +74,89 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   const direction = getLangDir(locale);
 
-  try {
-    const { data: navLinks, error } = await getNavbarItems(locale);
-    if (error || navLinks === null) {
-      throw new Error('Error fetching nav items');
-      // console.log('='.repeat(20));
-      // console.error(error);
-      // console.error(JSON.stringify(navLinks));
-      // console.log('='.repeat(20));
-      // return <NotFoundPage />;
-    }
-    // console.log(JSON.stringify(navLinks));
+  // try {
+  const { data: navLinks, error: errorNavLinks } =
+    await getNavbarItems(locale);
+  // if (errorNavLinks || navLinks === null) {
+  //   throw new Error('Error fetching nav items');
+  //   // console.log('='.repeat(20));
+  //   // console.error(error);
+  //   // console.error(JSON.stringify(navLinks));
+  //   // console.log('='.repeat(20));
+  //   // return <NotFoundPage />;
+  // }
+  // console.log(JSON.stringify(navLinks));
 
-    return (
-      <html
-        className={`${openSans.variable} ${inter.variable}`}
-        lang={locale}
-        dir={direction}
-      >
-        <body className='flex h-full flex-col bg-white text-black-light'>
-          <NextIntlClientProvider
-            locale={locale}
-            // Make sure to provide at least the messages for `Error`
-            messages={messages}
-          >
-            {/* <Navigation /> */}
-            {/* <StoreContextProvider> */}
-            <AntdRegistry>
-              <ConfigAntThemes>
-                <div
-                  className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
-                >
-                  {navLinks && <Header navLinks={navLinks} />}
-                  <Suspense fallback={<Loading />}>
-                    <Main>{children}</Main>
-                  </Suspense>
-                  {/* <Footer /> */}
-                </div>
-              </ConfigAntThemes>
-            </AntdRegistry>
-            {/* </StoreContextProvider> */}
-          </NextIntlClientProvider>
-        </body>
-      </html>
-    );
-  } catch (e) {
-    console.log('=*='.repeat(10));
-    console.log('error at layout');
-    console.log(e);
-    console.log('=*='.repeat(10));
-    return (
-      <html
-        className={`${openSans.variable} ${inter.variable}`}
-        lang={locale}
-        dir={direction}
-      >
-        <body className='flex h-full flex-col bg-white pt-24 text-black-light'>
-          <NextIntlClientProvider messages={messages}>
-            {/* <Navigation /> */}
-            {/* <StoreContextProvider> */}
-            <AntdRegistry>
-              <ConfigAntThemes>
-                <div className='container flex min-h-48 w-full items-center justify-center'>
-                  <ErrorComponent
-                    error={JSON.parse(JSON.stringify(e)) as any}
-                  />
-                </div>
-                {/* <NotFoundPage /> */}
-              </ConfigAntThemes>
-            </AntdRegistry>
-            {/* </StoreContextProvider> */}
-          </NextIntlClientProvider>
-        </body>
-      </html>
-    );
-  }
+  return (
+    <html
+      className={`${openSans.variable} ${inter.variable}`}
+      lang={locale}
+      dir={direction}
+    >
+      <body className='flex h-full flex-col bg-white text-black-light'>
+        <NextIntlClientProvider
+          locale={locale}
+          // Make sure to provide at least the messages for `Error`
+          messages={messages}
+        >
+          {/* <Navigation /> */}
+          {/* <StoreContextProvider> */}
+          <AntdRegistry>
+            <ConfigAntThemes>
+              <div
+                className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
+              >
+                {errorNavLinks ||
+                  (navLinks === null && (
+                    <ErrorComponent
+                      error={
+                        errorNavLinks ||
+                        ('Error fetching nav items' as any)
+                      }
+                    />
+                  ))}
+                {navLinks && <Header navLinks={navLinks} />}
+                <Suspense fallback={<Loading />}>
+                  <Main>{children}</Main>
+                </Suspense>
+                {/* <Footer /> */}
+              </div>
+            </ConfigAntThemes>
+          </AntdRegistry>
+          {/* </StoreContextProvider> */}
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  );
+  // } catch (e) {
+  //   console.log('=*='.repeat(10));
+  //   console.log('error at layout');
+  //   console.log(e);
+  //   console.log('=*='.repeat(10));
+  //   return (
+  //     <html
+  //       className={`${openSans.variable} ${inter.variable}`}
+  //       lang={locale}
+  //       dir={direction}
+  //     >
+  //       <body className='flex h-full flex-col bg-white pt-24 text-black-light'>
+  //         <NextIntlClientProvider messages={messages}>
+  //           {/* <Navigation /> */}
+  //           {/* <StoreContextProvider> */}
+  //           <AntdRegistry>
+  //             <ConfigAntThemes>
+  //               <div className='container flex min-h-48 w-full items-center justify-center'>
+  //                 <ErrorComponent
+  //                   error={JSON.parse(JSON.stringify(e)) as any}
+  //                 />
+  //               </div>
+  //               {/* <NotFoundPage /> */}
+  //             </ConfigAntThemes>
+  //           </AntdRegistry>
+  //           {/* </StoreContextProvider> */}
+  //         </NextIntlClientProvider>
+  //       </body>
+  //     </html>
+  //   );
+  // }
 }
