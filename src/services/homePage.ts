@@ -26,15 +26,16 @@ export const getHomePageData = async (locale: string) => {
 
     console.log('=-='.repeat(5));
     console.log('response from home page service');
-    console.log(response ?? null);
+    console.log(data ?? null);
     console.log('=-='.repeat(5));
     return { data: data.data[0] ?? null, error: null };
   } catch (e) {
-    const error = e as ResponseStrapiError;
+    // const error = e as ResponseStrapiError;
     console.error('Error fetching data:', e);
     return {
       data: null,
-      error: error.message ?? 'Error fetching hero section data'
+      error:
+        'Error fetching hero section data. Please try again later.'
     };
   }
 };

@@ -15,7 +15,7 @@ interface PropsType {
   params: { locale: string };
 }
 
-export const revalidate = 3600; // invalidate every hour
+export const revalidate = 120; // invalidate every hour
 
 export default async function IndexPage({
   params: { locale }
@@ -23,22 +23,31 @@ export default async function IndexPage({
   // Enable static rendering
   unstable_setRequestLocale(locale);
 
-  const { data: heroData, error: heroError } =
-    await getHomePageData(locale);
-
-  if (heroError || heroData === null) {
-    return (
-      <p className='font-semiboldbold container mt-40 text-center text-xl text-black-light'>
-        {heroError ??
-          'Error fetching hero section data. Please try again later.'}
-      </p>
+  const heroResponse = await fetch(
+    `${process.env.API_BASE_URL}/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
+  );
+  if (!heroResponse.ok) {
+    console.error(
+      'Error fetching hero section data. Please try again later.'
     );
   }
+  const heroData: StrapiResponseForHomePage =
+    await heroResponse.json();
+
+  // const { data: heroData, error: heroError } =
+  //   await getHomePageData(locale);
+  console.log('hero section data');
+  console.log(JSON.stringify(heroData));
 
   return (
     <>
-      {heroData.attributes.heroSection && (
-        <HeroSection data={heroData.attributes.heroSection} />
+      {(heroData.error || heroData.data === null) && (
+        <p className='font-semiboldbold container mt-40 text-center text-xl text-black-light'>
+          Error fetching hero section data. Please try again later.
+        </p>
+      )}
+      {heroData.data[0].attributes.heroSection && (
+        <HeroSection data={heroData.data[0].attributes.heroSection} />
       )}
     </>
   );

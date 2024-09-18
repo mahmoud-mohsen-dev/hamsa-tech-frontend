@@ -43,7 +43,7 @@ type PropsType = {
   params: { locale: string };
 };
 
-export const revalidate = 3600; // invalidate every hour
+export const revalidate = 120; // invalidate every 60 seconds
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -70,13 +70,22 @@ export default async function LocaleLayout({
   unstable_setRequestLocale(locale);
 
   // Providing all messages to the client
-  // side is the easiest way to get started
   const messages = await getMessages();
   const direction = getLangDir(locale);
 
   // try {
-  const { data: navLinks, error: errorNavLinks } =
-    await getNavbarItems(locale);
+  const response = await fetch(
+    `${process.env.API_BASE_URL}/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
+  );
+  if (!response.ok) {
+    console.error('Failed to fetch navbar data'); // Let Next.js handle the error
+  }
+  const navLinksData: ResponseGetNavbarLinksService =
+    await response.json();
+
+  // const { data: navLinks, error: errorNavLinks } =
+  //   await getNavbarItems(locale);
+
   // if (errorNavLinks || navLinks === null) {
   //   throw new Error('Error fetching nav items');
   //   // console.log('='.repeat(20));
@@ -85,7 +94,8 @@ export default async function LocaleLayout({
   //   // console.log('='.repeat(20));
   //   // return <NotFoundPage />;
   // }
-  // console.log(JSON.stringify(navLinks));
+  console.log('layout nav links data');
+  console.log(JSON.stringify(navLinksData));
 
   return (
     <html
@@ -106,16 +116,18 @@ export default async function LocaleLayout({
               <div
                 className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
               >
-                {errorNavLinks ||
-                  (navLinks === null && (
-                    <ErrorComponent
-                      error={
-                        errorNavLinks ||
-                        ('Error fetching nav items' as any)
-                      }
-                    />
-                  ))}
-                {navLinks && <Header navLinks={navLinks} />}
+                {(navLinksData.error ||
+                  navLinksData.data === null) && (
+                  <ErrorComponent
+                    error={
+                      navLinksData.error?.message ||
+                      ('Error fetching nav items' as any)
+                    }
+                  />
+                )}
+                {navLinksData.data && (
+                  <Header navLinks={navLinksData.data} />
+                )}
                 <Suspense fallback={<Loading />}>
                   <Main>{children}</Main>
                 </Suspense>
@@ -128,35 +140,4 @@ export default async function LocaleLayout({
       </body>
     </html>
   );
-  // } catch (e) {
-  //   console.log('=*='.repeat(10));
-  //   console.log('error at layout');
-  //   console.log(e);
-  //   console.log('=*='.repeat(10));
-  //   return (
-  //     <html
-  //       className={`${openSans.variable} ${inter.variable}`}
-  //       lang={locale}
-  //       dir={direction}
-  //     >
-  //       <body className='flex h-full flex-col bg-white pt-24 text-black-light'>
-  //         <NextIntlClientProvider messages={messages}>
-  //           {/* <Navigation /> */}
-  //           {/* <StoreContextProvider> */}
-  //           <AntdRegistry>
-  //             <ConfigAntThemes>
-  //               <div className='container flex min-h-48 w-full items-center justify-center'>
-  //                 <ErrorComponent
-  //                   error={JSON.parse(JSON.stringify(e)) as any}
-  //                 />
-  //               </div>
-  //               {/* <NotFoundPage /> */}
-  //             </ConfigAntThemes>
-  //           </AntdRegistry>
-  //           {/* </StoreContextProvider> */}
-  //         </NextIntlClientProvider>
-  //       </body>
-  //     </html>
-  //   );
-  // }
 }
