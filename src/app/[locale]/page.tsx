@@ -9,11 +9,13 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 // import FeaturedSection from '@/components/home/FeaturedSection';
 import HeroSection from '@/components/home/HeroSection';
 import { getHomePageData } from '@/services/homePage';
-// import Partners from '@/components/home/Partners';
+import { StrapiResponseForHomePage } from '@/types/getHomePageTypes';
 
 interface PropsType {
   params: { locale: string };
 }
+
+export const revalidate = 60; // Revalidate the cache every 60 seconds
 
 export default async function IndexPage({
   params: { locale }
@@ -21,26 +23,33 @@ export default async function IndexPage({
   // Enable static rendering
   unstable_setRequestLocale(locale);
 
-  // const t = useTranslations('IndexPage');
-  const { data: heroData, error: heroError } =
-    await getHomePageData(locale);
-  // console.log('=8'.repeat(20));
-  // console.error('home page data');
-  // console.error(locale);
-  // console.error(error);
-  // console.error(homePageData?.attributes.heroSection);
-  // console.log('='.repeat(20));
+  try {
+    const response: StrapiResponseForHomePage = await fetch(
+      `${process.env.API_BASE_URL}/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
+    ).then((response) => response.json());
 
-  if (heroError || heroData === null) {
-    return <p className='mt-24'>Error fetching hero section data</p>;
-    // return <NotFoundPage />;
+    const { data: heroData, error: heroError } = response;
+
+    if (heroError || heroData === null) {
+      throw new Error('Error fetching hero section data');
+    }
+
+    return (
+      <>
+        {heroData[0].attributes.heroSection && (
+          <HeroSection data={heroData[0].attributes.heroSection} />
+        )}
+      </>
+    );
+  } catch (error) {
+    // Log error for debugging
+    console.error('Error:', error);
+
+    // Return a friendly message or component for users
+    return (
+      <p className='font-semiboldbold container mt-40 text-center text-xl text-black-light'>
+        Error fetching hero section data. Please try again later.
+      </p>
+    );
   }
-
-  return (
-    <>
-      {heroData?.attributes.heroSection && (
-        <HeroSection data={heroData?.attributes.heroSection} />
-      )}
-    </>
-  );
 }

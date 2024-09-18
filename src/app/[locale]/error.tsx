@@ -19,7 +19,7 @@ export default function Error({ error, reset = () => {} }: Props) {
   }, [error]);
 
   return (
-    <div>
+    <div className='text-center'>
       {t.rich('heading', {
         p: (chunks) => <p className='mt-4'>{chunks}</p>,
         retry: (chunks) => (
