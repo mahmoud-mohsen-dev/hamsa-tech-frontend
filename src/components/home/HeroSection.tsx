@@ -5,11 +5,11 @@ import HeroSectionBtnAndText from './HeroSectionBtnAndText';
 import ConfigAos from '../Theme/ConfigAos';
 // import 'aos/dist/aos.css';
 import { useState } from 'react';
-import { HeroSectionSRT } from '@/types/getHomePageTypes';
+import { HeroSectionType } from '@/types/getHomePageTypes';
 // import { useTranslations } from 'next-intl';
 
 interface PropsType {
-  data: HeroSectionSRT[];
+  data: HeroSectionType[];
 }
 
 function HeroSection({ data }: PropsType) {

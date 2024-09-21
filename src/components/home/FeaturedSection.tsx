@@ -1,25 +1,58 @@
+import { ProductsSpotlightSectionType } from '@/types/getHomePageTypes';
 import FeaturedProductCard from '../UI/FeaturedProductCard';
 import SectionHeading from '../UI/SectionHeading';
+import { isNewProduct } from '@/utils/productCardHelper';
 
-function Featured() {
+interface PropsType {
+  data: ProductsSpotlightSectionType;
+}
+
+function Featured({ data }: PropsType) {
   return (
-    <section className='max-w-[1536px] bg-white-light py-[50px]'>
+    <section className='mx-auto max-w-[1900px] bg-white-light pb-[50px] pt-[30px]'>
       <div className='container'>
-        <div
+        {/* <div
           data-aos='fade-down'
           data-aos-delay='50'
           data-aos-duration='400'
           data-aos-easing='ease-out'
           data-aos-once='true'
-        >
-          <SectionHeading>
-            <span>Product</span>
-            <span className='ml-2 text-red-shade-350'>Spotlight</span>
-          </SectionHeading>
-        </div>
+        > */}
+        <SectionHeading>
+          <p className='inline'>{data.heading_in_black}</p>
+          <p className='mx-2 inline text-red-shade-350'>
+            {data.heading_in_red}
+          </p>
+        </SectionHeading>
+        {/* </div> */}
 
         <div className='flex flex-col items-center gap-5 md:flex-row md:flex-wrap xl:flex-nowrap'>
-          <div
+          {data.products.data.map((product) => {
+            return (
+              <div
+                className='w-full md:basis-[calc(50%-20px)] xl:basis-1/4'
+                key={product.id}
+              >
+                <FeaturedProductCard
+                  isNew={isNewProduct(product.attributes.updatedAt)}
+                  imgSrc={
+                    product?.attributes['image_thumbnail']?.data
+                      ?.attributes?.url ?? ''
+                  }
+                  alt={
+                    product?.attributes['image_thumbnail']?.data
+                      ?.attributes?.alternativeText ?? ''
+                  }
+                  linkSrc={`/products/${product?.id ?? ''}`}
+                  title={product?.attributes?.name ?? ''}
+                  description={
+                    product?.attributes['spotlight_description'] ?? ''
+                  }
+                />
+              </div>
+            );
+          })}
+          {/* <div
             data-aos='fade-down'
             data-aos-delay='100'
             data-aos-duration='400'
@@ -82,7 +115,7 @@ function Featured() {
               title=' DS-2CE5AD3T-AVPIT3ZF'
               description='2 MP Ultra Low Light Vandal Motorized Varifocal Dome Camera.'
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

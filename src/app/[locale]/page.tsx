@@ -8,8 +8,9 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 // import ContactUs from '@/components/home/ContactUs';
 // import FeaturedSection from '@/components/home/FeaturedSection';
 import HeroSection from '@/components/home/HeroSection';
-import { getHomePageData } from '@/services/homePage';
-import { StrapiResponseForHomePage } from '@/types/getHomePageTypes';
+import { HomepageResponseType } from '@/types/getHomePageTypes';
+import Featured from '@/components/home/FeaturedSection';
+import { fetchGraphql } from '@/services/graphqlCrud';
 
 interface PropsType {
   params: { locale: string };
@@ -17,37 +18,189 @@ interface PropsType {
 
 export const revalidate = 120; // invalidate every hour
 
+const getQueryHomePage = (locale: string) => `{
+  pages(locale: "${locale}") {
+    data {
+      attributes {
+        heroSection {
+          id
+          headingTop
+          headingBottom
+          direction
+          image {
+            data {
+                attributes {
+                    url
+                    alternativeText
+                }
+            }
+          }
+          buttonLink {
+            id
+            buttonText
+            button_slug
+          }
+        }
+        products_spotlight {
+          section_name
+          heading_in_black
+          heading_in_red
+          products {
+            data {
+                id
+                attributes {
+                    name
+                    updatedAt
+                    image_thumbnail {
+                        data {
+                            attributes {
+                                url
+                                alternativeText
+                            }
+                        }
+                    }
+                    spotlight_description
+                }
+            }
+          }
+        }
+        categories {
+          section_name
+          heading_in_black
+          heading_in_red
+          description
+          category {
+            id
+            title
+            description
+            image {
+                data {
+                    attributes {
+                        url
+                        alternativeText
+                    }
+                }
+            }
+          }  
+        }
+        brands{
+            brands{
+                data {
+                    id
+                    attributes {
+                        logo {
+                            data {
+                                attributes {
+                                    url
+                                    alternativeText
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        about_us {
+          title
+          description
+          button_text
+          section_name
+          image {
+            data {
+                attributes {
+                    url
+                    alternativeText
+                }
+            }
+          }
+        }
+        featured_blogs {
+          section_name
+          heading_in_black
+          heading_in_red
+          blogs {
+            data {
+                id
+                attributes {
+                    createdAt
+                    title
+                    image {
+                        data {
+                            attributes {
+                                url
+                                alternativeText
+                            }
+                        }
+                    }
+                    card_description
+                    tags {
+                        data {
+                            id
+                            attributes {
+                                name
+                                slug
+                            }
+                        }
+                    }
+                    author {
+                        data {
+                            attributes {
+                                name
+                            }   
+                        }
+                    }
+
+                }
+            }
+          }
+        }
+        contact_us {
+          section_name
+          heading
+					button_text
+          button_url
+        }
+      }
+    }
+  }
+}`;
+
 export default async function IndexPage({
   params: { locale }
 }: PropsType) {
   // Enable static rendering
   unstable_setRequestLocale(locale);
 
-  const heroResponse = await fetch(
-    `${process.env.API_BASE_URL}/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
-  );
-  if (!heroResponse.ok) {
-    console.error(
-      'Error fetching hero section data. Please try again later.'
-    );
-  }
-  const heroData: StrapiResponseForHomePage =
-    await heroResponse.json();
+  // const heroResponse = await fetch(
+  //   `${process.env.API_BASE_URL}/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
+  // );
+  // const spotlightResponse = await fetch(
+  //   `${process.env.API_BASE_URL}/api/product-spotlights?filters[section_name][$eq]=productsSpotlight&locale=${locale ?? 'en'}&fields[0]=heading_in_black&fields[1]=heading_in_red&populate[products][fields][0]=name&populate[products][fields][1]=updatedAt&populate[products][fields][2]=spotlight_description&populate[products][populate][image_thumbnail][fields][1]=url&populate[products][populate][image_thumbnail][fields][2]=alternative_text`
+  // );
 
-  // const { data: heroData, error: heroError } =
-  //   await getHomePageData(locale);
-  console.log('hero section data');
-  console.log(JSON.stringify(heroData));
+  const response: HomepageResponseType = await fetchGraphql(
+    getQueryHomePage(locale ?? 'en')
+  );
+  console.log(JSON.stringify(response));
+  const homepageData = response?.data?.pages?.data[0] || null;
+  const homepageError = response?.error || null;
+  console.log('homepageError');
+  console.log(homepageError);
 
   return (
     <>
-      {(heroData.error || heroData.data === null) && (
+      {(homepageError || homepageData === null) && (
         <p className='font-semiboldbold container mt-40 text-center text-xl text-black-light'>
-          Error fetching hero section data. Please try again later.
+          Error fetching home page data. Please try again later.
         </p>
       )}
-      {heroData.data[0].attributes.heroSection && (
-        <HeroSection data={heroData.data[0].attributes.heroSection} />
+      {homepageData?.attributes?.heroSection && (
+        <HeroSection data={homepageData.attributes.heroSection} />
+      )}
+      {homepageData?.attributes['products_spotlight'] && (
+        <Featured
+          data={homepageData?.attributes['products_spotlight']}
+        />
       )}
     </>
   );

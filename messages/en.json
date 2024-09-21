@@ -22,7 +22,9 @@
       "logoPart1": "Hamsa",
       "logoPart2": "Tech"
     },
-
+    "featured": {
+      "buttonText": "Read More ⟶"
+    },
     "metaData": {
       "title": "Hamsa Tech for Technolgy devices Store",
       "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."

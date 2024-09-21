@@ -94,8 +94,8 @@ export default async function LocaleLayout({
   //   // console.log('='.repeat(20));
   //   // return <NotFoundPage />;
   // }
-  console.log('layout nav links data');
-  console.log(JSON.stringify(navLinksData));
+  // console.log('layout nav links data');
+  // console.log(JSON.stringify(navLinksData));
 
   return (
     <html

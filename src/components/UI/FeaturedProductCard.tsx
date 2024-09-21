@@ -1,4 +1,5 @@
 import { Link } from '@/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 function FeaturedProductCard({
@@ -6,21 +7,26 @@ function FeaturedProductCard({
   alt = '',
   title,
   description,
-  linkSrc
+  linkSrc,
+  isNew = false
 }: {
   imgSrc: string;
   alt: string;
   title: string;
   description: string;
   linkSrc: string;
+  isNew?: boolean;
 }) {
+  const locale = useLocale();
+  const t = useTranslations('HomePage.featured');
+
   return (
     <div className='relative w-full bg-white p-5 shadow-featured transition-all duration-300 ease-linear hover:shadow-featuredHovered'>
       <p
         className='absolute left-6 top-4 z-20 text-sm font-medium text-red-dark'
         style={{ fontStyle: 'oblique' }}
       >
-        NEW
+        {isNew ? 'New' : ''}
       </p>
       <Link href={linkSrc} className='relative'>
         <Image
@@ -47,7 +53,7 @@ function FeaturedProductCard({
           </h3>
         </div>
         <p className='font-openSans text-sm font-normal text-red-normal'>
-          Read More ⟶
+          {t('buttonText')}
         </p>
       </Link>
     </div>

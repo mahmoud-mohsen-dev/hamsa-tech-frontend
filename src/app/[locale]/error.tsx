@@ -19,14 +19,17 @@ export default function Error({ error, reset = () => {} }: Props) {
   }, [error]);
 
   return (
-    <div className='text-center'>
+    <div className='pt-24 text-center'>
       {t.rich('heading', {
         p: (chunks) => <p className='mt-4'>{chunks}</p>,
         retry: (chunks) => (
           <Link
             href='/'
             className='text-black-light underline underline-offset-2'
-            onClick={reset}
+            onClick={() => {
+              reset();
+              window.location.reload();
+            }}
             type='button'
           >
             {chunks}
