@@ -1,6 +1,5 @@
 .embla {
   /* max-width: 30rem; */
-
   margin: auto;
   --text-high-contrast-rgb-value: 49, 49, 49;
   --detail-medium-contrast: rgb(234, 234, 234);
@@ -165,5 +164,5 @@
 /* .categories .embla */
 
 .embla__slide:hover .service-details {
-  bottom: 0px;
+  transform: translateY(0%);
 }

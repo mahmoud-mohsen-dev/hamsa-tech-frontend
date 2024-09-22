@@ -2,12 +2,20 @@ import { Link } from '@/navigation';
 import ConfigAos from '../Theme/ConfigAos';
 import ArticleCard from '../UI/articles/ArticleCard';
 import SectionHeading from '../UI/SectionHeading';
+import { FeaturedBlogsSectionType } from '@/types/getHomePageTypes';
+import { truncateSentence } from '@/utils/helpers';
+import { useTranslations } from 'next-intl';
 // import { FaLongArrowAltRight } from 'react-icons/fa';
 
-function Articles() {
+interface PropsType {
+  data: FeaturedBlogsSectionType;
+}
+
+function Articles({ data }: PropsType) {
+  const t = useTranslations('HomePage.articles');
   return (
     <ConfigAos>
-      <section className='max-w-[1536px] bg-white py-[50px]'>
+      <section className='max-w-[1900px] bg-white py-[50px]'>
         <div className='container'>
           <div
             data-aos='fade-down'
@@ -17,9 +25,9 @@ function Articles() {
             data-aos-once='true'
           >
             <SectionHeading>
-              <span>Recent</span>
+              <span>{data?.heading_in_black ?? ''}</span>
               <span className='ml-2 text-red-shade-350'>
-                Articles
+                {data?.heading_in_red ?? ''}
               </span>
             </SectionHeading>
           </div>
@@ -33,20 +41,35 @@ function Articles() {
               data-aos-once='true'
             >
               <ArticleCard
-                imgSrc='/articles/image-single-post.jpg'
-                alt='article one image'
-                articleUrl='/'
+                imgSrc={
+                  data?.blogs?.data[0]?.attributes?.image?.data
+                    ?.attributes?.url ?? ''
+                }
+                alt={
+                  data?.blogs?.data[0]?.attributes?.image?.data
+                    ?.attributes?.alternativeText ?? ''
+                }
+                articleUrl={`/blog/${data?.blogs?.data[0]?.id}`}
                 content={{
-                  categories: [
-                    { linkUrl: '/', linkText: 'it' },
-                    { linkUrl: '/', linkText: 'solutions' }
-                  ],
+                  categories:
+                    data?.blogs?.data[0]?.attributes?.tags?.data?.map(
+                      (tag) => ({
+                        linkUrl: tag?.attributes?.slug ?? '/',
+                        linkText: tag?.attributes?.name
+                      })
+                    ),
                   title:
-                    'Three Important Things You Must Look For While Choosing Security',
-                  description:
-                    'You can quickly set up or delete access for employees, get access-triggered alerts when certain doors are opened, and quickly find video clips of access events. You can also lock a...',
-                  publishDate: '2024-01-01T00:00:00.000Z',
-                  publisher: 'mahmoud mohsen'
+                    data?.blogs?.data[0]?.attributes?.title ?? '',
+                  description: truncateSentence(
+                    data?.blogs?.data[0]?.attributes
+                      ?.card_description ?? '',
+                    150
+                  ),
+                  publishDate:
+                    data?.blogs?.data[0]?.attributes?.createdAt,
+                  publisher:
+                    data?.blogs?.data[0]?.attributes?.author?.data
+                      ?.attributes?.name ?? ''
                 }}
               />
             </div>
@@ -60,20 +83,35 @@ function Articles() {
               data-aos-once='true'
             >
               <ArticleCard
-                imgSrc='/articles/post2.jpg'
-                alt='article one image'
-                articleUrl='/'
+                imgSrc={
+                  data?.blogs?.data[1]?.attributes?.image?.data
+                    ?.attributes?.url ?? ''
+                }
+                alt={
+                  data?.blogs?.data[1]?.attributes?.image?.data
+                    ?.attributes?.alternativeText ?? ''
+                }
+                articleUrl={`/blog/${data?.blogs?.data[1]?.id}`}
                 content={{
-                  categories: [
-                    { linkUrl: '/', linkText: 'it' },
-                    { linkUrl: '/', linkText: 'solutions' }
-                  ],
+                  categories:
+                    data?.blogs?.data[1]?.attributes?.tags?.data?.map(
+                      (tag) => ({
+                        linkUrl: tag?.attributes?.slug ?? '/',
+                        linkText: tag?.attributes?.name
+                      })
+                    ),
                   title:
-                    'Three Important Things You Must Look For While Choosing Security',
-                  description:
-                    'You can quickly set up or delete access for employees, get access-triggered alerts when certain doors are opened, and quickly find video clips of access events. You can also lock a...',
-                  publishDate: '2024-01-01T00:00:00.000Z',
-                  publisher: 'mahmoud mohsen'
+                    data?.blogs?.data[1]?.attributes?.title ?? '',
+                  description: truncateSentence(
+                    data?.blogs?.data[1]?.attributes
+                      ?.card_description ?? '',
+                    150
+                  ),
+                  publishDate:
+                    data?.blogs?.data[1]?.attributes?.createdAt,
+                  publisher:
+                    data?.blogs?.data[1]?.attributes?.author?.data
+                      ?.attributes?.name ?? ''
                 }}
               />
             </div>
@@ -85,20 +123,35 @@ function Articles() {
               data-aos-once='true'
             >
               <ArticleCard
-                imgSrc='/articles/post3.jpg'
-                alt='article one image'
-                articleUrl='/'
+                imgSrc={
+                  data?.blogs?.data[2]?.attributes?.image?.data
+                    ?.attributes?.url ?? ''
+                }
+                alt={
+                  data?.blogs?.data[2]?.attributes?.image?.data
+                    ?.attributes?.alternativeText ?? ''
+                }
+                articleUrl={`/blog/${data?.blogs?.data[2]?.id}`}
                 content={{
-                  categories: [
-                    { linkUrl: '/', linkText: 'it' },
-                    { linkUrl: '/', linkText: 'solutions' }
-                  ],
+                  categories:
+                    data?.blogs?.data[2]?.attributes?.tags?.data?.map(
+                      (tag) => ({
+                        linkUrl: tag?.attributes?.slug ?? '/',
+                        linkText: tag?.attributes?.name
+                      })
+                    ),
                   title:
-                    'Three Important Things You Must Look For While Choosing Security',
-                  description:
-                    'You can quickly set up or delete access for employees, get access-triggered alerts when certain doors are opened, and quickly find video clips of access events. You can also lock a...',
-                  publishDate: '2024-01-01T00:00:00.000Z',
-                  publisher: 'mahmoud mohsen'
+                    data?.blogs?.data[2]?.attributes?.title ?? '',
+                  description: truncateSentence(
+                    data?.blogs?.data[2]?.attributes
+                      ?.card_description ?? '',
+                    150
+                  ),
+                  publishDate:
+                    data?.blogs?.data[2]?.attributes?.createdAt,
+                  publisher:
+                    data?.blogs?.data[2]?.attributes?.author?.data
+                      ?.attributes?.name ?? ''
                 }}
               />
             </div>
@@ -115,7 +168,7 @@ function Articles() {
               href='/'
               className='mx-auto mt-8 flex w-fit items-center gap-3 text-base font-medium text-blue-gray-light transition-colors duration-300 hover:text-yellow-medium'
             >
-              <span>Check All Blog Posts</span>
+              <span>{t('allPostsButton')}</span>
               <span className='icomoon icon-arrow-right text-xs'>
                 {/* <FaLongArrowAltRight /> */}
               </span>

@@ -6,11 +6,11 @@ function SectionHeading({
   className?: string;
 }) {
   return (
-    <h2
-      className={`mb-10 text-center text-2xl font-bold capitalize text-black-light sm:text-3xl md:text-4xl ${className}`}
+    <div
+      className={`mb-10 flex items-center justify-center gap-2 text-center text-2xl font-bold capitalize text-black-light sm:text-3xl md:text-4xl ${className}`}
     >
       {children}
-    </h2>
+    </div>
   );
 }
 

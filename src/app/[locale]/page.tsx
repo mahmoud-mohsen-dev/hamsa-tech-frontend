@@ -4,13 +4,17 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 
 // import AboutUs from '@/components/home/AboutUs';
 // import Articles from '@/components/home/Articles';
-// import CategoriesSection from '@/components/home/CategoriesSection';
+import CategoriesSection from '@/components/home/CategoriesSection';
 // import ContactUs from '@/components/home/ContactUs';
 // import FeaturedSection from '@/components/home/FeaturedSection';
 import HeroSection from '@/components/home/HeroSection';
 import { HomepageResponseType } from '@/types/getHomePageTypes';
 import Featured from '@/components/home/FeaturedSection';
 import { fetchGraphql } from '@/services/graphqlCrud';
+import Partners from '@/components/home/Partners';
+import AboutUs from '@/components/home/AboutUs';
+import Articles from '@/components/home/Articles';
+import ContactUs from '@/components/home/ContactUs';
 
 interface PropsType {
   params: { locale: string };
@@ -73,6 +77,7 @@ const getQueryHomePage = (locale: string) => `{
             id
             title
             description
+            slug
             image {
                 data {
                     attributes {
@@ -201,6 +206,23 @@ export default async function IndexPage({
         <Featured
           data={homepageData?.attributes['products_spotlight']}
         />
+      )}
+      {homepageData?.attributes?.categories && (
+        <CategoriesSection
+          data={homepageData.attributes.categories}
+        />
+      )}
+      {homepageData?.attributes?.brands && (
+        <Partners data={homepageData.attributes.brands} />
+      )}
+      {homepageData?.attributes?.about_us && (
+        <AboutUs data={homepageData.attributes.about_us} />
+      )}
+      {homepageData?.attributes?.featured_blogs && (
+        <Articles data={homepageData.attributes.featured_blogs} />
+      )}
+      {homepageData?.attributes?.contact_us && (
+        <ContactUs data={homepageData.attributes.contact_us} />
       )}
     </>
   );

@@ -1,4 +1,5 @@
 'use client';
+import { useLocale } from 'next-intl';
 import { useEffect } from 'react';
 
 const ScrollerComponent = ({
@@ -6,6 +7,7 @@ const ScrollerComponent = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const locale = useLocale();
   useEffect(() => {
     const scrollers =
       document.querySelectorAll<HTMLDivElement>('.scroller');
@@ -23,6 +25,9 @@ const ScrollerComponent = ({
 
         // Add data-animated="true" to every `.scroller` on the page
         scroller.setAttribute('data-animated', 'true');
+        if (locale === 'ar') {
+          scroller.setAttribute('data-direction', 'right');
+        }
 
         // Find the `.scroller__inner` and its children
         const scrollerInner = scroller.querySelector<HTMLDivElement>(
@@ -43,7 +48,7 @@ const ScrollerComponent = ({
   }, []); // Empty dependency array ensures this effect runs only once on mount
 
   return (
-    <div className='scroller container'>
+    <div className='scroller container' dir='ltr'>
       <div className='scroller__inner'>{children}</div>
     </div>
   );

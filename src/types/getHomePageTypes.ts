@@ -54,6 +54,7 @@ export type CategoriesSectionType = {
     id: string;
     title: string;
     description: string;
+    slug: string;
     image: {
       data: {
         attributes: {
@@ -166,5 +167,5 @@ export type HomepageResponseType = {
       }[];
     };
   };
-  error: any | null;
+  error: string | null;
 };

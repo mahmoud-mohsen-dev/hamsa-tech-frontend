@@ -14,21 +14,25 @@ import {
 import { DotButton, useDotButton } from './EmblaCarouselDotButton';
 import Autoplay from 'embla-carousel-autoplay';
 import { Link } from '@/navigation';
+import { useTranslations } from 'next-intl';
 // import { v4 } from 'uuid';
 
 const TWEEN_FACTOR_BASE = 0.2;
 
 type PropType = {
-  slides: { title: string; details: string; imgSrc: string }[];
+  slides: {
+    title: string;
+    details: string;
+    imgSrc: string;
+    alt: string;
+    slug: string;
+  }[];
   options?: EmblaOptionsType;
   href?: string;
 };
 
-const EmblaCarousel: React.FC<PropType> = ({
-  slides,
-  options,
-  href = '/'
-}) => {
+const EmblaCarousel: React.FC<PropType> = ({ slides, options }) => {
+  const t = useTranslations('HomePage.featured');
   const [emblaRef, emblaApi] = useEmblaCarousel(options, [
     Autoplay()
   ]);
@@ -132,35 +136,41 @@ const EmblaCarousel: React.FC<PropType> = ({
         <div className='embla__container' ref={container}>
           {slides.map((item, index) => (
             <div className='embla__slide overflow-hidden' key={index}>
-              <Link href={href}>
+              <Link href={item?.slug ?? '/'}>
                 <div className='embla__parallax'>
                   <div className='embla__parallax__layer'>
                     {/* <Link href='/'> */}
                     <div className='embla_parralax_img_wrapper relative'>
                       {/* <div className='service-details absolute bottom-[-155px] h-[210px] w-full bg-gradient-to-t from-[#00000078] from-30% via-[#00000054] via-70% to-transparent to-100% text-white transition-all duration-300 ease-in'>
                         <div className='absolute right-[70px] top-0 max-w-[250px] py-5'> */}
-                      <div className='service-details absolute bottom-[-195px] h-[260px] w-full bg-gradient-to-t from-[#00000078] from-30% via-[#00000054] via-70% to-transparent to-100% transition-all duration-300 ease-in'></div>
+                      <div className='service-details absolute bottom-0 h-[260px] w-full translate-y-[75%] bg-gradient-to-t from-[#00000078] from-30% via-[#00000054] via-70% to-transparent to-100% transition-all duration-300 ease-in'></div>
                       <img
                         className='embla__slide__img embla__parallax__img'
                         // src={`https://picsum.photos/600/350?v=${index}`}
-                        src={`${item.imgSrc}`}
-                        alt='Your alt text'
+                        src={`${item?.imgSrc ?? ''}`}
+                        alt={`${item?.alt ?? ''}`}
                       />
                     </div>
                     {/* </Link> */}
                   </div>
                 </div>
 
-                <div className='service-details absolute bottom-[-195px] right-[60px] max-w-[260px] py-5 text-white transition-all duration-300 ease-in'>
-                  <h3 className='text-shadow-sm mb-3 text-[18px] font-bold leading-[28px]'>
+                <div
+                  className={`service-details absolute bottom-0 right-[6.18ch] ${item?.details && item?.details.length > 80 ? 'h-[188px]' : 'h-[164px]'} max-w-[26.8ch] translate-y-[calc(100%-60px)] py-[20px] text-white transition-all duration-300 ease-in`}
+                >
+                  <h3 className='text-shadow-sm mb-[12px] text-[18px] font-bold leading-[28px]'>
                     {item.title}
                   </h3>
 
-                  <p className='text-shadow-sm mb-3 break-words'>
+                  <p
+                    className={`text-shadow-sm mb-[12px] ${item?.details && item?.details.length > 80 ? 'h-[72px]' : 'h-[48px]'} overflow-hidden break-words text-[16px] leading-[24px]`}
+                  >
                     {item.details}
                   </p>
 
-                  <p className='text-shadow-sm'>Read More ⟶</p>
+                  <p className='text-shadow-sm text-[16px] leading-[24px]'>
+                    {t('buttonText')}
+                  </p>
                 </div>
                 {/* <div className='relative text-white'></div> */}
               </Link>

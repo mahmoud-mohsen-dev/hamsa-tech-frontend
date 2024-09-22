@@ -1,3 +1,4 @@
+import { useLocale } from 'next-intl';
 import SectionHeading from './SectionHeading';
 
 function HeadingSection({
@@ -9,12 +10,20 @@ function HeadingSection({
   subHeading: string;
   children: React.ReactNode;
 }) {
+  const locale = useLocale();
+
   return (
-    <div className='service-details container mb-10'>
-      <SectionHeading className='mb-2.5'>{children}</SectionHeading>
-      <p className='m-auto max-w-[600px] text-pretty text-center font-openSans text-lg capitalize text-gray-medium opacity-80'>
+    <div className='service-details container'>
+      <SectionHeading
+        className={`${locale === 'ar' ? 'mb-3' : 'mb-2.5'}`}
+      >
+        {children}
+      </SectionHeading>
+      <div
+        className={`m-auto mb-10 max-w-[600px] text-pretty text-center font-openSans capitalize text-gray-medium opacity-80 ${locale === 'ar' ? 'text-2xl' : 'text-lg'}`}
+      >
         {subHeading}
-      </p>
+      </div>
     </div>
   );
 }

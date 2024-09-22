@@ -25,6 +25,10 @@
     "featured": {
       "buttonText": "Read More ⟶"
     },
+    "articles": {
+      "blogCardButtonText": "Read More",
+      "allPostsButton": "Check All Blog Posts"
+    },
     "metaData": {
       "title": "Hamsa Tech for Technolgy devices Store",
       "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."

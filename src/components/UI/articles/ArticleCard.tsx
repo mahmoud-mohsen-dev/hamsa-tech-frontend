@@ -1,8 +1,12 @@
 import Btn from '../Btn';
 import { v4 as uuidv4, v4 } from 'uuid';
 import dayjs from 'dayjs';
-import { FaLongArrowAltRight } from 'react-icons/fa';
+import {
+  FaLongArrowAltLeft,
+  FaLongArrowAltRight
+} from 'react-icons/fa';
 import { Link } from '@/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 
 function CategoryLink({
   linkUrl,
@@ -40,6 +44,8 @@ function ArticleCard({
     publisher: string;
   };
 }) {
+  const locale = useLocale();
+  const t = useTranslations('HomePage.articles');
   return (
     <div className='article-card overflow-hidden shadow-featured'>
       <div>
@@ -55,9 +61,9 @@ function ArticleCard({
             if (arr.length > 1 && i < arr.length && i > 0) {
               return (
                 <span key={uuidv4()} className='flex items-center'>
-                  <span>, </span>
+                  <span className='text-white-light'>, </span>
                   <CategoryLink
-                    className='ml-1'
+                    className='mx-1'
                     key={v4()}
                     linkUrl={category.linkUrl}
                     linkText={category.linkText}
@@ -77,7 +83,7 @@ function ArticleCard({
           })}
         </div>
         <Link href={articleUrl}>
-          <h2 className='my-4 text-lg font-medium text-black-medium'>
+          <h2 className='my-4 text-lg font-medium text-black-medium transition-colors duration-200 hover:text-blue-950'>
             {content.title}
           </h2>
         </Link>
@@ -85,18 +91,21 @@ function ArticleCard({
           {content.description}
         </p>
       </div>
-      <div className='relative grid grid-cols-[1fr_1fr] border-t border-solid border-t-gray-ultralight pb-[5px] text-gray-medium'>
-        <p className='h-full w-full border-r border-gray-ultralight text-center text-sm leading-[61px]'>
+      <div className='relative grid grid-cols-[1fr_2px_1fr] border-t border-solid border-t-gray-ultralight pb-[5px] text-gray-medium'>
+        <p className='h-full w-full border-r border-gray-ultralight text-center text-sm font-semibold leading-[61px]'>
           {dayjs(content.publishDate).format('MMMM D, YYYY')}
         </p>
-        <p className='text-center text-sm capitalize leading-[61px]'>
+        <div className='h-full w-[2px] bg-gray-ultralight'></div>
+        <p className='text-center text-sm font-semibold capitalize leading-[61px]'>
           {content.publisher}
         </p>
         <Link href={articleUrl}>
           <div className='footer absolute -bottom-[56px] left-0 z-10 h-full w-full transition-all duration-300'>
             <Btn className='hover:white h-full w-full rounded-none bg-blue-dark text-white hover:bg-blue-gray-medium hover:text-white'>
-              <span>Read More</span>
-              <FaLongArrowAltRight />
+              <span>{t('blogCardButtonText')}</span>
+              {locale === 'ar' ?
+                <FaLongArrowAltLeft />
+              : <FaLongArrowAltRight />}
             </Btn>
           </div>
         </Link>
