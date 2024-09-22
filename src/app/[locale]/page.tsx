@@ -1,12 +1,5 @@
-// import { useTranslations } from 'next-intl';
 import { unstable_setRequestLocale } from 'next-intl/server';
-// import PageLayout from '@/components-old/PageLayout';
-
-// import AboutUs from '@/components/home/AboutUs';
-// import Articles from '@/components/home/Articles';
 import CategoriesSection from '@/components/home/CategoriesSection';
-// import ContactUs from '@/components/home/ContactUs';
-// import FeaturedSection from '@/components/home/FeaturedSection';
 import HeroSection from '@/components/home/HeroSection';
 import { HomepageResponseType } from '@/types/getHomePageTypes';
 import Featured from '@/components/home/FeaturedSection';
@@ -186,11 +179,11 @@ export default async function IndexPage({
   const response: HomepageResponseType = await fetchGraphql(
     getQueryHomePage(locale ?? 'en')
   );
-  console.log(JSON.stringify(response));
   const homepageData = response?.data?.pages?.data[0] || null;
   const homepageError = response?.error || null;
-  console.log('homepageError');
-  console.log(homepageError);
+  // console.log(JSON.stringify(response));
+  // console.log('homepageError');
+  // console.log(homepageError);
 
   return (
     <>

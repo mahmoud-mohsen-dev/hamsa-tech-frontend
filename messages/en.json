@@ -29,6 +29,16 @@
       "blogCardButtonText": "Read More",
       "allPostsButton": "Check All Blog Posts"
     },
+    "footer": {
+      "companyName": "Hamsa Tech",
+      "newsletterTitle": "Newsletter",
+      "quickLinksTitle": "Quick Links",
+      "newsLetterDescription": "Don’t miss to subscribe to our new feeds.",
+      "newsletterInputPlaceholder": "Subscribe Now",
+      "contactTitle": "Contact Us",
+      "contactPhoneTitle": "Phone Us",
+      "contactMailTitle": "Mail Us"
+    },
     "metaData": {
       "title": "Hamsa Tech for Technolgy devices Store",
       "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."

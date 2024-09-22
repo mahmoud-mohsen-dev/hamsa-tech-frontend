@@ -4,15 +4,15 @@ import ActiveLink from './ActiveLink';
 import NavSub from './NavSub';
 import { NavItemType } from '@/types';
 import { useLocale } from 'next-intl';
-import { NavbarLinkData } from '@/types/getNavItems';
 import { capitalize } from '@/utils/helpers';
+import { NavbarLink } from '@/types/getIndexLayout';
 // import { clear } from 'console';
 // import { getNavbarItems } from '@/services/navItems';
 
 interface PropsType {
   linkHovered: string;
   setLinkHovered: Dispatch<SetStateAction<string>>;
-  navLinks: NavbarLinkData[];
+  navLinks: NavbarLink[];
 }
 
 function Navbar({
@@ -49,9 +49,8 @@ function Navbar({
   return (
     <nav className='hidden h-full items-center 2xl:flex'>
       <ul className='flex h-full items-stretch'>
-        {navLinks[0] &&
-          navLinks[0].attributes.navbar.length > 0 &&
-          navLinks[0].attributes.navbar.map((item) => {
+        {navLinks.length > 0 &&
+          navLinks.map((item) => {
             // console.log(item);
             return (
               <li

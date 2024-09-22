@@ -10,10 +10,10 @@ import HamburgerMenuIcon from '../UI/navbar/HamburgerMenuIcon';
 import { useLocale, useTranslations } from 'next-intl';
 import SelectLanguage from '../UI/navbar/SelectLanguage';
 import { Link, usePathname } from '@/navigation';
-import { NavbarLinkData } from '@/types/getNavItems';
+import { NavbarLink } from '@/types/getIndexLayout';
 
 interface PropsType {
-  navLinks: NavbarLinkData[];
+  navLinks: NavbarLink[];
 }
 
 function Header({ navLinks }: PropsType) {

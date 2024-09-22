@@ -187,10 +187,17 @@ html:not([data-scroll='0']) .header .seach-btn {
 .quick-links:hover .icon {
   transform: translateX(5px);
 }
-
 .quick-links .icon {
   transition: transform 0.1s ease-in;
   transform: translateX(0px);
+}
+
+.quick-links:hover .icon.flip {
+  transform: translateX(-5px) rotateY(180deg);
+}
+.quick-links .icon.flip {
+  /* transition: transform 0.1s ease-in; */
+  transform: translateX(0px) rotateY(180deg);
 }
 
 /* Product Page */

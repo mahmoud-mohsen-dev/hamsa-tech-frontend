@@ -1,17 +1,21 @@
 // import { Button, Input, Space } from 'antd';
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaPhoneVolume,
-  FaTiktok,
-  FaYoutube
-} from 'react-icons/fa6';
+import { FaPhoneVolume } from 'react-icons/fa6';
 import { IoMdMail } from 'react-icons/io';
 import { MdDoubleArrow } from 'react-icons/md';
 import SubcribeInput from '../UI/embla/SubcribeInput';
 import { Link } from '@/navigation';
+import { FooterSectionType } from '@/types/getIndexLayout';
+import { useLocale, useTranslations } from 'next-intl';
+import { getSocialMediaIcon } from '@/utils/getSocialMediaIcon';
 
-function Footer() {
+interface PropsType {
+  data: FooterSectionType;
+}
+
+function Footer({ data }: PropsType) {
+  const locale = useLocale();
+  const t = useTranslations('HomePage.footer');
+
   return (
     <footer
       data-aos='fade-down'
@@ -29,54 +33,47 @@ function Footer() {
               alt='hamsa logo'
               className='h-full max-w-10'
             />
-            <h2 className='text-2xl font-bold'>Hamsa Tech</h2>
+            <h2 className='text-2xl font-bold'>{t('companyName')}</h2>
           </div>
           <h4 className='mb-5 max-w-[360px] text-base font-light opacity-80 xl:mb-8'>
-            Security and privacy are two sides of the same coin. You
-            can’t have privacy without security and vice versa.
+            {data?.description}
           </h4>
           <div className='mb-5 flex items-center gap-4 xl:mb-8'>
-            <Link
-              href='/'
-              className='flex h-[35px] w-[35px] items-center justify-center rounded-lg bg-white bg-opacity-10 text-sm transition-colors duration-300 hover:bg-blue-300 hover:text-black-light'
-            >
-              <FaFacebookF />
-            </Link>
-            <Link
-              href='/'
-              className='hover:bg-blue-primary flex h-[35px] w-[35px] items-center justify-center rounded-lg bg-white bg-opacity-10 text-sm transition-colors duration-300 hover:bg-blue-300 hover:text-black-light'
-            >
-              <FaTiktok />
-            </Link>
-            <Link
-              href='/'
-              className='hover:bg-blue-primary flex h-[35px] w-[35px] items-center justify-center rounded-lg bg-white bg-opacity-10 text-sm transition-colors duration-300 hover:bg-blue-300 hover:text-black-light'
-            >
-              <FaYoutube />
-            </Link>
-            <Link
-              href='/'
-              className='hover:bg-blue-primary flex h-[35px] w-[35px] items-center justify-center rounded-lg bg-white bg-opacity-10 text-sm transition-colors duration-300 hover:bg-blue-300 hover:text-black-light'
-            >
-              <FaInstagram />
-            </Link>
+            {data?.social_links.map((link) => {
+              return (
+                <Link
+                  key={link.id}
+                  href={link.url}
+                  className='flex h-[35px] w-[35px] items-center justify-center rounded-lg bg-white bg-opacity-10 text-sm transition-colors duration-300 hover:bg-blue-300 hover:text-black-light'
+                >
+                  {getSocialMediaIcon(link.icon)}
+                </Link>
+              );
+            })}
           </div>
         </div>
         <div className=''>
           <h2 className='mb-5 text-2xl font-bold xl:mb-8'>
-            Quick Links
+            {t('quickLinksTitle')}
           </h2>
           <ul className='flex flex-col gap-1.5'>
-            <li>
-              <Link
-                href='/'
-                className='quick-links flex items-center gap-2 text-base font-light capitalize'
-              >
-                <MdDoubleArrow className='icon text-blue-300' />
-                <span>Home</span>
-              </Link>
-            </li>
-            <li>
+            {data?.quick_links.map((link) => {
+              return (
+                <li key={link.id}>
+                  <Link
+                    href={link?.slug ?? '/'}
+                    className='quick-links flex items-center gap-2 text-base font-light capitalize'
+                  >
+                    {locale === 'ar' ?
+                      <MdDoubleArrow className='icon flip text-blue-300' />
+                    : <MdDoubleArrow className='icon text-blue-300' />
+                    }
+                    <span>{link?.name ?? ''}</span>
+                  </Link>
+                </li>
+              );
+            })}
+            {/* <li>
               <Link
                 href='/products'
                 className='quick-links flex items-center gap-2 text-base font-light capitalize'
@@ -120,33 +117,37 @@ function Footer() {
                 <MdDoubleArrow className='icon text-blue-300' />
                 <span>Support</span>
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
         <div>
           <h2 className='mb-5 text-2xl font-bold xl:mb-8'>
-            Newsletter
+            {t('newsletterTitle')}
           </h2>
-          <h4 className='mb-5'>
-            Don’t miss to subscribe to our new feeds.
-          </h4>
+          <h4 className='mb-5'>{t('newsLetterDescription')}</h4>
           <SubcribeInput />
         </div>
         <div className=''>
-          <h2 className='mb-5 text-2xl font-bold xl:mb-8'>Contact</h2>
+          <h2 className='mb-5 text-2xl font-bold xl:mb-8'>
+            {t('contactTitle')}
+          </h2>
           <div>
             <div className='flex items-center gap-5'>
               <FaPhoneVolume className='text-blue-300' size={40} />
               <div>
-                <h4 className='text-xl font-semibold'>Contact Us</h4>
-                <h4>(+20) 01023456789</h4>
+                <h4 className='text-xl font-semibold'>
+                  {t('contactPhoneTitle')}
+                </h4>
+                <h4 dir='ltr'>{data?.contact_us_phone ?? ''}</h4>
               </div>
             </div>
             <div className='mt-5 flex items-center gap-5'>
               <IoMdMail className='text-blue-300' size={40} />
               <div>
-                <h4 className='text-xl font-semibold'>Mail Us</h4>
-                <h4>info@yourdomain.com</h4>
+                <h4 className='text-xl font-semibold'>
+                  {t('contactMailTitle')}
+                </h4>
+                <h4>{data?.contact_us_email ?? ''}</h4>
               </div>
             </div>
           </div>

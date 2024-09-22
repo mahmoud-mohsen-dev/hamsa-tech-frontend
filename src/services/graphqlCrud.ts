@@ -17,8 +17,9 @@ export async function fetchGraphql(query: string) {
   // }
 
   const data = await response.json();
+  // console.log(data.errors[0].message);
   return {
     data: data?.data || null,
-    error: data?.error?.message || null
+    error: data?.errors ? data?.errors[0].message || null : null
   }; // Adjust according to your API's response structure
 }

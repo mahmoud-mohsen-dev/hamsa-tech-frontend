@@ -18,11 +18,14 @@ import Header from '@/components/AppLayout/Header';
 import Main from '@/components/AppLayout/Main';
 import { getNavbarItems } from '@/services/navItems';
 // import Error from './error';
-import { ResponseGetNavbarLinksService } from '@/types/getNavItems';
+// import { ResponseGetNavbarLinksService } from '@/types/getNavItems';
 import ErrorComponent from './error';
 import Loading from './loading';
 import { notFound } from 'next/navigation';
 import NotFoundPage from './not-found';
+import { fetchGraphql } from '@/services/graphqlCrud';
+import { LayoutResponse } from '@/types/getIndexLayout';
+import Footer from '@/components/AppLayout/Footer';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -63,6 +66,37 @@ export async function generateMetadata({
   };
 }
 
+const getQueryLayoutPage = (locale: string) => `{
+  pages(locale: "${locale ?? 'en'}") {
+    data {
+      attributes {
+        navbar {
+                ... on ComponentLinkLink {
+                    id
+                    name
+                    slug
+                }
+        }
+        footer {
+          description
+          contact_us_phone
+          contact_us_email
+          social_links {
+            id
+            url
+            icon
+          }
+          quick_links {
+            id
+            name
+            slug
+          }
+        }
+      }
+    }
+  }
+}`;
+
 export default async function LocaleLayout({
   children,
   params: { locale }
@@ -74,28 +108,21 @@ export default async function LocaleLayout({
   const direction = getLangDir(locale);
 
   // try {
-  const response = await fetch(
-    `${process.env.API_BASE_URL}/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
-  );
-  if (!response.ok) {
-    console.error('Failed to fetch navbar data'); // Let Next.js handle the error
+  // const response = await fetch(
+  //   `${process.env.API_BASE_URL}/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
+  // );
+
+  const layoutData = (await fetchGraphql(
+    getQueryLayoutPage(locale)
+  )) as LayoutResponse;
+  console.log(JSON.stringify(layoutData));
+  const layoutAttributes =
+    layoutData?.data?.pages?.data[0]?.attributes ?? null;
+
+  if (!layoutData.data === null || layoutData.error) {
+    // console.log(JSON.stringify(layoutData));
+    console.error('Failed to fetch navbar and footer data'); // Let Next.js handle the error
   }
-  const navLinksData: ResponseGetNavbarLinksService =
-    await response.json();
-
-  // const { data: navLinks, error: errorNavLinks } =
-  //   await getNavbarItems(locale);
-
-  // if (errorNavLinks || navLinks === null) {
-  //   throw new Error('Error fetching nav items');
-  //   // console.log('='.repeat(20));
-  //   // console.error(error);
-  //   // console.error(JSON.stringify(navLinks));
-  //   // console.log('='.repeat(20));
-  //   // return <NotFoundPage />;
-  // }
-  // console.log('layout nav links data');
-  // console.log(JSON.stringify(navLinksData));
 
   return (
     <html
@@ -116,22 +143,23 @@ export default async function LocaleLayout({
               <div
                 className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
               >
-                {(navLinksData.error ||
-                  navLinksData.data === null) && (
+                {(layoutData.error || layoutData.data === null) && (
                   <ErrorComponent
                     error={
-                      navLinksData.error?.message ||
+                      layoutData.error ||
                       ('Error fetching nav items' as any)
                     }
                   />
                 )}
-                {navLinksData.data && (
-                  <Header navLinks={navLinksData.data} />
+                {layoutAttributes.navbar && (
+                  <Header navLinks={layoutAttributes.navbar} />
                 )}
                 <Suspense fallback={<Loading />}>
                   <Main>{children}</Main>
                 </Suspense>
-                {/* <Footer /> */}
+                {layoutAttributes.footer && (
+                  <Footer data={layoutAttributes.footer} />
+                )}
               </div>
             </ConfigAntThemes>
           </AntdRegistry>
