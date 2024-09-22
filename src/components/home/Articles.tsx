@@ -4,7 +4,11 @@ import ArticleCard from '../UI/articles/ArticleCard';
 import SectionHeading from '../UI/SectionHeading';
 import { FeaturedBlogsSectionType } from '@/types/getHomePageTypes';
 import { truncateSentence } from '@/utils/helpers';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import {
+  FaLongArrowAltLeft,
+  FaLongArrowAltRight
+} from 'react-icons/fa';
 // import { FaLongArrowAltRight } from 'react-icons/fa';
 
 interface PropsType {
@@ -13,6 +17,7 @@ interface PropsType {
 
 function Articles({ data }: PropsType) {
   const t = useTranslations('HomePage.articles');
+  const locale = useLocale();
   return (
     <ConfigAos>
       <section className='max-w-[1900px] bg-white py-[50px]'>
@@ -169,9 +174,9 @@ function Articles({ data }: PropsType) {
               className='mx-auto mt-8 flex w-fit items-center gap-3 text-base font-medium text-blue-gray-light transition-colors duration-300 hover:text-yellow-medium'
             >
               <span>{t('allPostsButton')}</span>
-              <span className='icomoon icon-arrow-right text-xs'>
-                {/* <FaLongArrowAltRight /> */}
-              </span>
+              {locale == 'ar' ?
+                <FaLongArrowAltLeft size={20} className='mt-.5' />
+              : <FaLongArrowAltRight size={20} className='mt-.5' />}
             </Link>
           </div>
         </div>

@@ -20,7 +20,7 @@ function Featured({ data }: PropsType) {
         > */}
         <SectionHeading>
           <p className='inline'>{data.heading_in_black}</p>
-          <p className='mx-2 inline text-red-shade-350'>
+          <p className='inline text-red-shade-350'>
             {data.heading_in_red}
           </p>
         </SectionHeading>

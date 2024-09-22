@@ -6,11 +6,13 @@ import Sorter from '@/components/products/Sorter';
 // import { getProductsCategory } from '@/services/products';
 import { productsObjectType } from '@/types';
 import { Spin } from 'antd';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 
 function ProductsContent() {
+  const t = useTranslations('ProductsPage.filtersSidebar');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<productsObjectType | null>(null);
@@ -43,11 +45,13 @@ function ProductsContent() {
   }, [category]);
 
   if (error) {
-    return (
-      <section>
-        <div className='mt-5'>Error fetching products</div>
-      </section>
-    );
+    // return (
+    //   <section>
+    //     <div className='mt-5'>Error fetching products</div>
+    //   </section>
+    // );
+    console.log('Error fetching products');
+    console.error(error);
   }
 
   console.log(data);
@@ -56,8 +60,10 @@ function ProductsContent() {
     <div>
       <div className='flex items-center justify-between'>
         <h4 className='text-sm font-medium text-black-medium'>
-          {data?.children?.length ?? 0}{' '}
-          <span className='text-gray-normal'>Products Found</span>
+          {/* {data?.children?.length ?? 0}{' '} */}
+          <span className='text-gray-normal'>
+            {t(`foundItems`, { count: 0 })}
+          </span>
         </h4>
         <Sorter />
       </div>

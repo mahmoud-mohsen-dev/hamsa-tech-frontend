@@ -7,20 +7,23 @@ import { v4 } from 'uuid';
 import Btn from '../../Btn';
 import { GrPowerReset } from 'react-icons/gr';
 import { FaCheck } from 'react-icons/fa6';
+import { BrandData } from '@/types/getBrandsFilter';
+import { capitalize } from '@/utils/helpers';
+import { useLocale, useTranslations } from 'next-intl';
 
 const CheckboxGroup = Checkbox.Group;
 
-const plainBrandOptions = [
-  'Hikvision',
-  'Ezviz',
-  'Cyber',
-  'Hilook',
-  'Commax',
-  'Farfisa',
-  'Master'
-];
+// const plainBrandOptions = [
+//   'Hikvision',
+//   'Ezviz',
+//   'Cyber',
+//   'Hilook',
+//   'Commax',
+//   'Farfisa',
+//   'Master'
+// ];
 
-const defaultBrandCheckedList = [...plainBrandOptions];
+// const defaultBrandCheckedList = [...plainBrandOptions];
 
 const plainRateOptions = [5, 4, 3, 2, 1].map((rate) => ({
   label: <Rate disabled key={v4()} defaultValue={rate} />,
@@ -29,22 +32,35 @@ const plainRateOptions = [5, 4, 3, 2, 1].map((rate) => ({
 
 const defaultRateCheckedList = [5, 4, 3, 2, 1];
 
-function BrandFilter() {
-  const [brandCheckedList, setCheckedList] = useState(
-    defaultBrandCheckedList
+interface PropsType {
+  data: BrandData[];
+}
+
+function BrandFilter({ data }: PropsType) {
+  const locale = useLocale();
+  const t = useTranslations('ProductsPage.filtersSidebar');
+  // console.log(data);
+  const brandsList = data.map((brand) =>
+    locale === 'ar' ?
+      brand?.attributes?.name
+    : capitalize(brand?.attributes?.name)
   );
+  // console.log(brandsList);
+
+  const [brandCheckedList, setCheckedList] = useState(brandsList);
   const [sliderValues, setSliderValues] = useState([0, 100]);
   const [rateCheckedList, setRateCheckedList] = useState(
     defaultRateCheckedList
   );
+  // console.log(brandCheckedList);
 
   const checkAllBrands =
-    plainBrandOptions.length === brandCheckedList.length;
+    brandsList.length === brandCheckedList.length;
   const onBrandChange = (list: string[]) => {
     setCheckedList(list);
   };
   const onBrandCheckAllChange = (e: CheckboxChangeEvent) => {
-    setCheckedList(e.target.checked ? plainBrandOptions : []);
+    setCheckedList(e.target.checked ? brandsList : []);
   };
 
   const checkAllRates =
@@ -71,7 +87,7 @@ function BrandFilter() {
   return (
     <div className='brands-filter mt-5'>
       <h3 className='ml-[24px] w-fit text-lg text-black-medium'>
-        Brands
+        {t('brandTitle')}
       </h3>
 
       <Checkbox
@@ -79,17 +95,17 @@ function BrandFilter() {
         checked={checkAllBrands}
         className='check-all'
       >
-        {checkAllBrands ? 'Uncheck' : 'Check'} all
+        {checkAllBrands ? t('uncheckAll') : t('checkAll')}
       </Checkbox>
       <CheckboxGroup
-        options={plainBrandOptions}
+        options={brandsList}
         value={brandCheckedList}
         onChange={onBrandChange}
       />
 
       {/* Price Slider */}
       <h3 className='ml-[24px] mt-5 w-fit text-lg text-black-medium'>
-        Price
+        {t('priceRangeTitle')}
       </h3>
       <Slider
         tooltip={{ open: false }}
@@ -101,12 +117,16 @@ function BrandFilter() {
         style={{ marginInline: '24px' }}
       />
       <p className='ml-6 text-sm text-black-light'>
-        Price: (EGP){sliderValues[0]} - (EGP){sliderValues[1]}
+        <span>{t('priceSubTitle')}: </span>
+        <span dir='ltr'>
+          EGP ({sliderValues[0]}) - EGP ({sliderValues[1]})
+        </span>
+        {/* <span></span> */}
       </p>
 
       {/* Rate CheckBox Group */}
       <h3 className='ml-[24px] mt-5 w-fit text-lg text-black-medium'>
-        Rate
+        {t('rateTitle')}
       </h3>
       <Checkbox
         onChange={onRateCheckAllChange}
@@ -114,7 +134,7 @@ function BrandFilter() {
         className='check-all'
         style={{ marginBottom: '3px' }}
       >
-        {checkAllRates ? 'Uncheck' : 'Check'} all
+        {checkAllRates ? t('uncheckAll') : t('checkAll')}
       </Checkbox>
       <CheckboxGroup
         options={plainRateOptions}
@@ -122,14 +142,22 @@ function BrandFilter() {
         onChange={onRateChange}
         style={{ gap: '5px' }}
       />
-      <div className='mt-6 flex items-center gap-2'>
-        <Btn className='bg-green-600 px-6 py-[5px] text-base font-normal text-white'>
+      <div
+        className={`${locale === 'ar' ? '' : 'ml-[24px]'} mt-5 flex items-center gap-2`}
+      >
+        <Btn
+          className='bg-green-600 px-4 py-[6px] text-base font-normal text-white'
+          defaultPadding={false}
+        >
           <FaCheck />
-          <span>Apply</span>
+          <span>{t('applyButton')}</span>
         </Btn>
-        <Btn className='bg-red-shade-300 px-5 py-[5px] text-base font-normal text-white'>
+        <Btn
+          className='bg-red-shade-300 px-4 py-[6px] text-base font-normal text-white'
+          defaultPadding={false}
+        >
           <GrPowerReset />
-          <span>Reset</span>
+          <span>{t('resetButton')}</span>
         </Btn>
       </div>
     </div>

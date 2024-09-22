@@ -1,30 +1,32 @@
 'use client';
 import { usePathname, useRouter } from '@/navigation';
 import { NavItemKeyType, NavItemType } from '@/types';
+import { CategorySidebarType } from '@/types/getCategoriesFilter';
 import { Menu, MenuProps } from 'antd';
 import { useSearchParams } from 'next/navigation';
 
 import { useCallback, useState } from 'react';
 import { v4 } from 'uuid';
 
-function MenuSidebar({ data }: { data: NavItemType | null }) {
+function MenuSidebar({ data }: { data: CategorySidebarType[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const dataValues =
-    data && typeof data === 'object' ? data.products : [];
+  const dataValues = data && Array.isArray(data) ? data : [];
   // console.log(data?.products);
 
-  const items = dataValues.map((item: NavItemKeyType) => {
+  const items = dataValues.map((item) => {
     return {
       key: item.id,
-      label: item.categoryName ?? '',
-
+      label: item.attributes.name ?? '',
       children:
-        item.children && item.children.length > 0 ?
-          item.children.map((child) => ({
+        (
+          item?.attributes?.sub_categories?.data &&
+          item?.attributes?.sub_categories?.data.length > 0
+        ) ?
+          item.attributes.sub_categories.data.map((child) => ({
             key: child.id,
-            label: child.subCategoryName
+            label: child?.attributes?.name
           }))
         : []
     };
@@ -32,7 +34,7 @@ function MenuSidebar({ data }: { data: NavItemType | null }) {
     key: v4(),
     label: ''
   };
-  // console.log(items);
+  console.log(items);
   const [currentActiveSubCategory, setCurrentActiveSubCategory] =
     useState([items[0].children[0].key ?? '']);
   // console.log(currentActiveSubCategory);
@@ -67,10 +69,10 @@ function MenuSidebar({ data }: { data: NavItemType | null }) {
   return (
     <Menu
       mode='inline'
-      defaultOpenKeys={[data?.products[0].id as string]}
-      defaultSelectedKeys={[
-        (data?.products[0].children[0].id as string) ?? ''
-      ]}
+      // defaultOpenKeys={[data?.products[0].id as string]}
+      // defaultSelectedKeys={[
+      //   (data?.products[0].children[0].id as string) ?? ''
+      // ]}
       selectedKeys={currentActiveSubCategory}
       onClick={onClick}
       style={{

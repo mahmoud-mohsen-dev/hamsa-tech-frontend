@@ -43,5 +43,42 @@
       "title": "Hamsa Tech for Technolgy devices Store",
       "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."
     }
+  },
+  "ProductsPage": {
+    "breadcrumb": {
+      "all": "All Products"
+    },
+    "filtersSidebar": {
+      "categoriesTitle": "Categories",
+      "brandTitle": "Brands",
+      "priceRangeTitle": "Price Range",
+      "priceSubTitle": "Price",
+      "rateTitle": "Rate",
+      "checkAll": "Check All",
+      "uncheckAll": "Uncheck All",
+      "resetButton": "Reset",
+      "applyButton": "Apply",
+      "sortBy": [
+        "Sort by: Featured",
+        "Name: A-Z",
+        "Name: Z-A",
+        "Price: Low to High",
+        "Price: High to Low",
+        "Rating: Low to High",
+        "Rating: High to Low"
+      ],
+      "showBy": [
+        "Show: 50",
+        "Show: 40",
+        "Show: 30",
+        "Show: 20",
+        "Show: 10"
+      ],
+      "foundItems": "Products Found  {count}"
+    },
+    "metaData": {
+      "title": "Products page",
+      "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."
+    }
   }
 }

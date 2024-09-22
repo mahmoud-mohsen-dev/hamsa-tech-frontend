@@ -16,7 +16,7 @@ interface PropsType {
 export const revalidate = 120; // invalidate every hour
 
 const getQueryHomePage = (locale: string) => `{
-  pages(locale: "${locale}") {
+  pages(locale: "${locale ?? 'en'}") {
     data {
       attributes {
         heroSection {
@@ -169,27 +169,28 @@ export default async function IndexPage({
   // Enable static rendering
   unstable_setRequestLocale(locale);
 
-  // const heroResponse = await fetch(
-  //   `${process.env.API_BASE_URL}/api/pages?filters[slug][$eq]=/&locale=${locale ?? 'en'}&populate[heroSection][populate]=*`
-  // );
-  // const spotlightResponse = await fetch(
-  //   `${process.env.API_BASE_URL}/api/product-spotlights?filters[section_name][$eq]=productsSpotlight&locale=${locale ?? 'en'}&fields[0]=heading_in_black&fields[1]=heading_in_red&populate[products][fields][0]=name&populate[products][fields][1]=updatedAt&populate[products][fields][2]=spotlight_description&populate[products][populate][image_thumbnail][fields][1]=url&populate[products][populate][image_thumbnail][fields][2]=alternative_text`
-  // );
-
   const response: HomepageResponseType = await fetchGraphql(
     getQueryHomePage(locale ?? 'en')
   );
   const homepageData = response?.data?.pages?.data[0] || null;
   const homepageError = response?.error || null;
-  // console.log(JSON.stringify(response));
-  // console.log('homepageError');
-  // console.log(homepageError);
+  if (homepageError) {
+    console.error('Failed to fetch home page data');
+    console.log('homepageError');
+    console.log(homepageError);
+  }
+  console.log('=*='.repeat(10));
+  console.log(JSON.stringify(response));
+  console.log('=*='.repeat(10));
+  console.log('==='.repeat(10));
 
   return (
     <>
       {(homepageError || homepageData === null) && (
         <p className='font-semiboldbold container mt-40 text-center text-xl text-black-light'>
-          Error fetching home page data. Please try again later.
+          {locale === 'ar' ?
+            'حدث خطأ أثناء جلب بيانات الصفحة الرئيسية. يُرجى المحاولة مرة أخرى لاحقًا.'
+          : 'Error fetching home page data. Please try again later.'}
         </p>
       )}
       {homepageData?.attributes?.heroSection && (

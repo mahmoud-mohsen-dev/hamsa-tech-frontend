@@ -35,7 +35,7 @@ function Footer({ data }: PropsType) {
             />
             <h2 className='text-2xl font-bold'>{t('companyName')}</h2>
           </div>
-          <h4 className='mb-5 max-w-[360px] text-base font-light opacity-80 xl:mb-8'>
+          <h4 className='mb-5 max-w-[320px] text-pretty text-lg font-light opacity-80 xl:mb-8'>
             {data?.description}
           </h4>
           <div className='mb-5 flex items-center gap-4 xl:mb-8'>
@@ -62,7 +62,7 @@ function Footer({ data }: PropsType) {
                 <li key={link.id}>
                   <Link
                     href={link?.slug ?? '/'}
-                    className='quick-links flex items-center gap-2 text-base font-light capitalize'
+                    className='quick-links flex items-center gap-2 text-base font-light capitalize opacity-80 hover:opacity-100'
                   >
                     {locale === 'ar' ?
                       <MdDoubleArrow className='icon flip text-blue-300' />
@@ -73,58 +73,15 @@ function Footer({ data }: PropsType) {
                 </li>
               );
             })}
-            {/* <li>
-              <Link
-                href='/products'
-                className='quick-links flex items-center gap-2 text-base font-light capitalize'
-              >
-                <MdDoubleArrow className='icon text-blue-300' />
-                <span>Products</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='/products'
-                className='quick-links flex items-center gap-2 text-base font-light capitalize'
-              >
-                <MdDoubleArrow className='icon text-blue-300' />
-                <span>Branches</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='/blog'
-                className='quick-links flex items-center gap-2 text-base font-light capitalize'
-              >
-                <MdDoubleArrow className='icon text-blue-300' />
-                <span>Blog</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='/about'
-                className='quick-links flex items-center gap-2 text-base font-light capitalize'
-              >
-                <MdDoubleArrow className='icon text-blue-300' />
-                <span>About US</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='/support'
-                className='quick-links flex items-center gap-2 text-base font-light capitalize'
-              >
-                <MdDoubleArrow className='icon text-blue-300' />
-                <span>Support</span>
-              </Link>
-            </li> */}
           </ul>
         </div>
         <div>
           <h2 className='mb-5 text-2xl font-bold xl:mb-8'>
             {t('newsletterTitle')}
           </h2>
-          <h4 className='mb-5'>{t('newsLetterDescription')}</h4>
+          <h4 className='mb-5 opacity-80'>
+            {t('newsLetterDescription')}
+          </h4>
           <SubcribeInput />
         </div>
         <div className=''>
@@ -135,19 +92,23 @@ function Footer({ data }: PropsType) {
             <div className='flex items-center gap-5'>
               <FaPhoneVolume className='text-blue-300' size={40} />
               <div>
-                <h4 className='text-xl font-semibold'>
+                <h4 className='text-xl font-medium opacity-90'>
                   {t('contactPhoneTitle')}
                 </h4>
-                <h4 dir='ltr'>{data?.contact_us_phone ?? ''}</h4>
+                <h4 dir='ltr' className='text-lg opacity-80'>
+                  {data?.contact_us_phone ?? ''}
+                </h4>
               </div>
             </div>
             <div className='mt-5 flex items-center gap-5'>
               <IoMdMail className='text-blue-300' size={40} />
               <div>
-                <h4 className='text-xl font-semibold'>
+                <h4 className='text-xl font-medium opacity-90'>
                   {t('contactMailTitle')}
                 </h4>
-                <h4>{data?.contact_us_email ?? ''}</h4>
+                <h4 className='text-lg opacity-80'>
+                  {data?.contact_us_email ?? ''}
+                </h4>
               </div>
             </div>
           </div>

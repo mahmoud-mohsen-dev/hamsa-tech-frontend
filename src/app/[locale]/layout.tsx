@@ -1,27 +1,20 @@
 import { ReactNode, Suspense } from 'react';
 import { Open_Sans, Inter } from 'next/font/google';
-// import Loading from '../[locale]/loading';
 import { getLangDir } from 'rtl-detect';
 // import { StoreContextProvider } from '../context/store';
-
 import { NextIntlClientProvider } from 'next-intl';
 import {
   getMessages,
   getTranslations,
   unstable_setRequestLocale
 } from 'next-intl/server';
-// import Navigation from '@/components-old/Navigation';
 import { locales } from '@/config';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import ConfigAntThemes from '@/components/Theme/ConfigAntThemes';
 import Header from '@/components/AppLayout/Header';
 import Main from '@/components/AppLayout/Main';
-// import Error from './error';
-// import { ResponseGetNavbarLinksService } from '@/types/getNavItems';
 import ErrorComponent from './error';
 import Loading from './loading';
-import { notFound } from 'next/navigation';
-import NotFoundPage from './not-found';
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { LayoutResponse } from '@/types/getIndexLayout';
 import Footer from '@/components/AppLayout/Footer';
@@ -106,11 +99,6 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   const direction = getLangDir(locale);
 
-  // try {
-  // const response = await fetch(
-  //   `${process.env.API_BASE_URL}/api/pages?locale=${locale ?? 'en'}&populate[0]=name&populate[1]=slug&populate[navbar]=*`
-  // );
-
   const layoutData = (await fetchGraphql(
     getQueryLayoutPage(locale)
   )) as LayoutResponse;
@@ -130,11 +118,7 @@ export default async function LocaleLayout({
       dir={direction}
     >
       <body className='flex h-full flex-col bg-white text-black-light'>
-        <NextIntlClientProvider
-          locale={locale}
-          // Make sure to provide at least the messages for `Error`
-          messages={messages}
-        >
+        <NextIntlClientProvider locale={locale} messages={messages}>
           {/* <Navigation /> */}
           {/* <StoreContextProvider> */}
           <AntdRegistry>
