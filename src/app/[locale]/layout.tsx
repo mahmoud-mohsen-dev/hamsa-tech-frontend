@@ -16,7 +16,6 @@ import { AntdRegistry } from '@ant-design/nextjs-registry';
 import ConfigAntThemes from '@/components/Theme/ConfigAntThemes';
 import Header from '@/components/AppLayout/Header';
 import Main from '@/components/AppLayout/Main';
-import { getNavbarItems } from '@/services/navItems';
 // import Error from './error';
 // import { ResponseGetNavbarLinksService } from '@/types/getNavItems';
 import ErrorComponent from './error';
