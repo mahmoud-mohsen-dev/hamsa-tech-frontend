@@ -76,6 +76,11 @@
       ],
       "foundItems": "عدد المنتجات الموجودة  {count}"
     },
+    "content": {
+      "productCardReview": "تقييم",
+      "productCardReviews": "تقيمات",
+      "productCardButtonText": "أضف إلى السلة"
+    },
     "metaData": {
       "title": "صفحة المنتجات",
       "description": "كاميرات المراقبة · أجهزة الباركود والصرافة · أنظمة الصوت · الشبكات · جهاز بصمة الأصبع · كاميرات المراقبة · أجهزة الباركود والصرافة."

@@ -6,6 +6,7 @@ import ConfigAntThemes from '@/components/Theme/ConfigAntThemes';
 import ProductsContent from '@/components/UI/products/ProductsContent';
 import BrandFilter from '@/components/UI/products/sidebar/BrandFilter';
 import { fetchGraphql } from '@/services/graphqlCrud';
+import { fetchProducts } from '@/services/products';
 import { BrandsFilterResponseType } from '@/types/getBrandsFilter';
 // import { serverfetchNavItems } from '@/services/navItemRequst';
 // import { getProductsCategory } from '@/services/products';
@@ -26,6 +27,16 @@ const Products = async ({ params: { locale } }: PropsType) => {
   });
   // Enable static rendering
   unstable_setRequestLocale(locale);
+  const productsResponse = await fetchProducts(null, null, locale);
+  const {
+    data: {
+      products: { data: productsData }
+    },
+    error: productsError
+  } = productsResponse;
+
+  // console.log(JSON.stringify(productsData));
+  // console.log(JSON.stringify(productsError));
 
   return (
     // <ConfigAntThemes>
@@ -49,7 +60,9 @@ const Products = async ({ params: { locale } }: PropsType) => {
       />
       <div className='mt-5 grid grid-cols-[270px_1fr] gap-10'>
         <FilterSidebar />
-        <ProductsWrapper />
+        {productsError === null && productsData !== null && (
+          <ProductsWrapper data={productsData} />
+        )}
       </div>
     </section>
     // </ConfigAntThemes>

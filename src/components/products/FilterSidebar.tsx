@@ -24,9 +24,9 @@ async function FilterSidebar() {
             }
         }
     }`)) as BrandsFilterResponseType;
-  console.log('--------------------------');
-  console.log(JSON.stringify(brandsData.brands));
-  console.log('--------------------------');
+  // console.log('--------------------------');
+  // console.log(JSON.stringify(brandsData.brands));
+  // console.log('--------------------------');
 
   if (brandsError) {
     console.error('Error fetching brands data');
@@ -35,7 +35,7 @@ async function FilterSidebar() {
 
   const { data: categoriesData, error: categoriesError } =
     (await fetchGraphql(`{
-        categories(locale: "en") {
+        categories(locale: "${locale ?? 'en'}") {
             data {
                 id
                 attributes {
@@ -56,10 +56,10 @@ async function FilterSidebar() {
     }`)) as CategoriesData;
   const categoriesSidebarData =
     categoriesData?.categories?.data || null;
-  console.log('++++++++++++++++++++');
-  console.log(JSON.stringify(categoriesSidebarData));
-  console.log(categoriesError);
-  console.log('++++++++++++++++++++');
+  // console.log('++++++++++++++++++++');
+  // console.log(JSON.stringify(categoriesSidebarData));
+  // console.log(categoriesError);
+  // console.log('++++++++++++++++++++');
 
   if (categoriesSidebarData === null || categoriesError) {
     console.error('Error fetching categories data');

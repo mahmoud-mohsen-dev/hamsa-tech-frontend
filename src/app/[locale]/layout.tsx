@@ -1,7 +1,7 @@
 import { ReactNode, Suspense } from 'react';
 import { Open_Sans, Inter } from 'next/font/google';
 import { getLangDir } from 'rtl-detect';
-// import { StoreContextProvider } from '../context/store';
+import { StoreContextProvider } from '../../context/Store';
 import { NextIntlClientProvider } from 'next-intl';
 import {
   getMessages,
@@ -102,7 +102,7 @@ export default async function LocaleLayout({
   const layoutData = (await fetchGraphql(
     getQueryLayoutPage(locale)
   )) as LayoutResponse;
-  console.log(JSON.stringify(layoutData));
+  // console.log(JSON.stringify(layoutData));
   const layoutAttributes =
     layoutData?.data?.pages?.data[0]?.attributes ?? null;
 
@@ -119,34 +119,33 @@ export default async function LocaleLayout({
     >
       <body className='flex h-full flex-col bg-white text-black-light'>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {/* <Navigation /> */}
-          {/* <StoreContextProvider> */}
-          <AntdRegistry>
-            <ConfigAntThemes>
-              <div
-                className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
-              >
-                {(layoutData.error || layoutData.data === null) && (
-                  <ErrorComponent
-                    error={
-                      layoutData.error ||
-                      ('Error fetching nav items' as any)
-                    }
-                  />
-                )}
-                {layoutAttributes.navbar && (
-                  <Header navLinks={layoutAttributes.navbar} />
-                )}
-                <Suspense fallback={<Loading />}>
-                  <Main>{children}</Main>
-                </Suspense>
-                {layoutAttributes.footer && (
-                  <Footer data={layoutAttributes.footer} />
-                )}
-              </div>
-            </ConfigAntThemes>
-          </AntdRegistry>
-          {/* </StoreContextProvider> */}
+          <StoreContextProvider>
+            <AntdRegistry>
+              <ConfigAntThemes>
+                <div
+                  className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
+                >
+                  {(layoutData.error || layoutData.data === null) && (
+                    <ErrorComponent
+                      error={
+                        layoutData.error ||
+                        ('Error fetching nav items' as any)
+                      }
+                    />
+                  )}
+                  {layoutAttributes.navbar && (
+                    <Header navLinks={layoutAttributes.navbar} />
+                  )}
+                  <Suspense fallback={<Loading />}>
+                    <Main>{children}</Main>
+                  </Suspense>
+                  {layoutAttributes.footer && (
+                    <Footer data={layoutAttributes.footer} />
+                  )}
+                </div>
+              </ConfigAntThemes>
+            </AntdRegistry>
+          </StoreContextProvider>
         </NextIntlClientProvider>
       </body>
     </html>

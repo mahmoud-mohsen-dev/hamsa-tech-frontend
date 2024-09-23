@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-import PageLayout from '@/components-old/PageLayout';
+// import PageLayout from '@/components-old/PageLayout';
 import { Link } from '@/navigation';
 
 type Props = {
@@ -19,7 +19,7 @@ export default function Error({ error, reset = () => {} }: Props) {
   }, [error]);
 
   return (
-    <div className='pt-24 text-center'>
+    <div className='py-28 text-center'>
       {t.rich('heading', {
         p: (chunks) => <p className='mt-4'>{chunks}</p>,
         retry: (chunks) => (

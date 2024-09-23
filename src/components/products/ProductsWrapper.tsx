@@ -1,10 +1,11 @@
-import ProductsContent from "../UI/products/ProductsContent";
+import { ProductType } from '@/types/getProducts';
+import ProductsContent from '../UI/products/ProductsContent';
 
-function ProductsWrapper() {
+function ProductsWrapper({ data }: { data: ProductType[] }) {
   return (
     <main>
       <section>
-        <ProductsContent />
+        <ProductsContent serverProductsData={data} />
       </section>
     </main>
   );

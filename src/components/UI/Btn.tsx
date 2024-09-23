@@ -7,10 +7,12 @@ function Btn({
   className = 'bg-white text-gray-normal text-lg',
   defaultPadding = true,
   outlined = false,
+  dir = undefined,
   type = 'button'
 }: {
   children: React.ReactNode;
   href?: string | null;
+  dir?: 'ltr' | 'rtl' | undefined;
   onClick?: (e: React.SyntheticEvent) => void;
   className?: string;
   defaultPadding?: boolean;
@@ -36,6 +38,7 @@ function Btn({
       className={`${btnStyles} ${outlined ? 'border-2 border-white text-white' : ''} ${defaultPadding ? 'px-[1rem] py-[.55rem]' : ''} ${className}`}
       onClick={onClick}
       type={type}
+      dir={dir}
     >
       {children}
     </button>

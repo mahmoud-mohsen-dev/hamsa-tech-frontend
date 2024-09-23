@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { FaPlus } from 'react-icons/fa6';
 import Btn from '../UI/Btn';
 import { Link } from '@/navigation';
+import { useTranslations } from 'next-intl';
 
 function ProductCard({
   linkSrc,
@@ -21,12 +22,13 @@ function ProductCard({
   alt: string;
   title: string;
   category: string;
-  badge: '' | 'Out Of Stock' | 'Limited' | 'Hot' | 'Sale' | 'New';
+  badge: string;
   avgRate: number;
   totalRates: number;
   priceBeforeDeduction: number;
   currentPrice: number;
 }) {
+  const t = useTranslations('ProductsPage.content');
   // const handleClick = (event: React.SyntheticEvent) => {
   //   event.stopPropagation();
   //   event.preventDefault();
@@ -57,10 +59,10 @@ function ProductCard({
           className='mb-5 mt-2.5 object-contain transition-["scale"] duration-1000 ease-linear hover:scale-110'
         />
         <div className='h-[90px] lg:h-[80px] 2xl:h-[100px]'>
-          <h3 className='mb-1 max-h-[22px] overflow-hidden font-openSans text-sm font-normal leading-[22px] text-gray-medium'>
+          <h3 className='mb-1 max-h-[22px] overflow-hidden font-openSans text-sm font-normal capitalize leading-[22px] text-gray-medium'>
             {category}
           </h3>
-          <h4 className='mb-3 font-openSans text-base font-semibold leading-[24px] text-black-light xl:text-xs 2xl:text-base'>
+          <h4 className='mb-3 font-openSans text-base font-semibold capitalize leading-[24px] text-black-light xl:text-xs 2xl:text-base'>
             {title}
           </h4>
           <div className='flex items-center gap-2 leading-[54px]'>
@@ -69,7 +71,11 @@ function ProductCard({
               {avgRate}
             </span> */}
             <span className='text-base font-normal text-gray-light'>
-              ({totalRates} review{totalRates > 1 ? 's' : ''})
+              ({totalRates}{' '}
+              {totalRates > 1 ?
+                t('productCardReviews')
+              : t('productCardReview')}
+              )
             </span>
           </div>
         </div>
@@ -85,11 +91,12 @@ function ProductCard({
             </p>
           </div>
           <Btn
-            className='flex items-center gap-2 bg-green-600 px-3 py-[5px] font-openSans text-sm font-semibold text-white shadow-none'
+            className='flex items-center gap-2 bg-green-600 px-2.5 py-[6px] font-sans text-sm font-semibold text-white shadow-none'
             // onClick={handleClick}
+            dir='ltr'
           >
             <FaPlus />
-            <span>Add</span>
+            <span>{t('productCardButtonText')}</span>
           </Btn>
         </div>
       </div>

@@ -76,6 +76,11 @@
       ],
       "foundItems": "Products Found  {count}"
     },
+    "content": {
+      "productCardReview": "Review",
+      "productCardReviews": "Reviews",
+      "productCardButtonText": "Add To Cart"
+    },
     "metaData": {
       "title": "Products page",
       "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."

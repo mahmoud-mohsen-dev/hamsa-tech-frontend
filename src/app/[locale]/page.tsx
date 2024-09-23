@@ -179,10 +179,10 @@ export default async function IndexPage({
     console.log('homepageError');
     console.log(homepageError);
   }
-  console.log('=*='.repeat(10));
-  console.log(JSON.stringify(response));
-  console.log('=*='.repeat(10));
-  console.log('==='.repeat(10));
+  // console.log('=*='.repeat(10));
+  // console.log(JSON.stringify(response));
+  // console.log('=*='.repeat(10));
+  // console.log('==='.repeat(10));
 
   return (
     <>
