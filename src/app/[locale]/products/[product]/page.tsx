@@ -1,18 +1,3 @@
-import ProductSlider from '@/components/productPage/ProductSlider';
-import ProductBreadcrumb from '@/components/UI/products/product/ProductBreadcrumb';
-import { Divider, Rate } from 'antd';
-import OrderProduct from '@/components/productPage/OrderProduct';
-import Info from '@/components/productPage/Info';
-import Link from 'next/link';
-import { FaFacebookF, FaInstagram } from 'react-icons/fa';
-import { RiTwitterXLine } from 'react-icons/ri';
-import Btn from '@/components/UI/Btn';
-import { FaAddressBook, FaBook } from 'react-icons/fa6';
-import { v4 } from 'uuid';
-import TabsSection from '@/components/productPage/TabsSection';
-import ConfigAntThemes from '@/components/Theme/ConfigAntThemes';
-import ProductCard from '@/components/products/ProductCard';
-import { ProductBasicInfoType } from '@/types';
 import { unstable_setRequestLocale } from 'next-intl/server';
 
 export default async function Product({
