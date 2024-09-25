@@ -1,4 +1,4 @@
-'use client';
+// 'use client';
 
 import CustomBreadcrumb from '@/components/products/CustomBreadcrumb';
 import { usePathname } from '@/navigation';

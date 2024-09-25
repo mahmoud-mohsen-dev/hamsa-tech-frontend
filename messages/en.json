@@ -85,5 +85,28 @@
       "title": "Products page",
       "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."
     }
+  },
+  "ProductPage": {
+    "breadcrumb": {
+      "all": "All Products"
+    },
+    "reviewsText": "reviews",
+    "offText": "Off",
+    "availabilityText": "Availability",
+    "stockText": "items in stock",
+    "outOfStockText": "Out of stock",
+    "addToCartButtonText": "Add to Cart",
+    "addedToCartButtonText": "Added to Cart",
+    "AddToWhishListText": "Add to wishlist",
+    "AddedToWhishListText": "Added to wishlist",
+    "deliveryText": "Delivery within 5 days",
+    "returnText": "Free return within 14 days",
+    "brandText": "Brand",
+    "skuText": "SKU",
+    "connectivityText": "Connection Technology",
+    "modalNameText": "Modal Name",
+    "warantyText": "Waranty",
+    "tagsText": "Tags",
+    "shareText": "Share"
   }
 }

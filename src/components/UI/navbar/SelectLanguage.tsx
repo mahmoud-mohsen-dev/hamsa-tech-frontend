@@ -1,11 +1,15 @@
+'use client';
+import { useMyContext } from '@/context/Store';
 import { usePathname, useRouter } from '@/navigation';
 import { Select } from 'antd';
+import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useTransition } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 
 function SelectLanguage({ defaultValue }: { defaultValue: string }) {
+  const { nextProductId } = useMyContext();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
@@ -15,13 +19,20 @@ function SelectLanguage({ defaultValue }: { defaultValue: string }) {
     console.log(event);
     const nextLocale = event;
     startTransition(() => {
-      router.replace(
-        // @ts-expect-error -- TypeScript will validate that only known `params`
-        // are used in combination with a given `pathname`. Since the two will
-        // always match for the current route, we can skip runtime checks.
-        { pathname, params },
-        { locale: nextLocale }
-      );
+      if (params.product && typeof params.product === 'string') {
+        router.push(
+          { pathname: `/products/${String(nextProductId)}` },
+          { locale: nextLocale }
+        );
+      } else {
+        router.replace(
+          // @ts-expect-error -- TypeScript will validate that only known `params`
+          // are used in combination with a given `pathname`. Since the two will
+          // always match for the current route, we can skip runtime checks.
+          { pathname, params },
+          { locale: nextLocale }
+        );
+      }
     });
   }
   return (

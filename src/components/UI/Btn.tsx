@@ -8,7 +8,8 @@ function Btn({
   defaultPadding = true,
   outlined = false,
   dir = undefined,
-  type = 'button'
+  type = 'button',
+  disabled = false
 }: {
   children: React.ReactNode;
   href?: string | null;
@@ -18,9 +19,10 @@ function Btn({
   defaultPadding?: boolean;
   outlined?: boolean;
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }): JSX.Element {
   const btnStyles =
-    'focus:outline-none active:outline-none transition-colors duration-300 flex justify-center items-center gap-2 rounded shadow-sm';
+    'focus:outline-none active:outline-none disabled:cursor-not-allowed transition-colors duration-300 flex justify-center items-center gap-2 rounded shadow-sm';
 
   if (href) {
     return (
@@ -39,6 +41,7 @@ function Btn({
       onClick={onClick}
       type={type}
       dir={dir}
+      disabled={disabled}
     >
       {children}
     </button>

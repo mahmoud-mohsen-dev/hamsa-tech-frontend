@@ -1,47 +1,64 @@
 'use client';
 
 import Image from 'next/image';
-import { v4 } from 'uuid';
 import ImageZoom from './ImageZoom';
-import { useState } from 'react';
-import { productDetailsType } from '@/types';
+import { useEffect, useState } from 'react';
+import { ProductDataType } from '@/types/getProduct';
+import { useMyContext } from '@/context/Store';
 
 function ProductSlider({
-  productData
+  productData,
+  currentId,
+  nextId
 }: {
-  productData: productDetailsType;
+  productData: ProductDataType;
+  currentId: string;
+  nextId: string;
 }) {
+  const { setCurrentProductId, setNextProductId } = useMyContext();
+  const images = productData?.images.data ?? [];
   const [activeImg, setActiveImg] = useState({
-    imgSrc: productData.product.sliderImgs[0].imgSrc ?? '',
+    imgSrc: images[0].attributes?.url ?? '',
+    alt: images[0].attributes?.alternativeText ?? '',
     index: 0
   });
+  // console.log(productData);
+  // console.log(images);
+  // console.log(activeImg);
+
+  useEffect(() => {
+    setCurrentProductId(String(currentId));
+    setNextProductId(String(nextId));
+  }, [currentId, nextId]);
 
   return (
     <div className='sticky top-[64px] ml-10 flex max-h-[450px] items-center gap-10'>
       <div className='flex flex-col items-start justify-center gap-5'>
-        {Array.isArray(productData?.product?.sliderImgs) &&
-          productData?.product?.sliderImgs.length > 0 &&
-          productData?.product?.sliderImgs.map((imgSlide, i) => {
+        {Array.isArray(images) &&
+          images.length > 0 &&
+          images.map((imgSlide, i) => {
             return (
               <div
                 className={`h-[90px] w-[90px] border-2 p-[5px] ${activeImg.index === i ? 'border-yellow-medium' : 'border-transparent'}`}
-                key={v4()}
+                key={productData?.images?.data[0].id}
                 onMouseEnter={() => {
                   setActiveImg({
-                    imgSrc: imgSlide.imgSrc ?? '',
+                    imgSrc: imgSlide.attributes.url ?? '',
+                    alt: imgSlide?.attributes.alternativeText ?? '',
                     index: i
                   });
                 }}
                 onClick={() => {
                   setActiveImg({
-                    imgSrc: imgSlide.imgSrc ?? '',
+                    imgSrc: imgSlide.attributes.url ?? '',
+                    alt: imgSlide?.attributes.alternativeText ?? '',
                     index: i
                   });
                 }}
               >
                 <Image
-                  src={imgSlide.imgSrc}
-                  alt={imgSlide.alt}
+                  src={imgSlide?.attributes.url ?? ''}
+                  alt={imgSlide?.attributes.alternativeText ?? ''}
                   width={80}
                   height={80}
                   style={{
@@ -59,7 +76,7 @@ function ProductSlider({
           })}
       </div>
       <div>
-        <ImageZoom imgSrc={activeImg.imgSrc} />
+        <ImageZoom imgSrc={activeImg.imgSrc} alt={activeImg.alt} />
       </div>
     </div>
   );

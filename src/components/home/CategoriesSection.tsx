@@ -17,8 +17,7 @@ function CategoriesSection({ data }: PropsType) {
     loop: false,
     direction: locale === 'ar' ? 'rtl' : 'ltr',
     slidesToScroll: 'auto',
-    duration: 20,
-    watchFocus: false
+    duration: 20
   };
   const SLIDES = data.category.map((category) => {
     return {
@@ -92,7 +91,7 @@ function CategoriesSection({ data }: PropsType) {
   //   }
   // ];
   return (
-    <section className='max-w-[1900px] bg-white py-20'>
+    <section className='mx-auto max-w-[1900px] bg-white py-20'>
       <div className='categories'>
         <div
           data-aos='fade-down'

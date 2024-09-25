@@ -6,6 +6,7 @@ import { NavItemType } from '@/types';
 import { useLocale } from 'next-intl';
 import { capitalize } from '@/utils/helpers';
 import { NavbarLink } from '@/types/getIndexLayout';
+import { CategoryType } from '@/types/getNavbarProductsCategories';
 // import { clear } from 'console';
 // import { getNavbarItems } from '@/services/navItems';
 
@@ -13,12 +14,14 @@ interface PropsType {
   linkHovered: string;
   setLinkHovered: Dispatch<SetStateAction<string>>;
   navLinks: NavbarLink[];
+  productsSubNav: CategoryType[];
 }
 
 function Navbar({
   linkHovered,
   setLinkHovered,
-  navLinks
+  navLinks,
+  productsSubNav
 }: PropsType) {
   // console.log(navLinks);
   // const locale = useLocale();
@@ -54,116 +57,30 @@ function Navbar({
             // console.log(item);
             return (
               <li
-                onMouseEnter={() => handleLinkHover(item.name)}
+                onMouseEnter={() => handleLinkHover(item.slug)}
                 onMouseLeave={() => handleLinkHover('')}
                 key={item.id}
                 className={listStyles}
               >
                 <ActiveLink
-                  href={`${item.slug}`}
+                  href={`/${item.slug}`}
                   activeClassName='!text-red-shade-350'
                   className={linksStyles}
                 >
                   {item.name}
                 </ActiveLink>
-                {/* <NavSub
-                  name={item.name}
-                  currentHovered={linkHovered}
-                  items={item.children ?? []}
-                /> */}
+                {item.slug === 'products' &&
+                  Array.isArray(productsSubNav) &&
+                  productsSubNav.length > 0 && (
+                    <NavSub
+                      name={item.slug}
+                      currentHovered={linkHovered}
+                      items={productsSubNav}
+                    />
+                  )}
               </li>
             );
           })}
-        {/* <li
-          onMouseEnter={() => handleLinkHover('products')}
-          onMouseLeave={() => handleLinkHover('')}
-          className={listStyles}
-        >
-          <ActiveLink
-            href={`/products?category=${encodeURIComponent('Indoor HD Cameras')}`}
-            activeClassName='!text-red-shade-350'
-            className={linksStyles}
-          >
-            Products
-          </ActiveLink>
-          <NavSub
-            name='products'
-            currentHovered={linkHovered}
-            items={navItems?.products ?? []}
-          />
-        </li>
-        <li
-          onMouseEnter={() => handleLinkHover('offers')}
-          onMouseLeave={() => handleLinkHover('')}
-          className={listStyles}
-        >
-          <ActiveLink
-            href='/offers'
-            activeClassName='!text-red-shade-350'
-            className={linksStyles}
-          >
-            Offers
-          </ActiveLink>
-          <NavSub
-            name='offers'
-            currentHovered={linkHovered}
-            items={navItems?.offers ?? []}
-          />
-        </li>
-        <li
-          onMouseEnter={() => handleLinkHover('blog')}
-          onMouseLeave={() => handleLinkHover('')}
-          className={listStyles}
-        >
-          <ActiveLink
-            href='/blog'
-            activeClassName='!text-red-shade-350'
-            className={linksStyles}
-          >
-            Blog
-          </ActiveLink>
-          <NavSub
-            name='blog'
-            currentHovered={linkHovered}
-            items={navItems?.blog ?? []}
-          />
-        </li>
-        <li
-          onMouseEnter={() => handleLinkHover('about')}
-          onMouseLeave={() => handleLinkHover('')}
-          className={listStyles}
-        >
-          <ActiveLink
-            href='/about'
-            activeClassName='!text-red-shade-350'
-            className={linksStyles}
-          >
-            About Us
-          </ActiveLink>
-          <NavSub
-            name='about'
-            currentHovered={linkHovered}
-            items={navItems?.aboutUs ?? []}
-          />
-        </li>
-        <li
-          onMouseEnter={() => handleLinkHover('support')}
-          onMouseLeave={() => handleLinkHover('')}
-          className={listStyles}
-        >
-          <ActiveLink
-            href='/support'
-            activeClassName='!text-red-shade-350'
-            className={linksStyles}
-          >
-            Support
-          </ActiveLink>
-          <NavSub
-            name='support'
-            currentHovered={linkHovered}
-            items={navItems?.support ?? []}
-          />
-        </li> */}
       </ul>
     </nav>
   );

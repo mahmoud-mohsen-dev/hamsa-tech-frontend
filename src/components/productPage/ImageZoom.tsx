@@ -2,7 +2,13 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-export default function ImageZoom({ imgSrc }: { imgSrc: string }) {
+export default function ImageZoom({
+  imgSrc,
+  alt
+}: {
+  imgSrc: string;
+  alt: string;
+}) {
   const [zoomStyle, setZoomStyle] = useState({
     // '--display': 'none',
     '--opacity': 0,
@@ -54,9 +60,10 @@ export default function ImageZoom({ imgSrc }: { imgSrc: string }) {
     >
       <Image
         src={imgSrc}
-        alt=''
+        alt={alt}
         width={500}
         height={350}
+        quality={100}
         style={{
           maxHeight: '100%',
           maxWidth: '100%',

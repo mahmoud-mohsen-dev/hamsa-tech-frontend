@@ -15,7 +15,7 @@ interface PropsType {
 function AboutUs({ data }: PropsType) {
   const locale = useLocale();
   return (
-    <section className='grid max-w-[1900px] grid-cols-1 bg-blue-sky-ultralight xl:grid-cols-2'>
+    <section className='mx-auto grid max-w-[1900px] grid-cols-1 bg-blue-sky-ultralight xl:grid-cols-2'>
       <div
         data-aos='fade-down'
         data-aos-easing='linear'

@@ -1,264 +1,701 @@
-import { unstable_setRequestLocale } from 'next-intl/server';
+// import NotFound from '@/app/not-found';
+import ProductBreadcrumb from '@/components/UI/products/product/ProductBreadcrumb';
+import { fetchGraphql } from '@/services/graphqlCrud';
+import {
+  NextProductResponseType,
+  ProductResponseType
+} from '@/types/getProduct';
+import {
+  getTranslations,
+  unstable_setRequestLocale
+} from 'next-intl/server';
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaSitemap,
+  FaWhatsapp
+} from 'react-icons/fa6';
+import { PiSecurityCameraDuotone } from 'react-icons/pi';
+import { HomeOutlined, ProductOutlined } from '@ant-design/icons';
+import CustomBreadcrumb from '@/components/products/CustomBreadcrumb';
+import { FaBox } from 'react-icons/fa';
+import { notFound } from 'next/navigation';
+import ProductSlider from '@/components/productPage/ProductSlider';
+import { Divider, Rate } from 'antd';
+import OrderProduct from '@/components/productPage/OrderProduct';
+import Info from '@/components/productPage/Info';
+import { Link } from '@/navigation';
+import { RiTwitterXLine } from 'react-icons/ri';
+
+const getQueryProductPage = (id: number) => `{
+  product(id: ${id}) {
+    data {
+      id
+      attributes {
+        name
+        price
+        sale_price
+        stock
+        sub_category {
+            data {
+                attributes {
+                    name
+                    slug
+                    category {
+                        data {
+                            attributes {
+                                name
+                                slug
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        image_thumbnail {
+            data {
+                attributes {
+                    url
+                    alternativeText
+                }
+            }
+        }
+        average_reviews
+        total_reviews
+        brand {
+            data {
+                attributes {
+                    name
+                }
+            }
+        }
+        images {
+            data {
+                id
+                attributes {
+                    url
+                    alternativeText
+                }
+            }
+        }
+        description
+        sku
+        connectivity
+        modal_name
+        waranty {
+            data {
+                attributes {
+                    title
+                }
+            }
+        }
+        tags {
+            data {
+                id
+                attributes {
+                    name
+                    slug
+                }
+            }
+        }
+        datasheet {
+            data {
+                attributes {
+                    url
+                    alternativeText
+                }
+            }
+        }
+        user_manual {
+            data {
+                attributes {
+                    url
+                    alternativeText
+                }
+            }
+        }
+        youtube_video {
+            link_source
+            title
+        }
+        features {
+            ... on ComponentFeatureFeatures {
+                id
+                feature
+            }
+        }
+        long_description
+        sepcification {
+            ... on ComponentDetailsSpecification {
+                id
+                name
+                value
+            }
+        }
+        reviews {
+            data {
+                id 
+                attributes {
+                    updatedAt
+                    rating
+                    headline
+                    comment
+                    user_detail {
+                        data {
+                            attributes {
+                                first_name
+                                last_name
+                                avatar_photo {
+                                    data {
+                                        attributes {
+                                            url
+                                            alternativeText
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        related_product_1 {
+            data {
+                id 
+                attributes {
+                    updatedAt
+                    name
+                    price
+                    sale_price
+                    stock
+                    sub_category {
+                        data {
+                            attributes {
+                                name
+                            }
+                        }
+                    }
+                    image_thumbnail {
+                        data {
+                            attributes {
+                                url
+                                alternativeText
+                            }
+                        }
+                    }
+                    average_reviews
+                    total_reviews
+                }
+            }
+        }
+        related_product_2 {
+            data {
+                id 
+                attributes {
+                    updatedAt
+                    name
+                    price
+                    sale_price
+                    stock
+                    sub_category {
+                        data {
+                            attributes {
+                                name
+                            }
+                        }
+                    }
+                    image_thumbnail {
+                        data {
+                            attributes {
+                                url
+                                alternativeText
+                            }
+                        }
+                    }
+                    average_reviews
+                    total_reviews
+                }
+            }
+        }
+        related_product_3 {
+            data {
+                id 
+                attributes {
+                    updatedAt
+                    name
+                    price
+                    sale_price
+                    stock
+                    sub_category {
+                        data {
+                            attributes {
+                                name
+                            }
+                        }
+                    }
+                    image_thumbnail {
+                        data {
+                            attributes {
+                                url
+                                alternativeText
+                            }
+                        }
+                    }
+                    average_reviews
+                    total_reviews
+                }
+            }
+        }
+        related_product_4 {
+            data {
+                id 
+                attributes {
+                    updatedAt
+                    name
+                    price
+                    sale_price
+                    stock
+                    sub_category {
+                        data {
+                            attributes {
+                                name
+                            }
+                        }
+                    }
+                    image_thumbnail {
+                        data {
+                            attributes {
+                                url
+                                alternativeText
+                            }
+                        }
+                    }
+                    average_reviews
+                    total_reviews
+                }
+            }
+        }
+        localizations {
+            data {
+                id
+            }
+        }
+      }
+    }
+  }
+}`;
+
+const getItems = (
+  allProductsText: string,
+  categoryName: string,
+  categorySlug: string,
+  subCategoryName: string,
+  subCategorySlug: string,
+  productName: string,
+  productSlug: string
+) => {
+  const items = [
+    {
+      href: '/',
+      title: <HomeOutlined />
+    },
+    {
+      href: '/products',
+      title: (
+        <>
+          <ProductOutlined />
+          <span>{allProductsText}</span>
+        </>
+      )
+    }
+  ];
+
+  if (
+    categoryName &&
+    subCategoryName &&
+    productName &&
+    categorySlug &&
+    subCategorySlug &&
+    productSlug
+  ) {
+    items.push({
+      href: `/products?${new URLSearchParams({ category: categorySlug })}`,
+      title: (
+        <div className='flex items-center gap-2'>
+          <FaSitemap />
+          <span>{categoryName}</span>
+        </div>
+      )
+    });
+    items.push({
+      href: `/products?${new URLSearchParams({ 'category': categorySlug, 'sub-category': subCategorySlug })}`,
+      title: (
+        <div className='flex items-center gap-2'>
+          <FaBox />
+          <span>{subCategoryName}</span>
+        </div>
+      )
+    });
+    items.push({
+      href: `/products/${String(productSlug)}`,
+      title: (
+        <div className='flex items-center gap-2'>
+          <PiSecurityCameraDuotone />
+          <span>{productName}</span>
+        </div>
+      )
+    });
+    return items;
+  }
+
+  return items;
+};
 
 export default async function Product({
   params: { product, locale }
 }: {
-  params: { product: string; locale: string };
+  params: { product: number; locale: string };
 }) {
   // Enable static rendering
   unstable_setRequestLocale(locale);
+  const t = await getTranslations('ProductPage');
   //   const { product } = params;
   //   const { data: productData, error } =
   //     await serverGetProduct(product);
 
-  //   if (!productData || error) {
-  //     return (
-  //       <div className='container mx-6 mt-[100px] text-left text-xl'>
-  //         Product Not Found
-  //       </div>
-  //     );
-  //   }
-  //   const { basic, info, details, moreDetails } = productData.product;
+  const response = (await fetchGraphql(
+    getQueryProductPage(product)
+  )) as ProductResponseType;
+  // console.log(JSON.stringify(response));
+  const { data: productResData, error: productError } = response;
+  const productData =
+    productResData?.product?.data?.attributes || null;
+
+  if (!productResData || !productData || productError) {
+    notFound();
+  }
+  // console.log(product);
+  const nextProductResponse = await fetchGraphql(`{
+    product(id: ${product}) {
+      data {
+        id
+        attributes {
+          localizations {
+              data {
+                  id
+              }
+          }
+        }
+      }
+  }
+}`);
+  const { data: nextProductData, error: nextProductError } =
+    nextProductResponse as NextProductResponseType;
+  // console.log(nextProductData.product.data.id);
+  // console.log(
+  //   nextProductData.product.data.attributes.localizations.data[0].id
+  // );
+
+  if (!nextProductData && nextProductError) {
+    notFound();
+  }
   //   const { relatedProducts } = productData;
   // console.log(productData);
-  //   const offPercent =
-  //     ((basic.priceBeforeDeduction - basic.currentPrice) * 100) /
-  //     basic.priceBeforeDeduction;
+  const offPercent =
+    ((productData?.price - productData?.sale_price) * 100) /
+    productData?.price;
 
   return (
-    <></>
-    // <ConfigAntThemes>
-    //   <div id='product-page'>
-    //     <div className='container mb-[50px] mt-[100px]'>
-    //       <ProductBreadcrumb
-    //         productName={productData.product.basic.productName}
-    //       />
-    //       <section className='mx-4 mt-5 grid grid-cols-2'>
-    //         <ProductSlider productData={productData} />
-    //         <div className='ml-24'>
-    //           {/* Basic Data */}
-    //           <section>
-    //             <h4 className='text-blue-dark'>
-    //               {basic.subCategoryName}
-    //             </h4>
-    //             <h2 className='mt-3 text-3xl font-semibold text-black-medium'>
-    //               {basic.productName}
-    //             </h2>
-    //             <h4 className='mt-5 text-xl font-normal text-gray-medium'>
-    //               {info.description}
-    //             </h4>
-    //             <div className='mt-5 flex items-center gap-2'>
-    //               <Rate defaultValue={basic.averageRate} disabled />
-    //               <h6 className='text-sm font-medium text-blue-dark'>
-    //                 ({basic.averageRate} reviews)
-    //               </h6>
-    //             </div>
+    <>
+      <div id='product-page'>
+        <div className='container mb-[50px] mt-[100px]'>
+          <CustomBreadcrumb
+            items={getItems(
+              t('breadcrumb.all'),
+              productData?.sub_category?.data?.attributes?.category
+                ?.data?.attributes?.name,
+              productData?.sub_category?.data?.attributes?.category
+                ?.data?.attributes?.slug,
+              productData?.sub_category?.data?.attributes?.name,
+              productData?.sub_category?.data?.attributes?.slug,
+              productData?.name,
+              productResData?.product.data.id
+            )}
+          />
+          <section
+            className={`mx-2 mt-5 grid grid-cols-2 ${locale === 'ar' ? 'gap-16' : 'gap-36'}`}
+          >
+            <ProductSlider
+              productData={productData}
+              currentId={nextProductData?.product?.data?.id ?? 0}
+              nextId={
+                nextProductData?.product?.data?.attributes
+                  ?.localizations?.data[0]?.id ?? 0
+              }
+            />
+            <div>
+              {/* Basic Data */}
+              <section>
+                <h4 className='text-blue-dark'>
+                  {productData?.sub_category?.data?.attributes
+                    ?.name ?? ''}
+                </h4>
+                <h2 className='mt-3 text-3xl font-semibold text-black-medium'>
+                  {productData?.name}
+                </h2>
+                <h4 className='mt-5 text-xl font-normal text-gray-medium'>
+                  {productData?.description}
+                </h4>
+                <div className='mt-5 flex items-center gap-2'>
+                  <Rate
+                    defaultValue={productData?.average_reviews ?? 0}
+                    disabled
+                  />
+                  <h6 className='text-sm font-medium text-blue-dark'>
+                    ({productData?.total_reviews ?? 0}{' '}
+                    {t('reviewsText')})
+                  </h6>
+                </div>
 
-    //             <div className='mt-3 flex items-center gap-2'>
-    //               <span className='text-base font-medium text-black-light'>
-    //                 EGP {basic.currentPrice}
-    //               </span>
-    //               <span className='text-sm font-medium text-gray-500 line-through'>
-    //                 EGP {basic.priceBeforeDeduction}
-    //               </span>
-    //               {offPercent > 10 ?
-    //                 <span className='text-sm text-red-shade-300'>
-    //                   {offPercent.toFixed(2)}% Off
-    //                 </span>
-    //               : null}
-    //             </div>
-    //             <h4 className='mt-3 flex items-center gap-2 text-sm font-normal text-blue-gray-medium'>
-    //               {basic.quantity > 0 ?
-    //                 <>
-    //                   <span>Availability:</span>
-    //                   <span className='text-green-medium'>
-    //                     {basic.quantity}
-    //                   </span>
-    //                   <span>items in stock</span>
-    //                 </>
-    //               : 'Out of stock'}
-    //             </h4>
-    //             <OrderProduct />
-    //             <div className='mt-4 text-sm capitalize text-gray-light'>
-    //               <p>
-    //                 -&nbsp;&nbsp;&nbsp;&nbsp;Delivery within 5 days
-    //               </p>
-    //               <p className='mt-1'>
-    //                 -&nbsp;&nbsp;&nbsp;&nbsp;Free return within 14
-    //                 days
-    //               </p>
-    //             </div>
-    //           </section>
-    //           <Divider className='bg-gray-lighter' />
-    //           {/* Product Info */}
-    //           {/* ============================= */}
-    //           <section>
-    //             <Info infoKey='Brand:' value={basic.brand} />
-    //             <Info
-    //               infoKey='SKU:'
-    //               value={info.sku}
-    //               isCapitalized={false}
-    //             />
-    //             <Info
-    //               infoKey='connectivity:'
-    //               value={info.connectivity}
-    //             />
-    //             <Info
-    //               infoKey='Model Name:'
-    //               value={info.modalName}
-    //               isCapitalized={false}
-    //             />
-    //             <Info
-    //               infoKey='waranty:'
-    //               value={`${info.waranty.value} ${info.waranty.duration}`}
-    //             />
-    //             <Info
-    //               infoKey='tags:'
-    //               value={info.tags.map((tag, i, arr) => (
-    //                 <div
-    //                   className='flex flex-wrap items-center'
-    //                   key={v4()}
-    //                 >
-    //                   <Link
-    //                     href={tag.href ?? '/'}
-    //                     className='transition-colors duration-150 ease-out hover:text-yellow-medium'
-    //                   >
-    //                     {tag.label}
-    //                   </Link>
-    //                   {i < arr.length - 1 && (
-    //                     <span className='mr-2'>,</span>
-    //                   )}
-    //                 </div>
-    //               ))}
-    //             />
-    //             <Info
-    //               infoKey='Share:'
-    //               // className='mb-[50px]'
-    //               value={
-    //                 <div className='flex flex-wrap items-center gap-3'>
-    //                   <Link
-    //                     href={
-    //                       'https://www.facebook.com/sharer/sharer.php?u=https://hamsa-tech.vercel.app/'
-    //                     }
-    //                     target='_blank'
-    //                     className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
-    //                   >
-    //                     <FaFacebookF size={20} />
-    //                   </Link>
-    //                   <Link
-    //                     href={
-    //                       'href="https://twitter.com/intent/tweet?original_referer=https://hamsa-tech.vercel.app/'
-    //                     }
-    //                     target='_blank'
-    //                     className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
-    //                   >
-    //                     <RiTwitterXLine size={20} />
-    //                   </Link>
-    //                   <Link
-    //                     href={'https://www.instagram.com'}
-    //                     target='_blank'
-    //                     className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
-    //                   >
-    //                     <FaInstagram size={20} />
-    //                   </Link>
-    //                 </div>
-    //               }
-    //             />
-    //           </section>
-    //           {/* <Divider className='bg-gray-lighter' /> */}
-    //         </div>
-    //       </section>
-    //     </div>
-    //     {/* More Details */}
-    //     <section className='container bg-blue-sky-ultralight py-[50px]'>
-    //       <div className='grid grid-cols-2 gap-5 px-6'>
-    //         {/* Download Center Section */}
-    //         <div className='flex flex-col gap-10'>
-    //           <div>
-    //             <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
-    //               Download Center
-    //             </h2>
-    //             <div className='mt-10 flex flex-wrap items-center justify-center gap-5'>
-    //               <Btn
-    //                 className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
-    //                 defaultPadding={false}
-    //               >
-    //                 <FaBook size={24} />
-    //                 <span>Data Sheet</span>
-    //               </Btn>
-    //               <Btn
-    //                 className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
-    //                 defaultPadding={false}
-    //               >
-    //                 <FaAddressBook size={24} />
-    //                 <span>User Manual</span>
-    //               </Btn>
-    //             </div>
-    //           </div>
-    //           <div className='flex h-full flex-col items-center justify-center'>
-    //             <iframe
-    //               width='557'
-    //               height='314'
-    //               src='https://www.youtube.com/embed/AQyIi3UjAdw?si=tN_6bMUSm0QR5lHw'
-    //               title='YouTube video player'
-    //               frameBorder='0'
-    //               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-    //               referrerPolicy='strict-origin-when-cross-origin'
-    //               allowFullScreen
-    //             ></iframe>
-    //           </div>
-    //         </div>
-    //         {/* ============================= */}
+                <div className='mt-3 flex items-center gap-2'>
+                  {productData?.sale_price > 0 && (
+                    <span className='text-base font-medium text-black-light'>
+                      EGP {productData?.sale_price ?? 0}
+                    </span>
+                  )}
+                  <span
+                    className={`font-medium ${productData?.sale_price > 0 ? 'text-sm text-gray-500 line-through' : 'text-base text-black-light'}`}
+                  >
+                    EGP {productData?.price ?? 0}
+                  </span>
+                  {offPercent > 10 ?
+                    <span className='text-sm text-red-shade-300'>
+                      {offPercent.toFixed(2)}% {t('offText')}
+                    </span>
+                  : null}
+                </div>
+                <h4 className='mt-3 flex items-center gap-2 text-sm font-normal'>
+                  {productData?.stock > 0 ?
+                    <>
+                      <span className='text-blue-gray-medium'>
+                        {t('availabilityText')}:
+                      </span>
+                      <span className='text-green-medium'>
+                        {productData?.stock}
+                      </span>
+                      <span className='text-blue-gray-medium'>
+                        {t('stockText')}
+                      </span>
+                    </>
+                  : <span className='font-semibold text-red-shade-350'>
+                      {t('outOfStockText')}
+                    </span>
+                  }
+                </h4>
+                <OrderProduct
+                  maxQuantity={productData?.stock ?? 0}
+                  minQuantity={productData?.stock > 1 ? 1 : 0}
+                />
+                <div className='mt-4 text-sm capitalize text-gray-light'>
+                  <p>-&nbsp;&nbsp;&nbsp;&nbsp;{t('deliveryText')}</p>
+                  <p className='mt-1'>
+                    -&nbsp;&nbsp;&nbsp;&nbsp;{t('returnText')}
+                  </p>
+                </div>
+              </section>
+              <Divider className='bg-gray-lighter' />
 
-    //         {/* About Product Section */}
-    //         <div>
-    //           <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
-    //             About This Product
-    //           </h2>
-    //           <ul className='mt-10 list-disc'>
-    //             {details.aboutProduct.map((item) => (
-    //               <li
-    //                 key={v4()}
-    //                 className='mt-3 text-sm text-blue-gray-light'
-    //               >
-    //                 {item}
-    //               </li>
-    //             ))}
-    //           </ul>
-    //         </div>
-    //       </div>
-    //     </section>
-    //     <section className='tabs-section container bg-white py-[50px]'>
-    //       <div className='px-6'>
-    //         <TabsSection moreDetails={moreDetails} />
-    //       </div>
-    //     </section>
-    //     <section className='container bg-white-light pb-[70px] pt-[50px]'>
-    //       <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
-    //         <span>Related</span>
-    //         <span className='ml-3 text-red-shade-350'>Products</span>
-    //       </h2>
-    //       <div className='mt-8 grid grid-cols-4 gap-5'>
-    //         {relatedProducts.map((product: ProductBasicInfoType) => {
-    //           return (
-    //             <ProductCard
-    //               title={product.productName}
-    //               alt={product.alt}
-    //               imgSrc={product.imgSrc}
-    //               avgRate={product.averageRate}
-    //               category={product.subCategoryName ?? ''}
-    //               badge={product.badge}
-    //               priceBeforeDeduction={product.priceBeforeDeduction}
-    //               currentPrice={product.currentPrice}
-    //               linkSrc={`/products/${product.id}`}
-    //               totalRates={product.totalNumberOfRates}
-    //               key={v4()}
-    //             />
-    //           );
-    //         })}
-    //       </div>
-    //     </section>
-    //   </div>
-    // </ConfigAntThemes>
+              {/* Product Info */}
+              {/* ============================= */}
+              <section>
+                <Info
+                  infoKey={`${t('brandText')}:`}
+                  value={
+                    productData?.brand?.data?.attributes?.name ?? ''
+                  }
+                />
+                <Info
+                  infoKey={`${t('skuText')}:`}
+                  value={productData?.sku ?? ''}
+                  isCapitalized={false}
+                />
+                <Info
+                  infoKey={`${t('connectivityText')}:`}
+                  value={productData?.connectivity ?? ''}
+                />
+                <Info
+                  infoKey={`${t('modalNameText')}:`}
+                  value={productData?.modal_name ?? ''}
+                  isCapitalized={false}
+                />
+                <Info
+                  infoKey={`${t('warantyText')}:`}
+                  value={
+                    productData?.waranty?.data?.attributes?.title ??
+                    ''
+                  }
+                />
+                <Info
+                  infoKey={`${t('tagsText')}:`}
+                  value={productData?.tags?.data.map(
+                    (tag, i, arr) => (
+                      <div
+                        className='flex flex-wrap items-center'
+                        key={tag?.id}
+                      >
+                        <Link
+                          href={tag?.attributes?.slug ?? '/'}
+                          className='transition-colors duration-150 ease-out hover:text-yellow-medium'
+                        >
+                          {tag?.attributes?.name ?? ''}
+                        </Link>
+                        {i < arr.length - 1 && (
+                          <span className='mr-2'>,</span>
+                        )}
+                      </div>
+                    )
+                  )}
+                />
+                <Info
+                  infoKey={`${t('shareText')}:`}
+                  // className='mb-[50px]'
+                  value={
+                    <div className='flex flex-wrap items-center gap-3'>
+                      <Link
+                        href={
+                          'https://www.facebook.com/sharer/sharer.php?u=https://hamsa-tech.vercel.app/'
+                        }
+                        target='_blank'
+                        className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
+                      >
+                        <FaFacebookF size={20} />
+                      </Link>
+                      <Link
+                        href={
+                          'href="https://twitter.com/intent/tweet?original_referer=https://hamsa-tech.vercel.app/'
+                        }
+                        target='_blank'
+                        className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
+                      >
+                        <RiTwitterXLine size={20} />
+                      </Link>
+                      <Link
+                        href={'https://www.instagram.com'}
+                        target='_blank'
+                        className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
+                      >
+                        <FaInstagram size={20} />
+                      </Link>
+                      <Link
+                        href={'https://www.whatsapp.com'}
+                        target='_blank'
+                        className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
+                      >
+                        <FaWhatsapp size={20} />
+                      </Link>
+                    </div>
+                  }
+                />
+              </section>
+              {/* <Divider className='bg-gray-lighter' /> */}
+            </div>
+          </section>
+        </div>
+      </div>
+    </>
   );
 }
+
+// <ConfigAntThemes>
+
+//     {/* More Details */}
+//     <section className='container bg-blue-sky-ultralight py-[50px]'>
+//       <div className='grid grid-cols-2 gap-5 px-6'>
+//         {/* Download Center Section */}
+//         <div className='flex flex-col gap-10'>
+//           <div>
+//             <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+//               Download Center
+//             </h2>
+//             <div className='mt-10 flex flex-wrap items-center justify-center gap-5'>
+//               <Btn
+//                 className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
+//                 defaultPadding={false}
+//               >
+//                 <FaBook size={24} />
+//                 <span>Data Sheet</span>
+//               </Btn>
+//               <Btn
+//                 className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
+//                 defaultPadding={false}
+//               >
+//                 <FaAddressBook size={24} />
+//                 <span>User Manual</span>
+//               </Btn>
+//             </div>
+//           </div>
+//           <div className='flex h-full flex-col items-center justify-center'>
+//             <iframe
+//               width='557'
+//               height='314'
+//               src='https://www.youtube.com/embed/AQyIi3UjAdw?si=tN_6bMUSm0QR5lHw'
+//               title='YouTube video player'
+//               frameBorder='0'
+//               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+//               referrerPolicy='strict-origin-when-cross-origin'
+//               allowFullScreen
+//             ></iframe>
+//           </div>
+//         </div>
+//         {/* ============================= */}
+
+//         {/* About Product Section */}
+//         <div>
+//           <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+//             About This Product
+//           </h2>
+//           <ul className='mt-10 list-disc'>
+//             {details.aboutProduct.map((item) => (
+//               <li
+//                 key={v4()}
+//                 className='mt-3 text-sm text-blue-gray-light'
+//               >
+//                 {item}
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       </div>
+//     </section>
+//     <section className='tabs-section container bg-white py-[50px]'>
+//       <div className='px-6'>
+//         <TabsSection moreDetails={moreDetails} />
+//       </div>
+//     </section>
+//     <section className='container bg-white-light pb-[70px] pt-[50px]'>
+//       <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+//         <span>Related</span>
+//         <span className='ml-3 text-red-shade-350'>Products</span>
+//       </h2>
+//       <div className='mt-8 grid grid-cols-4 gap-5'>
+//         {relatedProducts.map((product: ProductBasicInfoType) => {
+//           return (
+//             <ProductCard
+//               title={product.productName}
+//               alt={product.alt}
+//               imgSrc={product.imgSrc}
+//               avgRate={product.averageRate}
+//               category={product.subCategoryName ?? ''}
+//               badge={product.badge}
+//               priceBeforeDeduction={product.priceBeforeDeduction}
+//               currentPrice={product.currentPrice}
+//               linkSrc={`/products/${product.id}`}
+//               totalRates={product.totalNumberOfRates}
+//               key={v4()}
+//             />
+//           );
+//         })}
+//       </div>
+//     </section>
+//   </div>
+// </ConfigAntThemes>

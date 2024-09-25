@@ -8,7 +8,7 @@ interface PropsType {
 
 function Partners({ data }: PropsType) {
   return (
-    <div className='max-w-[1900px] bg-blue-sky-ultralight py-[50px]'>
+    <div className='mx-auto max-w-[1900px] bg-blue-sky-ultralight py-[50px]'>
       <div
         data-aos='fade-up'
         data-aos-delay='50'

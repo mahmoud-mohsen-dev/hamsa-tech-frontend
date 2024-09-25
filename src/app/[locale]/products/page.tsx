@@ -1,30 +1,89 @@
 import CustomBreadcrumb from '@/components/products/CustomBreadcrumb';
 import FilterSidebar from '@/components/products/FilterSidebar';
-import MenuSidebar from '@/components/products/MenuSidebar';
 import ProductsWrapper from '@/components/products/ProductsWrapper';
-import ConfigAntThemes from '@/components/Theme/ConfigAntThemes';
-import ProductsContent from '@/components/UI/products/ProductsContent';
-import BrandFilter from '@/components/UI/products/sidebar/BrandFilter';
-import { fetchGraphql } from '@/services/graphqlCrud';
 import { fetchProducts } from '@/services/products';
-import { BrandsFilterResponseType } from '@/types/getBrandsFilter';
-// import { serverfetchNavItems } from '@/services/navItemRequst';
-// import { getProductsCategory } from '@/services/products';
 import { HomeOutlined, ProductOutlined } from '@ant-design/icons';
 import {
   getTranslations,
   unstable_setRequestLocale
 } from 'next-intl/server';
+import { FaSitemap } from 'react-icons/fa6';
+import { PiSecurityCameraDuotone } from 'react-icons/pi';
 
 interface PropsType {
   params: { locale: string };
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
 }
 
-const Products = async ({ params: { locale } }: PropsType) => {
+const getItems = (
+  allProductsText: string,
+  category: string | undefined,
+  subCategory?: string | undefined
+) => {
+  const items = [
+    {
+      href: '/',
+      title: <HomeOutlined />
+    },
+    {
+      href: '/products',
+      title: (
+        <>
+          <ProductOutlined />
+          <span>{allProductsText}</span>
+        </>
+      )
+    }
+  ];
+  if (category && !subCategory) {
+    items.push({
+      href: `/products?${new URLSearchParams({ category })}`,
+      title: (
+        <div className='flex items-center gap-2'>
+          <FaSitemap />
+          <span>{category ?? ''}</span>
+        </div>
+      )
+    });
+    return items;
+  }
+
+  if (category && subCategory) {
+    items.push({
+      href: `/products?${new URLSearchParams({ category })}`,
+      title: (
+        <div className='flex items-center gap-2'>
+          <FaSitemap />
+          <span>{category ?? ''}</span>
+        </div>
+      )
+    });
+    items.push({
+      href: `/products?${new URLSearchParams({ category, 'sub-category': subCategory })}`,
+      title: (
+        <div className='flex items-center gap-2'>
+          <PiSecurityCameraDuotone />
+          <span>{subCategory ?? ''}</span>
+        </div>
+      )
+    });
+    return items;
+  }
+
+  return items;
+};
+
+const Products = async ({
+  params: { locale },
+  searchParams
+}: PropsType) => {
   const t = await getTranslations({
     locale: locale,
     namespace: 'ProductsPage'
   });
+  const allProductsText = t('breadcrumb.all');
   // Enable static rendering
   unstable_setRequestLocale(locale);
   const productsResponse = await fetchProducts(null, null, locale);
@@ -35,6 +94,16 @@ const Products = async ({ params: { locale } }: PropsType) => {
     error: productsError
   } = productsResponse;
 
+  const category =
+    Array.isArray(searchParams?.category) ?
+      searchParams?.category[0]
+    : searchParams?.category || undefined;
+  const subCategory =
+    Array.isArray(searchParams['sub-category']) ?
+      searchParams['sub-category'][0]
+    : searchParams['sub-category'] || undefined;
+
+  // console.log(category, subCategory);
   // console.log(JSON.stringify(productsData));
   // console.log(JSON.stringify(productsError));
 
@@ -42,21 +111,7 @@ const Products = async ({ params: { locale } }: PropsType) => {
     // <ConfigAntThemes>
     <section className='content container'>
       <CustomBreadcrumb
-        items={[
-          {
-            href: '/',
-            title: <HomeOutlined />
-          },
-          {
-            href: '/products',
-            title: (
-              <>
-                <ProductOutlined />
-                <span>{t('breadcrumb.all')}</span>
-              </>
-            )
-          }
-        ]}
+        items={getItems(allProductsText, category, subCategory)}
       />
       <div className='mt-5 grid grid-cols-[270px_1fr] gap-10'>
         <FilterSidebar />

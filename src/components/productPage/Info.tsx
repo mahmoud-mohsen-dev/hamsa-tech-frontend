@@ -10,8 +10,10 @@ function Info({
   isCapitalized?: boolean;
 }) {
   return (
-    <div className={`ml-6 mt-3 flex items-center gap-3 ${className}`}>
-      <h3 className='min-w-[140px] text-base font-semibold capitalize text-gray-normal'>
+    <div
+      className={`ml-6 mt-3 flex items-center gap-20 ${className}`}
+    >
+      <h3 className='min-w-[180px] text-base font-semibold capitalize text-gray-normal'>
         {infoKey}
       </h3>
       <h3

@@ -18,6 +18,8 @@ import Loading from './loading';
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { LayoutResponse } from '@/types/getIndexLayout';
 import Footer from '@/components/AppLayout/Footer';
+import ScrollNavbarListener from '@/components/UI/navbar/ScrollNavbarListener';
+import { NavbarProductsCategoriesResponseType } from '@/types/getNavbarProductsCategories';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -89,6 +91,35 @@ const getQueryLayoutPage = (locale: string) => `{
   }
 }`;
 
+const getQueryNavbarCategoriesProducts = (locale: string) => `{
+  categories(locale: "${locale ?? 'en'}") {
+    data {
+      id
+      attributes {
+        name
+        slug
+        sub_categories {
+            data {
+                id
+                attributes {
+                    name
+                    slug 
+                    image {
+                        data {
+                            attributes {
+                                url
+                                alternativeText
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      }
+    }
+  }
+}`;
+
 export default async function LocaleLayout({
   children,
   params: { locale }
@@ -110,6 +141,25 @@ export default async function LocaleLayout({
     // console.log(JSON.stringify(layoutData));
     console.error('Failed to fetch navbar and footer data'); // Let Next.js handle the error
   }
+
+  const navbarProductsCategoriesResponse = (await fetchGraphql(
+    getQueryNavbarCategoriesProducts(locale)
+  )) as NavbarProductsCategoriesResponseType;
+  // console.log(JSON.stringify(layoutData));
+  const navbarProductsCategoriesData =
+    navbarProductsCategoriesResponse?.data?.categories?.data ?? null;
+  const navbarProductsCategoryError =
+    navbarProductsCategoriesResponse?.error ?? null;
+
+  if (
+    navbarProductsCategoriesData === null ||
+    navbarProductsCategoryError
+  ) {
+    console.log(navbarProductsCategoryError);
+    console.error('Failed to fetch navbar products categories data'); // Let Next.js handle the error
+  }
+
+  // console.log(JSON.stringify(navbarProductsCategoriesData));
 
   return (
     <html
@@ -134,7 +184,13 @@ export default async function LocaleLayout({
                     />
                   )}
                   {layoutAttributes.navbar && (
-                    <Header navLinks={layoutAttributes.navbar} />
+                    <>
+                      <ScrollNavbarListener />
+                      <Header
+                        navLinks={layoutAttributes.navbar}
+                        productsSubNav={navbarProductsCategoriesData}
+                      />
+                    </>
                   )}
                   <Suspense fallback={<Loading />}>
                     <Main>{children}</Main>

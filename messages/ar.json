@@ -85,5 +85,28 @@
       "title": "صفحة المنتجات",
       "description": "كاميرات المراقبة · أجهزة الباركود والصرافة · أنظمة الصوت · الشبكات · جهاز بصمة الأصبع · كاميرات المراقبة · أجهزة الباركود والصرافة."
     }
+  },
+  "ProductPage": {
+    "breadcrumb": {
+      "all": "جميع المنتجات"
+    },
+    "reviewsText": "المراجعات",
+    "offText": "خصم",
+    "availabilityText": "التوفر",
+    "stockText": "منتجات متوفرة",
+    "outOfStockText": "غير متوفر في المخزون",
+    "addToCartButtonText": "أضف إلى السلة",
+    "addedToCartButtonText": "تمت الإضافة إلى السلة",
+    "AddToWhishListText": "أضف إلى قائمة الرغبات",
+    "AddedToWhishListText": "تمت الإضافة إلى قائمة الرغبات",
+    "deliveryText": "التوصيل خلال 5 أيام",
+    "returnText": "إرجاع مجاني خلال 14 يومًا",
+    "brandText": "العلامة التجارية",
+    "skuText": "رمز المنتج",
+    "connectivityText": "تقنية الربط",
+    "modalNameText": "اسم الطراز",
+    "warantyText": "الضمان",
+    "tagsText": "الوسوم",
+    "shareText": "مشاركة"
   }
 }
