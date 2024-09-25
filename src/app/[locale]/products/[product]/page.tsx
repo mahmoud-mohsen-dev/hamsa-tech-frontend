@@ -1,5 +1,5 @@
 // import NotFound from '@/app/not-found';
-import ProductBreadcrumb from '@/components/UI/products/product/ProductBreadcrumb';
+// import ProductBreadcrumb from '@/components/UI/products/product/ProductBreadcrumb';
 import { fetchGraphql } from '@/services/graphqlCrud';
 import {
   NextProductResponseType,
@@ -10,6 +10,8 @@ import {
   unstable_setRequestLocale
 } from 'next-intl/server';
 import {
+  FaAddressBook,
+  FaBook,
   FaFacebookF,
   FaInstagram,
   FaSitemap,
@@ -26,12 +28,18 @@ import OrderProduct from '@/components/productPage/OrderProduct';
 import Info from '@/components/productPage/Info';
 import { Link } from '@/navigation';
 import { RiTwitterXLine } from 'react-icons/ri';
+import Btn from '@/components/UI/Btn';
+import ProductCard from '@/components/products/ProductCard';
+import { v4 } from 'uuid';
+import { getBadge } from '@/utils/getBadge';
+import TabsSection from '@/components/productPage/TabsSection';
 
 const getQueryProductPage = (id: number) => `{
   product(id: ${id}) {
     data {
       id
       attributes {
+        updatedAt
         name
         price
         sale_price
@@ -395,6 +403,12 @@ export default async function Product({
   // console.log(
   //   nextProductData.product.data.attributes.localizations.data[0].id
   // );
+  const relatedProducts = [
+    productData?.related_product_1?.data,
+    productData?.related_product_2?.data,
+    productData?.related_product_3?.data,
+    productData?.related_product_4?.data
+  ];
 
   if (!nextProductData && nextProductError) {
     notFound();
@@ -601,101 +615,134 @@ export default async function Product({
             </div>
           </section>
         </div>
+        {/* More Details */}
+        <section className='container max-w-[1900px] bg-blue-sky-ultralight py-[50px]'>
+          <div className='grid grid-cols-2 gap-5 px-6'>
+            {/* Download Center Section */}
+            <div className='flex flex-col gap-10'>
+              <div>
+                <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+                  {t('downloadCenterSectionTitle')}
+                </h2>
+                <div className='mt-10 flex flex-wrap items-center justify-center gap-5'>
+                  <Btn
+                    className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
+                    defaultPadding={false}
+                  >
+                    <FaBook size={24} />
+                    <span>{t('dataSheetButtonText')}</span>
+                  </Btn>
+                  <Btn
+                    className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
+                    defaultPadding={false}
+                  >
+                    <FaAddressBook size={24} />
+                    <span>{t('userManualButtonText')}</span>
+                  </Btn>
+                </div>
+              </div>
+              {productData?.youtube_video?.link_source &&
+                productData?.youtube_video?.title && (
+                  <div className='flex h-full flex-col items-center justify-center'>
+                    <iframe
+                      width='557'
+                      height='314'
+                      src={
+                        productData?.youtube_video?.link_source ?? ''
+                      }
+                      title={productData?.youtube_video?.title ?? ''}
+                      frameBorder='0'
+                      allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                      referrerPolicy='strict-origin-when-cross-origin'
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                )}
+            </div>
+            {/* ============================= */}
+
+            {/* About Product Section */}
+            <div>
+              <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+                {t('aboutThisProductSectionTitle')}
+              </h2>
+              <ul className='mt-10 list-disc'>
+                {productData?.features.map((item) => (
+                  <li
+                    key={item?.id}
+                    className='mt-3 text-sm text-blue-gray-light'
+                  >
+                    {item?.feature ?? ''}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section className='tabs-section container bg-white py-[50px]'>
+          <div className='px-6'>
+            <TabsSection
+              moreDetails={{
+                description: productData['long_description'] ?? [],
+                specification: productData?.sepcification ?? [],
+                reviews: productData?.reviews?.data ?? []
+              }}
+            />
+          </div>
+        </section>
+        <section className='bg-white-light pb-[80px] pt-[50px]'>
+          <div className='container'>
+            <h2 className='mx-auto flex w-fit items-center gap-2 text-3xl font-bold text-black-light'>
+              <span>{t('relatedProductsTitleBlackText')}</span>
+              <span className='text-red-shade-350'>
+                {t('relatedProductsTitleRedText')}
+              </span>
+            </h2>
+            <div className='mt-8 grid grid-cols-4 gap-5'>
+              {relatedProducts.map((product) => {
+                return (
+                  <ProductCard
+                    key={product?.id ?? v4()}
+                    title={product?.attributes?.name ?? ''}
+                    imgSrc={
+                      product?.attributes?.image_thumbnail?.data
+                        ?.attributes?.url ?? ''
+                    }
+                    alt={
+                      product?.attributes?.image_thumbnail?.data
+                        ?.attributes?.alternativeText ?? ''
+                    }
+                    avgRate={
+                      product?.attributes?.average_reviews ?? 0
+                    }
+                    category={
+                      product?.attributes?.sub_category?.data
+                        ?.attributes?.name ?? ''
+                    }
+                    badge={getBadge(
+                      locale ?? 'en',
+                      productData?.updatedAt,
+                      productData?.stock,
+                      productData?.price,
+                      productData?.sale_price
+                    )}
+                    priceBeforeDeduction={
+                      product?.attributes?.price ?? 0
+                    }
+                    currentPrice={
+                      product?.attributes?.sale_price ?? 0
+                    }
+                    linkSrc={`/products/${product.id}`}
+                    totalRates={
+                      product?.attributes?.total_reviews ?? 0
+                    }
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );
 }
-
-// <ConfigAntThemes>
-
-//     {/* More Details */}
-//     <section className='container bg-blue-sky-ultralight py-[50px]'>
-//       <div className='grid grid-cols-2 gap-5 px-6'>
-//         {/* Download Center Section */}
-//         <div className='flex flex-col gap-10'>
-//           <div>
-//             <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
-//               Download Center
-//             </h2>
-//             <div className='mt-10 flex flex-wrap items-center justify-center gap-5'>
-//               <Btn
-//                 className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
-//                 defaultPadding={false}
-//               >
-//                 <FaBook size={24} />
-//                 <span>Data Sheet</span>
-//               </Btn>
-//               <Btn
-//                 className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
-//                 defaultPadding={false}
-//               >
-//                 <FaAddressBook size={24} />
-//                 <span>User Manual</span>
-//               </Btn>
-//             </div>
-//           </div>
-//           <div className='flex h-full flex-col items-center justify-center'>
-//             <iframe
-//               width='557'
-//               height='314'
-//               src='https://www.youtube.com/embed/AQyIi3UjAdw?si=tN_6bMUSm0QR5lHw'
-//               title='YouTube video player'
-//               frameBorder='0'
-//               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-//               referrerPolicy='strict-origin-when-cross-origin'
-//               allowFullScreen
-//             ></iframe>
-//           </div>
-//         </div>
-//         {/* ============================= */}
-
-//         {/* About Product Section */}
-//         <div>
-//           <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
-//             About This Product
-//           </h2>
-//           <ul className='mt-10 list-disc'>
-//             {details.aboutProduct.map((item) => (
-//               <li
-//                 key={v4()}
-//                 className='mt-3 text-sm text-blue-gray-light'
-//               >
-//                 {item}
-//               </li>
-//             ))}
-//           </ul>
-//         </div>
-//       </div>
-//     </section>
-//     <section className='tabs-section container bg-white py-[50px]'>
-//       <div className='px-6'>
-//         <TabsSection moreDetails={moreDetails} />
-//       </div>
-//     </section>
-//     <section className='container bg-white-light pb-[70px] pt-[50px]'>
-//       <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
-//         <span>Related</span>
-//         <span className='ml-3 text-red-shade-350'>Products</span>
-//       </h2>
-//       <div className='mt-8 grid grid-cols-4 gap-5'>
-//         {relatedProducts.map((product: ProductBasicInfoType) => {
-//           return (
-//             <ProductCard
-//               title={product.productName}
-//               alt={product.alt}
-//               imgSrc={product.imgSrc}
-//               avgRate={product.averageRate}
-//               category={product.subCategoryName ?? ''}
-//               badge={product.badge}
-//               priceBeforeDeduction={product.priceBeforeDeduction}
-//               currentPrice={product.currentPrice}
-//               linkSrc={`/products/${product.id}`}
-//               totalRates={product.totalNumberOfRates}
-//               key={v4()}
-//             />
-//           );
-//         })}
-//       </div>
-//     </section>
-//   </div>
-// </ConfigAntThemes>

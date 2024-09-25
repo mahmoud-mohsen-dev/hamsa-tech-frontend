@@ -1,10 +1,41 @@
-import { LongDescriptionBlock } from './richTextBlock';
+import { ContentType } from './richTextBlock';
 
+export interface specificationType {
+  id: string;
+  name: string;
+  value: string;
+}
+export interface reviewType {
+  id: string;
+  attributes: {
+    updatedAt: string;
+    rating: number;
+    headline: string;
+    comment: string;
+    user_detail: {
+      data: {
+        attributes: {
+          first_name: string;
+          last_name: string;
+          avatar_photo: {
+            data: {
+              attributes: {
+                url: string | null;
+                alternativeText: string | null;
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+}
 export interface ProductDataType {
   name: string;
   price: number;
   sale_price: number;
   stock: number;
+  updatedAt: string;
   sub_category: {
     data: {
       attributes: {
@@ -51,7 +82,7 @@ export interface ProductDataType {
   };
   tags: {
     data: {
-      id: string
+      id: string;
       attributes: {
         name: string;
         slug: string;
@@ -76,34 +107,9 @@ export interface ProductDataType {
   };
   youtube_video: { link_source: string; title: string };
   features: { id: string; feature: string }[];
-  long_description: LongDescriptionBlock[];
-  sepcification: {
-    id: string;
-    name: string;
-    value: string;
-  }[];
-  reviews: {
-    data: {
-      id: string;
-      attributes: {
-        updatedAt: string;
-        rating: number;
-        headline: string;
-        comment: string;
-        user_detail: {
-          data: {
-            attributes: {
-              first_name: string;
-              last_name: string;
-              avatar_photo: {
-                data: { attributes: { url: string | null } };
-              };
-            };
-          };
-        };
-      };
-    }[];
-  };
+  long_description: ContentType[];
+  sepcification: specificationType[];
+  reviews: { data: reviewType[] };
   related_product_1: { data: RelatedProduct };
   related_product_2: { data: RelatedProduct };
   related_product_3: { data: RelatedProduct };

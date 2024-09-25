@@ -4,6 +4,7 @@ import { FaPlus } from 'react-icons/fa6';
 import Btn from '../UI/Btn';
 import { Link } from '@/navigation';
 import { useTranslations } from 'next-intl';
+import AddToCartButton from './AddToCartButton';
 
 function ProductCard({
   linkSrc,
@@ -90,14 +91,7 @@ function ProductCard({
               EGP {currentPrice}
             </p>
           </div>
-          <Btn
-            className='flex items-center gap-2 bg-green-600 px-2.5 py-[6px] font-sans text-sm font-semibold text-white shadow-none'
-            // onClick={handleClick}
-            dir='ltr'
-          >
-            <FaPlus />
-            <span>{t('productCardButtonText')}</span>
-          </Btn>
+          <AddToCartButton />
         </div>
       </div>
     </Link>

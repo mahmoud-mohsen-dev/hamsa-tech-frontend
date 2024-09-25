@@ -3,9 +3,11 @@ import { Form, Input, Rate } from 'antd';
 import Btn from '../UI/Btn';
 import TextArea from 'antd/es/input/TextArea';
 import { useForm } from 'antd/es/form/Form';
+import { useTranslations } from 'next-intl';
 
 function CreateReview() {
   const [form] = useForm();
+  const t = useTranslations('ProductPage.reviewsTabSection');
 
   return (
     <Form
@@ -28,35 +30,42 @@ function CreateReview() {
       style={{ scrollMarginTop: 130 }}
     >
       <Form.Item
-        label='overall Rating'
+        label={t('overallRatingText')}
         name='overAllRating'
         style={{ marginBottom: 16 }}
         rules={[
-          { required: true, message: 'Overall rating is required' }
+          {
+            required: true,
+            message: t('overallRatingRequiredMessage')
+          }
         ]}
       >
         <Rate allowHalf />
       </Form.Item>
       <Form.Item
-        label='Add a headline'
+        label={t('addHeadlineText')}
         name='headline'
         style={{ marginBottom: 16 }}
-        rules={[{ required: true, message: 'Headline is required' }]}
+        rules={[
+          { required: true, message: t('headlineRequiredMessage') }
+        ]}
       >
         <Input
-          placeholder="what's the most important to know?"
+          placeholder={t('addHeadlinePlaceholderText')}
           style={{ paddingInline: 16, paddingBlock: 12 }}
         />
       </Form.Item>
       <Form.Item
-        label='Add a written review'
+        label={t('addWrittenReviewText')}
         name='comment'
         style={{ marginBottom: 16 }}
-        rules={[{ required: true, message: 'Comment is required' }]}
+        rules={[
+          { required: true, message: t('commentRequiredMessage') }
+        ]}
       >
         <TextArea
           rows={4}
-          placeholder='What did you like or dislike? What did you use this product for?'
+          placeholder={t('addWrittenReviewPlaceholderText')}
           style={{ paddingInline: 16, paddingBlock: 12 }}
         />
       </Form.Item>
@@ -64,7 +73,7 @@ function CreateReview() {
         className='ml-auto mt-5 w-fit rounded-md bg-green-dark px-8 text-white'
         type='submit'
       >
-        Submit Review
+        {t('submitButtonText')}
       </Btn>
     </Form>
   );

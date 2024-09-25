@@ -10,6 +10,10 @@ const MyContext = createContext<{
   setCurrentProductId: React.Dispatch<React.SetStateAction<string>>;
   nextProductId: string;
   setNextProductId: React.Dispatch<React.SetStateAction<string>>;
+  openDrawer: boolean;
+  setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
+  drawerIsLoading: boolean;
+  setDrawerIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -20,6 +24,9 @@ export const StoreContextProvider = ({
   const [productsCount, setProductsCount] = useState(0);
   const [currentProductId, setCurrentProductId] = useState('0');
   const [nextProductId, setNextProductId] = useState('0');
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [drawerIsLoading, setDrawerIsLoading] =
+    useState<boolean>(true);
 
   return (
     <MyContext.Provider
@@ -29,7 +36,11 @@ export const StoreContextProvider = ({
         currentProductId,
         setCurrentProductId,
         nextProductId,
-        setNextProductId
+        setNextProductId,
+        openDrawer,
+        setOpenDrawer,
+        drawerIsLoading,
+        setDrawerIsLoading
       }}
     >
       {children}

@@ -5,6 +5,7 @@ import ImageZoom from './ImageZoom';
 import { useEffect, useState } from 'react';
 import { ProductDataType } from '@/types/getProduct';
 import { useMyContext } from '@/context/Store';
+import { v4 } from 'uuid';
 
 function ProductSlider({
   productData,
@@ -40,7 +41,8 @@ function ProductSlider({
             return (
               <div
                 className={`h-[90px] w-[90px] border-2 p-[5px] ${activeImg.index === i ? 'border-yellow-medium' : 'border-transparent'}`}
-                key={productData?.images?.data[0].id}
+                // key={productData?.images?.data[0].id}
+                key={v4()}
                 onMouseEnter={() => {
                   setActiveImg({
                     imgSrc: imgSlide.attributes.url ?? '',

@@ -6,45 +6,15 @@ import Sorter from '@/components/products/Sorter';
 import { useMyContext } from '@/context/Store';
 import { fetchProducts } from '@/services/products';
 // import { getProductsCategory } from '@/services/products';
-import { productsObjectType } from '@/types';
+// import { productsObjectType } from '@/types';
 import { ProductType } from '@/types/getProducts';
+import { getBadge } from '@/utils/getBadge';
 import { isNewProduct } from '@/utils/productCardHelper';
 import { Empty, Spin } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { v4 } from 'uuid';
-
-const getBadge = (
-  locale: string,
-  updatedAt: string,
-  stock: number,
-  price: number,
-  salePrice: number | null
-) => {
-  const isNew = isNewProduct(updatedAt);
-  const isArabic = locale === 'ar';
-
-  if (stock === 0) {
-    return isArabic ? 'إنتهى من المخزن' : 'Out Of Stock';
-  }
-
-  if (isNew) {
-    return isArabic ? 'جديد' : 'New';
-  }
-
-  if (salePrice && price && (salePrice * 100) / price === 25) {
-    return isArabic ? 'عرض خاص' : 'Special Offer';
-  }
-  if (salePrice && price && (salePrice * 100) / price === 10) {
-    return isArabic ? 'أُوكَازيُون' : 'Sale';
-  }
-  if (stock === 2) {
-    return isArabic ? 'محدود' : 'Limited';
-  }
-
-  return '';
-};
 
 function ProductsContent({
   serverProductsData

@@ -110,8 +110,11 @@
 }
 
 /* Tabs Section */
-.tabs-section .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
-  margin: 0 0 0 50px;
+.tabs-section .ant-tabs.left .ant-tabs-tab {
+  margin-left: 30px;
+}
+.tabs-section .ant-tabs.right .ant-tabs-tab {
+  margin-right: 30px;
 }
 
 /* Ant reveiw rate */

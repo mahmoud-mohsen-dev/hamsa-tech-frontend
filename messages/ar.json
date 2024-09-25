@@ -107,6 +107,44 @@
     "modalNameText": "اسم الطراز",
     "warantyText": "الضمان",
     "tagsText": "الوسوم",
-    "shareText": "مشاركة"
+    "shareText": "مشاركة",
+    "aboutThisProductSectionTitle": "حول هذا المنتج",
+    "aboutTheProductText": "حول المنتج",
+    "downloadCenterSectionTitle": "مركز التحميل",
+    "dataSheetButtonText": "نشرة المواصفات",
+    "userManualButtonText": "دليل المستخدم",
+    "relatedProductsTitleBlackText": "المنتجات",
+    "relatedProductsTitleRedText": "ذات الصلة",
+    "descriptionSectionTitle": "الوصف",
+    "specificationSectionTitle": "المواصفات",
+    "reviewsSectionTitle": "المراجعات",
+    "moreDetailsTitle": "مزيد من التفاصيل",
+    "reviewsTabSection": {
+      "customerReviewsTitle": "مراجعات العملاء",
+      "reviewsText": "المراجعات",
+      "reviewText": "مراجعة",
+      "outOfText": "من",
+      "reviewThiProductTitle": "قم بمراجعة هذا المنتج",
+      "shareThoughtTitle": "شارك أفكارك مع العملاء الآخرين",
+      "writeAReviewText": "اكتب مراجعة",
+      "createReviewText": "أنشئ مراجعة",
+      "noReviewsText": "لا توجد مراجعات بعد",
+      "overallRatingText": "التقييم العام",
+      "addHeadlineText": "أضف عنوانًا",
+      "addHeadlinePlaceholderText": "ما هو أهم شيء يجب معرفته؟",
+      "addWrittenReviewText": "أضف مراجعة مكتوبة",
+      "addWrittenReviewPlaceholderText": "ما الذي أعجبك أو لم يعجبك؟ ما هو استخدامك لهذا المنتج؟",
+      "submitButtonText": "إرسال المراجعة",
+      "overallRatingRequiredMessage": "التقييم العام مطلوب",
+      "headlineRequiredMessage": "العنوان مطلوب",
+      "commentRequiredMessage": "التعليق مطلوب"
+    }
+  },
+  "offersPage": {
+    "noOffersMessage": "لا توجد عروض متاحة",
+    "metaData": {
+      "title": "صفحة عروض همسة تك",
+      "description": "عروض على كاميرات المراقبة · أجهزة الباركود والكاشير · أنظمة الصوت · الشبكات · أجهزة البصمة · كاميرات المراقبة · أجهزة الباركود والكاشير"
+    }
   }
 }

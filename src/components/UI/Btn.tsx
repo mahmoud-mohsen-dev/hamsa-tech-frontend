@@ -14,7 +14,10 @@ function Btn({
   children: React.ReactNode;
   href?: string | null;
   dir?: 'ltr' | 'rtl' | undefined;
-  onClick?: (e: React.SyntheticEvent) => void;
+  // onClick?: (e: React.SyntheticEvent) => void;
+  onClick?:
+    | React.MouseEventHandler<HTMLButtonElement>
+    | React.MouseEventHandler<HTMLAnchorElement>;
   className?: string;
   defaultPadding?: boolean;
   outlined?: boolean;
@@ -29,7 +32,9 @@ function Btn({
       <Link
         href={href}
         className={` ${btnStyles} ${outlined ? 'border-2 border-white text-white' : ''} ${className}`}
-        onClick={onClick}
+        onClick={
+          onClick as React.MouseEventHandler<HTMLAnchorElement>
+        }
       >
         {children}
       </Link>
@@ -38,7 +43,7 @@ function Btn({
   return (
     <button
       className={`${btnStyles} ${outlined ? 'border-2 border-white text-white' : ''} ${defaultPadding ? 'px-[1rem] py-[.55rem]' : ''} ${className}`}
-      onClick={onClick}
+      onClick={onClick as React.MouseEventHandler<HTMLButtonElement>}
       type={type}
       dir={dir}
       disabled={disabled}

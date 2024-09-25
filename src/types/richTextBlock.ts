@@ -1,27 +1,77 @@
 // Define a type for the child elements that can appear inside other blocks
-export interface RichTextChild {
+export interface TextType {
+  type: 'text';
   text: string;
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-  strikethrough?: boolean;
   code?: boolean;
-  link?: { url: string; title: string };
+  strikethrough?: boolean;
+  underline?: boolean;
+  italic?: boolean;
+  bold?: boolean;
 }
 
 // Define the types for different rich text blocks
-export interface RichTextHeading {
+
+export interface LinkType {
+  type: 'link';
+  url: string;
+  children: TextType[];
+}
+
+type H1ToH6Nums = 1 | 2 | 3 | 4 | 5 | 6;
+
+export interface HeadingType {
   type: 'heading';
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-  children: RichTextChild[];
+  children: (TextType | LinkType)[];
+  level: H1ToH6Nums;
 }
 
-export interface RichTextParagraph {
+export interface ParagraphType {
   type: 'paragraph';
-  children: RichTextChild[];
+  children: (TextType | LinkType)[];
 }
 
-export interface RichTextImage {
+export interface QuoteType {
+  type: 'quote';
+  children: (TextType | LinkType)[];
+}
+
+export interface CodeType {
+  type: 'code';
+  children: [
+    {
+      type: 'text';
+      text: string;
+    }
+  ];
+}
+
+export interface ListItemType {
+  type: 'list-item';
+  children: (TextType | LinkType)[];
+}
+
+export interface ListType {
+  type: 'list';
+  format: 'unordered' | 'ordered';
+  children: ListItemType[];
+}
+
+// Image formats definition
+export interface ImageFormat {
+  ext: string;
+  url: string;
+  hash: string;
+  mime: string;
+  name: string;
+  path: string | null;
+  size: number;
+  width: number;
+  height: number;
+  sizeInBytes: number;
+  provider_metadata: { public_id: string; resource_type: string };
+}
+
+export interface ImageType {
   type: 'image';
   image: {
     ext: string;
@@ -42,50 +92,22 @@ export interface RichTextImage {
     createdAt: string;
     updatedAt: string;
   };
-  children: RichTextChild[];
+  children: TextType[];
+  provider: string;
+  createdAt: string;
+  updatedAt: string;
+  previewUrl: string | null;
+  alternativeText: string | null;
+  provider_metadata: {
+    public_id: string;
+    resource_type: string;
+  };
 }
 
-export interface RichTextQuote {
-  type: 'quote';
-  children: RichTextChild[];
-}
-
-export interface RichTextCodeBlock {
-  type: 'code_block';
-  children: { text: string; language?: string }[];
-}
-
-export interface RichTextBulletList {
-  type: 'bullet_list';
-  children: { type: 'list_item'; children: RichTextChild[] }[];
-}
-
-export interface RichTextNumberedList {
-  type: 'numbered_list';
-  children: { type: 'list_item'; children: RichTextChild[] }[];
-}
-
-// Image formats definition
-export interface ImageFormat {
-  ext: string;
-  url: string;
-  hash: string;
-  mime: string;
-  name: string;
-  path: string | null;
-  size: number;
-  width: number;
-  height: number;
-  sizeInBytes: number;
-  provider_metadata: { public_id: string; resource_type: string };
-}
-
-// Define a union type for the long_description field
-export type LongDescriptionBlock =
-  | RichTextHeading
-  | RichTextParagraph
-  | RichTextImage
-  | RichTextQuote
-  | RichTextCodeBlock
-  | RichTextBulletList
-  | RichTextNumberedList;
+export type ContentType =
+  | ParagraphType
+  | HeadingType
+  | ListType
+  | QuoteType
+  | CodeType
+  | ImageType;

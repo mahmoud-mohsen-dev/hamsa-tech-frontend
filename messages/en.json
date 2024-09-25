@@ -107,6 +107,44 @@
     "modalNameText": "Modal Name",
     "warantyText": "Waranty",
     "tagsText": "Tags",
-    "shareText": "Share"
+    "shareText": "Share",
+    "aboutThisProductSectionTitle": "About This Product",
+    "aboutTheProductText": "About The Product",
+    "downloadCenterSectionTitle": "Download Center",
+    "dataSheetButtonText": "Data Sheet",
+    "userManualButtonText": "User Manual",
+    "relatedProductsTitleBlackText": "Related",
+    "relatedProductsTitleRedText": "Products",
+    "descriptionSectionTitle": "Description",
+    "specificationSectionTitle": "Specification",
+    "reviewsSectionTitle": "Reviews",
+    "moreDetailsTitle": "More details",
+    "reviewsTabSection": {
+      "customerReviewsTitle": "Customer Reviews",
+      "reviewsText": "reviews",
+      "reviewText": "review",
+      "outOfText": "out of",
+      "reviewThiProductTitle": "Review this product",
+      "shareThoughtTitle": "Share your thoughts with other customers",
+      "writeAReviewText": "Write A Review",
+      "createReviewText": "Create Review",
+      "noReviewsText": "No reviews yet",
+      "overallRatingText": "Overall Rating",
+      "addHeadlineText": "Add a headline",
+      "addHeadlinePlaceholderText": "what's the most important to know?",
+      "addWrittenReviewText": "Add a written review",
+      "addWrittenReviewPlaceholderText": "What did you like or dislike? What did you use this product for?",
+      "submitButtonText": "Submit Review",
+      "overallRatingRequiredMessage": "Overall rating is required",
+      "headlineRequiredMessage": "Headline is required",
+      "commentRequiredMessage": "Comment is required"
+    }
+  },
+  "offersPage": {
+    "noOffersMessage": "No offers are available",
+    "metaData": {
+      "title": "Hamsa Tech Offers Page",
+      "description": "Offers on Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."
+    }
   }
 }

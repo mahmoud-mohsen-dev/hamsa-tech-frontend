@@ -228,3 +228,33 @@ html:not([data-scroll='0']) .header .seach-btn {
   transition-timing-function: linear;
   transition-duration: 80ms;
 }
+
+/* Ant desing spin */
+.white.ant-spin .ant-spin-dot-item {
+  color: white;
+}
+
+/* Strapi Blocks */
+.bold {
+  font-weight: 700;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.underline {
+  text-decoration: underline;
+}
+.strikethrough {
+  text-decoration: line-through;
+}
+
+.code {
+  background-color: #2c2e30;
+  color: #f7effe;
+  padding: 2px 12px;
+  border-radius: 4px;
+  margin-inline: 5px;
+  line-height: 1rem;
+}

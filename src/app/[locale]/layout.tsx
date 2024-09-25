@@ -20,6 +20,7 @@ import { LayoutResponse } from '@/types/getIndexLayout';
 import Footer from '@/components/AppLayout/Footer';
 import ScrollNavbarListener from '@/components/UI/navbar/ScrollNavbarListener';
 import { NavbarProductsCategoriesResponseType } from '@/types/getNavbarProductsCategories';
+import AppDrawer from '@/components/UI/AppDrawer';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -190,6 +191,7 @@ export default async function LocaleLayout({
                         navLinks={layoutAttributes.navbar}
                         productsSubNav={navbarProductsCategoriesData}
                       />
+                      <AppDrawer />
                     </>
                   )}
                   <Suspense fallback={<Loading />}>

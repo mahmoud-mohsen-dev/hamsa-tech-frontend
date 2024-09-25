@@ -5,17 +5,17 @@ import {
 
 export const revalidate = 120; // invalidate every 60 seconds
 
-interface PropsType {
+type PropsType = {
   children: React.ReactNode;
   params: { locale: string };
-}
+};
 
 export async function generateMetadata({
   params: { locale }
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'ProductsPage.metaData'
+    namespace: 'offersPage.metaData'
   });
 
   return {
@@ -24,15 +24,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductsLayout({
-  children,
-  params: { locale }
-}: PropsType) {
-  // Enable static rendering
+function layout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  return (
-    <section className='mt-[100px] max-w-[1900px]'>
-      {children}
-    </section>
-  );
+  return <div className='mt-[64px]'>{children}</div>;
 }
+
+export default layout;
