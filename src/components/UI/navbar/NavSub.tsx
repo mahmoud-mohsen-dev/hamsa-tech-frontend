@@ -1,5 +1,5 @@
 'use client';
-import { NavItemKeyType } from '@/types';
+
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { v4 } from 'uuid';

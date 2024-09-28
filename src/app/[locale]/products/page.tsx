@@ -109,11 +109,14 @@ const Products = async ({
 
   return (
     // <ConfigAntThemes>
-    <section className='content container'>
+    <section className='content mx-32 mb-[100px]'>
       <CustomBreadcrumb
         items={getItems(allProductsText, category, subCategory)}
+        locale={locale}
       />
-      <div className='mt-5 grid grid-cols-[270px_1fr] gap-10'>
+      <div
+        className={`mt-5 grid ${locale === 'ar' ? 'grid-cols-[284px_1fr]' : 'grid-cols-[260px_1fr]'} gap-8`}
+      >
         <FilterSidebar />
         {productsError === null && productsData !== null && (
           <ProductsWrapper data={productsData} />

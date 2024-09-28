@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import AddToCartButton from './AddToCartButton';
 
 function ProductCard({
+  id,
   linkSrc,
   imgSrc,
   alt,
@@ -18,6 +19,7 @@ function ProductCard({
   badge,
   currentPrice
 }: {
+  id: string;
   linkSrc: string;
   imgSrc: string;
   alt: string;
@@ -68,9 +70,6 @@ function ProductCard({
           </h4>
           <div className='flex items-center gap-2 leading-[54px]'>
             <Rate defaultValue={avgRate} allowHalf disabled />
-            {/* <span className='text-base font-normal text-gray-light'>
-              {avgRate}
-            </span> */}
             <span className='text-base font-normal text-gray-light'>
               ({totalRates}{' '}
               {totalRates > 1 ?
@@ -82,16 +81,23 @@ function ProductCard({
         </div>
 
         {/* price and add button */}
-        <div className='item mt-1 flex justify-between'>
-          <div className='flex items-center gap-2'>
-            <p className='text-sm font-normal text-gray-light line-through'>
-              EGP {priceBeforeDeduction}
-            </p>
-            <p className='text-sm font-normal text-black-light'>
-              EGP {currentPrice}
-            </p>
+        <div className='mt-1 flex h-[45px] items-center justify-between'>
+          <div className='flex flex-col items-start justify-center gap-1'>
+            {currentPrice > 1 ?
+              <p className='text-[15px] font-normal leading-[18px] text-gray-light line-through'>
+                EGP {priceBeforeDeduction}
+              </p>
+            : <p className='text-base font-medium text-black-light'>
+                EGP {priceBeforeDeduction}
+              </p>
+            }
+            {currentPrice > 1 && (
+              <p className='text-base font-medium text-black-light'>
+                EGP {currentPrice}
+              </p>
+            )}
           </div>
-          <AddToCartButton />
+          <AddToCartButton productId={id} />
         </div>
       </div>
     </Link>

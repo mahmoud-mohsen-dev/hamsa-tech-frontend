@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import ActiveLink from './ActiveLink';
 // import { fetchNavItems } from '@/services/navItemRequst';
 import NavSub from './NavSub';
-import { NavItemType } from '@/types';
 import { useLocale } from 'next-intl';
 import { capitalize } from '@/utils/helpers';
 import { NavbarLink } from '@/types/getIndexLayout';

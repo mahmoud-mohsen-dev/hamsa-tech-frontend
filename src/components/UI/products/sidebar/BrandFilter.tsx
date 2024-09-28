@@ -86,7 +86,9 @@ function BrandFilter({ data }: PropsType) {
 
   return (
     <div className='brands-filter mt-5'>
-      <h3 className='ml-[24px] w-fit text-lg text-black-medium'>
+      <h3
+        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} w-fit text-lg text-black-medium`}
+      >
         {t('brandTitle')}
       </h3>
 
@@ -94,6 +96,7 @@ function BrandFilter({ data }: PropsType) {
         onChange={onBrandCheckAllChange}
         checked={checkAllBrands}
         className='check-all'
+        style={{ marginRight: locale === 'ar' ? '15px' : '' }}
       >
         {checkAllBrands ? t('uncheckAll') : t('checkAll')}
       </Checkbox>
@@ -101,10 +104,13 @@ function BrandFilter({ data }: PropsType) {
         options={brandsList}
         value={brandCheckedList}
         onChange={onBrandChange}
+        style={{ marginRight: locale === 'ar' ? '15px' : '' }}
       />
 
       {/* Price Slider */}
-      <h3 className='ml-[24px] mt-5 w-fit text-lg text-black-medium'>
+      <h3
+        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} mt-5 w-fit text-lg text-black-medium`}
+      >
         {t('priceRangeTitle')}
       </h3>
       <Slider
@@ -114,9 +120,16 @@ function BrandFilter({ data }: PropsType) {
         value={sliderValues ?? [0, 100]}
         onChange={onSliderChange}
         disabled={false}
-        style={{ marginInline: '24px' }}
+        style={{
+          margin:
+            locale === 'en' ?
+              '10px 24px 5px 30px'
+            : '10px 30px 5px 24px'
+        }}
       />
-      <p className='ml-6 text-sm text-black-light'>
+      <p
+        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} text-sm text-black-light`}
+      >
         <span>{t('priceSubTitle')}: </span>
         <span dir='ltr'>
           EGP ({sliderValues[0]}) - EGP ({sliderValues[1]})
@@ -125,14 +138,19 @@ function BrandFilter({ data }: PropsType) {
       </p>
 
       {/* Rate CheckBox Group */}
-      <h3 className='ml-[24px] mt-5 w-fit text-lg text-black-medium'>
+      <h3
+        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} mt-5 w-fit text-lg text-black-medium`}
+      >
         {t('rateTitle')}
       </h3>
       <Checkbox
         onChange={onRateCheckAllChange}
         checked={checkAllRates}
         className='check-all'
-        style={{ marginBottom: '3px' }}
+        style={{
+          marginBottom: '3px',
+          marginRight: locale === 'ar' ? '15px' : ''
+        }}
       >
         {checkAllRates ? t('uncheckAll') : t('checkAll')}
       </Checkbox>
@@ -140,20 +158,23 @@ function BrandFilter({ data }: PropsType) {
         options={plainRateOptions}
         value={rateCheckedList}
         onChange={onRateChange}
-        style={{ gap: '5px' }}
+        style={{
+          gap: '5px',
+          marginRight: locale === 'ar' ? '15px' : ''
+        }}
       />
       <div
-        className={`${locale === 'ar' ? '' : 'ml-[24px]'} mt-5 flex items-center gap-2`}
+        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} mt-5 flex items-center gap-2`}
       >
         <Btn
-          className='bg-green-600 px-4 py-[6px] text-base font-normal text-white'
+          className='bg-green-600 px-3 py-[6px] text-sm font-normal text-white'
           defaultPadding={false}
         >
           <FaCheck />
           <span>{t('applyButton')}</span>
         </Btn>
         <Btn
-          className='bg-red-shade-300 px-4 py-[6px] text-base font-normal text-white'
+          className='bg-red-shade-300 px-3 py-[6px] text-sm font-normal text-white'
           defaultPadding={false}
         >
           <GrPowerReset />

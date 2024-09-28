@@ -10,7 +10,7 @@ import {
 } from 'next-intl/server';
 import { locales } from '@/config';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import ConfigAntThemes from '@/components/Theme/ConfigAntThemes';
+import ConfigAntThemes from '@/lib/ConfigAntThemes';
 import Header from '@/components/AppLayout/Header';
 import Main from '@/components/AppLayout/Main';
 import ErrorComponent from './error';
@@ -20,7 +20,8 @@ import { LayoutResponse } from '@/types/getIndexLayout';
 import Footer from '@/components/AppLayout/Footer';
 import ScrollNavbarListener from '@/components/UI/navbar/ScrollNavbarListener';
 import { NavbarProductsCategoriesResponseType } from '@/types/getNavbarProductsCategories';
-import AppDrawer from '@/components/UI/AppDrawer';
+import AppDrawer from '@/components/UI/cart/AppDrawer';
+import CustomSWRConfig from '@/lib/CustomSWRConfig';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -171,38 +172,43 @@ export default async function LocaleLayout({
       <body className='flex h-full flex-col bg-white text-black-light'>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <StoreContextProvider>
-            <AntdRegistry>
-              <ConfigAntThemes>
-                <div
-                  className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
-                >
-                  {(layoutData.error || layoutData.data === null) && (
-                    <ErrorComponent
-                      error={
-                        layoutData.error ||
-                        ('Error fetching nav items' as any)
-                      }
-                    />
-                  )}
-                  {layoutAttributes.navbar && (
-                    <>
-                      <ScrollNavbarListener />
-                      <Header
-                        navLinks={layoutAttributes.navbar}
-                        productsSubNav={navbarProductsCategoriesData}
+            <CustomSWRConfig>
+              <AntdRegistry>
+                <ConfigAntThemes>
+                  <div
+                    className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
+                  >
+                    {(layoutData.error ||
+                      layoutData.data === null) && (
+                      <ErrorComponent
+                        error={
+                          layoutData.error ||
+                          ('Error fetching nav items' as any)
+                        }
                       />
-                      <AppDrawer />
-                    </>
-                  )}
-                  <Suspense fallback={<Loading />}>
-                    <Main>{children}</Main>
-                  </Suspense>
-                  {layoutAttributes.footer && (
-                    <Footer data={layoutAttributes.footer} />
-                  )}
-                </div>
-              </ConfigAntThemes>
-            </AntdRegistry>
+                    )}
+                    {layoutAttributes.navbar && (
+                      <>
+                        <ScrollNavbarListener />
+                        <Header
+                          navLinks={layoutAttributes.navbar}
+                          productsSubNav={
+                            navbarProductsCategoriesData
+                          }
+                        />
+                        <AppDrawer />
+                      </>
+                    )}
+                    <Suspense fallback={<Loading />}>
+                      <Main>{children}</Main>
+                    </Suspense>
+                    {layoutAttributes.footer && (
+                      <Footer data={layoutAttributes.footer} />
+                    )}
+                  </div>
+                </ConfigAntThemes>
+              </AntdRegistry>
+            </CustomSWRConfig>
           </StoreContextProvider>
         </NextIntlClientProvider>
       </body>

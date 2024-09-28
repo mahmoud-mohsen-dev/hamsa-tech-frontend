@@ -45,7 +45,7 @@ function ProductsContent({
           },
           error: resError
         } = await fetchProducts(category, subCategory, locale);
-        console.log('fetching data in the client...');
+        // console.log('fetching data in the client...');
 
         if (resData === null || resError) {
           console.error('Error fetching products');
@@ -75,8 +75,8 @@ function ProductsContent({
     console.error(error);
   }
 
-  console.log(data);
-  console.log(firstRender.current);
+  // console.log(data);
+  // console.log(firstRender.current);
   return (
     <div>
       <div className='flex items-center justify-between'>
@@ -100,52 +100,12 @@ function ProductsContent({
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
       : <div className='mt-5 grid grid-cols-3 gap-4'>
-          {/* {error ||
-            (data === null && (
-              <div className=''>Error fetching data</div>
-            ))} */}
-          {/* {error &&
-            serverProductsData &&
-            serverProductsData?.length > 0 &&
-            serverProductsData.map((product) => {
-              return (
-                <ProductCard
-                  title={product?.attributes?.name ?? ''}
-                  alt={
-                    product?.attributes?.image_thumbnail?.data
-                      ?.attributes?.alternativeText ?? ''
-                  }
-                  imgSrc={
-                    product?.attributes?.image_thumbnail?.data
-                      ?.attributes?.url ?? ''
-                  }
-                  avgRate={product?.attributes?.average_reviews ?? 0}
-                  category={
-                    product?.attributes?.sub_category?.data
-                      ?.attributes?.name ?? ''
-                  }
-                  badge={getBadge(
-                    product?.attributes?.updatedAt,
-                    product?.attributes?.stock,
-                    product?.attributes?.price,
-                    product?.attributes?.sale_price
-                  )}
-                  priceBeforeDeduction={
-                    product?.attributes?.price ?? 0
-                  }
-                  currentPrice={product?.attributes?.sale_price ?? 0}
-                  linkSrc={`/products/${product.id}`}
-                  totalRates={product?.attributes?.total_reviews ?? 0}
-                  key={v4()}
-                />
-              );
-            })} */}
-
           {data &&
             data?.length > 0 &&
             data.map((product) => {
               return (
                 <ProductCard
+                  id={product.id}
                   title={product?.attributes?.name ?? ''}
                   alt={
                     product?.attributes?.image_thumbnail?.data

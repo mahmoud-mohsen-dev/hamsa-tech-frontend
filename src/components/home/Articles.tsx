@@ -1,5 +1,5 @@
 import { Link } from '@/navigation';
-import ConfigAos from '../Theme/ConfigAos';
+import ConfigAos from '../../lib/ConfigAos';
 import ArticleCard from '../UI/articles/ArticleCard';
 import SectionHeading from '../UI/SectionHeading';
 import { FeaturedBlogsSectionType } from '@/types/getHomePageTypes';

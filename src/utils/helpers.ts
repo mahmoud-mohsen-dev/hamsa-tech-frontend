@@ -1,6 +1,6 @@
 export const capitalize = (value: any) => {
   const stringify = String(value);
-  console.log(stringify);
+  // console.log(stringify);
   if (typeof stringify === 'string') {
     return stringify
       .split(' ')

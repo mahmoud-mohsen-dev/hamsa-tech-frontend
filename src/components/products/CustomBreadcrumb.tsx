@@ -1,9 +1,16 @@
 import { Breadcrumb } from 'antd';
 
 const CustomBreadcrumb = ({
-  items
+  items,
+  locale
 }: {
   items: { href: string; title: React.ReactNode }[];
-}) => <Breadcrumb style={{ marginLeft: '24px' }} items={items} />;
+  locale?: string;
+}) => (
+  <Breadcrumb
+    style={{ margin: locale === 'ar' ? '0 15px 0 0' : '0 0 0 24px' }}
+    items={items}
+  />
+);
 
 export default CustomBreadcrumb;

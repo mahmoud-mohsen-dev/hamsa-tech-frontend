@@ -15,7 +15,7 @@ export async function fetchProducts(
   if (category && subcategory) {
     queryArgs += `, filters: {sub_category : {slug: {eq : "${subcategory}"}}, and:[{sub_category : {category: {slug: {eq : "${category}"}}}}]}`;
   }
-  console.log(queryArgs);
+  // console.log(queryArgs);
 
   // Fetch products based on the filters
   const response = (await fetchGraphqlClient(
@@ -51,6 +51,6 @@ export async function fetchProducts(
         }
     }`
   )) as ProductsResponseType;
-  console.log(response);
+  // console.log(response);
   return response;
 }

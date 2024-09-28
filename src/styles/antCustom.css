@@ -130,3 +130,39 @@
   font-size: 1rem;
   font-weight: 500;
 }
+
+/* Cart drawer */
+.ant-drawer-content.reverse .ant-drawer-header-title {
+  flex-direction: row-reverse;
+}
+
+/* Progress */
+.progress-wrapper .ant-progress .ant-progress-bg {
+  height: 40px !important;
+}
+.progress-wrapper .ant-progress .ant-progress-outer {
+  height: 40px !important;
+}
+.progress-wrapper .ant-progress .ant-progress-inner {
+  border: 1px solid rgb(153, 213, 207) !important;
+  height: 40px !important;
+}
+
+.progress-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+}
+
+.progress-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

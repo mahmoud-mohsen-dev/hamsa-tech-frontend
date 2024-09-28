@@ -146,5 +146,8 @@
       "title": "Hamsa Tech Offers Page",
       "description": "Offers on Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."
     }
+  },
+  "cart": {
+    "title": "Your cart"
   }
 }

@@ -68,6 +68,7 @@ async function FilterSidebar() {
 
   return (
     <aside
+      className='pb-5'
       style={
         locale === 'ar' ?
           {
@@ -78,7 +79,9 @@ async function FilterSidebar() {
           }
       }
     >
-      <h3 className='ml-[24px] w-fit text-lg text-black-medium'>
+      <h3
+        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} w-fit text-lg text-black-medium`}
+      >
         {t('filtersSidebar.categoriesTitle')}
       </h3>
       {categoriesSidebarData && (

@@ -437,7 +437,7 @@ export default async function Product({
             )}
           />
           <section
-            className={`mx-2 mt-5 grid grid-cols-2 ${locale === 'ar' ? 'gap-16' : 'gap-36'}`}
+            className={`mx-2 mt-5 grid grid-cols-2 ${locale === 'ar' ? 'gap-28' : 'gap-36'}`}
           >
             <ProductSlider
               productData={productData}
@@ -482,13 +482,13 @@ export default async function Product({
                   >
                     EGP {productData?.price ?? 0}
                   </span>
-                  {offPercent > 10 ?
+                  {productData?.sale_price > 0 && offPercent > 10 ?
                     <span className='text-sm text-red-shade-300'>
                       {offPercent.toFixed(2)}% {t('offText')}
                     </span>
                   : null}
                 </div>
-                <h4 className='mt-3 flex items-center gap-2 text-sm font-normal'>
+                <h4 className='my-2 flex items-center gap-2 text-sm font-normal'>
                   {productData?.stock > 0 ?
                     <>
                       <span className='text-blue-gray-medium'>
@@ -549,27 +549,29 @@ export default async function Product({
                     ''
                   }
                 />
-                <Info
-                  infoKey={`${t('tagsText')}:`}
-                  value={productData?.tags?.data.map(
-                    (tag, i, arr) => (
-                      <div
-                        className='flex flex-wrap items-center'
-                        key={tag?.id}
-                      >
-                        <Link
-                          href={tag?.attributes?.slug ?? '/'}
-                          className='transition-colors duration-150 ease-out hover:text-yellow-medium'
+                {productData?.tags?.data.length > 0 && (
+                  <Info
+                    infoKey={`${t('tagsText')}:`}
+                    value={productData?.tags?.data.map(
+                      (tag, i, arr) => (
+                        <div
+                          className='flex flex-wrap items-center'
+                          key={tag?.id}
                         >
-                          {tag?.attributes?.name ?? ''}
-                        </Link>
-                        {i < arr.length - 1 && (
-                          <span className='mr-2'>,</span>
-                        )}
-                      </div>
-                    )
-                  )}
-                />
+                          <Link
+                            href={tag?.attributes?.slug ?? '/'}
+                            className='transition-colors duration-150 ease-out hover:text-yellow-medium'
+                          >
+                            {tag?.attributes?.name ?? ''}
+                          </Link>
+                          {i < arr.length - 1 && (
+                            <span className='mr-2'>,</span>
+                          )}
+                        </div>
+                      )
+                    )}
+                  />
+                )}
                 <Info
                   infoKey={`${t('shareText')}:`}
                   // className='mb-[50px]'
@@ -703,6 +705,7 @@ export default async function Product({
                 return (
                   <ProductCard
                     key={product?.id ?? v4()}
+                    id={product?.id}
                     title={product?.attributes?.name ?? ''}
                     imgSrc={
                       product?.attributes?.image_thumbnail?.data
