@@ -34,8 +34,8 @@ import { v4 } from 'uuid';
 import { getBadge } from '@/utils/getBadge';
 import TabsSection from '@/components/productPage/TabsSection';
 
-const getQueryProductPage = (id: number) => `{
-  product(id: ${id}) {
+const getQueryProductPage = (id: string) => `{
+  product(id: "${id}") {
     data {
       id
       attributes {
@@ -362,7 +362,7 @@ const getItems = (
 export default async function Product({
   params: { product, locale }
 }: {
-  params: { product: number; locale: string };
+  params: { product: string; locale: string };
 }) {
   // Enable static rendering
   unstable_setRequestLocale(locale);
@@ -437,7 +437,7 @@ export default async function Product({
             )}
           />
           <section
-            className={`mx-2 mt-5 grid grid-cols-2 ${locale === 'ar' ? 'gap-28' : 'gap-36'}`}
+            className={`mx-2 mt-5 grid grid-cols-2 ${locale === 'ar' ? 'gap-28' : 'gap-44'}`}
           >
             <ProductSlider
               productData={productData}
@@ -507,6 +507,7 @@ export default async function Product({
                   }
                 </h4>
                 <OrderProduct
+                  productId={product}
                   maxQuantity={productData?.stock ?? 0}
                   minQuantity={productData?.stock > 1 ? 1 : 0}
                 />
@@ -736,6 +737,7 @@ export default async function Product({
                       product?.attributes?.sale_price ?? 0
                     }
                     linkSrc={`/products/${product.id}`}
+                    stock={product?.attributes?.stock ?? 0}
                     totalRates={
                       product?.attributes?.total_reviews ?? 0
                     }

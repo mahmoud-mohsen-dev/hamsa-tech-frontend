@@ -24,6 +24,7 @@ import {
   GetCartResponseType
 } from '@/types/cartResponseTypes';
 import { useMyContext } from '@/context/Store';
+import { aggregateCartItems } from '@/utils/cartContextUtils';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -143,11 +144,11 @@ function Header({ navLinks, productsSubNav }: PropsType) {
           } else {
             console.log('Successfully fetched cart');
             console.log(data);
-            if (data.cart.data?.attributes?.product_details) {
-              setCart(data.cart.data?.attributes?.product_details);
-              // updateLocalStorageCart(
-              //   data.cart.data?.attributes?.product_details
-              // );
+            if (data?.cart?.data?.attributes?.product_details) {
+              const updatedCartData = aggregateCartItems(
+                data.cart.data.attributes.product_details
+              );
+              setCart(updatedCartData);
             }
           }
         })

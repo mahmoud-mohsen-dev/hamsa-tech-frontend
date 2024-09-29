@@ -7,86 +7,108 @@ import { useTranslations } from 'use-intl';
 import AppProgress from './Progress';
 import ProductItem from './ProductItem';
 import { Link } from '@/navigation';
+import { useState } from 'react';
+import { HiOutlineShoppingCart } from 'react-icons/hi';
+import { FaSlidersH } from 'react-icons/fa';
 
 function AppDrawer() {
-  const { openDrawer, drawerIsLoading, setOpenDrawer, cart } =
+  const { openDrawer, setOpenDrawer, cart, calculateTotalCartCost } =
     useMyContext();
 
-  const t = useTranslations('cart');
+  const t = useTranslations('CartDrawer');
 
   return (
     <Drawer
       closable
       destroyOnClose
-      title={<p>{t('title')}</p>}
+      title={cart.length > 0 ? <p>{t('title')}</p> : ''}
       width={500}
       className={`reverse`}
       placement='right'
       open={openDrawer}
-      loading={drawerIsLoading}
+      // loading={drawerIsLoading}
+      styles={
+        cart.length > 0 ?
+          {}
+        : { header: { borderBottomColor: 'transparent' } }
+      }
       onClose={() => setOpenDrawer(false)}
     >
-      {/* <Button
-          type='primary'
-          style={{ marginBottom: 16 }}
-          onClick={showLoading}
-        >
-          Reload
-        </Button> */}
-      <div
-        dir='ltr'
-        className='grid h-full grid-cols-1 grid-rows-[1fr_120px] gap-4'
-      >
-        <div className='h-full overflow-hidden'>
-          {/* Progress bar */}
-          <AppProgress />
-          {/* Products Items */}
-          <form className='mt-5 flex h-full flex-col gap-3 overflow-y-auto pb-16'>
-            {cart.length > 0 &&
-              cart.map((productItem) => {
-                return (
-                  <ProductItem
-                    key={productItem.id}
-                    productData={productItem}
-                  />
-                );
-              })}
-          </form>
-        </div>
-
-        <div className=''>
-          <div>
-            <div className='flex items-center justify-between font-inter text-2xl font-bold'>
-              <h3>Subtotal</h3>
-              <h3>
-                {cart.reduce((acc, cur) => {
-                  if (
-                    cur?.product?.data?.attributes?.sale_price > 0
-                  ) {
-                    return (acc +=
-                      cur.product.data.attributes.sale_price *
-                      cur.quantity);
-                  } else {
-                    return (acc +=
-                      cur?.product?.data?.attributes?.price *
-                        cur.quantity || 0);
-                  }
-                }, 0)}{' '}
-                EGP
-              </h3>
-            </div>
-            <h6 className='mb-3 font-inter text-xs'>
-              Taxes and shipping calculated at checkout
-            </h6>
-          </div>
-          <Link
-            href={'/checkout'}
-            className='checkoutBtnDrawer font-base block w-full border-none bg-yellow-medium py-5 text-center font-inter font-semibold text-black-medium hover:bg-opacity-85 focus:ring-1 focus:ring-offset-1 focus:ring-offset-yellow-medium'
+      {
+        cart.length > 0 ?
+          <div
+            // dir='ltr'
+            className='grid h-full grid-cols-1 grid-rows-[40px_1fr_140px] gap-4'
           >
-            Checkout
-          </Link>
-        </div>
-      </div>
+            {/* Progress bar */}
+            <AppProgress totalCartCosts={calculateTotalCartCost()} />
+            {/* Products Items */}
+            <ul className='flex flex-col gap-3 overflow-hidden overflow-y-auto'>
+              {cart.length > 0 &&
+                cart.map((productItem) => {
+                  return (
+                    <ProductItem
+                      key={productItem.id}
+                      productData={productItem}
+                    />
+                  );
+                })}
+            </ul>
+
+            <div>
+              <div>
+                <div className='flex items-center justify-between font-inter text-2xl font-bold'>
+                  <h3>{t('subTotal')}</h3>
+                  <h3>{calculateTotalCartCost()} EGP</h3>
+                </div>
+                <h6 className='mb-4 mt-1 font-inter text-sm'>
+                  {t('taxesMessage')}
+                </h6>
+              </div>
+              <Link
+                href={'/checkout'}
+                className='font-base block w-full border-none bg-yellow-medium py-5 text-center font-inter font-semibold text-black-medium hover:bg-opacity-85 hover:text-black-medium focus:ring-1 focus:ring-offset-1 focus:ring-offset-yellow-medium'
+              >
+                Checkout
+              </Link>
+            </div>
+          </div>
+          // When Cart is Empty
+        : <div className='flex h-full flex-col items-center justify-center gap-5 pb-20'>
+            <HiOutlineShoppingCart
+              size={60}
+              className='text-gray-light'
+            />
+            <h1 className='font-inter text-3xl font-semibold'>
+              {t('emptyCartMessage')}
+            </h1>
+            <Link
+              href={'/products'}
+              onClick={() => {
+                setOpenDrawer(false);
+              }}
+              className='font-base block w-fit rounded border-none bg-yellow-medium px-5 py-3 text-center font-inter font-semibold text-black-medium hover:bg-opacity-85 hover:text-black-medium focus:ring-1 focus:ring-offset-1 focus:ring-offset-yellow-medium'
+            >
+              {t('continueShoppingMessage')}
+            </Link>
+            <h2 className='text-2xl font-semibold'>
+              {t('haveAnAccountMessage')}
+            </h2>
+            <div className='font-base flex gap-2'>
+              <Link
+                href={'/login'}
+                onClick={() => {
+                  setOpenDrawer(false);
+                }}
+                className='font-inter font-semibold text-blue-sky-normal underline hover:text-blue-sky-light hover:underline'
+              >
+                {t('loginMessage')}
+              </Link>
+              <span>{t('toCheckOutMessage')}</span>
+            </div>
+          </div>
+
+      }
     </Drawer>
   );
 }

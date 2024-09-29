@@ -6,7 +6,10 @@ import {
   CartDataType,
   updateCartResponseType
 } from '@/types/cartResponseTypes';
-import { updateCartInTheBackend } from '@/utils/cartContextUtils';
+import {
+  aggregateCartItems,
+  updateCartInTheBackend
+} from '@/utils/cartContextUtils';
 import { getCartId } from '@/utils/cookieUtils';
 import { createContext, useContext, useState } from 'react';
 
@@ -22,15 +25,23 @@ const MyContext = createContext<{
   drawerIsLoading: boolean;
   setDrawerIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   cart: CartDataType[];
+  findProductInCart: (productId: string) => CartDataType | undefined;
   setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
   incrementCartItem: (
     productId: string,
-    setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>
-  ) => void;
+    setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
+  ) => Promise<void>;
   decrementCartItem: (
     productId: string,
-    setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>
-  ) => void;
+    setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
+  ) => Promise<void>;
+  updateCartItemQuantity: (
+    productId: string,
+    quantity: number,
+    setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
+  ) => Promise<void>;
+  calculateTotalCartCost: () => number;
+  addToCartIsLoading: string;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -43,56 +54,212 @@ export const StoreContextProvider = ({
   const [nextProductId, setNextProductId] = useState('0');
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [drawerIsLoading, setDrawerIsLoading] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [cart, setCart] = useState<CartDataType[]>([]);
+  const [addToCartIsLoading, setAddToCartIsLoading] =
+    useState<string>('');
 
-  const updateCartInContext = async (
+  // Utility to find product in the cart
+  const findProductInCart = (productId: string) =>
+    cart.find((item) =>
+      item?.product?.data?.id ?
+        item.product.data.id === productId
+      : null
+    );
+
+  // Function to update the cart in the backend and set the new cart data
+  const updateCartContextFromBackend = async (
     productId: string,
-    operation: 'increment' | 'decrement',
-    setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>
+    quantity: number,
+    setComponentLoader: React.Dispatch<
+      React.SetStateAction<boolean>
+    > | null = null
   ) => {
-    const cartId = getCartId();
-    if (cartId) {
-      try {
-        if (setIsLoading) setIsLoading(true);
-        setDrawerIsLoading(true);
-        const { data, error } = (await fetchGraphqlClient(
-          updateCartInTheBackend(cartId, cart, productId, operation)
-        )) as updateCartResponseType;
+    const cartId = getCartId() || ''; // Assuming you have a function to get the cartId
 
-        if (data && !error) {
-          const updatedCartItems =
-            data?.updateCart?.data?.attributes?.product_details ?? [];
-          setCart(updatedCartItems); // Update cart context
-          setOpenDrawer(true); // Open the cart drawer
-        } else {
-          console.error('Failed to update cart context', error);
-        }
-      } catch (error) {
-        console.error('Error updating cart:', error);
-      } finally {
-        if (setIsLoading) {
-          setIsLoading(false);
-        }
-        setDrawerIsLoading(false);
+    try {
+      if (!!setComponentLoader) {
+        console.log('setComponentLoader');
+        console.log(!!setComponentLoader);
+        setComponentLoader(true);
       }
+      setAddToCartIsLoading(productId);
+      setDrawerIsLoading(true);
+      const { data, error } = await fetchGraphqlClient(
+        updateCartInTheBackend(cartId, cart, productId, quantity)
+      );
+
+      if (data && !error) {
+        const updatedCartItems =
+          data?.updateCart?.data?.attributes?.product_details;
+        if (updatedCartItems) {
+          const updatedCartData =
+            aggregateCartItems(updatedCartItems);
+          console.log(updatedCartData);
+          setCart(updatedCartData); // Update cart context with the response data
+          setOpenDrawer(true);
+        }
+      } else {
+        console.error('Failed to update cart in the backend:', error);
+      }
+    } catch (error) {
+      console.error('Error updating cart:', error);
+    } finally {
+      setDrawerIsLoading(false);
+      if (!!setComponentLoader) {
+        setComponentLoader(false);
+      }
+      setAddToCartIsLoading('');
     }
   };
 
-  // Handle incrementing the product quantity
-  const incrementCartItem = (
+  // Increment the quantity of a product in the cart
+  const incrementCartItem = async (
     productId: string,
-    setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>
+    setComponentLoader: React.Dispatch<
+      React.SetStateAction<boolean>
+    > | null = null
   ) => {
-    updateCartInContext(productId, 'increment', setIsLoading);
+    const product = findProductInCart(productId);
+    console.log(!!setComponentLoader);
+    if (product) {
+      await updateCartContextFromBackend(
+        productId,
+        product.quantity + 1,
+        setComponentLoader
+      );
+    } else {
+      await updateCartContextFromBackend(
+        productId,
+        1,
+        setComponentLoader
+      );
+    }
   };
 
-  // Handle decrementing the product quantity
-  const decrementCartItem = (
+  // Decrement the quantity of a product in the cart
+  const decrementCartItem = async (
     productId: string,
-    setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>
+    setComponentLoader: React.Dispatch<
+      React.SetStateAction<boolean>
+    > | null = null
   ) => {
-    updateCartInContext(productId, 'decrement', setIsLoading);
+    const product = findProductInCart(productId);
+    if (product && product.quantity > 1) {
+      await updateCartContextFromBackend(
+        productId,
+        product.quantity - 1,
+
+        setComponentLoader
+      );
+    } else {
+      await updateCartContextFromBackend(
+        productId,
+        0,
+        setComponentLoader
+      ); // Remove item if quantity is zero
+    }
+  };
+
+  // Update the quantity of a product directly via input
+  const updateCartItemQuantity = async (
+    productId: string,
+    quantity: number,
+    setComponentLoader: React.Dispatch<
+      React.SetStateAction<boolean>
+    > | null = null
+  ) => {
+    if (quantity < 0) return; // Prevent negative values
+    await updateCartContextFromBackend(
+      productId,
+      quantity,
+      setComponentLoader
+    );
+  };
+
+  // const updateCartInContext = async (
+  //   productId: string,
+  //   operation: 'increment' | 'decrement',
+  //   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>,
+  //   setIsItemInDrawerLoading?: React.Dispatch<
+  //     React.SetStateAction<boolean>
+  //   >
+  // ) => {
+  //   const cartId = getCartId();
+  //   if (cartId) {
+  //     try {
+  //       if (setIsLoading) setIsLoading(true);
+  //       if (setIsItemInDrawerLoading) setIsItemInDrawerLoading(true);
+  //       // setDrawerIsLoading(true);
+  //       const { data, error } = (await fetchGraphqlClient(
+  //         updateCartInTheBackend(cartId, cart, productId, operation)
+  //       )) as updateCartResponseType;
+
+  //       if (data && !error) {
+  //         const updatedCartItems =
+  //           data?.updateCart?.data?.attributes?.product_details ?? [];
+  //         setCart(updatedCartItems); // Update cart context
+  //         setOpenDrawer(true); // Open the cart drawer
+  //       } else {
+  //         console.error('Failed to update cart context', error);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error updating cart:', error);
+  //     } finally {
+  //       if (setIsLoading) {
+  //         setIsLoading(false);
+  //       }
+  //       if (setIsItemInDrawerLoading) {
+  //         setIsItemInDrawerLoading(false);
+  //       }
+  //       // setDrawerIsLoading(false);
+  //     }
+  //   }
+  // };
+
+  // // Handle incrementing the product quantity
+  // const incrementCartItem = (
+  //   productId: string,
+  //   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>,
+  //   setIsItemInDrawerLoading?: React.Dispatch<
+  //     React.SetStateAction<boolean>
+  //   >
+  // ) => {
+  //   updateCartInContext(
+  //     productId,
+  //     'increment',
+  //     setIsLoading,
+  //     setIsItemInDrawerLoading
+  //   );
+  // };
+
+  // // Handle decrementing the product quantity
+  // const decrementCartItem = (
+  //   productId: string,
+  //   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>,
+  //   setIsItemInDrawerLoading?: React.Dispatch<
+  //     React.SetStateAction<boolean>
+  //   >
+  // ) => {
+  //   updateCartInContext(
+  //     productId,
+  //     'decrement',
+  //     setIsLoading,
+  //     setIsItemInDrawerLoading
+  //   );
+  // };
+
+  // Calaulate the total product costs in cart
+  const calculateTotalCartCost = () => {
+    return cart.reduce((acc, cur) => {
+      if (cur?.product?.data?.attributes?.sale_price > 0) {
+        return (acc +=
+          cur.product.data.attributes.sale_price * cur.quantity);
+      } else {
+        return (acc +=
+          cur?.product?.data?.attributes?.price * cur.quantity || 0);
+      }
+    }, 0);
   };
 
   return (
@@ -110,8 +277,12 @@ export const StoreContextProvider = ({
         setDrawerIsLoading,
         cart,
         setCart,
+        findProductInCart,
         incrementCartItem,
-        decrementCartItem
+        decrementCartItem,
+        updateCartItemQuantity,
+        calculateTotalCartCost,
+        addToCartIsLoading
       }}
     >
       {children}

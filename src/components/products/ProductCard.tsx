@@ -17,7 +17,8 @@ function ProductCard({
   totalRates,
   priceBeforeDeduction,
   badge,
-  currentPrice
+  currentPrice,
+  stock
 }: {
   id: string;
   linkSrc: string;
@@ -30,6 +31,7 @@ function ProductCard({
   totalRates: number;
   priceBeforeDeduction: number;
   currentPrice: number;
+  stock: number;
 }) {
   const t = useTranslations('ProductsPage.content');
   // const handleClick = (event: React.SyntheticEvent) => {
@@ -97,7 +99,7 @@ function ProductCard({
               </p>
             )}
           </div>
-          <AddToCartButton productId={id} />
+          <AddToCartButton productId={id} stock={stock} />
         </div>
       </div>
     </Link>

@@ -9,7 +9,7 @@ type PropsType = {
 
 async function OffersPage({ params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  const t = await getTranslations('offersPage');
+  const t = await getTranslations('OffersPage');
 
   return (
     <section>

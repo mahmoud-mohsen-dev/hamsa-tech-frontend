@@ -95,10 +95,11 @@
     "availabilityText": "التوفر",
     "stockText": "منتجات متوفرة",
     "outOfStockText": "غير متوفر في المخزون",
+    "soldOutButtonText": "نفذ",
     "addToCartButtonText": "أضف إلى السلة",
     "addedToCartButtonText": "أُضيفت للسلة",
     "AddToWhishListText": "أضف إلى قائمة الرغبات",
-    "AddedToWhishListText": "تمت الإضافة إلى قائمة الرغبات",
+    "AddedToWhishListText": "أُضيفت للرغبات",
     "deliveryText": "التوصيل خلال 5 أيام",
     "returnText": "إرجاع مجاني خلال 14 يومًا",
     "brandText": "العلامة التجارية",
@@ -140,14 +141,27 @@
       "commentRequiredMessage": "التعليق مطلوب"
     }
   },
-  "offersPage": {
+  "OffersPage": {
     "noOffersMessage": "لا توجد عروض متاحة",
     "metaData": {
       "title": "صفحة عروض همسة تك",
       "description": "عروض على كاميرات المراقبة · أجهزة الباركود والكاشير · أنظمة الصوت · الشبكات · أجهزة البصمة · كاميرات المراقبة · أجهزة الباركود والكاشير"
     }
   },
-  "cart": {
-    "title": "سلة التسوق الخاصة بك"
+  "CartDrawer": {
+    "title": "سلة التسوق الخاصة بك",
+    "emptyCartMessage": "سلة التسوق فارغة",
+    "continueShoppingMessage": "تابع التسوق",
+    "haveAnAccountMessage": "هل لديك حساب؟",
+    "loginMessage": "تسجيل الدخول",
+    "toCheckOutMessage": "لإتمام الشراء بسرعة.",
+    "subTotal": "المجموع الفرعي",
+    "taxesMessage": "سيتم حساب الضرائب والشحن عند إتمام الشراء",
+    "spendMessage": {
+      "start": "أنفق ",
+      "end": " لتحصل على ",
+      "currency": "جنية مصري",
+      "freeShipping": "شحن مجاني"
+    }
   }
 }

@@ -95,6 +95,7 @@
     "availabilityText": "Availability",
     "stockText": "items in stock",
     "outOfStockText": "Out of stock",
+    "soldOutButtonText": "Sold out",
     "addToCartButtonText": "Add to Cart",
     "addedToCartButtonText": "Added to Cart",
     "AddToWhishListText": "Add to wishlist",
@@ -140,14 +141,27 @@
       "commentRequiredMessage": "Comment is required"
     }
   },
-  "offersPage": {
+  "OffersPage": {
     "noOffersMessage": "No offers are available",
     "metaData": {
       "title": "Hamsa Tech Offers Page",
       "description": "Offers on Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."
     }
   },
-  "cart": {
-    "title": "Your cart"
+  "CartDrawer": {
+    "title": "Your cart",
+    "emptyCartMessage": "Your cart is empty",
+    "continueShoppingMessage": "Continue shopping",
+    "haveAnAccountMessage": "Have an account?",
+    "loginMessage": "Log in",
+    "toCheckOutMessage": "to check out faster.",
+    "subTotal": "SubTotal",
+    "taxesMessage": "Taxes and shipping calculated at checkout",
+    "spendMessage": {
+      "start": "Spend ",
+      "end": " to ",
+      "currency": "EGP",
+      "freeShipping": "FREE SHIPPING"
+    }
   }
 }

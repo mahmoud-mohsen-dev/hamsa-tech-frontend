@@ -133,6 +133,7 @@ function ProductsContent({
                   currentPrice={product?.attributes?.sale_price ?? 0}
                   linkSrc={`/products/${product.id}`}
                   totalRates={product?.attributes?.total_reviews ?? 0}
+                  stock={product?.attributes?.stock ?? 0}
                   key={v4()}
                 />
               );
