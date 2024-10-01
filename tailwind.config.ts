@@ -116,7 +116,8 @@ const config: Config = {
       },
       gridTemplateColumns: {
         // footer: '2fr repeat(auto-fit,minmax(350px,1fr))'
-        footer: '1.2fr .7fr 1.3fr 1fr'
+        footer: '1.2fr .7fr 1.3fr 1fr',
+        checkout: 'minmax(350px,1.25fr) 1fr'
       },
       // transitionProperty: {
       //   spacing: 'all'

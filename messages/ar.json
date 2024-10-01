@@ -157,11 +157,58 @@
     "toCheckOutMessage": "لإتمام الشراء بسرعة.",
     "subTotal": "المجموع الفرعي",
     "taxesMessage": "سيتم حساب الضرائب والشحن عند إتمام الشراء",
+    "checkoutMessage": "إتمام الشراء",
     "spendMessage": {
       "start": "أنفق ",
       "end": " لتحصل على ",
       "currency": "جنية مصري",
       "freeShipping": "شحن مجاني"
+    }
+  },
+  "CheckoutPage": {
+    "content": {
+      "contactTitle": "معلومات الإتصال",
+      "emailAddressTitle": "عنوان البريد الإلكتروني",
+      "loginTitle": "تسجيل الدخول",
+      "emailOrPhoneTitlePlaceholder": "البريد الإلكتروني أو رقم الهاتف",
+      "phone": "رقم الهاتف",
+      "confirmToSendNewsletter": "أرسل لي الأخبار والعروض",
+      "deliveryTitle": "التسليم",
+      "countryOrRegionTitle": "الدولة / المنطقة",
+      "countryValueOne": "مصر",
+      "firstNameTitle": "الاسم الأول",
+      "lastNameTitle": "الاسم الأخير",
+      "addressTitle": "العنوان",
+      "streetTitle": "الشقة، الجناح، إلخ. (اختياري)",
+      "cityTitle": "المدينة",
+      "governorateTitle": "المحافظة",
+      "postalCode": "الرمز البريدي (اختياري)",
+      "ShippingMethodTitle": "طريقة الشحن",
+      "shippingAmountTitle": "فقط {amount} جنيه",
+      "paymentMethodTitle": "الدفع",
+      "paymentSubtitle": "جميع المعاملات آمنة ومشفرة.",
+      "payWithCreditCardTitle": "ادفع بواسطة الكارت أو المحفظة أو التقسيط",
+      "payCithCardSubtitle": "بعد النقر على 'ادفع الآن'، سيتم تحويلك إلى 'ادفع بواسطة الكارت أو المحفظة أو التقسيط' لإتمام عملية الشراء بأمان.",
+      "payOnDeliveryTitle": "الدفع عند الاستلام",
+      "payOnDeliverySubtitle": "ادفع نقدًا عند التسليم.",
+      "billingAddressTitle": "عنوان الفاتورة",
+      "sameAsDeliveryTitle": "نفس عنوان التسليم",
+      "useDifferentBillingAddress": "استخدام عنوان فاتورة مختلف",
+      "submitButtonText": "إتمام الطلب",
+      "continueShoppingButtonText": "متابعة التسوق",
+      "discountInputPlaceholder": "رمز الخصم",
+      "applyButtonText": "تطبيق",
+      "subtotalTitle": "المجموع الفرعي",
+      "itemTitle": "عنصر",
+      "itemsTitle": "عناصر",
+      "shippingTitle": " تكاليف الشحن",
+      "totalTitle": "الإجمالي",
+      "freeShippingMessage": "شحن مجاني",
+      "phoneTooltip": "في حال احتجنا إلى الاتصال بك بشأن طلبك"
+    },
+    "metaData": {
+      "title": "صفحة إتمام الشراء - همسة تك",
+      "description": "أكمل عملية الشراء بأمان لمنتجات أنظمة المراقبة، أجهزة نقاط البيع، التحكم في الوصول، والمزيد في همسة تك. اختر من بين خيارات دفع متعددة بما في ذلك البطاقة، المحفظة أو التقسيط."
     }
   }
 }

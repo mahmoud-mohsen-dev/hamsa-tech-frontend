@@ -157,11 +157,57 @@
     "toCheckOutMessage": "to check out faster.",
     "subTotal": "SubTotal",
     "taxesMessage": "Taxes and shipping calculated at checkout",
+    "checkoutMessage": "Checkout",
     "spendMessage": {
       "start": "Spend ",
       "end": " to ",
       "currency": "EGP",
       "freeShipping": "FREE SHIPPING"
+    }
+  },
+  "CheckoutPage": {
+    "content": {
+      "contactTitle": "Contact Info",
+      "loginTitle": "Log in",
+      "emailOrPhoneTitlePlaceholder": "Email or Phone Number",
+      "phone": "Phone",
+      "confirmToSendNewsletter": "Email me with news and offers",
+      "deliveryTitle": "Delivery",
+      "countryOrRegionTitle": "Country / Region",
+      "countryValueOne": "Egypt",
+      "firstNameTitle": "First Name",
+      "lastNameTitle": "Last Name",
+      "addressTitle": "Address",
+      "streetTitle": "Apartment, suite, etc. (optional)",
+      "cityTitle": "City",
+      "governorateTitle": "Governorate",
+      "postalCode": "postal code (optional)",
+      "ShippingMethodTitle": "Shipping Method",
+      "shippingAmountTitle": "Only {amount} EGP",
+      "paymentMethodTitle": "Payment",
+      "paymentSubtitle": "All transactions are secure and encrypted.",
+      "payWithCreditCardTitle": "Pay by card, wallet or installments",
+      "payCithCardSubtitle": "After clicking 'Pay now', you will be redirected to 'Pay by card, wallet, or installments' to complete your purchase securely.",
+      "payOnDeliveryTitle": "Cash on delivery",
+      "payOnDeliverySubtitle": "Pay with cash upon delivery.",
+      "billingAddressTitle": "Billing address",
+      "sameAsDeliveryTitle": "Same as delivery address",
+      "useDifferentBillingAddress": "Use a different billing address",
+      "submitButtonText": "Complete order",
+      "continueShoppingButtonText": "Continue shopping",
+      "discountInputPlaceholder": "Discount code",
+      "applyButtonText": "Apply",
+      "subtotalTitle": "Subtotal",
+      "itemTitle": "item",
+      "itemsTitle": "items",
+      "shippingTitle": "Shipping Cost",
+      "totalTitle": "Total",
+      "freeShippingMessage": "Free shipping",
+      "phoneTooltip": "In case we need to contact you about your order"
+    },
+    "metaData": {
+      "title": "Hamsa Tech checkout Page",
+      "description": "Securely complete your purchase for surveillance cameras, POS systems, access control, and more at Hamsa Tec. Choose from a variety of payment options, including card, wallet, or installments."
     }
   }
 }

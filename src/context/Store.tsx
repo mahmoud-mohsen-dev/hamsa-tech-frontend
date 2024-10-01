@@ -40,8 +40,14 @@ const MyContext = createContext<{
     quantity: number,
     setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
   ) => Promise<void>;
-  calculateTotalCartCost: () => number;
+  calculateSubTotalCartCost: () => number;
+  calculateTotalCartItems: () => number;
   addToCartIsLoading: string;
+  shippingCost: number;
+  freeShippingApplied: boolean;
+  setFreeShippingApplied: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -58,6 +64,9 @@ export const StoreContextProvider = ({
   const [cart, setCart] = useState<CartDataType[]>([]);
   const [addToCartIsLoading, setAddToCartIsLoading] =
     useState<string>('');
+  const [shippingCost, setShippingCost] = useState(50);
+  const [freeShippingApplied, setFreeShippingApplied] =
+    useState(false);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -177,80 +186,14 @@ export const StoreContextProvider = ({
     );
   };
 
-  // const updateCartInContext = async (
-  //   productId: string,
-  //   operation: 'increment' | 'decrement',
-  //   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>,
-  //   setIsItemInDrawerLoading?: React.Dispatch<
-  //     React.SetStateAction<boolean>
-  //   >
-  // ) => {
-  //   const cartId = getCartId();
-  //   if (cartId) {
-  //     try {
-  //       if (setIsLoading) setIsLoading(true);
-  //       if (setIsItemInDrawerLoading) setIsItemInDrawerLoading(true);
-  //       // setDrawerIsLoading(true);
-  //       const { data, error } = (await fetchGraphqlClient(
-  //         updateCartInTheBackend(cartId, cart, productId, operation)
-  //       )) as updateCartResponseType;
-
-  //       if (data && !error) {
-  //         const updatedCartItems =
-  //           data?.updateCart?.data?.attributes?.product_details ?? [];
-  //         setCart(updatedCartItems); // Update cart context
-  //         setOpenDrawer(true); // Open the cart drawer
-  //       } else {
-  //         console.error('Failed to update cart context', error);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error updating cart:', error);
-  //     } finally {
-  //       if (setIsLoading) {
-  //         setIsLoading(false);
-  //       }
-  //       if (setIsItemInDrawerLoading) {
-  //         setIsItemInDrawerLoading(false);
-  //       }
-  //       // setDrawerIsLoading(false);
-  //     }
-  //   }
-  // };
-
-  // // Handle incrementing the product quantity
-  // const incrementCartItem = (
-  //   productId: string,
-  //   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>,
-  //   setIsItemInDrawerLoading?: React.Dispatch<
-  //     React.SetStateAction<boolean>
-  //   >
-  // ) => {
-  //   updateCartInContext(
-  //     productId,
-  //     'increment',
-  //     setIsLoading,
-  //     setIsItemInDrawerLoading
-  //   );
-  // };
-
-  // // Handle decrementing the product quantity
-  // const decrementCartItem = (
-  //   productId: string,
-  //   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>,
-  //   setIsItemInDrawerLoading?: React.Dispatch<
-  //     React.SetStateAction<boolean>
-  //   >
-  // ) => {
-  //   updateCartInContext(
-  //     productId,
-  //     'decrement',
-  //     setIsLoading,
-  //     setIsItemInDrawerLoading
-  //   );
-  // };
-
+  // Calaulate total product qunatites in cart
+  const calculateTotalCartItems = () => {
+    return cart.reduce((acc, cur) => {
+      return (acc += cur?.quantity);
+    }, 0);
+  };
   // Calaulate the total product costs in cart
-  const calculateTotalCartCost = () => {
+  const calculateSubTotalCartCost = () => {
     return cart.reduce((acc, cur) => {
       if (cur?.product?.data?.attributes?.sale_price > 0) {
         return (acc +=
@@ -281,8 +224,12 @@ export const StoreContextProvider = ({
         incrementCartItem,
         decrementCartItem,
         updateCartItemQuantity,
-        calculateTotalCartCost,
-        addToCartIsLoading
+        calculateSubTotalCartCost,
+        calculateTotalCartItems,
+        addToCartIsLoading,
+        shippingCost,
+        freeShippingApplied,
+        setFreeShippingApplied
       }}
     >
       {children}

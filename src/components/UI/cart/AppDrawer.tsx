@@ -10,12 +10,18 @@ import { Link } from '@/navigation';
 import { useState } from 'react';
 import { HiOutlineShoppingCart } from 'react-icons/hi';
 import { FaSlidersH } from 'react-icons/fa';
+import { useLocale } from 'next-intl';
 
 function AppDrawer() {
-  const { openDrawer, setOpenDrawer, cart, calculateTotalCartCost } =
-    useMyContext();
+  const {
+    openDrawer,
+    setOpenDrawer,
+    cart,
+    calculateSubTotalCartCost
+  } = useMyContext();
 
   const t = useTranslations('CartDrawer');
+  const locale = useLocale();
 
   return (
     <Drawer
@@ -24,7 +30,7 @@ function AppDrawer() {
       title={cart.length > 0 ? <p>{t('title')}</p> : ''}
       width={500}
       className={`reverse`}
-      placement='right'
+      placement={locale === 'ar' ? 'left' : 'right'}
       open={openDrawer}
       // loading={drawerIsLoading}
       styles={
@@ -41,7 +47,9 @@ function AppDrawer() {
             className='grid h-full grid-cols-1 grid-rows-[40px_1fr_140px] gap-4'
           >
             {/* Progress bar */}
-            <AppProgress totalCartCosts={calculateTotalCartCost()} />
+            <AppProgress
+              totalCartCosts={calculateSubTotalCartCost()}
+            />
             {/* Products Items */}
             <ul className='flex flex-col gap-3 overflow-hidden overflow-y-auto'>
               {cart.length > 0 &&
@@ -59,7 +67,7 @@ function AppDrawer() {
               <div>
                 <div className='flex items-center justify-between font-inter text-2xl font-bold'>
                   <h3>{t('subTotal')}</h3>
-                  <h3>{calculateTotalCartCost()} EGP</h3>
+                  <h3>{calculateSubTotalCartCost()} EGP</h3>
                 </div>
                 <h6 className='mb-4 mt-1 font-inter text-sm'>
                   {t('taxesMessage')}
@@ -67,9 +75,9 @@ function AppDrawer() {
               </div>
               <Link
                 href={'/checkout'}
-                className='font-base block w-full border-none bg-yellow-medium py-5 text-center font-inter font-semibold text-black-medium hover:bg-opacity-85 hover:text-black-medium focus:ring-1 focus:ring-offset-1 focus:ring-offset-yellow-medium'
+                className='font-base block w-full border-none bg-yellow-medium py-5 text-center font-inter font-semibold text-black-medium hover:bg-opacity-85 hover:text-black-medium focus:outline-none focus:ring-2 focus:ring-yellow-medium focus:ring-offset-2'
               >
-                Checkout
+                {t('checkoutMessage')}
               </Link>
             </div>
           </div>
