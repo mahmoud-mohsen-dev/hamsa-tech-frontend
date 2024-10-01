@@ -4,15 +4,17 @@
     "locale": "{locale, select, ar {العربية} en {English} other {Unknown}}"
   },
   "Error": {
-    "heading": "<p>We've unfortunately encountered an error.</p><p>You can try to <retry>reload the page</retry> you were visiting.</p>",
+    "heading": "Internal Server Error.",
+    "subHeading": "We are already working to solve the problem.",
+    "reloadButtonText": "reload the page",
     "metaData": {
       "title": "Something went wrong!"
     }
   },
   "NotFoundPage": {
-    "heading": "Error 404 - Page Not Found",
-    "subHeading": "Please double-check the browser address bar.",
-    "linkText": "go to home page",
+    "heading": "Page Not Found",
+    "subHeading": "Sorry, we can't find that page. You'll find lots to explore on the home page.",
+    "linkText": "Back to Homepage",
     "metaData": {
       "title": "Page not found"
     }
@@ -193,17 +195,29 @@
       "billingAddressTitle": "Billing address",
       "sameAsDeliveryTitle": "Same as delivery address",
       "useDifferentBillingAddress": "Use a different billing address",
-      "submitButtonText": "Complete order",
+      "submitButtonText": "Place order",
       "continueShoppingButtonText": "Continue shopping",
       "discountInputPlaceholder": "Discount code",
       "applyButtonText": "Apply",
       "subtotalTitle": "Subtotal",
       "itemTitle": "item",
       "itemsTitle": "items",
+      "currency": "E£",
       "shippingTitle": "Shipping Cost",
+      "onlyCost": "Only {shippingCost} EGP",
+      "copounPlaceholder": "Copoun",
       "totalTitle": "Total",
       "freeShippingMessage": "Free shipping",
-      "phoneTooltip": "In case we need to contact you about your order"
+      "phoneTooltip": "In case we need to contact you about your order",
+      "formValidationErrorMessages": {
+        "inputEmailOrPhone": "Please input your email or phone number!",
+        "selectCountry": "Please select a country!",
+        "inputFirstName": "Please input your first name!",
+        "inputLastName": "Please input your last name!",
+        "inputAddress": "Please input your address!",
+        "inputCity": "Please input your city!",
+        "selectGovernorate": "Please select your governorate!"
+      }
     },
     "metaData": {
       "title": "Hamsa Tech checkout Page",

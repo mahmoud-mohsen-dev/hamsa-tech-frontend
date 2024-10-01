@@ -11,7 +11,7 @@ function CheckoutPage({ params: { locale } }: PropsType) {
 
   return (
     <div className='container'>
-      <div className='grid-cols-checkout mx-20 grid text-black'>
+      <div className='mx-10 grid grid-cols-checkout text-black'>
         <OrderInfo />
         <CheckoutCart />
       </div>

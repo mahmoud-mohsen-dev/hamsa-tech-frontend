@@ -1,8 +1,9 @@
 export function convertToArabicNumeralsWithFormatting(
   number: number,
   currency: string = 'ج.م',
-  doNotShowCurrency: boolean = false,
-  alignCurrecy: 'left' | 'right' = 'left'
+  locale: string,
+  alignCurrecy?: 'left' | 'right',
+  doNotShowCurrency: boolean = false
 ) {
   const englishToArabicMap: { [key: string]: string } = {
     '0': '٠',
@@ -15,7 +16,7 @@ export function convertToArabicNumeralsWithFormatting(
     '7': '٧',
     '8': '٨',
     '9': '٩',
-    ',': '٬' // Arabic comma
+    ',': '٫' // Arabic comma
   };
   // Format the number with commas for thousands, millions, etc.
   const formattedNumber = number.toLocaleString('en-US', {
@@ -37,7 +38,7 @@ export function convertToArabicNumeralsWithFormatting(
   if (doNotShowCurrency) {
     return arabicFormattedNumber;
   }
-  if (alignCurrecy === 'left') {
+  if (alignCurrecy === 'right' || locale === 'ar') {
     return `${arabicFormattedNumber} ${currency}`;
   }
   // Convert each English digit (and comma) to Arabic-Indic numeral
@@ -73,14 +74,14 @@ export function formatEnglishNumbers(
   return `${currency} ${formattedNumber}`; // Currency on the left
 }
 
-// Example usage:
-console.log(convertToArabicNumeralsWithFormatting(1234567.89)); // Output: "1,234,567.89"
-console.log(convertToArabicNumeralsWithFormatting(1000)); // Output: "1,000.00"
-console.log(
-  convertToArabicNumeralsWithFormatting(
-    9876543210,
-    'ج.م',
-    false,
-    'right'
-  )
-); // Output: "9,876,543,210.00 ج.م"
+// // Example usage:
+// console.log(convertToArabicNumeralsWithFormatting(1234567.89)); // Output: "1,234,567.89"
+// console.log(convertToArabicNumeralsWithFormatting(1000)); // Output: "1,000.00"
+// console.log(
+//   convertToArabicNumeralsWithFormatting(
+//     9876543210,
+//     'ج.م',
+//     'right',
+//     false
+//   )
+// ); // Output: "9,876,543,210.00 ج.م"

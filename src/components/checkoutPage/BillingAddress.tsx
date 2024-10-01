@@ -1,16 +1,17 @@
 import { Collapse, Form, Radio } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import type { CollapseProps } from 'antd';
+import type { CollapseProps, FormInstance } from 'antd';
 import AddressFormItems from './AddressFormItems';
 
-function BillingAddress() {
+function BillingAddress({ form }: { form: FormInstance<any> }) {
   const [billingAddressValue, setPaymentBillingValue] =
     useState('same');
   const t = useTranslations('CheckoutPage.content');
   const onCollapseBillingAddressChange = (key: string | string[]) => {
     if (Array.isArray(key) && key[0]) {
       setPaymentBillingValue(key[0]);
+      form.setFieldValue('billingMethod', key[0]);
     }
   };
 
@@ -22,10 +23,10 @@ function BillingAddress() {
           {t('sameAsDeliveryTitle')}
         </Radio>
       ),
-      style: {
-        backgroundColor:
-          billingAddressValue === 'same' ? '#f2f7ff' : '#fafafa'
-      },
+      // style: {
+      //   backgroundColor:
+      //     billingAddressValue === 'same' ? '#f2f7ff' : '#fafafa'
+      // },
       showArrow: false,
       className: 'same'
     },
@@ -36,10 +37,10 @@ function BillingAddress() {
           {t('useDifferentBillingAddress')}
         </Radio>
       ),
-      style: {
-        backgroundColor:
-          billingAddressValue === 'different' ? '#f2f7ff' : '#fafafa'
-      },
+      // style: {
+      //   backgroundColor:
+      //     billingAddressValue === 'different' ? '#f2f7ff' : '#fafafa'
+      // },
       showArrow: false,
       children:
         billingAddressValue === 'different' ?
@@ -57,13 +58,9 @@ function BillingAddress() {
         name='billingMethod'
         style={{ width: '100%', marginTop: '16px' }}
       >
-        <Radio.Group
-          value={billingAddressValue}
-          style={{ width: '100%' }}
-          id='billing-address'
-        >
+        <Radio.Group style={{ width: '100%' }} id='billing-address'>
           <Collapse
-            bordered={true}
+            bordered={false}
             defaultActiveKey={['same']}
             activeKey={[billingAddressValue]}
             onChange={onCollapseBillingAddressChange}

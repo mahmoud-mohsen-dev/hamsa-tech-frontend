@@ -7,8 +7,10 @@ import PaymentMethods from './PaymentMethods';
 import Contact from './Contact';
 import { useTranslations } from 'next-intl';
 import ShippingCost from './ShippingCost';
+import { useForm } from 'antd/es/form/Form';
 
 function OrderInfo() {
+  const [form] = useForm();
   const t = useTranslations('CheckoutPage.content');
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
@@ -19,10 +21,10 @@ function OrderInfo() {
       theme={{
         token: {
           colorPrimary: '#1677ff',
-          colorBorder: '#d9d9d9c8',
+          colorBorder: '#dedede',
           colorTextPlaceholder: '#9b9b9bbd',
           borderRadius: 4,
-          lineWidth: 2
+          lineWidth: 1
         },
         components: {
           Input: {
@@ -43,6 +45,7 @@ function OrderInfo() {
         name='order-info'
         onFinish={onFinish}
         colon={false}
+        form={form}
         initialValues={{
           sendNewsLetter: false,
           shippingDetailsCountry: 'egypt',
@@ -63,18 +66,19 @@ function OrderInfo() {
         <ShippingCost />
 
         {/* Payment Methods*/}
-        <PaymentMethods />
+        <PaymentMethods form={form} />
         {/* Billing Address */}
-        <BillingAddress />
+        <BillingAddress form={form} />
         <Button
           type='primary'
           htmlType='submit'
-          className='mt-3 w-full'
+          className='mt-3 w-full capitalize'
           style={{
             paddingBlock: '20px',
             fontSize: '16px',
             lineHeight: '24px',
-            fontWeight: '600'
+            fontWeight: '600',
+            borderRadius: 2
           }}
         >
           {t('submitButtonText')}

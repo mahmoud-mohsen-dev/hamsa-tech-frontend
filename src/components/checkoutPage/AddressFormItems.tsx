@@ -16,7 +16,10 @@ function AddressFormItems({ name }: { name: string }) {
           marginBottom: '20px'
         }}
         rules={[
-          { required: true, message: 'Please select a country!' }
+          {
+            required: true,
+            message: t('formValidationErrorMessages.selectCountry')
+          }
         ]}
       >
         <Select
@@ -31,7 +34,7 @@ function AddressFormItems({ name }: { name: string }) {
           rules={[
             {
               required: true,
-              message: 'Please input your first name!'
+              message: t('formValidationErrorMessages.inputFirstName')
             }
           ]}
           className='basis-1/2'
@@ -44,7 +47,7 @@ function AddressFormItems({ name }: { name: string }) {
           rules={[
             {
               required: true,
-              message: 'Please input your last name!'
+              message: t('formValidationErrorMessages.inputLastName')
             }
           ]}
           className='basis-1/2'
@@ -58,7 +61,7 @@ function AddressFormItems({ name }: { name: string }) {
         rules={[
           {
             required: true,
-            message: 'Please input your address!'
+            message: t('formValidationErrorMessages.inputAddress')
           }
         ]}
         style={{ marginBottom: '20px' }}
@@ -77,7 +80,7 @@ function AddressFormItems({ name }: { name: string }) {
           rules={[
             {
               required: true,
-              message: 'Please input your city!'
+              message: t('formValidationErrorMessages.inputCity')
             }
           ]}
           style={{ marginBottom: '20px' }}
@@ -90,7 +93,9 @@ function AddressFormItems({ name }: { name: string }) {
           rules={[
             {
               required: true,
-              message: 'Please select your governorate!'
+              message: t(
+                'formValidationErrorMessages.selectGovernorate'
+              )
             }
           ]}
           style={{ marginBottom: '20px' }}

@@ -1,16 +1,9 @@
 import { Link } from '@/navigation';
 import { Checkbox, Form, Input } from 'antd';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
 
 function Contact() {
   const t = useTranslations('CheckoutPage.content');
-  const [checked, setChecked] = useState(false);
-
-  const toggleChecked = () => {
-    console.log('toggleChecked');
-    setChecked(!checked);
-  };
 
   return (
     <>
@@ -28,7 +21,9 @@ function Contact() {
         rules={[
           {
             required: true,
-            message: 'Please input your email or phone number!'
+            message: t(
+              'formValidationErrorMessages.inputEmailOrPhone'
+            )
           }
         ]}
         style={{ marginTop: '16px', marginBottom: '16px' }}

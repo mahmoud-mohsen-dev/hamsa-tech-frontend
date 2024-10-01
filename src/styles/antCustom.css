@@ -167,7 +167,64 @@
   justify-content: center;
 }
 
-/* Billing Address Collapse */
+/* Collapse */
+/* Active first child */
+.ant-collapse
+  > .ant-collapse-item.ant-collapse-item-active
+  .ant-collapse-header {
+  border: 1px solid #1773b0;
+  background-color: #ecf4ff;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.ant-collapse
+  > .ant-collapse-item:first-child:not(.ant-collapse-item-active) {
+  border-bottom: 0px;
+}
+
+.ant-collapse
+  > .ant-collapse-item.ant-collapse-item-active:first-child
+  .ant-collapse-content
+  > .ant-collapse-content-box {
+  border-bottom: 0px;
+}
+
+/* first not active */
+.ant-collapse > .ant-collapse-item .ant-collapse-header {
+  border: 1px solid #dedede;
+  border-radius: 4px 4px 0px 0px;
+}
+
+/* Body content of all when active*/
+.ant-collapse
+  > .ant-collapse-item.ant-collapse-item-active
+  .ant-collapse-content
+  > .ant-collapse-content-box {
+  border-width: 0 1px 1px 1px;
+  border-color: #dedede;
+  border-style: solid;
+  background-color: rgba(0, 0, 0, 0.043);
+
+  padding-top: 16px;
+}
+
+/* Body content of all*/
+.ant-collapse
+  > .ant-collapse-item:last-child
+  .ant-collapse-content
+  > .ant-collapse-content-box {
+  border-radius: 0px 0px 4px 4px;
+}
+
+/* Not active last child header */
+.ant-collapse
+  .ant-collapse-item:last-child:not(.ant-collapse-item-active)
+  .ant-collapse-header {
+  border-top: 0px;
+  border-radius: 0px 0px 4px 4px;
+}
+
+/* Only on billing address first shild active */
 #billing-address .ant-collapse .same .ant-collapse-content {
   border-top: 0;
 }

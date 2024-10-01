@@ -48,6 +48,8 @@ const config: Config = {
         'blue-sky-ultralight': '#ECF4FF',
         'blue-sky-light': '#07a0c3',
         'blue-sky-normal': '#00A0E9',
+        'blue-sky-medium': '##2563eb',
+        'blue-sky-dark': '#1773b0',
         //======= Shades Of Red ========
         'red-shade-50': '#D7C0BF',
         'red-shade-100': '#CDA6A4',
@@ -85,9 +87,10 @@ const config: Config = {
         //======= Shades Of Gray ========
         'gray-ultralight': '#eaeaea',
         'gray-lighter': '#F5F5F5',
-        'gray-light': '#9b9b9b',
+        'gray-light': '#dedede',
+        'gray-medium': '#9b9b9b',
         'gray-normal': '#666666',
-        'gray-medium': '#6B6A75',
+        'gray-dark': '#6B6A75',
         // 'gray': '##f0f3f2',
 
         //======= Other Colors ========
@@ -117,7 +120,7 @@ const config: Config = {
       gridTemplateColumns: {
         // footer: '2fr repeat(auto-fit,minmax(350px,1fr))'
         footer: '1.2fr .7fr 1.3fr 1fr',
-        checkout: 'minmax(350px,1.25fr) 1fr'
+        checkout: 'minmax(350px,1.2fr) 1fr'
       },
       // transitionProperty: {
       //   spacing: 'all'

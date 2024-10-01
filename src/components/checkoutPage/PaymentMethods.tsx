@@ -1,31 +1,39 @@
 import { Collapse, Form, Radio } from 'antd';
 import Image from 'next/image';
-import type { CollapseProps } from 'antd';
+import type { CollapseProps, FormInstance } from 'antd';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-function PaymentMethods() {
+function PaymentMethods({ form }: { form: FormInstance<any> }) {
   const t = useTranslations('CheckoutPage.content');
   const [paymentValue, setPaymentValue] = useState('card');
 
   const onCollapsePaymentChange = (key: string | string[]) => {
     if (Array.isArray(key) && key[0]) {
       setPaymentValue(key[0]);
+      form.setFieldValue('paymentMethod', key[0]);
     }
   };
-
+  // const onRadioChange = (e) => {
+  //   console.log(e.target.value);
+  // };
+  console.log(paymentValue, 'paymentValue');
   const getPaymentItems: () => CollapseProps['items'] = () => [
     {
       key: 'card',
       label: (
-        <Radio value='card' style={{ width: '100%' }}>
+        <Radio
+          value='card'
+          style={{ width: '100%' }}
+          // checked={paymentValue === 'card'}
+        >
           {t('payWithCreditCardTitle')}
         </Radio>
       ),
-      style: {
-        backgroundColor:
-          paymentValue === 'card' ? '#f2f7ff' : '#fafafa'
-      },
+      // style: {
+      //   backgroundColor:
+      //     paymentValue === 'card' ? '#f2f7ff' : '#fafafa'
+      // },
       extra: (
         <div className='flex items-center gap-1'>
           <Image
@@ -72,14 +80,18 @@ function PaymentMethods() {
     {
       key: 'cashOnDelivery',
       label: (
-        <Radio value='cashOnDelivery' style={{ width: '100%' }}>
+        <Radio
+          value='cashOnDelivery'
+          style={{ width: '100%' }}
+          // checked={paymentValue === 'cashOnDelivery'}
+        >
           {t('payOnDeliveryTitle')}
         </Radio>
       ),
-      style: {
-        backgroundColor:
-          paymentValue === 'cashOnDelivery' ? '#f2f7ff' : '#fafafa'
-      },
+      // style: {
+      //   backgroundColor:
+      //     paymentValue === 'cashOnDelivery' ? '#f2f7ff' : '#fafafa'
+      // },
       showArrow: false,
       children: (
         <p className='text-center'>{t('payOnDeliverySubtitle')}</p>
@@ -92,13 +104,9 @@ function PaymentMethods() {
         {t('paymentMethodTitle')}
       </h2>
       <Form.Item name='paymentMethod' style={{ width: '100%' }}>
-        <Radio.Group
-          // onChange={onPaymentChange}
-          value={paymentValue}
-          style={{ width: '100%' }}
-        >
+        <Radio.Group style={{ width: '100%' }}>
           <Collapse
-            bordered={true}
+            bordered={false}
             defaultActiveKey={['card']}
             activeKey={[paymentValue]}
             onChange={onCollapsePaymentChange}

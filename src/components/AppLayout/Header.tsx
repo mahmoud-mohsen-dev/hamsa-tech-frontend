@@ -190,7 +190,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
 
         <div className='hidden items-center 2xl:flex'>
           <Link
-            href='/'
+            href='/wishlist'
             className='wishlist relative ml-4 text-white'
           >
             <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
@@ -200,7 +200,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
             </div>
             <HiOutlineHeart size={22} className='text-inherit' />
           </Link>
-          <Link href='/' className='profile ml-5 text-white'>
+          <Link href='/login' className='profile ml-5 text-white'>
             <UserOutlined className='text-[20px] text-inherit' />
           </Link>
           <button

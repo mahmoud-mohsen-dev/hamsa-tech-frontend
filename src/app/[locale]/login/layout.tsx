@@ -3,19 +3,19 @@ import {
   unstable_setRequestLocale
 } from 'next-intl/server';
 
-type PropsType = {
+export const revalidate = 120; // invalidate every 60 seconds
+
+interface PropsType {
   children: React.ReactNode;
   params: { locale: string };
-};
-
-export const revalidate = 120; // invalidate every 60 seconds
+}
 
 export async function generateMetadata({
   params: { locale }
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'CheckoutPage.metaData'
+    namespace: 'HomePage.metaData'
   });
 
   return {
@@ -24,9 +24,10 @@ export async function generateMetadata({
   };
 }
 
-function layout({ children, params: { locale } }: PropsType) {
+function LoginLayout({ children, params: { locale } }: PropsType) {
+  // Enable static rendering
   unstable_setRequestLocale(locale);
-  return <div className='mb-[70px] mt-[100px]'>{children}</div>;
+  return <section className='container'>{children}</section>;
 }
 
-export default layout;
+export default LoginLayout;

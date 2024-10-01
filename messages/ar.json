@@ -10,9 +10,9 @@
     }
   },
   "NotFoundPage": {
-    "heading": "خطأ 404 - لم يتم العثور على الصفحة",
-    "subHeading": "يرجى التحقق من شريط عنوان المتصفح.",
-    "linkText": "اذهب للصفحة الرئيسية",
+    "heading": "خطأ في الخادم الداخلي.",
+    "subHeading": "نحن نعمل بالفعل على حل المشكلة.",
+    "reloadButtonText": "إعادة تحميل الصفحة",
     "metaData": {
       "title": "الصفحة غير موجودة"
     }
@@ -201,10 +201,22 @@
       "subtotalTitle": "المجموع الفرعي",
       "itemTitle": "عنصر",
       "itemsTitle": "عناصر",
+      "currency": "ج.م",
       "shippingTitle": " تكاليف الشحن",
+      "onlyCost": "فقط {shippingCost} جنيه مصري",
+      "copounPlaceholder": "كوبون",
       "totalTitle": "الإجمالي",
       "freeShippingMessage": "شحن مجاني",
-      "phoneTooltip": "في حال احتجنا إلى الاتصال بك بشأن طلبك"
+      "phoneTooltip": "في حال احتجنا إلى الاتصال بك بشأن طلبك",
+      "formValidationErrorMessages": {
+        "inputEmailOrPhone": "يرجى إدخال بريدك الإلكتروني أو رقم هاتفك!",
+        "selectCountry": "يرجى اختيار الدولة!",
+        "inputFirstName": "يرجى إدخال اسمك الأول!",
+        "inputLastName": "يرجى إدخال اسمك الأخير!",
+        "inputAddress": "يرجى إدخال عنوانك!",
+        "inputCity": "يرجى إدخال مدينتك!",
+        "selectGovernorate": "يرجى اختيار المحافظة!"
+      }
     },
     "metaData": {
       "title": "صفحة إتمام الشراء - همسة تك",
