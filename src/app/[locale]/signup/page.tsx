@@ -1,6 +1,12 @@
 import { Link } from '@/navigation';
+import { unstable_setRequestLocale } from 'next-intl/server';
 
-function SignupPage() {
+interface PropsType {
+  params: { locale: string };
+}
+
+function SignupPage({ params: { locale } }: PropsType) {
+  unstable_setRequestLocale(locale);
   return (
     <section className='mx-auto flex flex-col items-center justify-center px-6 md:h-screen lg:py-0'>
       <div className='w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0'>

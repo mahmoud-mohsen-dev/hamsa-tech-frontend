@@ -1,15 +1,12 @@
 'use client';
 
 import { useMyContext } from '@/context/Store';
-import { Button, Drawer, Progress } from 'antd';
-import { BsBoxSeam } from 'react-icons/bs';
+import { Drawer } from 'antd';
 import { useTranslations } from 'use-intl';
 import AppProgress from './Progress';
 import ProductItem from './ProductItem';
 import { Link } from '@/navigation';
-import { useState } from 'react';
 import { HiOutlineShoppingCart } from 'react-icons/hi';
-import { FaSlidersH } from 'react-icons/fa';
 import { useLocale } from 'next-intl';
 
 function AppDrawer() {

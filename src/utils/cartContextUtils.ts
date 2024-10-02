@@ -1,5 +1,4 @@
 import { CartDataType } from '@/types/cartResponseTypes';
-import { ProductDataType } from '@/types/getProduct';
 import { ProductType } from '@/types/getProducts';
 
 // export const updateCartInTheBackend = (

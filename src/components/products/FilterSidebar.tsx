@@ -88,7 +88,7 @@ async function FilterSidebar() {
         <MenuSidebar data={categoriesSidebarData} />
       )}
 
-      {brandsData.brands.data && (
+      {brandsData && brandsData.brands.data && (
         <BrandFilter data={brandsData.brands.data} />
       )}
     </aside>

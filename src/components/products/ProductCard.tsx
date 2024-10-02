@@ -1,7 +1,5 @@
 import { Rate } from 'antd';
 import Image from 'next/image';
-import { FaPlus } from 'react-icons/fa6';
-import Btn from '../UI/Btn';
 import { Link } from '@/navigation';
 import { useTranslations } from 'next-intl';
 import AddToCartButton from './AddToCartButton';

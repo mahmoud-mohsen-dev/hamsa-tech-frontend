@@ -1,7 +1,7 @@
 import { Form, Input, Select, Tooltip } from 'antd';
 import { IoIosArrowDown } from 'react-icons/io';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
 import { convertShippingCostsToOptions } from '@/utils/getEgyptianGovernorates';
 import { useEffect } from 'react';
@@ -16,7 +16,7 @@ function AddressFormItems({
 }) {
   const { updateShippingCost, shippingCost, setSelectedGovernorate } =
     useMyContext();
-  const locale = useLocale();
+  // const locale = useLocale();
   const t = useTranslations('CheckoutPage.content');
 
   useEffect(() => {

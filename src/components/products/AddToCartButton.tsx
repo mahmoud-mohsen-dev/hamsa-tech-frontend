@@ -1,21 +1,9 @@
 'use client';
 
 import { useMyContext } from '@/context/Store';
-import Btn from '../UI/Btn';
-import { useCallback, useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Spin } from 'antd';
-import {
-  HiOutlineShoppingCart,
-  HiShoppingCart
-} from 'react-icons/hi';
-import { getCartId } from '@/utils/cookieUtils';
-import { fetchGraphqlClient } from '@/services/graphqlCrud';
-import {
-  CartDataType,
-  updateCartResponseType
-} from '@/types/cartResponseTypes';
-import { updateCartInTheBackend } from '@/utils/cartContextUtils';
+import { HiShoppingCart } from 'react-icons/hi';
 
 interface PropsType {
   productId: string;

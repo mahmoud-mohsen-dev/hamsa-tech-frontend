@@ -1,4 +1,3 @@
-import { useMyContext } from '@/context/Store';
 import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
 import { Progress } from 'antd';
 import { useTranslations } from 'next-intl';

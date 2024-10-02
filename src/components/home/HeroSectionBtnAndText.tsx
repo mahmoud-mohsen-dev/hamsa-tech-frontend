@@ -1,6 +1,4 @@
-import { getLangDir } from 'rtl-detect';
 import Btn from '../UI/Btn';
-import { useLocale } from 'next-intl';
 
 function HeroSectionBtnAndText({
   heading,

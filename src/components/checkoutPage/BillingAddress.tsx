@@ -3,8 +3,15 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import type { CollapseProps, FormInstance } from 'antd';
 import AddressFormItems from './AddressFormItems';
+import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
 
-function BillingAddress({ form }: { form: FormInstance<any> }) {
+function BillingAddress({
+  form,
+  shippingCostData
+}: {
+  form: FormInstance<any>;
+  shippingCostData: ShippingCostDataType[];
+}) {
   const [billingAddressValue, setPaymentBillingValue] =
     useState('same');
   const t = useTranslations('CheckoutPage.content');
@@ -44,7 +51,10 @@ function BillingAddress({ form }: { form: FormInstance<any> }) {
       showArrow: false,
       children:
         billingAddressValue === 'different' ?
-          <AddressFormItems name='billingDetails' />
+          <AddressFormItems
+            name='billingDetails'
+            shippingCostData={shippingCostData}
+          />
         : <></>
     }
   ];

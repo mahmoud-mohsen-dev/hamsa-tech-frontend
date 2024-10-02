@@ -45,7 +45,7 @@ const ScrollerComponent = ({
         });
       });
     }
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+  }, [locale]); // Empty dependency array ensures this effect runs only once on mount
 
   return (
     <div className='scroller container' dir='ltr'>

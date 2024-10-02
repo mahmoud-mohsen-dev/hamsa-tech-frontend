@@ -2,13 +2,11 @@ import { Button, Divider, Progress, Rate, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import Image from 'next/image';
 import { FaStar } from 'react-icons/fa';
-import { v4 } from 'uuid';
 import CreateReview from './CreateReview';
 import dayjs from 'dayjs';
 import { Link } from '@/navigation';
 import { reviewType, specificationType } from '@/types/getProduct';
 import { ContentType } from '@/types/richTextBlock';
-import { useLocale } from 'next-intl';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { CreateBlockContent } from '../UI/strapi-blocks/StrapiBlocks';
 

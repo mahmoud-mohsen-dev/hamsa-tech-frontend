@@ -1,9 +1,9 @@
 import CustomBreadcrumb from '@/components/products/CustomBreadcrumb';
 import FilterSidebar from '@/components/products/FilterSidebar';
 import ProductsWrapper from '@/components/products/ProductsWrapper';
-import { fetchGraphql } from '@/services/graphqlCrud';
-import { getProductsQuery } from '@/services/products';
-import { ProductsResponseType } from '@/types/getProducts';
+// import { fetchGraphql } from '@/services/graphqlCrud';
+// import { getProductsQuery } from '@/services/products';
+// import { ProductsResponseType } from '@/types/getProducts';
 import { HomeOutlined, ProductOutlined } from '@ant-design/icons';
 import {
   getTranslations,

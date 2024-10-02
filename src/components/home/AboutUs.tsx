@@ -5,8 +5,6 @@ import {
   HiOutlineArrowNarrowLeft,
   HiOutlineArrowNarrowRight
 } from 'react-icons/hi';
-import { RiArrowRightUpLine } from 'react-icons/ri';
-import { TbSquareRoundedArrowRightFilled } from 'react-icons/tb';
 
 interface PropsType {
   data: AboutUsSectionType;

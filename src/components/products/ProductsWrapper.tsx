@@ -1,4 +1,4 @@
-import { ProductType } from '@/types/getProducts';
+// import { ProductType } from '@/types/getProducts';
 import ProductsContent from '../UI/products/ProductsContent';
 
 // {

@@ -2,9 +2,8 @@
 import { usePathname, useRouter } from '@/navigation';
 import { CategorySidebarType } from '@/types/getCategoriesFilter';
 import { Menu, MenuProps } from 'antd';
-import { clear } from 'console';
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { v4 } from 'uuid';
 
 function MenuSidebar({ data }: { data: CategorySidebarType[] }) {

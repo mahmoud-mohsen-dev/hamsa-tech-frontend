@@ -11,7 +11,7 @@ import {
   QuoteType,
   TextType
 } from '@/types/richTextBlock';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { v4 as uuid } from 'uuid';
 
 // ======================================================================

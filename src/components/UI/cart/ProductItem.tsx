@@ -1,9 +1,9 @@
 import { CartDataType } from '@/types/cartResponseTypes';
 import Image from 'next/image';
 import CartInputNumber from './CartInputNumber';
-import { useMyContext } from '@/context/Store';
+// import { useMyContext } from '@/context/Store';
 import { useState } from 'react';
-import Loading from '@/app/[locale]/loading';
+// import Loading from '@/app/[locale]/loading';
 import { Spin } from 'antd';
 
 function ProductItem({ productData }: { productData: CartDataType }) {

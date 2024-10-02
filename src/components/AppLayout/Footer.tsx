@@ -7,6 +7,7 @@ import { Link } from '@/navigation';
 import { FooterSectionType } from '@/types/getIndexLayout';
 import { useLocale, useTranslations } from 'next-intl';
 import { getSocialMediaIcon } from '@/utils/getSocialMediaIcon';
+import Image from 'next/image';
 
 interface PropsType {
   data: FooterSectionType;
@@ -28,9 +29,12 @@ function Footer({ data }: PropsType) {
       <div className='container grid grid-cols-1 gap-8 text-white md:grid-cols-2 xl:grid-cols-footer xl:gap-5'>
         <div>
           <div className='mb-5 flex items-center gap-5 xl:mb-8'>
-            <img
+            <Image
               src='/hamsa-logo-white.svg'
               alt='hamsa logo'
+              height={40}
+              width={40}
+              quality={100}
               className='h-full max-w-10'
             />
             <h2 className='text-2xl font-bold'>{t('companyName')}</h2>

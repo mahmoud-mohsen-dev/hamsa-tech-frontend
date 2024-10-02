@@ -5,13 +5,12 @@ import { useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 import { EmblaOptionsType } from 'embla-carousel';
 import EmblaSlideToScroll from '../embla/EmblaSlideToScroll';
-import { Link, usePathname, useRouter } from '@/navigation';
+import { Link} from '@/navigation';
 import {
   CategoryType,
   SubCategoryType
 } from '@/types/getNavbarProductsCategories';
 import { useLocale } from 'next-intl';
-import { useSearchParams } from 'next/navigation';
 
 // import EmblaCarouselInView from '../embla';
 

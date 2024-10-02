@@ -1,5 +1,5 @@
 import { Link } from '@/navigation';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 function FeaturedProductCard({
@@ -17,7 +17,7 @@ function FeaturedProductCard({
   linkSrc: string;
   isNew?: boolean;
 }) {
-  const locale = useLocale();
+  // const locale = useLocale();
   const t = useTranslations('HomePage.featured');
 
   return (

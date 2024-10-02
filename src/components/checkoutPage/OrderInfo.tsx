@@ -92,7 +92,10 @@ function OrderInfo({
         {/* Payment Methods*/}
         <PaymentMethods form={form} />
         {/* Billing Address */}
-        <BillingAddress form={form} />
+        <BillingAddress
+          form={form}
+          shippingCostData={shippingCostData}
+        />
         <Button
           type='primary'
           htmlType='submit'

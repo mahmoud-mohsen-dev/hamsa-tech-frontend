@@ -6,10 +6,7 @@ import {
   CartDataType,
   updateCartResponseType
 } from '@/types/cartResponseTypes';
-import {
-  FreeShippingAttributesType,
-  FreeShippingResponseType
-} from '@/types/freeShippingResponseType';
+import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
 import { ProductType } from '@/types/getProducts';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
 import {

@@ -2,7 +2,6 @@
 import { useMyContext } from '@/context/Store';
 import { usePathname, useRouter } from '@/navigation';
 import { Select } from 'antd';
-import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useTransition } from 'react';
