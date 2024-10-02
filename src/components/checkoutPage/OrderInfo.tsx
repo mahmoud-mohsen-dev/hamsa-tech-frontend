@@ -8,13 +8,34 @@ import Contact from './Contact';
 import { useTranslations } from 'next-intl';
 import ShippingCost from './ShippingCost';
 import { useForm } from 'antd/es/form/Form';
+import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
+import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
+import { useEffect } from 'react';
+import { useMyContext } from '@/context/Store';
 
-function OrderInfo() {
+function OrderInfo({
+  shippingCostData,
+  freeShippingData
+}: {
+  shippingCostData: ShippingCostDataType[] | [];
+  freeShippingData: FreeShippingAttributesType | undefined;
+}) {
   const [form] = useForm();
+  const { setFreeShippingAt } = useMyContext();
   const t = useTranslations('CheckoutPage.content');
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
+
+  useEffect(() => {
+    if (
+      typeof freeShippingData === 'object' &&
+      freeShippingData.apply_free_shipping_if_total_cart_cost_equals &&
+      freeShippingData.enable
+    ) {
+      setFreeShippingAt(freeShippingData);
+    }
+  }, [freeShippingData]);
 
   return (
     <ConfigProvider
@@ -60,7 +81,10 @@ function OrderInfo() {
         <h2 className='mt-4 text-xl font-semibold'>
           {t('deliveryTitle')}
         </h2>
-        <AddressFormItems name='shippingDetails' />
+        <AddressFormItems
+          name='shippingDetails'
+          shippingCostData={shippingCostData}
+        />
 
         {/* Shipping Cost*/}
         <ShippingCost />

@@ -3,7 +3,7 @@ export type CreateCartResponseType = {
     createCart: {
       data: {
         id: string;
-      };
+      } | null;
     };
   };
   error: string | null;
@@ -12,6 +12,8 @@ export type CreateCartResponseType = {
 export type CartDataType = {
   id: string;
   quantity: number;
+  cost: number;
+  total_cost: number;
   product: {
     data: {
       id: string;
@@ -40,12 +42,12 @@ export type CartDataType = {
   };
 };
 
-
 export type GetCartResponseType = {
   data: {
     cart: {
       data: {
         attributes: {
+          total_cart_cost: number;
           product_details: CartDataType[];
         };
       } | null;
@@ -59,6 +61,7 @@ export type updateCartResponseType = {
     updateCart: {
       data: {
         attributes: {
+          total_cart_cost: number;
           product_details: CartDataType[];
         };
       } | null;

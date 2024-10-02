@@ -17,7 +17,8 @@ function AppDrawer() {
     openDrawer,
     setOpenDrawer,
     cart,
-    calculateSubTotalCartCost
+    calculateSubTotalCartCost,
+    freeShippingAt
   } = useMyContext();
 
   const t = useTranslations('CartDrawer');
@@ -44,11 +45,12 @@ function AppDrawer() {
         cart.length > 0 ?
           <div
             // dir='ltr'
-            className='grid h-full grid-cols-1 grid-rows-[40px_1fr_140px] gap-4'
+            className={`grid h-full grid-cols-1 ${freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals && freeShippingAt.enable ? 'grid-rows-[40px_1fr_140px]' : 'grid-rows-[1fr_140px]'} gap-4`}
           >
             {/* Progress bar */}
             <AppProgress
               totalCartCosts={calculateSubTotalCartCost()}
+              freeShippingAt={freeShippingAt}
             />
             {/* Products Items */}
             <ul className='flex flex-col gap-3 overflow-hidden overflow-y-auto'>
@@ -105,9 +107,6 @@ function AppDrawer() {
             <div className='font-base flex gap-2'>
               <Link
                 href={'/login'}
-                onClick={() => {
-                  setOpenDrawer(false);
-                }}
                 className='font-inter font-semibold text-blue-sky-normal underline hover:text-blue-sky-light hover:underline'
               >
                 {t('loginMessage')}

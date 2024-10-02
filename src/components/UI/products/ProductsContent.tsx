@@ -16,20 +16,17 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { v4 } from 'uuid';
 
-function ProductsContent({
-  serverProductsData
-}: {
-  serverProductsData: ProductType[];
-}) {
-  const { productsCount, setProductsCount } = useMyContext();
+function ProductsContent() {
+  const { setProductsData, productsData } = useMyContext();
   const locale = useLocale();
   const t = useTranslations('ProductsPage.filtersSidebar');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<ProductType[] | null>(
-    serverProductsData
-  );
+  // const [data, setData] = useState<ProductType[] | null>(
+  //   serverProductsData
+  // );
   const firstRender = useRef(0);
+  console.log(productsData);
 
   // Extract category from URL params or use default value
   const category = useSearchParams().get('category') ?? ''; // Get the "category" parameter from the URL
@@ -39,23 +36,23 @@ function ProductsContent({
     const getProducts = async () => {
       try {
         setLoading(true);
-        const {
-          data: {
-            products: { data: resData }
-          },
-          error: resError
-        } = await fetchProducts(category, subCategory, locale);
+        const { data: resData, error: resError } =
+          await fetchProducts(category, subCategory, locale);
         // console.log('fetching data in the client...');
 
-        if (resData === null || resError) {
+        if (!resData || resError) {
           console.error('Error fetching products');
           console.error(resError);
         }
+        if (resData?.products?.data) {
+          setProductsData(resData.products.data);
+        }
 
-        setData(resData ?? null);
+        // setData(resData ?? null);
       } catch (err: any) {
         setError(err);
-        setData(null);
+        setProductsData([]);
+        // setData(null);
       } finally {
         setLoading(false);
       }
@@ -66,9 +63,16 @@ function ProductsContent({
     firstRender.current += 1;
   }, [category, subCategory, locale]);
 
-  useEffect(() => {
-    setProductsCount(data?.length ?? 0);
-  }, [data]);
+  // useEffect(() => {
+  //   if (
+  //     firstRender.current === 0 &&
+  //     serverProductsData &&
+  //     serverProductsData?.length > 0
+  //   ) {
+  //     console.log(firstRender.current);
+  //     setProductsData(serverProductsData);
+  //   }
+  // }, []);
 
   if (error) {
     console.log('Error fetching products');
@@ -83,26 +87,32 @@ function ProductsContent({
         <h4 className='text-sm font-medium text-black-medium'>
           {/* {data?.children?.length ?? 0}{' '} */}
           <span className='text-gray-normal'>
-            {t(`foundItems`, { count: productsCount })}
+            {t(`foundItems`, { count: productsData.length ?? 0 })}
           </span>
         </h4>
         <Sorter />
       </div>
 
-      {loading ?
+      {(
+        loading ||
+        (firstRender.current === 0 && productsData.length === 0)
+      ) ?
         <Spin
           size='large'
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
-      : data === null || data.length === 0 ?
+      : (
+        (productsData === null || productsData.length === 0) &&
+        firstRender.current !== 0
+      ) ?
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
       : <div className='mt-5 grid grid-cols-3 gap-4'>
-          {data &&
-            data?.length > 0 &&
-            data.map((product) => {
+          {productsData &&
+            productsData?.length > 0 &&
+            productsData.map((product) => {
               return (
                 <ProductCard
                   id={product.id}

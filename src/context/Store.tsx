@@ -7,6 +7,12 @@ import {
   updateCartResponseType
 } from '@/types/cartResponseTypes';
 import {
+  FreeShippingAttributesType,
+  FreeShippingResponseType
+} from '@/types/freeShippingResponseType';
+import { ProductType } from '@/types/getProducts';
+import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
+import {
   aggregateCartItems,
   updateCartInTheBackend
 } from '@/utils/cartContextUtils';
@@ -14,8 +20,10 @@ import { getCartId } from '@/utils/cookieUtils';
 import { createContext, useContext, useState } from 'react';
 
 const MyContext = createContext<{
-  productsCount: number;
-  setProductsCount: React.Dispatch<React.SetStateAction<number>>;
+  productsData: [] | ProductType[];
+  setProductsData: React.Dispatch<
+    React.SetStateAction<[] | ProductType[]>
+  >;
   currentProductId: string;
   setCurrentProductId: React.Dispatch<React.SetStateAction<string>>;
   nextProductId: string;
@@ -40,13 +48,21 @@ const MyContext = createContext<{
     quantity: number,
     setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
   ) => Promise<void>;
+  setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
   calculateSubTotalCartCost: () => number;
   calculateTotalCartItems: () => number;
   addToCartIsLoading: string;
-  shippingCost: number;
-  freeShippingApplied: boolean;
-  setFreeShippingApplied: React.Dispatch<
-    React.SetStateAction<boolean>
+  shippingCost: ShippingCostDataType[];
+  updateShippingCost: (
+    newShippingCostData: ShippingCostDataType[]
+  ) => void;
+  selectedGovernorate: ShippingCostDataType | null;
+  setSelectedGovernorate: React.Dispatch<
+    React.SetStateAction<ShippingCostDataType | null>
+  >;
+  freeShippingAt: undefined | FreeShippingAttributesType;
+  setFreeShippingAt: React.Dispatch<
+    React.SetStateAction<undefined | FreeShippingAttributesType>
   >;
 } | null>(null);
 
@@ -55,18 +71,26 @@ export const StoreContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [productsCount, setProductsCount] = useState(0);
+  const [productsData, setProductsData] = useState<
+    [] | ProductType[]
+  >([]);
   const [currentProductId, setCurrentProductId] = useState('0');
   const [nextProductId, setNextProductId] = useState('0');
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [drawerIsLoading, setDrawerIsLoading] =
     useState<boolean>(false);
   const [cart, setCart] = useState<CartDataType[]>([]);
+  const [totalCartCost, setTotalCartCost] = useState(0);
   const [addToCartIsLoading, setAddToCartIsLoading] =
     useState<string>('');
-  const [shippingCost, setShippingCost] = useState(50);
-  const [freeShippingApplied, setFreeShippingApplied] =
-    useState(false);
+  const [shippingCost, setShippingCost] = useState<
+    ShippingCostDataType[]
+  >([]);
+  const [selectedGovernorate, setSelectedGovernorate] =
+    useState<ShippingCostDataType | null>(null);
+  const [freeShippingAt, setFreeShippingAt] = useState<
+    undefined | FreeShippingAttributesType
+  >(undefined);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -94,18 +118,25 @@ export const StoreContextProvider = ({
       }
       setAddToCartIsLoading(productId);
       setDrawerIsLoading(true);
-      const { data, error } = await fetchGraphqlClient(
-        updateCartInTheBackend(cartId, cart, productId, quantity)
-      );
+      const { data, error } = (await fetchGraphqlClient(
+        updateCartInTheBackend(
+          cartId,
+          cart,
+          productId,
+          quantity,
+          productsData
+        )
+      )) as updateCartResponseType;
 
       if (data && !error) {
-        const updatedCartItems =
-          data?.updateCart?.data?.attributes?.product_details;
+        const updatedCartItems = data?.updateCart?.data?.attributes;
         if (updatedCartItems) {
-          const updatedCartData =
-            aggregateCartItems(updatedCartItems);
+          const updatedCartData = aggregateCartItems(
+            updatedCartItems.product_details
+          );
           console.log(updatedCartData);
           setCart(updatedCartData); // Update cart context with the response data
+          setTotalCartCost(updatedCartItems?.total_cart_cost ?? 0);
           setOpenDrawer(true);
         }
       } else {
@@ -194,22 +225,32 @@ export const StoreContextProvider = ({
   };
   // Calaulate the total product costs in cart
   const calculateSubTotalCartCost = () => {
-    return cart.reduce((acc, cur) => {
-      if (cur?.product?.data?.attributes?.sale_price > 0) {
-        return (acc +=
-          cur.product.data.attributes.sale_price * cur.quantity);
-      } else {
-        return (acc +=
-          cur?.product?.data?.attributes?.price * cur.quantity || 0);
-      }
-    }, 0);
+    // return cart.reduce((acc, cur) => {
+    //   if (cur?.product?.data?.attributes?.sale_price > 0) {
+    //     return (acc +=
+    //       cur.product.data.attributes.sale_price * cur.quantity);
+    //   } else {
+    //     return (acc +=
+    //       cur?.product?.data?.attributes?.price * cur.quantity || 0);
+    //   }
+    // }, 0);
+    return totalCartCost;
+  };
+
+  // update shpping cost
+  const updateShippingCost = (
+    newShippingCost: ShippingCostDataType[]
+  ) => {
+    if (newShippingCost.length > 0) {
+      setShippingCost(newShippingCost);
+    }
   };
 
   return (
     <MyContext.Provider
       value={{
-        productsCount,
-        setProductsCount,
+        productsData,
+        setProductsData,
         currentProductId,
         setCurrentProductId,
         nextProductId,
@@ -224,12 +265,16 @@ export const StoreContextProvider = ({
         incrementCartItem,
         decrementCartItem,
         updateCartItemQuantity,
+        setTotalCartCost,
         calculateSubTotalCartCost,
         calculateTotalCartItems,
         addToCartIsLoading,
         shippingCost,
-        freeShippingApplied,
-        setFreeShippingApplied
+        updateShippingCost,
+        selectedGovernorate,
+        setSelectedGovernorate,
+        freeShippingAt,
+        setFreeShippingAt
       }}
     >
       {children}

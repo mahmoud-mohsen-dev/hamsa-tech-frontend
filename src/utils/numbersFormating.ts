@@ -1,8 +1,8 @@
-export function convertToArabicNumeralsWithFormatting(
+export function formatCurrencyNumbers(
   number: number,
   currency: string = 'ج.م',
   locale: string,
-  alignCurrecy?: 'left' | 'right',
+  // alignCurrecy?: 'left' | 'right',
   doNotShowCurrency: boolean = false
 ) {
   const englishToArabicMap: { [key: string]: string } = {
@@ -38,11 +38,12 @@ export function convertToArabicNumeralsWithFormatting(
   if (doNotShowCurrency) {
     return arabicFormattedNumber;
   }
-  if (alignCurrecy === 'right' || locale === 'ar') {
+  if (locale === 'ar') {
     return `${arabicFormattedNumber} ${currency}`;
   }
   // Convert each English digit (and comma) to Arabic-Indic numeral
-  return `${currency} ${arabicFormattedNumber}`;
+  // return `${currency} ${arabicFormattedNumber}`;
+  return formatEnglishNumbers(number, currency);
 }
 
 // Example usage:
@@ -53,8 +54,8 @@ export function convertToArabicNumeralsWithFormatting(
 export function formatEnglishNumbers(
   number: number,
   currency: string = 'EGP',
-  doNotShowCurrency: boolean = true,
-  alignCurrency: 'left' | 'right' = 'left'
+  doNotShowCurrency: boolean = false
+  // alignCurrency: 'left' | 'right' = 'left'
 ) {
   // Format the number with commas for thousands, millions, etc.
   const formattedNumber = number.toLocaleString('en-US', {
@@ -67,9 +68,9 @@ export function formatEnglishNumbers(
     return formattedNumber; // Return only the formatted number
   }
 
-  if (alignCurrency === 'right') {
-    return `${formattedNumber} ${currency}`; // Currency on the right
-  }
+  // if (alignCurrency === 'right') {
+  //   return `${formattedNumber} ${currency}`; // Currency on the right
+  // }
 
   return `${currency} ${formattedNumber}`; // Currency on the left
 }

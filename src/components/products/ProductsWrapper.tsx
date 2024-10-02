@@ -1,11 +1,18 @@
 import { ProductType } from '@/types/getProducts';
 import ProductsContent from '../UI/products/ProductsContent';
 
-function ProductsWrapper({ data }: { data: ProductType[] }) {
+// {
+//   productsData
+// }: {
+//   productsData: ProductType[] | null;
+// }
+
+function ProductsWrapper() {
   return (
     <main>
       <section>
-        <ProductsContent serverProductsData={data} />
+        {/* <ProductsContent serverProductsData={productsData} /> */}
+        <ProductsContent />
       </section>
     </main>
   );

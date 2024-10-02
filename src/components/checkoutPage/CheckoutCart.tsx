@@ -2,21 +2,35 @@
 
 import { useMyContext } from '@/context/Store';
 import Image from 'next/image';
-import { convertToArabicNumeralsWithFormatting } from '@/utils/numbersFormating';
+import { formatCurrencyNumbers } from '@/utils/numbersFormating';
 import { Button, ConfigProvider, Form, Input } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
+import { IoIosPricetag } from 'react-icons/io';
 
 function CheckoutCart() {
   const {
     cart,
     calculateTotalCartItems,
     calculateSubTotalCartCost,
-    shippingCost
+    selectedGovernorate,
+    freeShippingAt
   } = useMyContext();
   const t = useTranslations('CheckoutPage.content');
   const locale = useLocale();
   const totalCartQuantities = calculateTotalCartItems();
-  const totalCartCost = calculateSubTotalCartCost() + shippingCost;
+  const deliveryCost = selectedGovernorate?.attributes.delivery_cost;
+
+  const subTotalCost = calculateSubTotalCartCost();
+  let applyFreeShipping = false;
+  if (
+    freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals &&
+    freeShippingAt.enable
+  ) {
+    applyFreeShipping =
+      subTotalCost > 0 &&
+      subTotalCost >
+        freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals;
+  }
 
   return (
     <ConfigProvider
@@ -30,24 +44,24 @@ function CheckoutCart() {
       <div className='px-10 py-5'>
         <ul className='flex flex-col gap-3'>
           {cart.map((item) => {
-            let cost = 0;
-            if (
-              item?.product?.data?.attributes?.sale_price > 0 &&
-              item?.quantity
-            ) {
-              cost =
-                item?.product?.data?.attributes?.sale_price *
-                item?.quantity;
-            } else {
-              cost =
-                item?.product?.data?.attributes?.price *
-                item?.quantity;
-            }
+            // let cost = 0;
+            // if (
+            //   item?.product?.data?.attributes?.sale_price > 0 &&
+            //   item?.quantity
+            // ) {
+            //   cost =
+            //     item?.product?.data?.attributes?.sale_price *
+            //     item?.quantity;
+            // } else {
+            //   cost =
+            //     item?.product?.data?.attributes?.price *
+            //     item?.quantity;
+            // }
 
             return (
               <li
                 key={item.id}
-                className='grid grid-cols-[54px_1fr_65px_20px_65px] items-center gap-3'
+                className='grid grid-cols-[54px_1fr_75px_20px_85px] items-center gap-2'
               >
                 <div className='overflow-hidden rounded border border-solid border-gray-light'>
                   <Image
@@ -65,22 +79,20 @@ function CheckoutCart() {
                     className='min-h-[54px] min-w-[54px] object-contain'
                   />
                 </div>
-                <h4 className='font-sans text-base'>
+                <h4 className={`mx-1.5 font-sans text-sm`}>
                   {item?.product?.data?.attributes?.name ?? ''}
                 </h4>
                 <p className='font-sans text-sm' dir='ltr'>
-                  {convertToArabicNumeralsWithFormatting(
-                    item?.product?.data?.attributes?.sale_price > 0 ?
-                      item?.product?.data?.attributes?.sale_price
-                    : item?.product?.data?.attributes?.price,
+                  {formatCurrencyNumbers(
+                    item?.cost,
                     t('currency'),
                     locale
                   )}
                 </p>
                 <p className='font-sans text-sm'>{item?.quantity}</p>
                 <p className='font-sans text-sm'>
-                  {convertToArabicNumeralsWithFormatting(
-                    cost,
+                  {formatCurrencyNumbers(
+                    item?.total_cost,
                     t('currency'),
                     locale
                   )}
@@ -137,7 +149,7 @@ function CheckoutCart() {
             </span>
           </div>
           <p>
-            {convertToArabicNumeralsWithFormatting(
+            {formatCurrencyNumbers(
               calculateSubTotalCartCost(),
               t('currency'),
               locale
@@ -145,26 +157,45 @@ function CheckoutCart() {
           </p>
         </div>
 
-        <div className='mt-3 flex items-center justify-between font-sans text-sm'>
+        <div className='mt-3 flex flex-wrap items-center justify-between font-sans text-sm'>
           <span>{t('shippingTitle')}</span>
-          <span>
-            {convertToArabicNumeralsWithFormatting(
-              shippingCost,
-              t('currency'),
-              locale
-            )}
+          <span
+            className={
+              applyFreeShipping && deliveryCost ? 'line-through' : ''
+            }
+          >
+            {deliveryCost ?
+              formatCurrencyNumbers(
+                deliveryCost,
+                t('currency'),
+                locale
+              )
+            : <p>{t('selectGovernorateForShippingCosts')}</p>}
           </span>
+          {applyFreeShipping && deliveryCost && (
+            <div className='mt-1 flex basis-full items-end justify-end gap-2'>
+              <IoIosPricetag />
+              <p className='text-sm font-normal'>
+                {t('freeShippingMessage')}
+              </p>
+            </div>
+          )}
         </div>
 
-        <div className='mt-3 flex items-center justify-between font-sans text-base font-semibold'>
+        <div className='mt-3 flex items-center justify-between font-sans'>
           <span>{t('totalTitle')}</span>
-          <span>
-            {convertToArabicNumeralsWithFormatting(
-              totalCartCost,
-              t('currency'),
-              locale
-            )}
-          </span>
+          {deliveryCost ?
+            <span className='text-base font-semibold'>
+              {formatCurrencyNumbers(
+                calculateSubTotalCartCost() + deliveryCost,
+                t('currency'),
+                locale
+              )}
+            </span>
+          : <span className='text-sm font-normal'>
+              {t('selectGovernorateForTotalOrder')}
+            </span>
+          }
         </div>
       </div>
     </ConfigProvider>

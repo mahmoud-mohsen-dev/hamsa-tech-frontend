@@ -35,6 +35,6 @@ export type ProductsResponseType = {
   data: {
     products: {
       data: ProductType[];
-    };
+    } | null;
   };
 };

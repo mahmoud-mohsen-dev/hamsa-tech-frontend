@@ -1,25 +1,8 @@
 import { ProductsResponseType } from '@/types/getProducts';
 import { fetchGraphqlClient } from './graphqlCrud';
 
-export async function fetchProducts(
-  category: string | null = null,
-  subcategory: string | null = null,
-  locale: string
-) {
-  // Build the query based on the filters
-  let queryArgs = `locale: "${locale ?? 'en'}"`;
-
-  if (category && !subcategory) {
-    queryArgs += `, filters: {sub_category : {category: {slug: {eq : "${category}"}}}}`;
-  }
-  if (category && subcategory) {
-    queryArgs += `, filters: {sub_category : {slug: {eq : "${subcategory}"}}, and:[{sub_category : {category: {slug: {eq : "${category}"}}}}]}`;
-  }
-  // console.log(queryArgs);
-
-  // Fetch products based on the filters
-  const response = (await fetchGraphqlClient(
-    `{
+export const getProductsQuery = (queryArgs: string) => {
+  return `{
         products(${queryArgs}) {
             data {
             id
@@ -49,7 +32,28 @@ export async function fetchProducts(
             }
             }
         }
-    }`
+    }`;
+};
+
+export async function fetchProducts(
+  category: string | null = null,
+  subcategory: string | null = null,
+  locale: string
+) {
+  // Build the query based on the filters
+  let queryArgs = `locale: "${locale ?? 'en'}"`;
+
+  if (category && !subcategory) {
+    queryArgs += `, filters: {sub_category : {category: {slug: {eq : "${category}"}}}}`;
+  }
+  if (category && subcategory) {
+    queryArgs += `, filters: {sub_category : {slug: {eq : "${subcategory}"}}, and:[{sub_category : {category: {slug: {eq : "${category}"}}}}]}`;
+  }
+  // console.log(queryArgs);
+
+  // Fetch products based on the filters
+  const response = (await fetchGraphqlClient(
+    getProductsQuery(queryArgs)
   )) as ProductsResponseType;
   // console.log(response);
   return response;

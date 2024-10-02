@@ -76,7 +76,7 @@
         "Show: 20",
         "Show: 10"
       ],
-      "foundItems": "Products Found  {count}"
+      "foundItems": "Products Found:  {count}"
     },
     "content": {
       "productCardReview": "Review",
@@ -209,6 +209,8 @@
       "totalTitle": "Total",
       "freeShippingMessage": "Free shipping",
       "phoneTooltip": "In case we need to contact you about your order",
+      "selectGovernorateForShippingCosts": "Select the governorate to view shipping costs",
+      "selectGovernorateForTotalOrder": "Select the governorate to view the total order",
       "formValidationErrorMessages": {
         "inputEmailOrPhone": "Please input your email or phone number!",
         "selectCountry": "Please select a country!",

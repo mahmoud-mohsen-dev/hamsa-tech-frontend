@@ -1,7 +1,9 @@
 import CustomBreadcrumb from '@/components/products/CustomBreadcrumb';
 import FilterSidebar from '@/components/products/FilterSidebar';
 import ProductsWrapper from '@/components/products/ProductsWrapper';
-import { fetchProducts } from '@/services/products';
+import { fetchGraphql } from '@/services/graphqlCrud';
+import { getProductsQuery } from '@/services/products';
+import { ProductsResponseType } from '@/types/getProducts';
 import { HomeOutlined, ProductOutlined } from '@ant-design/icons';
 import {
   getTranslations,
@@ -86,13 +88,11 @@ const Products = async ({
   const allProductsText = t('breadcrumb.all');
   // Enable static rendering
   unstable_setRequestLocale(locale);
-  const productsResponse = await fetchProducts(null, null, locale);
-  const {
-    data: {
-      products: { data: productsData }
-    },
-    error: productsError
-  } = productsResponse;
+  // const productsResponse = (await fetchGraphql(
+  //   getProductsQuery(`locale: "${locale ?? 'en'}"`)
+  // )) as ProductsResponseType;
+  // const { data: productsData, error: productsError } =
+  //   productsResponse as ProductsResponseType;
 
   const category =
     Array.isArray(searchParams?.category) ?
@@ -103,6 +103,10 @@ const Products = async ({
       searchParams['sub-category'][0]
     : searchParams['sub-category'] || undefined;
 
+  // if (productsError || !productsData) {
+  //   console.log('Error fetching products');
+  //   console.error(productsError);
+  // }
   // console.log(category, subCategory);
   // console.log(JSON.stringify(productsData));
   // console.log(JSON.stringify(productsError));
@@ -118,9 +122,10 @@ const Products = async ({
         className={`mt-5 grid ${locale === 'ar' ? 'grid-cols-[284px_1fr]' : 'grid-cols-[260px_1fr]'} gap-8`}
       >
         <FilterSidebar />
-        {productsError === null && productsData !== null && (
-          <ProductsWrapper data={productsData} />
-        )}
+        <ProductsWrapper
+        // productsData={productsData?.products?.data ?? null}
+        />
+        {/* )} */}
       </div>
     </section>
     // </ConfigAntThemes>

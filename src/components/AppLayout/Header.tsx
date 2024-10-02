@@ -50,9 +50,12 @@ const getCartQuery = (cartId: number) => {
     cart(id: ${cartId}) {
         data {
             attributes {
+                total_cart_cost
                 product_details {
                     id
                     quantity
+                    cost
+                    total_cost
                     product {
                         data {
                             id
@@ -96,8 +99,13 @@ const countCartItems = (cart: CartDataType[]) => {
 };
 
 function Header({ navLinks, productsSubNav }: PropsType) {
-  const { cart, setCart, setOpenDrawer, setDrawerIsLoading } =
-    useMyContext();
+  const {
+    cart,
+    setCart,
+    setOpenDrawer,
+    setDrawerIsLoading,
+    setTotalCartCost
+  } = useMyContext();
   const [linkHovered, setLinkHovered] = useState('');
 
   const locale = useLocale();
@@ -119,7 +127,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
         .then(({ data, error }: CreateCartResponseType) => {
           console.log('Successfully created cart');
           console.log(data);
-          if (error || data === null) {
+          if (error || data.createCart.data === null || !data) {
             console.error(error);
             removeCartId();
             setCart([]);
@@ -149,6 +157,9 @@ function Header({ navLinks, productsSubNav }: PropsType) {
                 data.cart.data.attributes.product_details
               );
               setCart(updatedCartData);
+              setTotalCartCost(
+                data?.cart?.data?.attributes?.total_cart_cost
+              );
             }
           }
         })

@@ -29,6 +29,10 @@ function ProductItem({ productData }: { productData: CartDataType }) {
         <CartInputNumber
           productId={productData?.product?.data?.id ?? ''}
           setIsDataLoading={setIsDataLoading}
+          // salePrice={
+          //   productData?.product?.data?.attributes?.sale_price
+          // }
+          // price={productData?.product?.data?.attributes?.price}
           maxValue={
             productData?.product?.data?.attributes?.stock ?? 1
           }
@@ -41,27 +45,10 @@ function ProductItem({ productData }: { productData: CartDataType }) {
           />
         : <>
             <h2 className='font-inter text-xs font-semibold text-blue-gray-light'>
-              {productData?.quantity} &#215;{' '}
-              {productData?.product?.data?.attributes?.sale_price ?
-                productData?.product?.data?.attributes?.sale_price
-              : productData?.product?.data?.attributes?.price || 0
-              }{' '}
-              EGP
+              {productData?.quantity} &#215; {productData.cost} EGP
             </h2>
             <h2 className='mt-1 font-inter text-base font-medium text-black-light'>
-              ={' '}
-              {(
-                typeof attributes?.sale_price === 'number' &&
-                attributes?.sale_price > 0
-              ) ?
-                Number(
-                  attributes.sale_price * (productData?.quantity || 1)
-                )
-              : Number(
-                  (attributes?.price || 0) *
-                    (productData?.quantity || 1)
-                )
-              }
+              = {productData?.total_cost}
             </h2>
           </>
         }

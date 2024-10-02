@@ -2,11 +2,29 @@ import { Form, Input, Select, Tooltip } from 'antd';
 import { IoIosArrowDown } from 'react-icons/io';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLocale, useTranslations } from 'next-intl';
-import { getEgyptianGovernorates } from '@/utils/getEgyptianGovernorates';
+import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
+import { convertShippingCostsToOptions } from '@/utils/getEgyptianGovernorates';
+import { useEffect } from 'react';
+import { useMyContext } from '@/context/Store';
 
-function AddressFormItems({ name }: { name: string }) {
+function AddressFormItems({
+  name,
+  shippingCostData
+}: {
+  name: string;
+  shippingCostData: ShippingCostDataType[];
+}) {
+  const { updateShippingCost, shippingCost, setSelectedGovernorate } =
+    useMyContext();
   const locale = useLocale();
   const t = useTranslations('CheckoutPage.content');
+
+  useEffect(() => {
+    if (shippingCostData.length > 0) {
+      updateShippingCost(shippingCostData);
+    }
+  }, [shippingCostData]);
+
   return (
     <>
       <Form.Item
@@ -102,7 +120,14 @@ function AddressFormItems({ name }: { name: string }) {
           className='basis-1/3'
         >
           <Select
-            options={getEgyptianGovernorates(locale)}
+            options={convertShippingCostsToOptions(shippingCost)}
+            onChange={(value: string) => {
+              shippingCost.map((item) => {
+                if (item?.attributes?.governorate === value) {
+                  setSelectedGovernorate(item);
+                }
+              });
+            }}
             placeholder={t('governorateTitle')}
             suffixIcon={<IoIosArrowDown size={18} />}
           />

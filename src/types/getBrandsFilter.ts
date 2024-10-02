@@ -16,6 +16,6 @@ interface BrandsResponse {
 
 // Define the overall response type that includes error handling
 export interface BrandsFilterResponseType {
-  data: BrandsResponse;
+  data: BrandsResponse | null;
   error: string | null; // Assuming error can be a string or null
 }

@@ -4,7 +4,9 @@
     "locale": "{locale, select, ar {العربية} en {English} other {Unknown}}"
   },
   "Error": {
-    "heading": "<p>للأسف، واجهنا خطأ.</p><p>يمكنك محاولة <retry>إعادة تحميل الصفحة</retry> التي كنت تزورها.</p>",
+    "heading": "خطأ في الخادم الداخلي.",
+    "subHeading": "نحن نعمل بالفعل على حل المشكلة.",
+    "reloadButtonText": "إعادة تحميل الصفحة",
     "metaData": {
       "title": "حدث خطأ ما!"
     }
@@ -12,7 +14,7 @@
   "NotFoundPage": {
     "heading": "خطأ في الخادم الداخلي.",
     "subHeading": "نحن نعمل بالفعل على حل المشكلة.",
-    "reloadButtonText": "إعادة تحميل الصفحة",
+    "linkText": "الرجوع إلى الصفحة الرئيسية",
     "metaData": {
       "title": "الصفحة غير موجودة"
     }
@@ -74,7 +76,7 @@
         "عرض: 20",
         "عرض: 10"
       ],
-      "foundItems": "عدد المنتجات الموجودة  {count}"
+      "foundItems": "عدد المنتجات الموجودة:  {count}"
     },
     "content": {
       "productCardReview": "تقييم",
@@ -208,6 +210,8 @@
       "totalTitle": "الإجمالي",
       "freeShippingMessage": "شحن مجاني",
       "phoneTooltip": "في حال احتجنا إلى الاتصال بك بشأن طلبك",
+      "selectGovernorateForShippingCosts": "اختر المحافظة لعرض تكلفة الشحن",
+      "selectGovernorateForTotalOrder": "اختر المحافظة لعرض إجمالي الطلب",
       "formValidationErrorMessages": {
         "inputEmailOrPhone": "يرجى إدخال بريدك الإلكتروني أو رقم هاتفك!",
         "selectCountry": "يرجى اختيار الدولة!",
