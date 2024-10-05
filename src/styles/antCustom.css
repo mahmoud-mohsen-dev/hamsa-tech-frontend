@@ -235,3 +235,18 @@
   > .ant-collapse-content-box {
   padding: 0;
 }
+
+/* Postal code Input */
+/* For Chrome, Safari, Edge, and Opera */
+input[type='number']#order-info_shippingDetailsPostalCode::-webkit-outer-spin-button,
+input[type='number']#order-info_shippingDetailsPostalCode::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type='number']#order-info_shippingDetailsPostalCode {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

@@ -17,7 +17,7 @@ function PaymentMethods({ form }: { form: FormInstance<any> }) {
   // const onRadioChange = (e) => {
   //   console.log(e.target.value);
   // };
-  console.log(paymentValue, 'paymentValue');
+  // console.log(paymentValue, 'paymentValue');
   const getPaymentItems: () => CollapseProps['items'] = () => [
     {
       key: 'card',
@@ -78,10 +78,10 @@ function PaymentMethods({ form }: { form: FormInstance<any> }) {
       )
     },
     {
-      key: 'cashOnDelivery',
+      key: 'cash_on_delivery',
       label: (
         <Radio
-          value='cashOnDelivery'
+          value='cash_on_delivery'
           style={{ width: '100%' }}
           // checked={paymentValue === 'cashOnDelivery'}
         >

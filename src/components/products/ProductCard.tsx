@@ -70,7 +70,7 @@ function ProductCard({
           </h4>
           <div className='flex items-center gap-2 leading-[54px]'>
             <Rate defaultValue={avgRate} allowHalf disabled />
-            <span className='text-base font-normal text-gray-light'>
+            <span className='text-base font-normal text-gray-medium'>
               ({totalRates}{' '}
               {totalRates > 1 ?
                 t('productCardReviews')
@@ -84,7 +84,7 @@ function ProductCard({
         <div className='mt-1 flex h-[45px] items-center justify-between'>
           <div className='flex flex-col items-start justify-center gap-1'>
             {currentPrice > 1 ?
-              <p className='text-[15px] font-normal leading-[18px] text-gray-light line-through'>
+              <p className='text-[15px] font-normal leading-[18px] text-gray-medium line-through'>
                 EGP {priceBeforeDeduction}
               </p>
             : <p className='text-base font-medium text-black-light'>

@@ -3,34 +3,96 @@
 import { useMyContext } from '@/context/Store';
 import Image from 'next/image';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import { Button, ConfigProvider, Form, Input } from 'antd';
+import {
+  Button,
+  ConfigProvider,
+  Divider,
+  Form,
+  Input,
+  message
+} from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
-import { IoIosPricetag } from 'react-icons/io';
+// import { IoIosPricetag } from 'react-icons/io';
+import { fetchGraphqlClient } from '@/services/graphqlCrud';
+import { GetCouponResponseType } from '@/types/getCouponResponseType';
+import { generateISODateForGraphQL } from '@/utils/dateHelpers';
+import { useState } from 'react';
+import { FaTags } from 'react-icons/fa';
+import { RiDiscountPercentLine } from 'react-icons/ri';
+import { FaDeleteLeft, FaTag } from 'react-icons/fa6';
+
+const getCouponQuery = (name: string): string => {
+  return `{
+    offers(
+      filters: {
+        coupon_code: { eq: "${name}" }
+        expiration_date: { gte: "${generateISODateForGraphQL()}" }
+        start_date: { lte: "${generateISODateForGraphQL()}" }
+      }
+      sort: "createdAt:desc"
+    ) {
+        data {
+            id
+            attributes {
+                coupon_code
+                expiration_date
+                start_date
+                deduction_value
+                deduction_value_by_percent
+            }
+        }
+    }
+  }`;
+};
 
 function CheckoutCart() {
   const {
     cart,
     calculateTotalCartItems,
     calculateSubTotalCartCost,
-    selectedGovernorate,
-    freeShippingAt
+    couponData,
+    setCouponData,
+    calculateDeliveryCost,
+    isApplyFreeShippingEnabled,
+    calculateCouponDeductionValue,
+    calculateTotalOrderCost
   } = useMyContext();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [couponLoading, setCouponLoading] = useState(false);
+
   const t = useTranslations('CheckoutPage.content');
   const locale = useLocale();
   const totalCartQuantities = calculateTotalCartItems();
-  const deliveryCost = selectedGovernorate?.attributes.delivery_cost;
 
   const subTotalCost = calculateSubTotalCartCost();
-  let applyFreeShipping = false;
-  if (
-    freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals &&
-    freeShippingAt.enable
-  ) {
-    applyFreeShipping =
-      subTotalCost > 0 &&
-      subTotalCost >
-        freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals;
-  }
+
+  const deliveryCost = calculateDeliveryCost();
+  const checkIfApplyFreeShippingEnabled =
+    isApplyFreeShippingEnabled();
+
+  const couponDeductionValue = calculateCouponDeductionValue();
+  const totalOrderCost = calculateTotalOrderCost();
+
+  const onFormFinished = async (values: { coupon: string }) => {
+    try {
+      console.log(values.coupon);
+      setCouponLoading(true);
+      const { data, error } = (await fetchGraphqlClient(
+        getCouponQuery(values.coupon)
+      )) as GetCouponResponseType;
+
+      if (error || !data) {
+        messageApi.error(error);
+      } else {
+        const couponData = data?.offers?.data[0];
+        setCouponData(couponData);
+      }
+    } catch (e: any) {
+      messageApi.error(e?.message ?? 'error fetching coupon data');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   return (
     <ConfigProvider
@@ -41,6 +103,7 @@ function CheckoutCart() {
         }
       }}
     >
+      {contextHolder}
       <div className='px-10 py-5'>
         <ul className='flex flex-col gap-3'>
           {cart.map((item) => {
@@ -104,6 +167,7 @@ function CheckoutCart() {
 
         <Form
           name='couponForm'
+          onFinish={onFormFinished}
           style={{
             marginTop: '16px',
             display: 'flex',
@@ -113,11 +177,19 @@ function CheckoutCart() {
         >
           <Form.Item
             name='coupon'
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: t(
+            //       'formValidationErrorMessages.couponCodeRequired'
+            //     )
+            //   }
+            // ]}
             style={{ flexBasis: '100%', marginBottom: '0px' }}
           >
             <Input
               type='text'
-              placeholder={t('copounPlaceholder')}
+              placeholder={t('couponPlaceholder')}
               style={{
                 // borderRadius: '5px',
                 paddingBlock: '11px',
@@ -129,9 +201,11 @@ function CheckoutCart() {
           <Button
             type='default'
             htmlType='submit'
+            loading={couponLoading}
             style={{
               // borderRadius: '5px',
               fontSize: '14px',
+              width: '110px',
               height: '46px'
             }}
           >
@@ -139,7 +213,9 @@ function CheckoutCart() {
           </Button>
         </Form>
 
-        <div className='mt-4 flex items-center justify-between font-sans text-sm'>
+        <div
+          className={`mt-4 flex items-center justify-between font-sans text-sm`}
+        >
           <div>
             <span>{t('subtotalTitle')} • </span>
             <span>
@@ -148,20 +224,76 @@ function CheckoutCart() {
               : `${totalCartQuantities} ${t('itemsTitle')}`}
             </span>
           </div>
-          <p>
+          {/* <div className='flex gap-1'> */}
+          <p
+          // className={`${couponDeductionValue > 0 ? 'line-through' : ''}`}
+          >
             {formatCurrencyNumbers(
-              calculateSubTotalCartCost(),
+              subTotalCost,
               t('currency'),
               locale
             )}
           </p>
+
+          {/* {couponDeductionValue > 0 && (
+              <>
+                <Divider
+                  type='vertical'
+                  style={{ minHeight: '20px' }}
+                  className='bg-gray-400'
+                />
+                <p>
+                  {formatCurrencyNumbers(
+                    subTotalCost - couponDeductionValue,
+                    t('currency'),
+                    locale
+                  )}
+                </p>
+              </>
+            )} */}
+          {/* </div> */}
         </div>
 
-        <div className='mt-3 flex flex-wrap items-center justify-between font-sans text-sm'>
+        {couponDeductionValue > 0 && (
+          <div className='mt-1.5 flex basis-full items-start justify-between font-sans text-sm'>
+            <div>
+              <span>{t('discount')}</span>
+              <div
+                className={`${locale === 'ar' ? 'pr-[15px]' : 'pl-[15px]'} mt-1.5 flex items-center rounded-md bg-[rgba(0,0,0,.06)] text-xs`}
+              >
+                <RiDiscountPercentLine size={14} />
+                <span className={locale === 'ar' ? 'mr-3' : 'ml-3'}>
+                  {couponData?.attributes.coupon_code}
+                </span>
+                <Button
+                  type='link'
+                  onClick={() => {
+                    // remove coupon
+                    setCouponData(null);
+                  }}
+                >
+                  <FaDeleteLeft />
+                </Button>
+              </div>
+            </div>
+            <span>
+              -{' '}
+              {formatCurrencyNumbers(
+                couponDeductionValue,
+                t('currency'),
+                locale
+              )}
+            </span>
+          </div>
+        )}
+
+        <div className='mt-1.5 flex flex-wrap items-center justify-between font-sans text-sm'>
           <span>{t('shippingTitle')}</span>
           <span
             className={
-              applyFreeShipping && deliveryCost ? 'line-through' : ''
+              checkIfApplyFreeShippingEnabled && deliveryCost ?
+                'line-through'
+              : ''
             }
           >
             {deliveryCost ?
@@ -172,9 +304,9 @@ function CheckoutCart() {
               )
             : <p>{t('selectGovernorateForShippingCosts')}</p>}
           </span>
-          {applyFreeShipping && deliveryCost && (
-            <div className='mt-1 flex basis-full items-end justify-end gap-2'>
-              <IoIosPricetag />
+          {checkIfApplyFreeShippingEnabled && deliveryCost && (
+            <div className='mt-1 flex basis-full items-center justify-end gap-2'>
+              <FaTag className='-scale-x-100' size={14} />
               <p className='text-sm font-normal'>
                 {t('freeShippingMessage')}
               </p>
@@ -182,12 +314,19 @@ function CheckoutCart() {
           )}
         </div>
 
+        <Divider
+          className='bg-gray-light'
+          style={{ marginBlock: '16px' }}
+        />
+
         <div className='mt-3 flex items-center justify-between font-sans'>
-          <span>{t('totalTitle')}</span>
+          <span className='text-base font-semibold'>
+            {t('totalTitle')}
+          </span>
           {deliveryCost ?
             <span className='text-base font-semibold'>
               {formatCurrencyNumbers(
-                calculateSubTotalCartCost() + deliveryCost,
+                totalOrderCost,
                 t('currency'),
                 locale
               )}

@@ -4,9 +4,11 @@ import CartInputNumber from './CartInputNumber';
 // import { useMyContext } from '@/context/Store';
 import { useState } from 'react';
 // import Loading from '@/app/[locale]/loading';
-import { Spin } from 'antd';
+import { Button, Spin } from 'antd';
+import { useMyContext } from '@/context/Store';
 
 function ProductItem({ productData }: { productData: CartDataType }) {
+  const { updateCartItemQuantity } = useMyContext();
   const [isDataLoading, setIsDataLoading] = useState(false);
   const { attributes } = productData?.product?.data ?? {};
 
@@ -22,7 +24,7 @@ function ProductItem({ productData }: { productData: CartDataType }) {
         width={105}
         height={125}
         quality={100}
-        objectFit='contain'
+        className='object-contain'
       />
       <div>
         <h3 className='mb-3'>{attributes?.name ?? ''}</h3>
@@ -37,6 +39,25 @@ function ProductItem({ productData }: { productData: CartDataType }) {
             productData?.product?.data?.attributes?.stock ?? 1
           }
         />
+        <Button
+          type='link'
+          className='opacity-60 transition-opacity duration-300 hover:opacity-100'
+          onClick={() => {
+            updateCartItemQuantity(
+              productData?.product?.data?.id,
+              0,
+              setIsDataLoading
+            );
+          }}
+        >
+          <Image
+            src='/icons/hamsa-logo.svg'
+            alt='delete icon'
+            width={20}
+            height={20}
+            quality={100}
+          />
+        </Button>
       </div>
       <div>
         {isDataLoading ?

@@ -26,7 +26,7 @@ function ProductsContent() {
   //   serverProductsData
   // );
   const firstRender = useRef(0);
-  console.log(productsData);
+  // console.log(productsData);
 
   // Extract category from URL params or use default value
   const category = useSearchParams().get('category') ?? ''; // Get the "category" parameter from the URL

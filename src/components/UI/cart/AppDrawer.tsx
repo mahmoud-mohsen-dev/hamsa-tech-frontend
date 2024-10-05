@@ -74,6 +74,9 @@ function AppDrawer() {
               </div>
               <Link
                 href={'/checkout'}
+                onClick={() => {
+                  setOpenDrawer(false);
+                }}
                 className='font-base block w-full border-none bg-yellow-medium py-5 text-center font-inter font-semibold text-black-medium hover:bg-opacity-85 hover:text-black-medium focus:outline-none focus:ring-2 focus:ring-yellow-medium focus:ring-offset-2'
               >
                 {t('checkoutMessage')}
@@ -104,6 +107,9 @@ function AppDrawer() {
             <div className='font-base flex gap-2'>
               <Link
                 href={'/login'}
+                onClick={() => {
+                  setOpenDrawer(false);
+                }}
                 className='font-inter font-semibold text-blue-sky-normal underline hover:text-blue-sky-light hover:underline'
               >
                 {t('loginMessage')}

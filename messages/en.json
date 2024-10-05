@@ -180,7 +180,7 @@
       "firstNameTitle": "First Name",
       "lastNameTitle": "Last Name",
       "addressTitle": "Address",
-      "streetTitle": "Apartment, suite, etc. (optional)",
+      "streetTitle": "Apartment, floor, suite, etc. (optional)",
       "cityTitle": "City",
       "governorateTitle": "Governorate",
       "postalCode": "postal code (optional)",
@@ -205,7 +205,8 @@
       "currency": "E£",
       "shippingTitle": "Shipping Cost",
       "onlyCost": "Only {shippingCost} EGP",
-      "copounPlaceholder": "Copoun",
+      "couponPlaceholder": "Coupon",
+      "discount": "Discount",
       "totalTitle": "Total",
       "freeShippingMessage": "Free shipping",
       "phoneTooltip": "In case we need to contact you about your order",
@@ -218,7 +219,8 @@
         "inputLastName": "Please input your last name!",
         "inputAddress": "Please input your address!",
         "inputCity": "Please input your city!",
-        "selectGovernorate": "Please select your governorate!"
+        "selectGovernorate": "Please select your governorate!",
+        "couponCodeRequired": "Please enter a copoun code!"
       }
     },
     "metaData": {

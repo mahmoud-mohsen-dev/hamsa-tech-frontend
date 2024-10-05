@@ -7,6 +7,7 @@ import {
   updateCartResponseType
 } from '@/types/cartResponseTypes';
 import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
+import { CouponDataType } from '@/types/getCouponResponseType';
 import { ProductType } from '@/types/getProducts';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
 import {
@@ -49,8 +50,8 @@ const MyContext = createContext<{
   calculateSubTotalCartCost: () => number;
   calculateTotalCartItems: () => number;
   addToCartIsLoading: string;
-  shippingCost: ShippingCostDataType[];
-  updateShippingCost: (
+  governoratesData: ShippingCostDataType[];
+  updateGovernoratesData: (
     newShippingCostData: ShippingCostDataType[]
   ) => void;
   selectedGovernorate: ShippingCostDataType | null;
@@ -61,6 +62,15 @@ const MyContext = createContext<{
   setFreeShippingAt: React.Dispatch<
     React.SetStateAction<undefined | FreeShippingAttributesType>
   >;
+  couponData: CouponDataType | null;
+  setCouponData: React.Dispatch<
+    React.SetStateAction<CouponDataType | null>
+  >;
+  calculateDeliveryCost: () => number | null;
+  isApplyFreeShippingEnabled: () => boolean;
+  calculateNetDeliveryCost: () => number;
+  calculateCouponDeductionValue: () => number;
+  calculateTotalOrderCost: () => number;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -80,7 +90,7 @@ export const StoreContextProvider = ({
   const [totalCartCost, setTotalCartCost] = useState(0);
   const [addToCartIsLoading, setAddToCartIsLoading] =
     useState<string>('');
-  const [shippingCost, setShippingCost] = useState<
+  const [governoratesData, setGovernoratesData] = useState<
     ShippingCostDataType[]
   >([]);
   const [selectedGovernorate, setSelectedGovernorate] =
@@ -88,6 +98,9 @@ export const StoreContextProvider = ({
   const [freeShippingAt, setFreeShippingAt] = useState<
     undefined | FreeShippingAttributesType
   >(undefined);
+  const [couponData, setCouponData] = useState<CouponDataType | null>(
+    null
+  );
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -222,25 +235,65 @@ export const StoreContextProvider = ({
   };
   // Calaulate the total product costs in cart
   const calculateSubTotalCartCost = () => {
-    // return cart.reduce((acc, cur) => {
-    //   if (cur?.product?.data?.attributes?.sale_price > 0) {
-    //     return (acc +=
-    //       cur.product.data.attributes.sale_price * cur.quantity);
-    //   } else {
-    //     return (acc +=
-    //       cur?.product?.data?.attributes?.price * cur.quantity || 0);
-    //   }
-    // }, 0);
     return totalCartCost;
   };
 
-  // update shpping cost
-  const updateShippingCost = (
+  // update shipping cost
+  const updateGovernoratesData = (
     newShippingCost: ShippingCostDataType[]
   ) => {
     if (newShippingCost.length > 0) {
-      setShippingCost(newShippingCost);
+      setGovernoratesData(newShippingCost);
     }
+  };
+
+  const calculateDeliveryCost = () => {
+    return selectedGovernorate?.attributes?.delivery_cost ?
+        selectedGovernorate?.attributes?.delivery_cost
+      : null;
+  };
+
+  const isApplyFreeShippingEnabled = () => {
+    let applyFreeShipping = false;
+    if (
+      freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals &&
+      freeShippingAt.enable
+    ) {
+      const subTotalCost = calculateSubTotalCartCost();
+      applyFreeShipping =
+        subTotalCost > 0 &&
+        subTotalCost >
+          freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals;
+    }
+    return applyFreeShipping;
+  };
+
+  const calculateNetDeliveryCost = () => {
+    return isApplyFreeShippingEnabled() ? 0 : (
+        (calculateDeliveryCost() ?? 0)
+      );
+  };
+
+  const calculateCouponDeductionValue = () => {
+    const subTotalCost = calculateSubTotalCartCost();
+    let couponDeductionValue = 0;
+    if (couponData?.attributes?.deduction_value) {
+      couponDeductionValue = couponData?.attributes?.deduction_value;
+    }
+    if (couponData?.attributes?.deduction_value_by_percent) {
+      couponDeductionValue =
+        subTotalCost /
+        couponData?.attributes?.deduction_value_by_percent;
+    }
+    return couponDeductionValue;
+  };
+
+  const calculateTotalOrderCost = () => {
+    return (
+      calculateSubTotalCartCost() -
+      calculateCouponDeductionValue() +
+      calculateNetDeliveryCost()
+    );
   };
 
   return (
@@ -266,12 +319,19 @@ export const StoreContextProvider = ({
         calculateSubTotalCartCost,
         calculateTotalCartItems,
         addToCartIsLoading,
-        shippingCost,
-        updateShippingCost,
+        governoratesData,
+        updateGovernoratesData,
         selectedGovernorate,
         setSelectedGovernorate,
         freeShippingAt,
-        setFreeShippingAt
+        setFreeShippingAt,
+        couponData,
+        setCouponData,
+        calculateDeliveryCost,
+        isApplyFreeShippingEnabled,
+        calculateNetDeliveryCost,
+        calculateCouponDeductionValue,
+        calculateTotalOrderCost
       }}
     >
       {children}

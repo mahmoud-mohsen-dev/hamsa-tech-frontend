@@ -14,14 +14,17 @@ function AddressFormItems({
   name: string;
   shippingCostData: ShippingCostDataType[];
 }) {
-  const { updateShippingCost, shippingCost, setSelectedGovernorate } =
-    useMyContext();
+  const {
+    updateGovernoratesData,
+    governoratesData,
+    setSelectedGovernorate
+  } = useMyContext();
   // const locale = useLocale();
   const t = useTranslations('CheckoutPage.content');
 
   useEffect(() => {
     if (shippingCostData.length > 0) {
-      updateShippingCost(shippingCostData);
+      updateGovernoratesData(shippingCostData);
     }
   }, [shippingCostData]);
 
@@ -87,7 +90,7 @@ function AddressFormItems({
         <Input type='text' placeholder={t('addressTitle')} />
       </Form.Item>
       <Form.Item
-        name={`${name}Apartment`}
+        name={`${name}Address2`}
         style={{ marginBottom: '20px' }}
       >
         <Input type='text' placeholder={t('streetTitle')} />
@@ -104,7 +107,11 @@ function AddressFormItems({
           style={{ marginBottom: '20px' }}
           className='basis-1/3'
         >
-          <Input type='text' placeholder={t('cityTitle')} />
+          <Input
+            type='text'
+            placeholder={t('cityTitle')}
+            style={{ height: '45px' }}
+          />
         </Form.Item>
         <Form.Item
           name={`${name}Governorate`}
@@ -120,14 +127,15 @@ function AddressFormItems({
           className='basis-1/3'
         >
           <Select
-            options={convertShippingCostsToOptions(shippingCost)}
+            options={convertShippingCostsToOptions(governoratesData)}
             onChange={(value: string) => {
-              shippingCost.map((item) => {
+              governoratesData.map((item) => {
                 if (item?.attributes?.governorate === value) {
                   setSelectedGovernorate(item);
                 }
               });
             }}
+            style={{ height: '45px' }}
             placeholder={t('governorateTitle')}
             suffixIcon={<IoIosArrowDown size={18} />}
           />
@@ -137,7 +145,11 @@ function AddressFormItems({
           style={{ marginBottom: '20px' }}
           className='basis-1/3'
         >
-          <Input type='text' placeholder={t('postalCode')} />
+          <Input
+            type='number'
+            placeholder={t('postalCode')}
+            style={{ height: '45px' }}
+          />
         </Form.Item>
       </div>
       <Form.Item

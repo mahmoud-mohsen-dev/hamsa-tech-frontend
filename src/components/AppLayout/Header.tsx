@@ -13,9 +13,11 @@ import { Link, usePathname } from '@/navigation';
 import { NavbarLink } from '@/types/getIndexLayout';
 import { CategoryType } from '@/types/getNavbarProductsCategories';
 import {
+  doesCookieByNameExist,
   getCartId,
   removeCartId,
-  setCartId
+  setCartId,
+  setCookie
 } from '@/utils/cookieUtils';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
@@ -25,6 +27,8 @@ import {
 } from '@/types/cartResponseTypes';
 import { useMyContext } from '@/context/Store';
 import { aggregateCartItems } from '@/utils/cartContextUtils';
+import { CreateGuestUserResponseType } from '@/types/guestUserReponses';
+import { CreateAddressResponseType } from '@/types/addressResponseTypes';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -89,6 +93,35 @@ const getCartQuery = (cartId: number) => {
   }`;
 };
 
+const getCreateGuestUserQuery = () => {
+  return `mutation CreateGuestUser {
+    createGuestUser(
+        data: {
+            subscribed_to_news_and_offers: ${false}
+            publishedAt: "${new Date().toISOString()}"
+        }
+    ) {
+        data {
+            id
+        }
+    }
+  }`;
+};
+
+const getCreateShippingAddressQuery = () => {
+  return `mutation CreateAddress {
+    createAddress(
+        data: {
+            publishedAt: "${new Date().toISOString()}"
+        }
+    ) {
+        data {
+            id
+        }
+    }
+  }`;
+};
+
 const countCartItems = (cart: CartDataType[]) => {
   if (cart.length > 0) {
     return cart.reduce((acc, cur) => {
@@ -118,55 +151,116 @@ function Header({ navLinks, productsSubNav }: PropsType) {
   useScrollHandler();
 
   useEffect(() => {
-    // const isCartIdExist = doesCartIdExist();
-    const cartId = getCartId();
-    if (!cartId) {
-      // const cartId = setCartId(v4());
-      // createCart(cartId);
-      fetchGraphqlClient(createCartQuery())
-        .then(({ data, error }: CreateCartResponseType) => {
-          console.log('Successfully created cart');
-          console.log(data);
-          if (error || data.createCart.data === null || !data) {
+    const handleCart = async () => {
+      const cartId = getCartId();
+
+      if (!cartId) {
+        try {
+          const { data, error }: CreateCartResponseType =
+            await fetchGraphqlClient(createCartQuery());
+
+          if (error || !data || data.createCart.data === null) {
             console.error(error);
             removeCartId();
             setCart([]);
-            // removeLocalStorageCart();
-          }
-          if (data?.createCart?.data?.id) {
+          } else if (data?.createCart?.data?.id) {
             setCartId(data.createCart.data.id);
-            // setLocalStorageCart();
           }
-        })
-        .catch((error) => {
-          console.error('Failed to create cart');
-          console.error(error);
-          // removeCartId();
-          // removeLocalStorageCart();
-        });
-    } else {
-      fetchGraphqlClient(getCartQuery(Number(cartId)))
-        .then(({ data, error }: GetCartResponseType) => {
-          if (error || data === null) {
+        } catch (error) {
+          console.error('Failed to create or guest user cart', error);
+        }
+      } else {
+        try {
+          const { data, error }: GetCartResponseType =
+            await fetchGraphqlClient(getCartQuery(Number(cartId)));
+
+          if (error || !data) {
             console.error(error);
           } else {
-            console.log('Successfully fetched cart');
-            console.log(data);
             if (data?.cart?.data?.attributes?.product_details) {
               const updatedCartData = aggregateCartItems(
                 data.cart.data.attributes.product_details
               );
               setCart(updatedCartData);
               setTotalCartCost(
-                data?.cart?.data?.attributes?.total_cart_cost
+                data.cart.data.attributes.total_cart_cost
               );
             }
           }
-        })
-        .catch((error) => {
-          console.error('Failed to fetch cart');
-          console.error(error);
-        });
+        } catch (error) {
+          console.error('Failed to fetch cart', error);
+        }
+      }
+    };
+
+    const handleGuestUser = async () => {
+      try {
+        const { data: guestUserData, error: guestUserError } =
+          (await fetchGraphqlClient(
+            getCreateGuestUserQuery()
+          )) as CreateGuestUserResponseType;
+
+        if (
+          guestUserError ||
+          !guestUserData?.createGuestUser?.data?.id
+        ) {
+          console.error('Failed to create guest user');
+        }
+
+        if (guestUserData?.createGuestUser.data?.id) {
+          setCookie(
+            'guestUserId',
+            guestUserData?.createGuestUser.data?.id
+          );
+        } else {
+          console.error('Failed to get guest user ID from API');
+        }
+      } catch (e) {
+        console.error('Failed to create guest user', e);
+      }
+    };
+
+    const handleShippingAddress = async () => {
+      try {
+        const {
+          data: shippingAddressData,
+          error: shippingAddressError
+        } = (await fetchGraphqlClient(
+          getCreateShippingAddressQuery()
+        )) as CreateAddressResponseType;
+
+        if (
+          shippingAddressError ||
+          !shippingAddressData?.createAddress?.data?.id
+        ) {
+          console.error('Failed to create guest user');
+        }
+
+        if (shippingAddressData?.createAddress?.data?.id) {
+          setCookie(
+            'shippingAddressId',
+            shippingAddressData?.createAddress?.data?.id
+          );
+        } else {
+          console.error('Failed to get shipping address ID from API');
+        }
+      } catch (e) {
+        console.error('Failed to create address', e);
+      }
+    };
+
+    handleCart();
+
+    const guestUserIdExists = doesCookieByNameExist('guestUserId');
+    if (!guestUserIdExists) {
+      handleGuestUser();
+    }
+
+    const shippingAddressIdExists = doesCookieByNameExist(
+      'shippingAddressId'
+    );
+    if (!shippingAddressIdExists) {
+      handleShippingAddress();
     }
   }, []);
 

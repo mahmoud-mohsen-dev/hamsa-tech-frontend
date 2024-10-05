@@ -181,7 +181,7 @@
       "firstNameTitle": "الاسم الأول",
       "lastNameTitle": "الاسم الأخير",
       "addressTitle": "العنوان",
-      "streetTitle": "الشقة، الجناح، إلخ. (اختياري)",
+      "streetTitle": "شقة، طابق، جناح، إلخ. (اختياري)",
       "cityTitle": "المدينة",
       "governorateTitle": "المحافظة",
       "postalCode": "الرمز البريدي (اختياري)",
@@ -206,7 +206,8 @@
       "currency": "ج.م",
       "shippingTitle": " تكاليف الشحن",
       "onlyCost": "فقط {shippingCost} جنيه مصري",
-      "copounPlaceholder": "كوبون",
+      "couponPlaceholder": "كوبون",
+      "discount": "خصم",
       "totalTitle": "الإجمالي",
       "freeShippingMessage": "شحن مجاني",
       "phoneTooltip": "في حال احتجنا إلى الاتصال بك بشأن طلبك",
@@ -219,7 +220,8 @@
         "inputLastName": "يرجى إدخال اسمك الأخير!",
         "inputAddress": "يرجى إدخال عنوانك!",
         "inputCity": "يرجى إدخال مدينتك!",
-        "selectGovernorate": "يرجى اختيار المحافظة!"
+        "selectGovernorate": "يرجى اختيار المحافظة!",
+        "couponCodeRequired": "يرجى إدخال رمز القسيمة!"
       }
     },
     "metaData": {
