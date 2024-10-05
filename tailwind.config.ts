@@ -48,6 +48,7 @@ const config: Config = {
         'blue-sky-ultralight': '#ECF4FF',
         'blue-sky-light': '#07a0c3',
         'blue-sky-normal': '#00A0E9',
+        'blue-sky-accent': '#1677ff',
         'blue-sky-medium': '#2563eb',
         'blue-sky-dark': '#1773b0',
         //======= Shades Of Red ========

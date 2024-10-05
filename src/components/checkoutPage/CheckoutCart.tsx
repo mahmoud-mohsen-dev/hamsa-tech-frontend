@@ -99,8 +99,6 @@ function CheckoutCart() {
                 couponData.attributes.deduction_value_by_percent
               ))
         ) {
-          console.log(subTotalCost);
-          console.log(couponData.attributes.deduction_value);
           setCouponData(couponData);
         } else {
           messageApi.error(
