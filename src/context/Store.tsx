@@ -74,13 +74,15 @@ const MyContext = createContext<{
 } | null>(null);
 
 export const StoreContextProvider = ({
-  children
+  children,
+  initialProductsData
 }: {
   children: React.ReactNode;
+  initialProductsData: ProductType[];
 }) => {
   const [productsData, setProductsData] = useState<
     [] | ProductType[]
-  >([]);
+  >(initialProductsData);
   const [currentProductId, setCurrentProductId] = useState('0');
   const [nextProductId, setNextProductId] = useState('0');
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);

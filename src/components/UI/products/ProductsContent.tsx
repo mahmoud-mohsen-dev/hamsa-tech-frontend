@@ -4,6 +4,7 @@
 import ProductCard from '@/components/products/ProductCard';
 import Sorter from '@/components/products/Sorter';
 import { useMyContext } from '@/context/Store';
+import { useIsMount } from '@/hooks/useIsMount';
 import { fetchProducts } from '@/services/products';
 // import { getProductsCategory } from '@/services/products';
 // import { productsObjectType } from '@/types';
@@ -17,6 +18,7 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 } from 'uuid';
 
 function ProductsContent() {
+  const { didMount } = useIsMount();
   const { setProductsData, productsData } = useMyContext();
   const locale = useLocale();
   const t = useTranslations('ProductsPage.filtersSidebar');
@@ -25,7 +27,7 @@ function ProductsContent() {
   // const [data, setData] = useState<ProductType[] | null>(
   //   serverProductsData
   // );
-  const firstRender = useRef(0);
+  // const firstRender = useRef(0);
   // console.log(productsData);
 
   // Extract category from URL params or use default value
@@ -57,10 +59,12 @@ function ProductsContent() {
         setLoading(false);
       }
     };
-    if (firstRender.current > 0) {
+
+    if (didMount) {
       getProducts();
     }
-    firstRender.current += 1;
+    // }
+    // firstRender.current += 1;
   }, [category, subCategory, locale]);
 
   // useEffect(() => {
@@ -93,18 +97,15 @@ function ProductsContent() {
         <Sorter />
       </div>
 
-      {(
-        loading ||
-        (firstRender.current === 0 && productsData.length === 0)
-      ) ?
+      {loading ?
+        // || (firstRender.current === 0 && productsData.length === 0)
         <Spin
           size='large'
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
-      : (
-        (productsData === null || productsData.length === 0) &&
-        firstRender.current !== 0
-      ) ?
+      : productsData === null || productsData.length === 0 ?
+        //  &&
+        // firstRender.current !== 0
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           className='mt-5 grid min-h-[500px] w-full place-content-center'

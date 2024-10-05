@@ -88,11 +88,6 @@ const Products = async ({
   const allProductsText = t('breadcrumb.all');
   // Enable static rendering
   unstable_setRequestLocale(locale);
-  // const productsResponse = (await fetchGraphql(
-  //   getProductsQuery(`locale: "${locale ?? 'en'}"`)
-  // )) as ProductsResponseType;
-  // const { data: productsData, error: productsError } =
-  //   productsResponse as ProductsResponseType;
 
   const category =
     Array.isArray(searchParams?.category) ?
@@ -102,14 +97,6 @@ const Products = async ({
     Array.isArray(searchParams['sub-category']) ?
       searchParams['sub-category'][0]
     : searchParams['sub-category'] || undefined;
-
-  // if (productsError || !productsData) {
-  //   console.log('Error fetching products');
-  //   console.error(productsError);
-  // }
-  // console.log(category, subCategory);
-  // console.log(JSON.stringify(productsData));
-  // console.log(JSON.stringify(productsError));
 
   return (
     // <ConfigAntThemes>

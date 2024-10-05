@@ -22,6 +22,8 @@ import ScrollNavbarListener from '@/components/UI/navbar/ScrollNavbarListener';
 import { NavbarProductsCategoriesResponseType } from '@/types/getNavbarProductsCategories';
 import AppDrawer from '@/components/UI/cart/AppDrawer';
 import CustomSWRConfig from '@/lib/CustomSWRConfig';
+import { getProductsQuery } from '@/services/products';
+import { ProductsResponseType } from '@/types/getProducts';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -161,6 +163,18 @@ export default async function LocaleLayout({
     console.error('Failed to fetch navbar products categories data'); // Let Next.js handle the error
   }
 
+  const { data: productsData, error: productsError } =
+    (await fetchGraphql(
+      getProductsQuery(`locale: "${locale ?? 'en'}"`)
+    )) as ProductsResponseType;
+
+  if (productsError || !productsData) {
+    console.log('Error fetching products');
+    console.error(productsError);
+  }
+
+  // console.log(JSON.stringify(productsData?.products?.data));
+
   // console.log(JSON.stringify(navbarProductsCategoriesData));
 
   return (
@@ -171,7 +185,16 @@ export default async function LocaleLayout({
     >
       <body className='flex h-full flex-col bg-white text-black-light'>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <StoreContextProvider>
+          <StoreContextProvider
+            initialProductsData={
+              (
+                productsData?.products?.data &&
+                productsData?.products?.data.length > 0
+              ) ?
+                productsData?.products?.data
+              : []
+            }
+          >
             <CustomSWRConfig>
               <AntdRegistry>
                 <ConfigAntThemes>
