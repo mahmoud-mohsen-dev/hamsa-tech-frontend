@@ -333,7 +333,7 @@ function OrderInfo({
 
       messageApi.open({
         type: 'loading',
-        content: 'Action in progress..'
+        content: t('form.loading')
       });
 
       const { data: guestUserData, error: guestUserError } =
@@ -391,7 +391,7 @@ function OrderInfo({
             'Failed to create billing address',
             addressError
           );
-          messageApi.error('Error during form submission');
+          messageApi.error(t('form.addressCreationError'));
         }
         if (addressData) {
           billingAddressId = addressData;
@@ -425,31 +425,31 @@ function OrderInfo({
         console.error('Failed to create guest user data');
         console.error(guestUserError);
         console.error(guestUserData);
-        messageApi.error('Error during form submission');
+        messageApi.error(t('form.guestUserError'));
       }
 
       if (addressError || !addressData?.updateAddress?.data?.id) {
         console.error('Failed to create address');
         console.error(addressError);
         console.error(addressData);
-        messageApi.error('Error during form submission');
+        messageApi.error(t('form.addressCreationError'));
       }
 
       if (orderError || !orderData?.createOrder?.data?.id) {
         console.error('Failed to create a new order');
         console.error(orderError);
         console.error(orderData);
-        messageApi.error('Error placing order');
+        messageApi.error(t('form.orderCreationError'));
       } else {
         console.log(orderData);
       }
 
-      await messageApi.success('Loading finished');
+      await messageApi.success(t('form.successMessage'));
 
       // success();
     } catch (err) {
       console.error('Error during form submission:', err);
-      messageApi.error('Error during form submission');
+      messageApi.error(t('form.orderError'));
     } finally {
       messageApi.destroy();
     }
@@ -459,7 +459,7 @@ function OrderInfo({
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
     messageApi.error(
       errorInfo?.errorFields[0]?.errors[0] ??
-        'Form submission failed! Please check the form.'
+        t('form.formSubmissionFailed')
     );
     console.log('Form failed:', errorInfo);
   };

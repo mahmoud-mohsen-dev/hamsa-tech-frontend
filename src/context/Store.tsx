@@ -69,7 +69,10 @@ const MyContext = createContext<{
   calculateDeliveryCost: () => number | null;
   isApplyFreeShippingEnabled: () => boolean;
   calculateNetDeliveryCost: () => number;
-  calculateCouponDeductionValue: () => number;
+  calculateCouponDeductionValue: (
+    deductionValue?: number | null,
+    deductionValueByPercent?: number | null
+  ) => number;
   calculateTotalOrderCost: () => number;
 } | null>(null);
 
@@ -276,17 +279,32 @@ export const StoreContextProvider = ({
       );
   };
 
-  const calculateCouponDeductionValue = () => {
+  const calculateCouponDeductionValue = (
+    deductionValue: number | null = null,
+    deductionValueByPercent: number | null = null
+  ) => {
     const subTotalCost = calculateSubTotalCartCost();
     let couponDeductionValue = 0;
-    if (couponData?.attributes?.deduction_value) {
-      couponDeductionValue = couponData?.attributes?.deduction_value;
+
+    if (deductionValue || deductionValueByPercent) {
+      if (deductionValue) {
+        couponDeductionValue = deductionValue;
+      }
+      if (deductionValueByPercent) {
+        couponDeductionValue = subTotalCost / deductionValueByPercent;
+      }
+    } else {
+      if (couponData?.attributes?.deduction_value) {
+        couponDeductionValue =
+          couponData?.attributes?.deduction_value;
+      }
+      if (couponData?.attributes?.deduction_value_by_percent) {
+        couponDeductionValue =
+          subTotalCost /
+          couponData?.attributes?.deduction_value_by_percent;
+      }
     }
-    if (couponData?.attributes?.deduction_value_by_percent) {
-      couponDeductionValue =
-        subTotalCost /
-        couponData?.attributes?.deduction_value_by_percent;
-    }
+
     return couponDeductionValue;
   };
 

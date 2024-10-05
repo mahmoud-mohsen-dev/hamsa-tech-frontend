@@ -222,6 +222,20 @@
         "inputCity": "يرجى إدخال مدينتك!",
         "selectGovernorate": "يرجى اختيار المحافظة!",
         "couponCodeRequired": "يرجى إدخال رمز القسيمة!"
+      },
+      "couponCode": {
+        "couponNotValid": "القسيمة غير صالحة!",
+        "subtotalCartCostMustBeGreaterThanCouponValue": "يجب أن يكون إجمالي تكلفة السلة أكبر من قيمة القسيمة!"
+      },
+      "form": {
+        "loading": "جارٍ تنفيذ الإجراء..",
+        "formSubmissionError": "حدث خطأ أثناء تقديم النموذج",
+        "formSubmissionFailed": "فشل إرسال النموذج! يرجى التحقق من النموذج.",
+        "orderError": "خطأ في تقديم الطلب",
+        "addressCreationError": "فشل في إنشاء العنوان",
+        "guestUserError": "فشل في إنشاء بيانات المستخدم الضيف",
+        "orderCreationError": "فشل في إنشاء طلب جديد",
+        "successMessage": "تم الانتهاء من التحميل"
       }
     },
     "metaData": {

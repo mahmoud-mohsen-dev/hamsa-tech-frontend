@@ -221,6 +221,20 @@
         "inputCity": "Please input your city!",
         "selectGovernorate": "Please select your governorate!",
         "couponCodeRequired": "Please enter a copoun code!"
+      },
+      "couponCode": {
+        "couponNotValid": "Coupon not valid!",
+        "subtotalCartCostMustBeGreaterThanCouponValue": "Subtotal cart cost must be greater than coupon value!"
+      },
+      "form": {
+        "loading": "Action in progress..",
+        "formSubmissionError": "Error during form submission",
+        "formSubmissionFailed": "Form submission failed! Please check the form.",
+        "orderError": "Error placing order",
+        "addressCreationError": "Failed to create address",
+        "guestUserError": "Failed to create guest user data",
+        "orderCreationError": "Failed to create a new order",
+        "successMessage": "Loading finished"
       }
     },
     "metaData": {

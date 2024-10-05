@@ -82,13 +82,36 @@ function CheckoutCart() {
       )) as GetCouponResponseType;
 
       if (error || !data) {
-        messageApi.error(error);
+        messageApi.error(t('couponCode.couponNotValid'));
       } else {
         const couponData = data?.offers?.data[0];
-        setCouponData(couponData);
+        if (
+          (typeof couponData?.attributes?.deduction_value ===
+            'number' &&
+            couponData?.attributes?.deduction_value > 0 &&
+            subTotalCost > couponData.attributes.deduction_value) ||
+          (typeof couponData?.attributes
+            ?.deduction_value_by_percent === 'number' &&
+            couponData?.attributes?.deduction_value > 0 &&
+            subTotalCost >
+              calculateCouponDeductionValue(
+                null,
+                couponData.attributes.deduction_value_by_percent
+              ))
+        ) {
+          console.log(subTotalCost);
+          console.log(couponData.attributes.deduction_value);
+          setCouponData(couponData);
+        } else {
+          messageApi.error(
+            t(
+              'couponCode.subtotalCartCostMustBeGreaterThanCouponValue'
+            )
+          );
+        }
       }
     } catch (e: any) {
-      messageApi.error(e?.message ?? 'error fetching coupon data');
+      messageApi.error(t('couponCode.couponNotValid'));
     } finally {
       setCouponLoading(false);
     }
