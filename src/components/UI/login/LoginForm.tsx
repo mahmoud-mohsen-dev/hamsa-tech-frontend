@@ -74,14 +74,6 @@ function LoginForm() {
             Sign up
           </Link>
         </p>
-
-        <div className='mt-4'>
-          <Link
-            href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/connect/google`}
-          >
-            Sign-in with Google
-          </Link>
-        </div>
       </Form>
     </ConfigProvider>
   );
