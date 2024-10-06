@@ -242,5 +242,68 @@
       "title": "صفحة إتمام الشراء - همسة تك",
       "description": "أكمل عملية الشراء بأمان لمنتجات أنظمة المراقبة، أجهزة نقاط البيع، التحكم في الوصول، والمزيد في همسة تك. اختر من بين خيارات دفع متعددة بما في ذلك البطاقة، المحفظة أو التقسيط."
     }
+  },
+  "SigninPage": {
+    "content": {
+      "title": "تسجيل الدخول إلى حسابك",
+      "emailPlaceholder": "البريد الإلكتروني",
+      "passwordPlaceholder": "كلمة المرور",
+      "forgotPasswordLink": "نسيت كلمة المرور؟",
+      "rememberMeLabel": "تذكرني",
+      "loginButton": "تسجيل الدخول",
+      "signupLabel": "ليس لديك حساب بعد؟",
+      "registerButton": "إنشاء حساب",
+      "orLabel": "أو",
+      "facebookButton": "تسجيل الدخول باستخدام فيسبوك",
+      "googleButton": "تسجيل الدخول باستخدام جوجل",
+      "formValidationErrorMessages": {
+        "emailRequired": "البريد الإلكتروني مطلوب!",
+        "passwordRequired": "كلمة المرور مطلوبة!"
+      }
+    },
+    "metaData": {
+      "title": "صفحة تسجيل الدخول إلى همسة تك",
+      "description": "تسجيل الدخول الآمن إلى حساب همسة تك الخاص بك"
+    }
+  },
+  "SignupPage": {
+    "content": {
+      "title": "أنشئ حسابك",
+      "emailPlaceholder": "البريد الإلكتروني",
+      "fullNamePlaceholder": "الاسم الكامل",
+      "passwordPlaceholder": "كلمة المرور",
+      "phonePlaceholder": "الهاتف",
+      "signupButton": "إنشاء حساب",
+      "signinLabel": "هل لديك حساب بالفعل؟",
+      "signinLink": "تسجيل الدخول",
+      "orLabel": "أو",
+      "andLabel": "و",
+      "aggreeToTermsLabel": "الموافقة على",
+      "termsOfUse": "شروط الاستخدام",
+      "privacyPolicy": "سياسة الخصوصية",
+      "newsLetterCheckboxLable": "الحصول على التحديثات والعروض الخاصة!",
+      "formValidationErrorMessages": {
+        "fullNameRequired": "الاسم الكامل مطلوب",
+        "emailRequired": "البريد الإلكتروني مطلوب",
+        "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
+        "passwordRequired": "كلمة المرور مطلوبة",
+        "phoneRequired": "رقم الهاتف مطلوب",
+        "termsRequired": "يجب الموافقة على الشروط لإنشاء حساب جديد",
+        "minValidationPasswordError": "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل",
+        "maxValidationPasswordError": "يجب ألا تتجاوز كلمة المرور 20 حرفًا",
+        "phoneTypeError": "رقم الهاتف يجب أن يكون رقماً",
+        "phoneLengthError": "طول رقم الهاتف غير صالح للرمز الوطني المحدد",
+        "fullNameLengthError": "يجب أن يتكون الاسم الكامل من 2 إلى 4 أسماء",
+        "fullNameCharacterError": "يجب أن يحتوي الاسم الكامل على أحرف إنجليزية أو عربية فقط",
+        "passwordLetterError": "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل",
+        "passwordNumberError": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل",
+        "passwordInvalidCharacters": "يمكن أن تحتوي كلمة المرور على أحرف إنجليزية وأرقام ورموز خاصة فقط",
+        "emailTakenError": "البريد الإلكتروني مستخدم بالفعل. برجاء استخدام بريد آخر."
+      }
+    },
+    "metaData": {
+      "title": "صفحة إنشاء حساب همسة تك",
+      "description": "إنشاء حساب همسة تك الخاص بك بأمان"
+    }
   }
 }

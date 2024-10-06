@@ -1,6 +1,6 @@
 'use client';
 
-import { App, Button, ConfigProvider, Form, message } from 'antd';
+import { Button, ConfigProvider, Form, message } from 'antd';
 import AddressFormItems from './AddressFormItems';
 import BillingAddress from './BillingAddress';
 import PaymentMethods from './PaymentMethods';
@@ -15,10 +15,7 @@ import { useMyContext } from '@/context/Store';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import { getCartId, getCookie } from '@/utils/cookieUtils';
-import {
-  CreateGuestUserResponseType,
-  UpdateGuestUserResponseType
-} from '@/types/guestUserReponses';
+import { UpdateGuestUserResponseType } from '@/types/guestUserReponses';
 import {
   CreateAddressResponseType,
   updateAddressResponseType

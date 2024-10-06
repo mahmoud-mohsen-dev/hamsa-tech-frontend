@@ -29,6 +29,7 @@ import { useMyContext } from '@/context/Store';
 import { aggregateCartItems } from '@/utils/cartContextUtils';
 import { CreateGuestUserResponseType } from '@/types/guestUserReponses';
 import { CreateAddressResponseType } from '@/types/addressResponseTypes';
+import ProfileDropdownMenu from '../UI/navbar/ProfileDropdownMenu';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -305,9 +306,11 @@ function Header({ navLinks, productsSubNav }: PropsType) {
             </div>
             <HiOutlineHeart size={22} className='text-inherit' />
           </Link>
-          <Link href='/login' className='profile ml-5 text-white'>
-            <UserOutlined className='text-[20px] text-inherit' />
+
+          <Link href='/signin' className='profile ml-5 text-white'>
+            <ProfileDropdownMenu />
           </Link>
+
           <button
             className='shopping-cart relative ml-5'
             onClick={() => {

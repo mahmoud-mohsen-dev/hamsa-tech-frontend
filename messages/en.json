@@ -241,5 +241,68 @@
       "title": "Hamsa Tech checkout Page",
       "description": "Securely complete your purchase for surveillance cameras, POS systems, access control, and more at Hamsa Tec. Choose from a variety of payment options, including card, wallet, or installments."
     }
+  },
+  "SigninPage": {
+    "content": {
+      "title": "Sign in to your account",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "forgotPasswordLink": "Forgot Password?",
+      "rememberMeLabel": "Remember me",
+      "loginButton": "Sign in",
+      "signupLabel": "Don't have an account yet?",
+      "registerButton": "Sign Up",
+      "orLabel": "Or",
+      "facebookButton": "Sign in with Facebook",
+      "googleButton": "Sign in with Google",
+      "formValidationErrorMessages": {
+        "emailRequired": "Email is required!",
+        "passwordRequired": "Password is required!"
+      }
+    },
+    "metaData": {
+      "title": "Hamsa Tech Login Page",
+      "description": "Securely login to your Hamsa Tech account"
+    }
+  },
+  "SignupPage": {
+    "content": {
+      "title": "Create your account",
+      "emailPlaceholder": "Email",
+      "fullNamePlaceholder": "Full Name",
+      "passwordPlaceholder": "Password",
+      "phonePlaceholder": "Phone",
+      "signupButton": "Create an account",
+      "signinLabel": "Already have an account?",
+      "signinLink": "Sign in",
+      "orLabel": "Or",
+      "aggreeToTermsLabel": "Agree to",
+      "termsOfUse": "terms of use",
+      "andLabel": "and",
+      "privacyPolicy": "privacy policy",
+      "newsLetterCheckboxLable": "Get updates and special offers!",
+      "formValidationErrorMessages": {
+        "fullNameRequired": "Full name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "passwordRequired": "Password is required",
+        "phoneRequired": "Phone is required",
+        "termsRequired": "You have to agree to our terms to create a new account",
+        "minValidationPasswordError": "Password must be at least 8 characters long",
+        "maxValidationPasswordError": "Password cannot exceed 20 characters",
+        "phoneTypeError": "Phone must be a number",
+        "phoneLengthError": "Invalid phone number length for selected country code",
+        "fullNameLengthError": "Full name must have between 2 and 4 names",
+        "fullNameCharacterError": "Full name must contain only English or Arabic characters",
+        "passwordLetterError": "Password must contain at least one letter",
+        "passwordNumberError": "Password must contain at least one number",
+        "passwordInvalidCharacters": "Password can only contain English letters, numbers, and special characters",
+        "emailTakenError": "This email is already in use. Try another one."
+      }
+    },
+    "metaData": {
+      "title": "Hamsa Tech Sign up Page",
+      "description": "Securely create your Hamsa Tech account"
+    }
   }
 }

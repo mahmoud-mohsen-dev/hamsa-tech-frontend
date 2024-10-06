@@ -15,7 +15,7 @@ export async function generateMetadata({
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'HomePage.metaData'
+    namespace: 'SignupPage.metaData'
   });
 
   return {

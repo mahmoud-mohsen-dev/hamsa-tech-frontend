@@ -90,3 +90,22 @@ export const doesCookieByNameExist = (
     .split('; ')
     .some((row) => row.startsWith(`${cookieName}=`));
 };
+
+/**
+ * Extract the ID from the 'token' token.
+ * @returns The ID inside the 'token' token or null if not found.
+ */
+export const getIdFromToken = (): string | null => {
+  const token = getCookie('token');
+
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // Decode the token and get payload
+      return payload.id || null; // Return the id if it exists
+    } catch (e) {
+      console.error('Error decoding token:', e);
+      return null; // Return null if there's an error
+    }
+  }
+  return null; // Return null if the cookie is not set
+};
