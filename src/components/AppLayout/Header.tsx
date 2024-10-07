@@ -15,6 +15,7 @@ import { CategoryType } from '@/types/getNavbarProductsCategories';
 import {
   doesCookieByNameExist,
   getCartId,
+  getCookie,
   removeCartId,
   setCartId,
   setCookie
@@ -307,7 +308,10 @@ function Header({ navLinks, productsSubNav }: PropsType) {
             <HiOutlineHeart size={22} className='text-inherit' />
           </Link>
 
-          <Link href='/signin' className='profile ml-5 text-white'>
+          <Link
+            href={getCookie('token') ? '/profile' : '/signin'}
+            className='profile ml-5 text-white'
+          >
             <ProfileDropdownMenu />
           </Link>
 

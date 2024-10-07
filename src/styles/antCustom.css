@@ -36,9 +36,37 @@
 } */
 
 /* Profile menu */
-/* .profile-menu.ant-dropdown {
-  margin-top: 20px !important;
-} */
+.profile-menu.ant-dropdown
+  .ant-dropdown-menu
+  .ant-dropdown-menu-title-content
+  > a:hover,
+.profile-menu.ant-dropdown
+  .ant-dropdown-menu
+  .ant-dropdown-menu-title-content
+  > a {
+  color: #2563eb;
+}
+
+.profile-menu.ant-dropdown
+  .ant-dropdown-menu
+  .ant-dropdown-menu-title-content
+  > a.when-logged-in-list-item:hover,
+.profile-menu.ant-dropdown
+  .ant-dropdown-menu
+  .ant-dropdown-menu-title-content
+  > a.when-logged-in-list-item {
+  color: #d7150e;
+}
+
+.ant-dropdown-menu
+  .ant-dropdown-menu-title-content
+  > a.when-logged-out-list-item:hover,
+.profile-menu.ant-dropdown
+  .ant-dropdown-menu
+  .ant-dropdown-menu-title-content
+  > a.when-logged-out-list-item {
+  color: #16a34a;
+}
 
 .search-input-navbar .ant-input-group > .ant-input::placeholder {
   color: black;

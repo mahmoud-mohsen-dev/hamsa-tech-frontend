@@ -22,11 +22,8 @@ import {
   SignupResponseType,
   UpdateSignupUserResponseType
 } from '@/types/authincationResponseTypes';
-import {
-  getCookie,
-  getIdFromToken,
-  setCookie
-} from '@/utils/cookieUtils';
+import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
+import { useUser } from '@/context/UserContext';
 const { Option } = Select;
 
 const signupQUery = ({
@@ -43,10 +40,6 @@ const signupQUery = ({
       password: "${password}"
     }) {
       jwt
-      user {
-        id
-        email
-      }
     }
   }`;
 };
@@ -90,6 +83,7 @@ function SignupForm() {
   const router = useRouter();
   const [form] = useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const { setUserId } = useUser();
   const locale = useLocale();
 
   const onFinish = (formValues: {
@@ -141,18 +135,24 @@ function SignupForm() {
           return;
         }
         setCookie('token', signupData.register.jwt);
-        const userId = getIdFromToken();
+        const userloggedInId = getIdFromToken();
 
-        if (!userId) {
+        if (!userloggedInId) {
           messageApi.error('error while getting user id');
-          console.error('error while getting user id: ', userId);
+          console.error(
+            'error while getting user id: ',
+            userloggedInId
+          );
           return;
         }
-        // messageApi.success('successfully registered');
+        // set the user id in the user context
+        setUserId(userloggedInId);
+
+        // Make API call to update user permissions
         const { data: signupUpdateData, error: signupUpdateError } =
           (await fetchGraphqlClientAuthenticated(
             updateTheSignupUser({
-              id: userId,
+              id: userloggedInId,
               fullName,
               phoneNumber: number,
               prefix,
@@ -194,21 +194,6 @@ function SignupForm() {
     );
     console.log('Form submission failed:', errorInfo);
   };
-
-  // const prefixSelector = (
-  //   <Form.Item name='prefix' noStyle>
-  //     {contextHolder}
-  //     <Select
-  //       style={{ width: 130 }}
-  //       suffixIcon={<IoIosArrowDown size={18} />}
-  //       // options={[
-  //       //   { label: '(+20 Egypt)', value: '(+20 Egypt)' } // Egypt
-  //       // ]}
-  //     >
-  //       <Option value='(+20 Egypt)'>+20 Egypt</Option>
-  //     </Select>
-  //   </Form.Item>
-  // );
 
   const validateFullName = (_: any, value: string) => {
     if (!value) {
@@ -426,12 +411,6 @@ function SignupForm() {
         <Form.Item
           name='aggreeToTerms'
           aria-describedby='aggree-to-terms-of-use-and-privacy-policy'
-          // rules={[
-          //   {
-          //     required: true,
-          //     message: t('formValidationErrorMessages.termsRequired')
-          //   }
-          // ]}
           rules={[
             {
               validator: (_, value) =>
@@ -457,7 +436,7 @@ function SignupForm() {
 
         <Form.Item
           name='newsLetterAndOffersSubscription'
-          // aria-describedby='news-letter-and-offers-subscription'
+          aria-describedby='news-letter-and-offers-subscription'
           valuePropName='checked'
           style={{ marginBottom: 0 }}
         >

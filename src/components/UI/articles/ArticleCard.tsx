@@ -87,15 +87,15 @@ function ArticleCard({
             {content.title}
           </h2>
         </Link>
-        <p className='my-2 text-base font-normal text-gray-light sm:my-4 sm:max-h-[120px] sm:leading-6'>
+        <p className='my-2 text-base font-normal text-gray-medium sm:my-4 sm:max-h-[120px] sm:leading-6'>
           {content.description}
         </p>
       </div>
       <div className='relative grid grid-cols-[1fr_2px_1fr] border-t border-solid border-t-gray-ultralight pb-[5px] text-gray-medium'>
-        <p className='h-full w-full border-r border-gray-ultralight text-center text-sm font-semibold leading-[61px]'>
+        <p className='h-full w-full text-center text-sm font-semibold leading-[61px]'>
           {dayjs(content.publishDate).format('MMMM D, YYYY')}
         </p>
-        <div className='h-full w-[2px] bg-gray-ultralight'></div>
+        <div className='h-full w-[1px] bg-gray-ultralight'></div>
         <p className='text-center text-sm font-semibold capitalize leading-[61px]'>
           {content.publisher}
         </p>

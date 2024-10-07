@@ -87,7 +87,7 @@ function AppDrawer() {
         : <div className='flex h-full flex-col items-center justify-center gap-5 pb-20'>
             <HiOutlineShoppingCart
               size={60}
-              className='text-gray-light'
+              className='text-gray-medium'
             />
             <h1 className='font-inter text-3xl font-semibold'>
               {t('emptyCartMessage')}

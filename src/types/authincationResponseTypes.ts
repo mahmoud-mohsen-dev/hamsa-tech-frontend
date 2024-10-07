@@ -7,6 +7,15 @@ export type SignupResponseType = {
   } | null;
 };
 
+export type SigninResponseType = {
+  error: string | null;
+  data: {
+    login?: {
+      jwt: string;
+    };
+  } | null;
+};
+
 export type UpdateSignupUserResponseType = {
   error: string | null;
   data: {

@@ -18,7 +18,7 @@ function CategoryCard({
         {heading}
       </h2>
 
-      <p className='mb-8 text-sm leading-6 text-gray-light'>
+      <p className='mb-8 text-sm leading-6 text-gray-medium'>
         {description}
       </p>
 

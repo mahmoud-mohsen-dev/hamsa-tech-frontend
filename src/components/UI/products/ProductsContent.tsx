@@ -1,38 +1,42 @@
 'use client';
 
-// import Loading from '@/app/loading';
 import ProductCard from '@/components/products/ProductCard';
 import Sorter from '@/components/products/Sorter';
 import { useMyContext } from '@/context/Store';
+import { useUser } from '@/context/UserContext';
 import { useIsMount } from '@/hooks/useIsMount';
+import { useRouter } from '@/navigation';
 import { fetchProducts } from '@/services/products';
-// import { getProductsCategory } from '@/services/products';
-// import { productsObjectType } from '@/types';
-// import { ProductType } from '@/types/getProducts';
+import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
 import { getBadge } from '@/utils/getBadge';
-// import { isNewProduct } from '@/utils/productCardHelper';
-import { Empty, Spin } from 'antd';
+import { Empty, message, Spin } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 
 function ProductsContent() {
+  const [messageApi, contextHolder] = message.useMessage();
   const { didMount } = useIsMount();
   const { setProductsData, productsData } = useMyContext();
+  const { setUserId } = useUser();
   const locale = useLocale();
   const t = useTranslations('ProductsPage.filtersSidebar');
+  const signinTranslation = useTranslations('SigninPage.content');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  // const [data, setData] = useState<ProductType[] | null>(
-  //   serverProductsData
-  // );
-  // const firstRender = useRef(0);
-  // console.log(productsData);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // Check for Google ID token
+  const googleIdToken = searchParams.get('id_token');
+  const googleAccessToken = searchParams.get('access_token');
+
+  // Check for Facebook access token
+  const facebookAccessToken = searchParams.get('access_token');
 
   // Extract category from URL params or use default value
-  const category = useSearchParams().get('category') ?? ''; // Get the "category" parameter from the URL
-  const subCategory = useSearchParams().get('sub-category') ?? ''; // Get the "sub-category" parameter from the URL
+  const category = searchParams.get('category') ?? ''; // Get the "category" parameter from the URL
+  const subCategory = searchParams.get('sub-category') ?? ''; // Get the "sub-category" parameter from the URL
 
   useEffect(() => {
     const getProducts = async () => {
@@ -40,7 +44,6 @@ function ProductsContent() {
         setLoading(true);
         const { data: resData, error: resError } =
           await fetchProducts(category, subCategory, locale);
-        // console.log('fetching data in the client...');
 
         if (!resData || resError) {
           console.error('Error fetching products');
@@ -49,12 +52,9 @@ function ProductsContent() {
         if (resData?.products?.data) {
           setProductsData(resData.products.data);
         }
-
-        // setData(resData ?? null);
       } catch (err: any) {
         setError(err);
         setProductsData([]);
-        // setData(null);
       } finally {
         setLoading(false);
       }
@@ -63,30 +63,123 @@ function ProductsContent() {
     if (didMount) {
       getProducts();
     }
-    // }
-    // firstRender.current += 1;
   }, [category, subCategory, locale]);
 
-  // useEffect(() => {
-  //   if (
-  //     firstRender.current === 0 &&
-  //     serverProductsData &&
-  //     serverProductsData?.length > 0
-  //   ) {
-  //     console.log(firstRender.current);
-  //     setProductsData(serverProductsData);
-  //   }
-  // }, []);
+  const fetchGoogleCallback = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/google/callback?access_token=${googleAccessToken}`
+      );
+      console.warn(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/google/callback?access_token=${googleAccessToken}`
+      );
+      const data = await response.json();
+      if (response.ok && data && data?.jwt) {
+        const jwt = data.jwt; // Extract only the jwt from the response
+        // console.warn('JWT Token:', jwt);
+        setCookie('token', jwt, 1);
+        const id = getIdFromToken();
+        setUserId(id);
+
+        return jwt;
+      } else {
+        console.error('Failed to fetch JWT:', data?.error?.message);
+
+        messageApi.error(
+          data?.error?.message === 'Email is already taken.' ?
+            signinTranslation(
+              'formValidationErrorMessages.emailTakenMessage'
+            )
+          : (data?.error?.message ??
+              signinTranslation(
+                'formValidationErrorMessages.signinFailedMessage'
+              ))
+        );
+      }
+    } catch (error: any) {
+      console.error(error?.message ?? 'server error');
+      messageApi.error(
+        error?.message === 'Email is already taken.' ?
+          signinTranslation(
+            'formValidationErrorMessages.emailTakenMessage'
+          )
+        : (error?.message ??
+            signinTranslation(
+              'formValidationErrorMessages.signinFailedMessage'
+            ))
+      );
+    } finally {
+      router.replace('/products');
+    }
+  };
+
+  const fetchFacebookCallback = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/facebook/callback?access_token=${facebookAccessToken}`
+      );
+      console.warn(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/facebook/callback?access_token=${facebookAccessToken}`
+      );
+      const data = await response.json();
+      if (response.ok && data?.jwt) {
+        const jwt = data.jwt; // Extract only the jwt from the response
+        // console.warn('JWT Token:', jwt);
+        setCookie('token', jwt, 1);
+        const id = getIdFromToken();
+        setUserId(id);
+        router.replace('/products');
+        return jwt;
+      } else {
+        console.error('Failed to fetch JWT:', data?.error?.message);
+
+        messageApi.error(
+          data?.error?.message === 'Email is already taken.' ?
+            signinTranslation(
+              'formValidationErrorMessages.emailTakenMessage'
+            )
+          : (data?.error?.message ??
+              signinTranslation(
+                'formValidationErrorMessages.signinFailedMessage'
+              ))
+        );
+      }
+    } catch (error: any) {
+      console.error(error?.message ?? 'server error');
+      messageApi.error(
+        error?.message === 'Email is already taken.' ?
+          signinTranslation(
+            'formValidationErrorMessages.emailTakenMessage'
+          )
+        : (error?.message ??
+            signinTranslation(
+              'formValidationErrorMessages.signinFailedMessage'
+            ))
+      );
+    } finally {
+      router.replace('/products');
+    }
+  };
+
+  useEffect(() => {
+    // Handle Google sign-in
+    if (googleIdToken && googleAccessToken) {
+      fetchGoogleCallback();
+    }
+    // Handle Facebook sign-in
+    else if (facebookAccessToken) {
+      fetchFacebookCallback();
+    }
+  }, [searchParams]);
 
   if (error) {
     console.log('Error fetching products');
     console.error(error);
   }
 
-  // console.log(data);
-  // console.log(firstRender.current);
   return (
     <div>
+      {contextHolder}
       <div className='flex items-center justify-between'>
         <h4 className='text-sm font-medium text-black-medium'>
           {/* {data?.children?.length ?? 0}{' '} */}
@@ -98,14 +191,11 @@ function ProductsContent() {
       </div>
 
       {loading ?
-        // || (firstRender.current === 0 && productsData.length === 0)
         <Spin
           size='large'
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
       : productsData === null || productsData.length === 0 ?
-        //  &&
-        // firstRender.current !== 0
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           className='mt-5 grid min-h-[500px] w-full place-content-center'

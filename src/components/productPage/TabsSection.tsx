@@ -115,7 +115,8 @@ async function ConentOfSpecification({
   );
 }
 
-function Review({ review }: { review: reviewType }) {
+async function Review({ review }: { review: reviewType }) {
+  const locale = await getLocale();
   return (
     <div>
       <div className='mt-4 flex items-start gap-4'>
@@ -141,9 +142,12 @@ function Review({ review }: { review: reviewType }) {
               {review?.attributes?.user_detail?.data?.attributes
                 ?.first_name ?? ''}
             </h4>
-            <h4 className='text-gray-normal'>
+            <h4
+              className={`text-gray-normal ${locale === 'ar' ? 'text-end' : 'text-start'}`}
+              dir='ltr'
+            >
               {dayjs(review?.attributes.updatedAt ?? '').format(
-                'DD MMMM YYYY'
+                'DD, MMMM YYYY'
               )}
             </h4>
           </div>

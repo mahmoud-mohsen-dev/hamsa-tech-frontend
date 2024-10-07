@@ -12,9 +12,9 @@
     }
   },
   "NotFoundPage": {
-    "heading": "خطأ في الخادم الداخلي.",
-    "subHeading": "نحن نعمل بالفعل على حل المشكلة.",
-    "linkText": "الرجوع إلى الصفحة الرئيسية",
+    "heading": "الصفحة غير موجودة",
+    "subHeading": "يبدو أن الصفحة التي تبحث عنها غير موجودة. يمكنك العودة إلى الصفحة الرئيسية.",
+    "linkText": "العودة إلى الصفحة الرئيسية",
     "metaData": {
       "title": "الصفحة غير موجودة"
     }
@@ -22,7 +22,11 @@
   "HomePage": {
     "Header": {
       "logoPart1": "همسه",
-      "logoPart2": "تك"
+      "logoPart2": "تك",
+      "accountLabel": "الحساب",
+      "profileLabel": "الملف الشخصي",
+      "signinLabel": "تسجيل الدخول",
+      "signoutLabel": "تسجيل الخروج"
     },
     "featured": {
       "buttonText": "إقرأ المزيد ⟵"
@@ -258,7 +262,12 @@
       "googleButton": "تسجيل الدخول باستخدام جوجل",
       "formValidationErrorMessages": {
         "emailRequired": "البريد الإلكتروني مطلوب!",
-        "passwordRequired": "كلمة المرور مطلوبة!"
+        "passwordRequired": "كلمة المرور مطلوبة!",
+        "errorDuringFormSubmission": "خطأ أثناء تقديم النموذج",
+        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور المدخلة غير صحيحة.",
+        "signinSuccessMessage": "مرحبًا بك من جديد! لقد قمت بتسجيل الدخول الآن.",
+        "emailTakenMessage": "يوجد حساب مسجل بهذا البريد الإلكتروني. يرجى تسجيل الدخول باستخدام طريقة مختلفة.",
+        "signinFailedMessage": "فشل تسجيل الدخول."
       }
     },
     "metaData": {
@@ -304,6 +313,13 @@
     "metaData": {
       "title": "صفحة إنشاء حساب همسة تك",
       "description": "إنشاء حساب همسة تك الخاص بك بأمان"
+    }
+  },
+  "WishlistPage": {
+    "content": {},
+    "metaData": {
+      "title": "صفحة قائمة الرغبات في همسة تك",
+      "description": "عرض وإدارة المنتجات المفضلة لديك في مكان واحد باستخدام قائمة الرغبات من همسة تك. احفظ العناصر للشراء في المستقبل ويمكنك الوصول إليها بسهولة في أي وقت."
     }
   }
 }

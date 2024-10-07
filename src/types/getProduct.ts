@@ -12,22 +12,22 @@ export interface reviewType {
     rating: number;
     headline: string;
     comment: string;
-    user_detail: {
-      data: {
-        attributes: {
-          first_name: string;
-          last_name: string;
-          avatar_photo: {
-            data: {
-              attributes: {
-                url: string | null;
-                alternativeText: string | null;
-              };
-            };
-          };
-        };
-      };
-    };
+    // user_detail: {
+    //   data: {
+    //     attributes: {
+    //       first_name: string;
+    //       last_name: string;
+    //       avatar_photo: {
+    //         data: {
+    //           attributes: {
+    //             url: string | null;
+    //             alternativeText: string | null;
+    //           };
+    //         };
+    //       };
+    //     };
+    //   };
+    // };
   };
 }
 export interface ProductDataType {

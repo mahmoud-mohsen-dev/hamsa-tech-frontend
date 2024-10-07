@@ -13,7 +13,7 @@
   },
   "NotFoundPage": {
     "heading": "Page Not Found",
-    "subHeading": "Sorry, we can't find that page. You'll find lots to explore on the home page.",
+    "subHeading": "It seems the page you're looking for doesn't exist. You might want to head back to the homepage.",
     "linkText": "Back to Homepage",
     "metaData": {
       "title": "Page not found"
@@ -22,7 +22,11 @@
   "HomePage": {
     "Header": {
       "logoPart1": "Hamsa",
-      "logoPart2": "Tech"
+      "logoPart2": "Tech",
+      "accountLabel": "Account",
+      "profileLabel": "Profile",
+      "signinLabel": "Sign in",
+      "signoutLabel": "Sign out"
     },
     "featured": {
       "buttonText": "Read More ⟶"
@@ -257,7 +261,12 @@
       "googleButton": "Sign in with Google",
       "formValidationErrorMessages": {
         "emailRequired": "Email is required!",
-        "passwordRequired": "Password is required!"
+        "passwordRequired": "Password is required!",
+        "errorDuringFormSubmission": "Error during form submission",
+        "invalidCredentials": "The provided email or password is incorrect.",
+        "signinSuccessMessage": "Welcome back! You are now logged in.",
+        "emailTakenMessage": "An account with this email is already registered. Please sign in using a different method.",
+        "signinFailedMessage": "Failed to sign in."
       }
     },
     "metaData": {
@@ -303,6 +312,13 @@
     "metaData": {
       "title": "Hamsa Tech Sign up Page",
       "description": "Securely create your Hamsa Tech account"
+    }
+  },
+  "WishlistPage": {
+    "content": {},
+    "metaData": {
+      "title": "Hamsa Tech Wishlist Page",
+      "description": "View and manage your favorite products in one place with the Hamsa Tech Wishlist. Save items for future purchase and easily access them anytime."
     }
   }
 }

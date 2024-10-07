@@ -24,6 +24,7 @@ import AppDrawer from '@/components/UI/cart/AppDrawer';
 import CustomSWRConfig from '@/lib/CustomSWRConfig';
 import { getProductsQuery } from '@/services/products';
 import { ProductsResponseType } from '@/types/getProducts';
+import { UserProvider } from '@/context/UserContext';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -195,43 +196,45 @@ export default async function LocaleLayout({
               : []
             }
           >
-            <CustomSWRConfig>
-              <AntdRegistry>
-                <ConfigAntThemes>
-                  <div
-                    className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
-                  >
-                    {(layoutData.error ||
-                      layoutData.data === null) && (
-                      <ErrorComponent
-                        error={
-                          layoutData.error ||
-                          ('Error fetching nav items' as any)
-                        }
-                      />
-                    )}
-                    {layoutAttributes.navbar && (
-                      <>
-                        <ScrollNavbarListener />
-                        <Header
-                          navLinks={layoutAttributes.navbar}
-                          productsSubNav={
-                            navbarProductsCategoriesData
+            <UserProvider>
+              <CustomSWRConfig>
+                <AntdRegistry>
+                  <ConfigAntThemes>
+                    <div
+                      className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
+                    >
+                      {(layoutData.error ||
+                        layoutData.data === null) && (
+                        <ErrorComponent
+                          error={
+                            layoutData.error ||
+                            ('Error fetching nav items' as any)
                           }
                         />
-                        <AppDrawer />
-                      </>
-                    )}
-                    <Suspense fallback={<Loading />}>
-                      <Main>{children}</Main>
-                    </Suspense>
-                    {layoutAttributes.footer && (
-                      <Footer data={layoutAttributes.footer} />
-                    )}
-                  </div>
-                </ConfigAntThemes>
-              </AntdRegistry>
-            </CustomSWRConfig>
+                      )}
+                      {layoutAttributes.navbar && (
+                        <>
+                          <ScrollNavbarListener />
+                          <Header
+                            navLinks={layoutAttributes.navbar}
+                            productsSubNav={
+                              navbarProductsCategoriesData
+                            }
+                          />
+                          <AppDrawer />
+                        </>
+                      )}
+                      <Suspense fallback={<Loading />}>
+                        <Main>{children}</Main>
+                      </Suspense>
+                      {layoutAttributes.footer && (
+                        <Footer data={layoutAttributes.footer} />
+                      )}
+                    </div>
+                  </ConfigAntThemes>
+                </AntdRegistry>
+              </CustomSWRConfig>
+            </UserProvider>
           </StoreContextProvider>
         </NextIntlClientProvider>
       </body>

@@ -1,10 +1,107 @@
 'use client';
-import { Link } from '@/navigation';
-import { Checkbox, ConfigProvider, Form, Input } from 'antd';
+import { useUser } from '@/context/UserContext';
+import { Link, useRouter } from '@/navigation';
+import { fetchGraphqlClient } from '@/services/graphqlCrud';
+import { SigninResponseType } from '@/types/authincationResponseTypes';
+import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
+import { Checkbox, ConfigProvider, Form, Input, message } from 'antd';
 import { useTranslations } from 'next-intl';
+import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
+
+const signinQUery = ({
+  email,
+  password
+}: {
+  email: string;
+  password: string;
+}) => {
+  return `mutation {
+  login(input: { identifier: "${email}", password: "${password}" }) {
+    jwt
+  }
+}`;
+};
 
 function LoginForm() {
+  const router = useRouter();
+  const { setUserId } = useUser();
+  const [messageApi, contextHolder] = message.useMessage();
   const t = useTranslations('SigninPage.content');
+  const e = useTranslations('CheckoutPage.content');
+  const x = useTranslations('SignupPage.content');
+
+  const onFinish = (values: {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+  }) => {
+    // TODO: Implement login logic here
+    const logIn = async () => {
+      try {
+        console.log('Received values of form:', values);
+        messageApi.open({
+          type: 'loading',
+          content: e('form.loading'),
+          duration: 0
+        });
+
+        const { data: loginData, error: loginError } =
+          (await fetchGraphqlClient(
+            signinQUery({
+              email: values.email,
+              password: values.password
+            })
+          )) as SigninResponseType;
+
+        if (loginError || !loginData?.login?.jwt) {
+          console.error('Login error', loginError);
+          messageApi.error(
+            t('formValidationErrorMessages.invalidCredentials')
+          );
+          return;
+        }
+        // Store JWT in cookie
+        if (values.rememberMe) {
+          setCookie('token', loginData.login.jwt, 30);
+        } else {
+          setCookie('token', loginData.login.jwt, 1);
+        }
+
+        const userId = getIdFromToken();
+        if (!userId) {
+          messageApi.error(
+            t('formValidationErrorMessages.invalidCredentials')
+          );
+          return;
+        }
+        setUserId(userId);
+        messageApi.success(
+          t('formValidationErrorMessages.signinSuccessMessage')
+        );
+        setTimeout(() => {
+          router.push('/products');
+        }, 1000); // Delay by 1 second
+      } catch (err) {
+        console.error('Error during form submission:', err);
+        messageApi.error(
+          t('formValidationErrorMessages.errorDuringFormSubmission')
+        );
+      } finally {
+        setTimeout(messageApi.destroy, 900);
+      }
+    };
+
+    logIn();
+  };
+
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
+    messageApi.error(
+      errorInfo?.errorFields[0]?.errors[0] ??
+        e('form.formSubmissionFailed')
+    );
+    console.log('Form submission failed:', errorInfo);
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -26,7 +123,13 @@ function LoginForm() {
         }
       }}
     >
-      <Form colon={false}>
+      <Form
+        colon={false}
+        initialValues={{ rememberMe: false }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        {contextHolder}
         <Form.Item
           name='email'
           rules={[
@@ -39,7 +142,6 @@ function LoginForm() {
         >
           <Input placeholder={t('emailPlaceholder')} />
         </Form.Item>
-
         <Form.Item
           name='password'
           rules={[
@@ -48,6 +150,18 @@ function LoginForm() {
               message: t(
                 'formValidationErrorMessages.passwordRequired'
               )
+            },
+            {
+              min: 8,
+              message: x(
+                'formValidationErrorMessages.minValidationPasswordError'
+              )
+            },
+            {
+              max: 20,
+              message: x(
+                'formValidationErrorMessages.maxValidationPasswordError'
+              )
             }
           ]}
         >
@@ -55,7 +169,7 @@ function LoginForm() {
         </Form.Item>
         <div className='flex items-center justify-between'>
           <Form.Item
-            name='remember-me'
+            name='rememberMe'
             aria-describedby='remember'
             valuePropName='checked'
             style={{ marginBottom: 0 }}
