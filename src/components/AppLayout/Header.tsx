@@ -31,6 +31,8 @@ import { aggregateCartItems } from '@/utils/cartContextUtils';
 import { CreateGuestUserResponseType } from '@/types/guestUserReponses';
 import { CreateAddressResponseType } from '@/types/addressResponseTypes';
 import ProfileDropdownMenu from '../UI/navbar/ProfileDropdownMenu';
+import { useUser } from '@/context/UserContext';
+import { WishlistResponseType } from '@/types/wishlistReponseTypes';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -124,6 +126,20 @@ const getCreateShippingAddressQuery = () => {
   }`;
 };
 
+const getCreateWishlistQuery = () => {
+  return `mutation CreateAddress {
+    createWishlist(
+        data: {
+            publishedAt: "${new Date().toISOString()}"
+        }
+    ) {
+        data {
+            id
+        }
+    }
+  }`;
+};
+
 const countCartItems = (cart: CartDataType[]) => {
   if (cart.length > 0) {
     return cart.reduce((acc, cur) => {
@@ -139,9 +155,11 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     setCart,
     setOpenDrawer,
     setDrawerIsLoading,
-    setTotalCartCost
+    setTotalCartCost,
+    dataSource
   } = useMyContext();
   const [linkHovered, setLinkHovered] = useState('');
+  const { userId } = useUser();
 
   const locale = useLocale();
   const defaultValue = locale;
@@ -251,6 +269,60 @@ function Header({ navLinks, productsSubNav }: PropsType) {
       }
     };
 
+    const createWishlist = async () => {
+      try {
+        const { data: wishlistData, error: wishlistError } =
+          (await fetchGraphqlClient(
+            getCreateWishlistQuery()
+          )) as WishlistResponseType;
+
+        if (
+          wishlistError ||
+          !wishlistData?.createWishlist?.data?.id
+        ) {
+          console.error('Failed to create wishlist');
+        }
+
+        if (wishlistData?.createWishlist?.data?.id) {
+          setCookie(
+            'wishlistId',
+            wishlistData?.createWishlist?.data?.id
+          );
+        } else {
+          console.error('Failed to get wishlist ID from API');
+        }
+      } catch (e) {
+        console.error('Failed to create wishlist', e);
+      }
+    };
+
+    const getWishlist = async () => {
+      try {
+        const { data: wishlistData, error: wishlistError } =
+          (await fetchGraphqlClient(
+            getCreateWishlistQuery()
+          )) as WishlistResponseType;
+
+        if (
+          wishlistError ||
+          !wishlistData?.createWishlist?.data?.id
+        ) {
+          console.error('Failed to create wishlist');
+        }
+
+        if (wishlistData?.createWishlist?.data?.id) {
+          setCookie(
+            'wishlistId',
+            wishlistData?.createWishlist?.data?.id
+          );
+        } else {
+          console.error('Failed to get wishlist ID from API');
+        }
+      } catch (e) {
+        console.error('Failed to create wishlist', e);
+      }
+    };
+
     handleCart();
 
     const guestUserIdExists = doesCookieByNameExist('guestUserId');
@@ -263,6 +335,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     );
     if (!shippingAddressIdExists) {
       handleShippingAddress();
+    }
+
+    const wishlistIdExists = doesCookieByNameExist('wishlistId');
+    if (!wishlistIdExists) {
+      createWishlist();
+    } else {
+      getWishlist();
     }
   }, []);
 
@@ -300,16 +379,18 @@ function Header({ navLinks, productsSubNav }: PropsType) {
             href='/wishlist'
             className='wishlist relative ml-4 text-white'
           >
-            <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
-              <p className='text-[.5rem] leading-[1rem] text-white'>
-                1
-              </p>
-            </div>
+            {dataSource.length > 0 && (
+              <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
+                <p className='text-[.5rem] leading-[1rem] text-white'>
+                  {dataSource.length}
+                </p>
+              </div>
+            )}
             <HiOutlineHeart size={22} className='text-inherit' />
           </Link>
 
           <Link
-            href={getCookie('token') ? '/profile' : '/signin'}
+            href={userId ? '/profile' : '/signin'}
             className='profile ml-5 text-white'
           >
             <ProfileDropdownMenu />

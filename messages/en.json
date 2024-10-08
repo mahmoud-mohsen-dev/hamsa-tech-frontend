@@ -315,7 +315,27 @@
     }
   },
   "WishlistPage": {
-    "content": {},
+    "content": {
+      "title": "My Wishlist",
+      "subTitle": "There are {count} products in this wishlist.",
+      "table": {
+        "header": {
+          "photo": "Photo",
+          "name": "Name",
+          "price": "Price",
+          "status": "Status",
+          "actions": "Actions",
+          "remove": "Remove"
+        },
+        "body": {
+          "inStock": "In Stock",
+          "outOfStock": "Out of Stock",
+          "addToCartButtonText": "Add to Cart",
+          "contactUs": "Contact Us",
+          "currency": "EGP"
+        }
+      }
+    },
     "metaData": {
       "title": "Hamsa Tech Wishlist Page",
       "description": "View and manage your favorite products in one place with the Hamsa Tech Wishlist. Save items for future purchase and easily access them anytime."

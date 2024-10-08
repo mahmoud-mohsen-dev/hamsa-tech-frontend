@@ -122,13 +122,14 @@ async function Review({ review }: { review: reviewType }) {
       <div className='mt-4 flex items-start gap-4'>
         <Image
           src={
-            review?.attributes?.user_detail?.data?.attributes
-              ?.avatar_photo?.data?.attributes?.url ??
+            // review?.attributes?.user_detail?.data?.attributes
+            //   ?.avatar_photo?.data?.attributes?.url ??
             '/empty-avatar-photo.png'
           }
           alt={
-            review?.attributes?.user_detail?.data?.attributes
-              ?.avatar_photo?.data?.attributes?.alternativeText ?? ''
+            // review?.attributes?.user_detail?.data?.attributes
+            //   ?.avatar_photo?.data?.attributes?.alternativeText ??
+            ''
           }
           // 'user ahmed avatar profile picture'
           width={40}
@@ -138,10 +139,10 @@ async function Review({ review }: { review: reviewType }) {
         />
         <div>
           <div>
-            <h4 className='text-base capitalize text-black-medium'>
+            {/* <h4 className='text-base capitalize text-black-medium'>
               {review?.attributes?.user_detail?.data?.attributes
                 ?.first_name ?? ''}
-            </h4>
+            </h4> */}
             <h4
               className={`text-gray-normal ${locale === 'ar' ? 'text-end' : 'text-start'}`}
               dir='ltr'

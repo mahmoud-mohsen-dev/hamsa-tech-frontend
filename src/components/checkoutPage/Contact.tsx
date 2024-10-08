@@ -1,11 +1,19 @@
+'use client';
 import { Link } from '@/navigation';
 import { getCookie } from '@/utils/cookieUtils';
 import { Checkbox, Form, Input } from 'antd';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 
 function Contact() {
   const t = useTranslations('CheckoutPage.content');
-  const isUserLoggedIn = getCookie('token');
+  const [isUserLoggedIn, setUserLoggedIn] = useState<null | string>(
+    null
+  );
+
+  useEffect(() => {
+    setUserLoggedIn(getCookie('token'));
+  }, []);
 
   return (
     <>

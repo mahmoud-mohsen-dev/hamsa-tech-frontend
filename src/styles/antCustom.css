@@ -284,3 +284,12 @@ input[type='number']#order-info_shippingDetailsPostalCode {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* Wishlist table */
+.wishtlist-table .ant-empty-normal {
+  min-height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

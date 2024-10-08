@@ -51,7 +51,7 @@ function ProductItem({ productData }: { productData: CartDataType }) {
           }}
         >
           <Image
-            src='/icons/hamsa-logo.svg'
+            src='/icons/bin.svg'
             alt='delete icon'
             width={20}
             height={20}

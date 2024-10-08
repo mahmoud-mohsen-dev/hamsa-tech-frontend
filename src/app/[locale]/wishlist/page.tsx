@@ -13,9 +13,17 @@ async function WishlistPage({ params: { locale } }: PropsType) {
   const t = await getTranslations('WishlistPage.content');
 
   return (
-    <div className='mx-auto flex flex-col items-center justify-center px-6 pt-8 font-inter md:min-h-[calc(100vh-132px)]'>
-      <h2>My Wishlist</h2>
-      <h4>There are 5 products in this wishlist.</h4>
+    <div className='mx-auto flex flex-col items-center justify-start px-6 font-inter md:min-h-[calc(100vh-170px)]'>
+      <div className='w-full'>
+        <h2 className='text-4xl font-semibold text-black-medium'>
+          {t('title')}
+        </h2>
+        <h4
+          className={`mt-2 font-normal text-gray-medium ${locale === 'ar' ? 'text-2xl' : 'text-lg'}`}
+        >
+          {t('subTitle', { count: 5 })}
+        </h4>
+      </div>
 
       <WishlistTable />
     </div>

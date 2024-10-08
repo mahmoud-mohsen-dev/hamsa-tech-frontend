@@ -1,6 +1,7 @@
 // app/MyContext.js
 'use client'; // Make this a client component
 
+import { WishlistDataType } from '@/components/wishlist/WishlistTable';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
   CartDataType,
@@ -74,6 +75,8 @@ const MyContext = createContext<{
     deductionValueByPercent?: number | null
   ) => number;
   calculateTotalOrderCost: () => number;
+  dataSource: WishlistDataType[];
+  setDataSource: React.Dispatch<React.SetStateAction<WishlistDataType[]>>;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -106,6 +109,53 @@ export const StoreContextProvider = ({
   const [couponData, setCouponData] = useState<CouponDataType | null>(
     null
   );
+  const [dataSource, setDataSource] =
+    useState<WishlistDataType[]>([
+  {
+    key: '1',
+    photo: {
+      url: '/hikvision-dom-camera-original.png',
+      alt: ''
+    },
+    name: 'Brown John ',
+    productId: '2',
+    price: 20,
+    stock: 5
+  },
+  {
+    key: '2',
+    photo: {
+      url: '/hikvision-dom-camera-original.png',
+      alt: ''
+    },
+    name: 'John Brown',
+    price: 50,
+    productId: '3',
+    stock: 0
+  },
+  {
+    key: '3',
+    photo: {
+      url: '/hikvision-dom-camera-original.png',
+      alt: ''
+    },
+    name: 'ow ohnBr',
+    price: 100,
+    productId: '4',
+    stock: 1
+  },
+  {
+    key: '4',
+    photo: {
+      url: '/hikvision-dom-camera-original.png',
+      alt: ''
+    },
+    name: 'John Brownsss',
+    price: 20,
+    productId: '5',
+    stock: 5
+  }
+]);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -351,7 +401,9 @@ export const StoreContextProvider = ({
         isApplyFreeShippingEnabled,
         calculateNetDeliveryCost,
         calculateCouponDeductionValue,
-        calculateTotalOrderCost
+        calculateTotalOrderCost,
+        dataSource,
+        setDataSource
       }}
     >
       {children}
