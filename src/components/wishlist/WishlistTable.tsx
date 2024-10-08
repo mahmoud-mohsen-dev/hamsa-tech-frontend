@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import Image from 'next/image';
@@ -9,15 +9,23 @@ import { formatCurrencyNumbers } from '@/utils/numbersFormating';
 import { useLocale, useTranslations } from 'next-intl';
 import AddToCartButton from '../products/AddToCartButton';
 import { useMyContext } from '@/context/Store';
+import { fetchGraphqlClient } from '@/services/graphqlCrud';
+import {
+  GetWishlistDataType,
+  WishlistDataType,
+  WishlistsDataType
+} from '@/types/wishlistReponseTypes';
+import { getCookie } from '@/utils/cookieUtils';
+import { updateWishtlistHandler } from '../productPage/OrderProduct';
 
-export interface WishlistDataType {
-  key: React.Key;
-  photo: { url: string; alt: string };
-  name: string;
-  price: number;
-  stock: number;
-  productId: string;
-}
+// export interface WishlistTableDataType {
+//   key: React.Key;
+//   photo: { url: string; alt: string };
+//   name: string;
+//   price: number;
+//   stock: number;
+//   productId: string;
+// }
 
 const onChange: TableProps<WishlistDataType>['onChange'] = (
   pagination,
@@ -30,13 +38,30 @@ const onChange: TableProps<WishlistDataType>['onChange'] = (
 
 function WishlistTable() {
   // const router = useRouter();
-  const { dataSource, setDataSource } = useMyContext();
+  const {
+    wishlistsData,
+    isWishlistLoading,
+    setIsWishlistLoading,
+    setWishlistsData
+  } = useMyContext();
+  const dataSource = wishlistsData.map((item) => ({
+    ...item,
+    key: item.id
+  }));
   const locale = useLocale();
   const t = useTranslations('WishlistPage.content.table');
 
-  const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setDataSource(newData);
+  const handleDelete = (productIds: { [x: string]: string }) => {
+    // console.log(obj);
+    updateWishtlistHandler({
+      locale,
+      productIds,
+      setIsWishlistLoading,
+      setWishlistsData,
+      wishlistsData
+    });
+    // const newData = wishlistsData.filter((item) => item.key !== key);
+    // setDataSource(newData);
   };
 
   const columns: TableColumnsType<WishlistDataType> = [
@@ -47,10 +72,16 @@ function WishlistTable() {
         </p>
       ),
       dataIndex: 'photo',
-      render: (photo) => (
+      render: (_, record) => (
         <Image
-          alt={photo.alt}
-          src={photo.url}
+          alt={
+            record.attributes.image_thumbnail.data.attributes
+              .alternativeText ?? ''
+          }
+          src={
+            record.attributes.image_thumbnail.data.attributes.url ??
+            ''
+          }
           // style={{ width: '50px' }}
           width={50}
           height={50}
@@ -75,10 +106,14 @@ function WishlistTable() {
       // specify the condition of filtering result
       // here is that finding the name started with `value`
       onFilter: (value, record) =>
-        record.name.indexOf(value as string) === 0,
-      sorter: (a, b) => a.name.charCodeAt(0) - b.name.charCodeAt(0),
-      render: (value) => (
-        <p className='font-medium capitalize'>{value}</p>
+        record.attributes.name.indexOf(value as string) === 0,
+      sorter: (a, b) =>
+        a.attributes.name.charCodeAt(0) -
+        b.attributes.name.charCodeAt(0),
+      render: (_, record) => (
+        <p className='font-medium capitalize'>
+          {record.attributes.name}
+        </p>
       )
       // sortDirections: ['ascend']
     },
@@ -86,10 +121,19 @@ function WishlistTable() {
       title: t('header.price'),
       dataIndex: 'price',
       align: 'center',
-      sorter: (a, b) => a.price - b.price,
-      render: (value) => (
+      sorter: (a, b) => a.attributes.price - b.attributes.price,
+      render: (_, record) => (
         <p className='font-medium text-black-light'>
-          {formatCurrencyNumbers(value, t('body.currency'), locale)}
+          {formatCurrencyNumbers(
+            (
+              record?.attributes?.sale_price &&
+                record?.attributes?.sale_price > 0
+            ) ?
+              record.attributes.sale_price
+            : record.attributes.price,
+            t('body.currency'),
+            locale
+          )}
         </p>
       )
     },
@@ -108,34 +152,25 @@ function WishlistTable() {
       //   }
       // ],
       // onFilter: (_, record) => record.stock  > 0,
-      sorter: (a, b) => a.stock - b.stock,
-      render: (value) => (
+      sorter: (a, b) => a.attributes.stock - b.attributes.stock,
+      render: (_, record) => (
         <p
-          className={`font-medium capitalize ${value > 0 ? 'text-green-dark' : 'text-red-shade-350'}`}
+          className={`font-medium capitalize ${record.attributes.stock > 0 ? 'text-green-dark' : 'text-red-shade-350'}`}
         >
-          {value > 0 ? t('body.inStock') : t('body.outOfStock')}
+          {record.attributes.stock > 0 ?
+            t('body.inStock')
+          : t('body.outOfStock')}
         </p>
       )
     },
     {
       title: t('header.actions'),
       dataIndex: 'productId',
-      // sorter: (a, b) => a.status.length - b.status.length,
-      render: (value, record) => (
-        <AddToCartButton productId={value} stock={record.stock} />
-        // <Btn
-        //   className={`font-medium capitalize ${record.status ? 'bg-green-medium hover:bg-green-dark' : 'bg-black-medium hover:bg-black-light'} w-[135px] rounded py-1 text-white`}
-        //   onClick={() => {
-        //     if (record.status) {
-        //     } else {
-        //       router.push('/support');
-        //     }
-        //   }}
-        // >
-        //   {record.status ?
-        //     t('body.addToCartButtonText')
-        //   : t('body.contactUs')}
-        // </Btn>
+      render: (_, record) => (
+        <AddToCartButton
+          productId={record.id}
+          stock={record.attributes.stock}
+        />
       )
     },
     {
@@ -144,7 +179,20 @@ function WishlistTable() {
       render: (_, record) => (
         <button
           onClick={() => {
-            handleDelete(record.key);
+            if (
+              record?.attributes?.locale &&
+              record?.id &&
+              record?.attributes?.localizations?.data[0].attributes
+                .locale &&
+              record?.attributes?.localizations?.data[0].id
+            ) {
+              const data = {
+                [record.attributes.locale]: record.id,
+                [record.attributes.localizations.data[0].attributes
+                  .locale]: record.attributes.localizations.data[0].id
+              };
+              handleDelete(data);
+            }
           }}
           className='font-medium'
         >
@@ -159,6 +207,7 @@ function WishlistTable() {
       )
     }
   ];
+  console.log(isWishlistLoading);
 
   return (
     <Table<WishlistDataType>
@@ -167,6 +216,7 @@ function WishlistTable() {
       onChange={onChange}
       showSorterTooltip={{ target: 'sorter-icon' }}
       className='wishtlist-table mt-8 w-[calc(100%)]'
+      loading={isWishlistLoading}
       // style={{ minHeight: '750px' }}
     />
   );

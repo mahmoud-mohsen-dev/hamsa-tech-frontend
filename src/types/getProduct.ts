@@ -114,7 +114,10 @@ export interface ProductDataType {
   related_product_2: { data: RelatedProduct };
   related_product_3: { data: RelatedProduct };
   related_product_4: { data: RelatedProduct };
-  localizations: { data: { id: string }[] };
+  localizations: {
+    data: { id: string; attributes: { locale: string } }[];
+  };
+  locale: string;
 }
 
 // Define the product response type

@@ -27,6 +27,15 @@ export type ProductType = {
     image_thumbnail: ImageThumbnail;
     average_reviews: number;
     total_reviews: number;
+    locale: string;
+    localizations: {
+      data: {
+        id: string;
+        attributes: {
+          locale: string;
+        };
+      }[];
+    };
   };
 };
 

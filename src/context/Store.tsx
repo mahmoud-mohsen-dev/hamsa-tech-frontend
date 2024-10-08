@@ -1,7 +1,7 @@
 // app/MyContext.js
 'use client'; // Make this a client component
 
-import { WishlistDataType } from '@/components/wishlist/WishlistTable';
+// import { WishlistTableDataType } from '@/components/wishlist/WishlistTable';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
   CartDataType,
@@ -11,6 +11,10 @@ import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
 import { CouponDataType } from '@/types/getCouponResponseType';
 import { ProductType } from '@/types/getProducts';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
+import {
+  WishlistDataType,
+  WishlistsDataType
+} from '@/types/wishlistReponseTypes';
 import {
   aggregateCartItems,
   updateCartInTheBackend
@@ -75,8 +79,15 @@ const MyContext = createContext<{
     deductionValueByPercent?: number | null
   ) => number;
   calculateTotalOrderCost: () => number;
-  dataSource: WishlistDataType[];
-  setDataSource: React.Dispatch<React.SetStateAction<WishlistDataType[]>>;
+  wishlistsData: WishlistsDataType;
+  setWishlistsData: React.Dispatch<
+    React.SetStateAction<WishlistsDataType>
+  >;
+  findProductInWishlist: (
+    productId: string
+  ) => WishlistDataType | undefined;
+  isWishlistLoading: boolean;
+  setIsWishlistLoading: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -109,53 +120,9 @@ export const StoreContextProvider = ({
   const [couponData, setCouponData] = useState<CouponDataType | null>(
     null
   );
-  const [dataSource, setDataSource] =
-    useState<WishlistDataType[]>([
-  {
-    key: '1',
-    photo: {
-      url: '/hikvision-dom-camera-original.png',
-      alt: ''
-    },
-    name: 'Brown John ',
-    productId: '2',
-    price: 20,
-    stock: 5
-  },
-  {
-    key: '2',
-    photo: {
-      url: '/hikvision-dom-camera-original.png',
-      alt: ''
-    },
-    name: 'John Brown',
-    price: 50,
-    productId: '3',
-    stock: 0
-  },
-  {
-    key: '3',
-    photo: {
-      url: '/hikvision-dom-camera-original.png',
-      alt: ''
-    },
-    name: 'ow ohnBr',
-    price: 100,
-    productId: '4',
-    stock: 1
-  },
-  {
-    key: '4',
-    photo: {
-      url: '/hikvision-dom-camera-original.png',
-      alt: ''
-    },
-    name: 'John Brownsss',
-    price: 20,
-    productId: '5',
-    stock: 5
-  }
-]);
+  const [wishlistsData, setWishlistsData] =
+    useState<WishlistsDataType>([]);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -366,6 +333,13 @@ export const StoreContextProvider = ({
     );
   };
 
+  // Utility to find product in the wishlist
+  const findProductInWishlist = (productId: string) => {
+    return wishlistsData.find((item) =>
+      item?.id ? item.id === productId : null
+    );
+  };
+
   return (
     <MyContext.Provider
       value={{
@@ -402,8 +376,13 @@ export const StoreContextProvider = ({
         calculateNetDeliveryCost,
         calculateCouponDeductionValue,
         calculateTotalOrderCost,
-        dataSource,
-        setDataSource
+        wishlistsData,
+        setWishlistsData,
+        // dataSource,
+        // setDataSource,
+        findProductInWishlist,
+        isWishlistLoading,
+        setIsWishlistLoading
       }}
     >
       {children}

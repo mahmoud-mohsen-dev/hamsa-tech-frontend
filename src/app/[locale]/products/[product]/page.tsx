@@ -271,8 +271,12 @@ const getQueryProductPage = (id: string) => `{
         localizations {
             data {
                 id
+                attributes {
+                    locale
+                }
             }
         }
+        locale
       }
     }
   }
@@ -368,22 +372,26 @@ export default async function Product({
     notFound();
   }
   // console.log(product);
-  const nextProductResponse = await fetchGraphql(`{
-    product(id: ${product}) {
-      data {
-        id
-        attributes {
-          localizations {
-              data {
-                  id
-              }
-          }
-        }
-      }
-  }
-}`);
-  const { data: nextProductData, error: nextProductError } =
-    nextProductResponse as NextProductResponseType;
+
+  //   const nextProductResponse = await fetchGraphql(`{
+  //     product(id: ${product}) {
+  //       data {
+  //         id
+  //         locale
+  //         attributes {
+  //           localizations {
+  //               data {
+  //                   id
+  //                   locale
+  //               }
+  //           }
+  //         }
+  //       }
+  //   }
+  // }`);
+  //   const { data: nextProductData, error: nextProductError } =
+  //     nextProductResponse as NextProductResponseType;
+
   // console.log(nextProductData.product.data.id);
   // console.log(
   //   nextProductData.product.data.attributes.localizations.data[0].id
@@ -395,9 +403,9 @@ export default async function Product({
     productData?.related_product_4?.data
   ];
 
-  if (!nextProductData && nextProductError) {
-    notFound();
-  }
+  // if (!nextProductData && nextProductError) {
+  //   notFound();
+  // }
   //   const { relatedProducts } = productData;
   // console.log(productData);
   const offPercent =
@@ -426,11 +434,8 @@ export default async function Product({
           >
             <ProductSlider
               productData={productData}
-              currentId={nextProductData?.product?.data?.id ?? 0}
-              nextId={
-                nextProductData?.product?.data?.attributes
-                  ?.localizations?.data[0]?.id ?? 0
-              }
+              currentId={productResData?.product?.data.id ?? 0}
+              nextId={productData?.localizations?.data[0].id ?? 0}
             />
             <div>
               {/* Basic Data */}
@@ -495,6 +500,14 @@ export default async function Product({
                   productId={product}
                   maxQuantity={productData?.stock ?? 0}
                   minQuantity={productData?.stock > 1 ? 1 : 0}
+                  localeParentName={productData?.locale}
+                  localeChildName={
+                    productData?.localizations?.data[0]?.attributes
+                      ?.locale
+                  }
+                  localeChildId={
+                    productData?.localizations?.data[0]?.id ?? ''
+                  }
                 />
                 <div className='mt-4 text-sm capitalize text-gray-medium'>
                   <p>-&nbsp;&nbsp;&nbsp;&nbsp;{t('deliveryText')}</p>

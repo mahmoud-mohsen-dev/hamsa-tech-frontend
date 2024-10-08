@@ -29,7 +29,16 @@ export const getProductsQuery = (queryArgs: string) => {
                 }
                 average_reviews
                 total_reviews
-            }
+                locale
+                localizations {
+                    data {
+                        id
+                        attributes {
+                            locale
+                        }
+                    }
+                }
+              }
             }
         }
     }`;

@@ -16,6 +16,7 @@ import {
   doesCookieByNameExist,
   getCartId,
   getCookie,
+  getIdFromToken,
   removeCartId,
   setCartId,
   setCookie
@@ -32,7 +33,12 @@ import { CreateGuestUserResponseType } from '@/types/guestUserReponses';
 import { CreateAddressResponseType } from '@/types/addressResponseTypes';
 import ProfileDropdownMenu from '../UI/navbar/ProfileDropdownMenu';
 import { useUser } from '@/context/UserContext';
-import { WishlistResponseType } from '@/types/wishlistReponseTypes';
+import {
+  createWishlistLocalizationResponseType,
+  GetWishlistDataType,
+  WishlistResponseType,
+  WishlistsDataType
+} from '@/types/wishlistReponseTypes';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -126,11 +132,16 @@ const getCreateShippingAddressQuery = () => {
   }`;
 };
 
-const getCreateWishlistQuery = () => {
-  return `mutation CreateAddress {
+const getCreateWishlistQuery = (
+  guestUserId: string | null,
+  userId: string | null
+) => {
+  return `mutation CreateWishlist {
     createWishlist(
-        data: {
-            publishedAt: "${new Date().toISOString()}"
+        data: { 
+          publishedAt: "${new Date().toISOString()}"
+          guest_user: ${guestUserId ? `"${guestUserId}"` : null}
+          users_permissions_user: ${userId ? `"${userId}"` : null}
         }
     ) {
         data {
@@ -138,6 +149,121 @@ const getCreateWishlistQuery = () => {
         }
     }
   }`;
+};
+
+const getCreateWishlistLocalizationQuery = (arId: string) => {
+  return `mutation CreateWishlistLocalization {
+    createWishlistLocalization(
+        id: "${arId}"
+        locale: "en"
+        data: { 
+          publishedAt: "${new Date().toISOString()}"
+        }
+    ) {
+        data {
+            id
+            attributes {
+                locale
+                localizations {
+                    data {
+                        id
+                        attributes {
+                            locale
+                        }
+                    }
+                }
+            }
+        }
+    }
+  }`;
+};
+
+const getWishlistDataQuery = (wishlistId: string) => {
+  return `{
+    wishlist(id: "${wishlistId}") {
+        data {
+            id
+            attributes {
+                products {
+                    data {
+                        id
+                        attributes {
+                            name
+                            price
+                            sale_price
+                            image_thumbnail {
+                                data {
+                                    attributes {
+                                        alternativeText
+                                        url
+                                    }
+                                }
+                            }
+                            stock
+                            locale
+                            localizations {
+                                data {
+                                    id
+                                    attributes {
+                                        locale
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+  }`;
+};
+
+export const getWishlistsData = async (
+  locale: string,
+  setIsWishlistLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setWishlistsData: React.Dispatch<
+    React.SetStateAction<WishlistsDataType>
+  >
+) => {
+  try {
+    setIsWishlistLoading(true);
+    const wishlistIds = getCookie('wishlistIds');
+
+    let wishlistIdsValue: { en: string; ar: string } | null = null;
+    if (wishlistIds) {
+      wishlistIdsValue = JSON.parse(wishlistIds);
+    }
+
+    let passedArgId: string = '';
+    if (wishlistIdsValue) {
+      passedArgId =
+        locale === 'ar' ? wishlistIdsValue.ar : wishlistIdsValue.en;
+    }
+    // const wishlitsId = locale === 'ar' ? JSON.parse(wishlistIds)
+    const { data: wishlistsData, error: wishlistsError } =
+      (await fetchGraphqlClient(
+        getWishlistDataQuery(passedArgId)
+      )) as GetWishlistDataType;
+
+    if (
+      wishlistsError ||
+      !wishlistsData?.wishlist?.data?.attributes?.products?.data
+    ) {
+      console.error(
+        'Error fetching wishlists data: ',
+        wishlistsError
+      );
+      return;
+    }
+
+    setWishlistsData(
+      wishlistsData?.wishlist?.data?.attributes?.products?.data
+    );
+  } catch (err) {
+    console.error('Error fetching wishlist data: ', err);
+  } finally {
+    setIsWishlistLoading(false);
+  }
 };
 
 const countCartItems = (cart: CartDataType[]) => {
@@ -156,7 +282,9 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     setOpenDrawer,
     setDrawerIsLoading,
     setTotalCartCost,
-    dataSource
+    setWishlistsData,
+    wishlistsData,
+    setIsWishlistLoading
   } = useMyContext();
   const [linkHovered, setLinkHovered] = useState('');
   const { userId } = useUser();
@@ -269,11 +397,67 @@ function Header({ navLinks, productsSubNav }: PropsType) {
       }
     };
 
-    const createWishlist = async () => {
+    const createWishlistTranslations = async (arId: string) => {
+      try {
+        const {
+          data: wishlistLocalizationData,
+          error: wishlistLocalizationError
+        } = (await fetchGraphqlClient(
+          getCreateWishlistLocalizationQuery(arId)
+        )) as createWishlistLocalizationResponseType;
+
+        const localeFirstId =
+          wishlistLocalizationData?.createWishlistLocalization?.data
+            ?.id ?? null;
+        const localeNameFirst =
+          wishlistLocalizationData?.createWishlistLocalization?.data
+            ?.attributes?.locale ?? null;
+
+        // Check if localizations data is not null
+        const localizations =
+          wishlistLocalizationData?.createWishlistLocalization?.data
+            ?.attributes?.localizations?.data;
+
+        let localeSecondId: string | null = null;
+        let localeNameSecond: string | null = null;
+
+        if (localizations && localizations.length > 0) {
+          localeSecondId = localizations[0]?.id ?? null;
+          localeNameSecond =
+            localizations[0]?.attributes?.locale ?? null;
+        }
+
+        if (
+          wishlistLocalizationError ||
+          !localeFirstId ||
+          !localeNameFirst ||
+          !localeSecondId ||
+          !localeNameSecond
+        ) {
+          console.error(
+            'Failed to create wishlist translations',
+            wishlistLocalizationError
+          );
+          return;
+        }
+        const wishlist = {
+          [localeNameFirst]: localeFirstId,
+          [localeNameSecond]: localeSecondId
+        };
+        setCookie('wishlistIds', JSON.stringify(wishlist));
+      } catch (err) {
+        console.error('Failed to create wishlist translations', err);
+      }
+    };
+
+    const createWishlist = async (
+      guestUserId: string | null,
+      userId: string | null
+    ) => {
       try {
         const { data: wishlistData, error: wishlistError } =
           (await fetchGraphqlClient(
-            getCreateWishlistQuery()
+            getCreateWishlistQuery(guestUserId, userId)
           )) as WishlistResponseType;
 
         if (
@@ -281,68 +465,53 @@ function Header({ navLinks, productsSubNav }: PropsType) {
           !wishlistData?.createWishlist?.data?.id
         ) {
           console.error('Failed to create wishlist');
+          return;
         }
 
-        if (wishlistData?.createWishlist?.data?.id) {
-          setCookie(
-            'wishlistId',
-            wishlistData?.createWishlist?.data?.id
-          );
-        } else {
-          console.error('Failed to get wishlist ID from API');
-        }
+        // if (wishlistData?.createWishlist?.data?.id) {
+        //   setCookie(
+        //     'wishlistId',
+        //     wishlistData?.createWishlist?.data?.id
+        //   );
+        // }
+        createWishlistTranslations(
+          wishlistData?.createWishlist?.data?.id
+        );
       } catch (e) {
         console.error('Failed to create wishlist', e);
       }
     };
 
-    const getWishlist = async () => {
-      try {
-        const { data: wishlistData, error: wishlistError } =
-          (await fetchGraphqlClient(
-            getCreateWishlistQuery()
-          )) as WishlistResponseType;
+    const handleRequests = async () => {
+      handleCart();
 
-        if (
-          wishlistError ||
-          !wishlistData?.createWishlist?.data?.id
-        ) {
-          console.error('Failed to create wishlist');
-        }
+      const guestUserIdExists = doesCookieByNameExist('guestUserId');
+      if (!guestUserIdExists) {
+        await handleGuestUser();
+      }
 
-        if (wishlistData?.createWishlist?.data?.id) {
-          setCookie(
-            'wishlistId',
-            wishlistData?.createWishlist?.data?.id
-          );
-        } else {
-          console.error('Failed to get wishlist ID from API');
-        }
-      } catch (e) {
-        console.error('Failed to create wishlist', e);
+      const shippingAddressIdExists = doesCookieByNameExist(
+        'shippingAddressId'
+      );
+      if (!shippingAddressIdExists) {
+        await handleShippingAddress();
+      }
+
+      const wishlistIdExists = doesCookieByNameExist('wishlistIds');
+      if (!wishlistIdExists) {
+        const guestUserId = getCookie('guestUserId');
+        const userId = getIdFromToken();
+        await createWishlist(guestUserId, userId);
+      } else {
+        getWishlistsData(
+          locale,
+          setIsWishlistLoading,
+          setWishlistsData
+        );
       }
     };
 
-    handleCart();
-
-    const guestUserIdExists = doesCookieByNameExist('guestUserId');
-    if (!guestUserIdExists) {
-      handleGuestUser();
-    }
-
-    const shippingAddressIdExists = doesCookieByNameExist(
-      'shippingAddressId'
-    );
-    if (!shippingAddressIdExists) {
-      handleShippingAddress();
-    }
-
-    const wishlistIdExists = doesCookieByNameExist('wishlistId');
-    if (!wishlistIdExists) {
-      createWishlist();
-    } else {
-      getWishlist();
-    }
+    handleRequests();
   }, []);
 
   return (
@@ -379,10 +548,10 @@ function Header({ navLinks, productsSubNav }: PropsType) {
             href='/wishlist'
             className='wishlist relative ml-4 text-white'
           >
-            {dataSource.length > 0 && (
+            {wishlistsData.length > 0 && (
               <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
                 <p className='text-[.5rem] leading-[1rem] text-white'>
-                  {dataSource.length}
+                  {wishlistsData.length}
                 </p>
               </div>
             )}

@@ -38,31 +38,38 @@ function ProductsContent() {
   const category = searchParams.get('category') ?? ''; // Get the "category" parameter from the URL
   const subCategory = searchParams.get('sub-category') ?? ''; // Get the "sub-category" parameter from the URL
 
-  useEffect(() => {
-    const getProducts = async () => {
-      try {
-        setLoading(true);
-        const { data: resData, error: resError } =
-          await fetchProducts(category, subCategory, locale);
+  const getProducts = async () => {
+    try {
+      setLoading(true);
+      const { data: resData, error: resError } = await fetchProducts(
+        category,
+        subCategory,
+        locale
+      );
 
-        if (!resData || resError) {
-          console.error('Error fetching products');
-          console.error(resError);
-        }
-        if (resData?.products?.data) {
-          setProductsData(resData.products.data);
-        }
-      } catch (err: any) {
-        setError(err);
-        setProductsData([]);
-      } finally {
-        setLoading(false);
+      if (!resData || resError) {
+        console.error('Error fetching products');
+        console.error(resError);
       }
-    };
+      if (resData?.products?.data) {
+        setProductsData(resData.products.data);
+      }
+    } catch (err: any) {
+      setError(err);
+      setProductsData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (didMount) {
       getProducts();
     }
+  }, []);
+
+  useEffect(() => {
+    getProducts();
   }, [category, subCategory, locale]);
 
   const fetchGoogleCallback = async () => {
