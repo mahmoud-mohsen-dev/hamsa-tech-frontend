@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import Image from 'next/image';
 import Btn from '../UI/Btn';
-import { useRouter } from '@/navigation';
+import { Link, useRouter } from '@/navigation';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
 import { useLocale, useTranslations } from 'next-intl';
 import AddToCartButton from '../products/AddToCartButton';
@@ -73,20 +73,24 @@ function WishlistTable() {
       ),
       dataIndex: 'photo',
       render: (_, record) => (
-        <Image
-          alt={
-            record.attributes.image_thumbnail.data.attributes
-              .alternativeText ?? ''
-          }
-          src={
-            record.attributes.image_thumbnail.data.attributes.url ??
-            ''
-          }
-          // style={{ width: '50px' }}
-          width={50}
-          height={50}
-          className='ml-8 h-[50px] w-[50px]'
-        />
+        <Link
+          href={record?.id ? `/products/${record?.id}` : '/products'}
+        >
+          <Image
+            alt={
+              record.attributes.image_thumbnail.data.attributes
+                .alternativeText ?? ''
+            }
+            src={
+              record.attributes.image_thumbnail.data.attributes.url ??
+              ''
+            }
+            objectFit='contain'
+            width={100}
+            height={70}
+            className='ml-8'
+          />
+        </Link>
       )
     },
     {
@@ -111,9 +115,12 @@ function WishlistTable() {
         a.attributes.name.charCodeAt(0) -
         b.attributes.name.charCodeAt(0),
       render: (_, record) => (
-        <p className='font-medium capitalize'>
+        <Link
+          href={record?.id ? `/products/${record?.id}` : '/products'}
+          className='font-medium capitalize text-black-light'
+        >
           {record.attributes.name}
-        </p>
+        </Link>
       )
       // sortDirections: ['ascend']
     },

@@ -224,12 +224,12 @@ async function ContentOfReviews({
     threeRatingCount +
     fourRatingCount +
     fiveRatingCount;
-  console.log(totalNumberOfRates);
+  // console.log(totalNumberOfRates);
 
   const getPercentage = (rate: number) => {
     return Number(((rate / totalNumberOfRates) * 100).toFixed(1));
   };
-  console.log(avgRatings);
+  // console.log(avgRatings);
 
   return (
     <div className='grid grid-cols-[350px_1fr] gap-20'>

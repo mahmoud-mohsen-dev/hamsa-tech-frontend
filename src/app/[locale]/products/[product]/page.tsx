@@ -43,6 +43,7 @@ const getQueryProductPage = (id: string) => `{
         name
         price
         sale_price
+        final_product_price
         stock
         sub_category {
             data {
@@ -74,6 +75,7 @@ const getQueryProductPage = (id: string) => `{
             data {
                 attributes {
                     name
+                    slug
                 }
             }
         }
@@ -87,7 +89,6 @@ const getQueryProductPage = (id: string) => `{
             }
         }
         description
-        sku
         connectivity
         modal_name
         waranty {
@@ -369,33 +370,12 @@ export default async function Product({
     productResData?.product?.data?.attributes || null;
 
   if (!productResData || !productData || productError) {
+    console.log(productResData);
+    console.log(productData);
+    console.log(productError);
     notFound();
   }
-  // console.log(product);
 
-  //   const nextProductResponse = await fetchGraphql(`{
-  //     product(id: ${product}) {
-  //       data {
-  //         id
-  //         locale
-  //         attributes {
-  //           localizations {
-  //               data {
-  //                   id
-  //                   locale
-  //               }
-  //           }
-  //         }
-  //       }
-  //   }
-  // }`);
-  //   const { data: nextProductData, error: nextProductError } =
-  //     nextProductResponse as NextProductResponseType;
-
-  // console.log(nextProductData.product.data.id);
-  // console.log(
-  //   nextProductData.product.data.attributes.localizations.data[0].id
-  // );
   const relatedProducts = [
     productData?.related_product_1?.data,
     productData?.related_product_2?.data,
@@ -403,11 +383,6 @@ export default async function Product({
     productData?.related_product_4?.data
   ];
 
-  // if (!nextProductData && nextProductError) {
-  //   notFound();
-  // }
-  //   const { relatedProducts } = productData;
-  // console.log(productData);
   const offPercent =
     ((productData?.price - productData?.sale_price) * 100) /
     productData?.price;
@@ -529,7 +504,7 @@ export default async function Product({
                 />
                 <Info
                   infoKey={`${t('skuText')}:`}
-                  value={productData?.sku ?? ''}
+                  value={productResData?.product?.data?.id ?? ''}
                   isCapitalized={false}
                 />
                 <Info
@@ -684,7 +659,7 @@ export default async function Product({
           <div className='px-6'>
             <TabsSection
               moreDetails={{
-                description: productData['long_description'] ?? [],
+                description: productData?.long_description ?? [],
                 specification: productData?.sepcification ?? [],
                 reviews: productData?.reviews?.data ?? []
               }}
@@ -704,7 +679,7 @@ export default async function Product({
                 return (
                   <ProductCard
                     key={product?.id ?? v4()}
-                    id={product?.id}
+                    id={product?.id ?? ''}
                     title={product?.attributes?.name ?? ''}
                     imgSrc={
                       product?.attributes?.image_thumbnail?.data

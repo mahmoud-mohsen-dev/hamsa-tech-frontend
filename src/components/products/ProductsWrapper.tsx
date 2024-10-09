@@ -1,4 +1,5 @@
 // import { ProductType } from '@/types/getProducts';
+import { Pagination } from 'antd';
 import ProductsContent from '../UI/products/ProductsContent';
 
 // {

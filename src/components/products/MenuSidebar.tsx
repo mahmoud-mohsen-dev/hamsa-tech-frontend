@@ -96,6 +96,7 @@ function MenuSidebar({ data }: { data: CategorySidebarType[] }) {
     ) => {
       params.set(category, categoryValue);
       params.set(subCategory, subCategoryValue);
+      params.set('page', '1');
       console.log(categoryValue);
       console.log(params.toString());
       return params.toString();

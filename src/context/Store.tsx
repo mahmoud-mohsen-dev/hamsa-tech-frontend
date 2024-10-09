@@ -9,7 +9,10 @@ import {
 } from '@/types/cartResponseTypes';
 import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
 import { CouponDataType } from '@/types/getCouponResponseType';
-import { ProductType } from '@/types/getProducts';
+import {
+  ProductsResponseDataType,
+  ProductType
+} from '@/types/getProducts';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
 import {
   WishlistDataType,
@@ -88,6 +91,10 @@ const MyContext = createContext<{
   ) => WishlistDataType | undefined;
   isWishlistLoading: boolean;
   setIsWishlistLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  completeProductsApiData: ProductsResponseDataType;
+  setCompleteProductsApiData: React.Dispatch<
+    React.SetStateAction<ProductsResponseDataType>
+  >;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -100,6 +107,8 @@ export const StoreContextProvider = ({
   const [productsData, setProductsData] = useState<
     [] | ProductType[]
   >(initialProductsData);
+  const [completeProductsApiData, setCompleteProductsApiData] =
+    useState<ProductsResponseDataType | null>(null);
   const [currentProductId, setCurrentProductId] = useState('0');
   const [nextProductId, setNextProductId] = useState('0');
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -382,7 +391,9 @@ export const StoreContextProvider = ({
         // setDataSource,
         findProductInWishlist,
         isWishlistLoading,
-        setIsWishlistLoading
+        setIsWishlistLoading,
+        completeProductsApiData,
+        setCompleteProductsApiData
       }}
     >
       {children}

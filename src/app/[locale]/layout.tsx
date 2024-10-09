@@ -166,7 +166,9 @@ export default async function LocaleLayout({
 
   const { data: productsData, error: productsError } =
     (await fetchGraphql(
-      getProductsQuery(`locale: "${locale ?? 'en'}"`)
+      getProductsQuery(
+        `locale: "${locale ?? 'en'}" , pagination: { page: 1, pageSize: 20 }`
+      )
     )) as ProductsResponseType;
 
   if (productsError || !productsData) {
@@ -174,7 +176,7 @@ export default async function LocaleLayout({
     console.error(productsError);
   }
 
-  // console.log(JSON.stringify(productsData?.products?.data));
+  console.log(JSON.stringify(productsData));
 
   // console.log(JSON.stringify(navbarProductsCategoriesData));
 

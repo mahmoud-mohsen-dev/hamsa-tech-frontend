@@ -61,16 +61,16 @@ function ProductCard({
           }}
           className='mb-5 mt-2.5 object-contain transition-["scale"] duration-1000 ease-linear hover:scale-110'
         />
-        <div className='h-[90px] lg:h-[80px] 2xl:h-[100px]'>
-          <h3 className='mb-1 max-h-[22px] overflow-hidden font-openSans text-sm font-normal capitalize leading-[22px] text-gray-medium'>
+        <div className='h-[100px]'>
+          <h3 className='mb-1 h-[22px] overflow-hidden font-openSans text-sm font-normal capitalize leading-[22px] text-gray-medium'>
             {category}
           </h3>
-          <h4 className='mb-3 font-openSans text-base font-semibold capitalize leading-[24px] text-black-light xl:text-xs 2xl:text-base'>
+          <h4 className='mb-1 h-[40px] font-openSans text-sm font-semibold capitalize leading-[20px] text-black-light'>
             {title}
           </h4>
-          <div className='flex items-center gap-2 leading-[54px]'>
+          <div className='mb-2.5 flex h-[20px] items-center gap-2'>
             <Rate defaultValue={avgRate} allowHalf disabled />
-            <span className='text-base font-normal text-gray-medium'>
+            <span className='text-sm font-normal text-gray-medium'>
               ({totalRates}{' '}
               {totalRates > 1 ?
                 t('productCardReviews')

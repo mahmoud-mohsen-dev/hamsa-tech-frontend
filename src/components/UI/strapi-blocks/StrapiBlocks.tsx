@@ -512,24 +512,25 @@ export function ImgageBlock({ obj }: { obj: ImageType }) {
 export function CreateBlockContent({ arr }: { arr: ContentType[] }) {
   return (
     <div className='flex flex-col gap-3'>
-      {arr.map((item) => {
-        switch (item.type) {
-          case 'paragraph':
-            return <ParagraphBlock obj={item} key={uuid()} />;
-          case 'heading':
-            return <HeadingBlock obj={item} key={uuid()} />;
-          case 'list':
-            return <ListBlock obj={item} key={uuid()} />;
-          case 'image':
-            return <ImgageBlock obj={item} key={uuid()} />;
-          case 'quote':
-            return <QuoteBlock obj={item} key={uuid()} />;
-          case 'code':
-            return <CodeBlock obj={item} key={uuid()} />;
-          default:
-            return null;
-        }
-      })}
+      {arr.length > 0 &&
+        arr.map((item) => {
+          switch (item.type) {
+            case 'paragraph':
+              return <ParagraphBlock obj={item} key={uuid()} />;
+            case 'heading':
+              return <HeadingBlock obj={item} key={uuid()} />;
+            case 'list':
+              return <ListBlock obj={item} key={uuid()} />;
+            case 'image':
+              return <ImgageBlock obj={item} key={uuid()} />;
+            case 'quote':
+              return <QuoteBlock obj={item} key={uuid()} />;
+            case 'code':
+              return <CodeBlock obj={item} key={uuid()} />;
+            default:
+              return null;
+          }
+        })}
     </div>
   );
 }

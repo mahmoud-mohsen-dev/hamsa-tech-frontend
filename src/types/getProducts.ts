@@ -22,6 +22,7 @@ export type ProductType = {
     name: string;
     price: number;
     sale_price: number;
+    final_product_price: number;
     stock: number;
     sub_category: SubCategory;
     image_thumbnail: ImageThumbnail;
@@ -39,11 +40,21 @@ export type ProductType = {
   };
 };
 
+export type ProductsResponseDataType = {
+  data: ProductType[];
+  meta: {
+    pagination: {
+      total: number;
+      page: number;
+      pageSize: number;
+      pageCount: number;
+    };
+  };
+} | null;
+
 export type ProductsResponseType = {
   error: string | null;
   data: {
-    products: {
-      data: ProductType[];
-    } | null;
+    products: ProductsResponseDataType;
   };
 };

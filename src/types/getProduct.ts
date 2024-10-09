@@ -34,6 +34,7 @@ export interface ProductDataType {
   name: string;
   price: number;
   sale_price: number;
+  final_product_price: number;
   stock: number;
   updatedAt: string;
   sub_category: {
@@ -59,7 +60,7 @@ export interface ProductDataType {
   };
   average_reviews: number;
   total_reviews: number;
-  brand: { data: { attributes: { name: string } } };
+  brand: { data: { attributes: { name: string; slug: string } } };
   images: {
     data: {
       id: string;
@@ -70,7 +71,6 @@ export interface ProductDataType {
     }[];
   };
   description: string;
-  sku: string;
   connectivity: string;
   modal_name: string;
   waranty: {

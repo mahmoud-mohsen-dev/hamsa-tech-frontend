@@ -5,20 +5,28 @@ import Sorter from '@/components/products/Sorter';
 import { useMyContext } from '@/context/Store';
 import { useUser } from '@/context/UserContext';
 import { useIsMount } from '@/hooks/useIsMount';
-import { useRouter } from '@/navigation';
+import { usePathname, useRouter } from '@/navigation';
 import { fetchProducts } from '@/services/products';
 import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
 import { getBadge } from '@/utils/getBadge';
-import { Empty, message, Spin } from 'antd';
+import { Empty, message, Pagination, Spin } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import type { PaginationProps } from 'antd';
 import { v4 } from 'uuid';
+import { ProductsResponseDataType } from '@/types/getProducts';
 
 function ProductsContent() {
   const [messageApi, contextHolder] = message.useMessage();
   const { didMount } = useIsMount();
-  const { setProductsData, productsData } = useMyContext();
+  const {
+    setProductsData,
+    productsData,
+    completeProductsApiData,
+    setCompleteProductsApiData
+  } = useMyContext();
+
   const { setUserId } = useUser();
   const locale = useLocale();
   const t = useTranslations('ProductsPage.filtersSidebar');
@@ -27,16 +35,24 @@ function ProductsContent() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const params = new URLSearchParams(searchParams.toString());
+  const pathname = usePathname();
   // Check for Google ID token
   const googleIdToken = searchParams.get('id_token');
   const googleAccessToken = searchParams.get('access_token');
 
   // Check for Facebook access token
   const facebookAccessToken = searchParams.get('access_token');
+  const pageSize = searchParams.get('page-size'); // Get the "page-size" parameter from the URL
 
   // Extract category from URL params or use default value
   const category = searchParams.get('category') ?? ''; // Get the "category" parameter from the URL
   const subCategory = searchParams.get('sub-category') ?? ''; // Get the "sub-category" parameter from the URL
+
+  const paramsPage = searchParams.get('page'); // Get the "page" parameter from the URL
+  const paramsSortBy = params.get('sort-by'); // Get the "sort-by" parameter from the URL
+  const paramsPageSize = params.get('page-size'); // Get the "page-size" parameter from the URL
 
   const getProducts = async () => {
     try {
@@ -44,7 +60,10 @@ function ProductsContent() {
       const { data: resData, error: resError } = await fetchProducts(
         category,
         subCategory,
-        locale
+        locale,
+        paramsPage === null ? null : Number(paramsPage),
+        paramsPageSize === null ? null : Number(paramsPageSize),
+        paramsSortBy
       );
 
       if (!resData || resError) {
@@ -52,6 +71,7 @@ function ProductsContent() {
         console.error(resError);
       }
       if (resData?.products?.data) {
+        setCompleteProductsApiData(resData.products);
         setProductsData(resData.products.data);
       }
     } catch (err: any) {
@@ -70,7 +90,14 @@ function ProductsContent() {
 
   useEffect(() => {
     getProducts();
-  }, [category, subCategory, locale]);
+  }, [
+    category,
+    subCategory,
+    locale,
+    paramsPage,
+    paramsPageSize,
+    paramsSortBy
+  ]);
 
   const fetchGoogleCallback = async () => {
     try {
@@ -168,6 +195,19 @@ function ProductsContent() {
     }
   };
 
+  const onPaginationChange: PaginationProps['onChange'] = (
+    pageNumber: number
+  ) => {
+    console.log('Page: ', pageNumber);
+    params.set('page', pageNumber.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleParamsPage = (pageNumber: number) => {
+    console.log('Page: ', pageNumber);
+    params.set('page', pageNumber.toString());
+  };
+
   useEffect(() => {
     // Handle Google sign-in
     if (googleIdToken && googleAccessToken) {
@@ -178,6 +218,21 @@ function ProductsContent() {
       fetchFacebookCallback();
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!paramsPage) {
+      handleParamsPage(1);
+    }
+    if (!paramsSortBy) {
+      params.set('sort-by', 'featured');
+    }
+    if (!paramsPageSize) {
+      params.set('page-size', '20');
+    }
+    if (!paramsPage || !paramsSortBy || !paramsPageSize) {
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, []);
 
   if (error) {
     console.log('Error fetching products');
@@ -207,46 +262,85 @@ function ProductsContent() {
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
-      : <div className='mt-5 grid grid-cols-3 gap-4'>
-          {productsData &&
-            productsData?.length > 0 &&
-            productsData.map((product) => {
-              return (
-                <ProductCard
-                  id={product.id}
-                  title={product?.attributes?.name ?? ''}
-                  alt={
-                    product?.attributes?.image_thumbnail?.data
-                      ?.attributes?.alternativeText ?? ''
-                  }
-                  imgSrc={
-                    product?.attributes?.image_thumbnail?.data
-                      ?.attributes?.url ?? ''
-                  }
-                  avgRate={product?.attributes?.average_reviews ?? 0}
-                  category={
-                    product?.attributes?.sub_category?.data
-                      ?.attributes?.name ?? ''
-                  }
-                  badge={getBadge(
-                    locale,
-                    product?.attributes?.updatedAt,
-                    product?.attributes?.stock,
-                    product?.attributes?.price,
-                    product?.attributes?.sale_price
-                  )}
-                  priceBeforeDeduction={
-                    product?.attributes?.price ?? 0
-                  }
-                  currentPrice={product?.attributes?.sale_price ?? 0}
-                  linkSrc={`/products/${product.id}`}
-                  totalRates={product?.attributes?.total_reviews ?? 0}
-                  stock={product?.attributes?.stock ?? 0}
-                  key={v4()}
-                />
-              );
-            })}
-        </div>
+      : <>
+          <div className='mt-5 grid grid-cols-3 gap-4'>
+            {productsData &&
+              productsData?.length > 0 &&
+              productsData.map((product) => {
+                return (
+                  <ProductCard
+                    id={product.id}
+                    title={product?.attributes?.name ?? ''}
+                    alt={
+                      product?.attributes?.image_thumbnail?.data
+                        ?.attributes?.alternativeText ?? ''
+                    }
+                    imgSrc={
+                      product?.attributes?.image_thumbnail?.data
+                        ?.attributes?.url ?? ''
+                    }
+                    avgRate={
+                      product?.attributes?.average_reviews ?? 0
+                    }
+                    category={
+                      product?.attributes?.sub_category?.data
+                        ?.attributes?.name ?? ''
+                    }
+                    badge={getBadge(
+                      locale,
+                      product?.attributes?.updatedAt,
+                      product?.attributes?.stock,
+                      product?.attributes?.price,
+                      product?.attributes?.sale_price
+                    )}
+                    priceBeforeDeduction={
+                      product?.attributes?.price ?? 0
+                    }
+                    currentPrice={
+                      product?.attributes?.sale_price ?? 0
+                    }
+                    linkSrc={`/products/${product.id}`}
+                    totalRates={
+                      product?.attributes?.total_reviews ?? 0
+                    }
+                    stock={product?.attributes?.stock ?? 0}
+                    key={v4()}
+                  />
+                );
+              })}
+          </div>
+          <Pagination
+            align='start'
+            className={
+              locale === 'ar' ? 'products-pagination-in-arabic' : ''
+            }
+            defaultCurrent={1}
+            current={
+              (
+                Number(paramsPage) > 0 &&
+                completeProductsApiData?.meta?.pagination
+                  ?.pageCount &&
+                Number(paramsPage) <=
+                  completeProductsApiData.meta.pagination.pageCount
+              ) ?
+                Number(paramsPage)
+              : (function () {
+                  setTimeout(() => {
+                    handleParamsPage(1);
+                  }, 2500);
+                  return 1;
+                })()
+            }
+            total={
+              completeProductsApiData?.meta?.pagination?.pageCount ?
+                completeProductsApiData.meta.pagination.pageCount
+              : 1
+            }
+            pageSize={Number(pageSize) > 0 ? Number(pageSize) : 20}
+            onChange={onPaginationChange}
+            style={{ marginTop: 40 }}
+          />
+        </>
       }
     </div>
   );

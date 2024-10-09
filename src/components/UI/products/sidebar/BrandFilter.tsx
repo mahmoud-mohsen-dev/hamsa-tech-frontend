@@ -10,6 +10,9 @@ import { FaCheck } from 'react-icons/fa6';
 import { BrandData } from '@/types/getBrandsFilter';
 import { capitalize } from '@/utils/helpers';
 import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from '@/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
+import { useMyContext } from '@/context/Store';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -37,6 +40,10 @@ interface PropsType {
 }
 
 function BrandFilter({ data }: PropsType) {
+  const { completeProductsApiData } = useMyContext();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('ProductsPage.filtersSidebar');
   // console.log(data);
@@ -47,20 +54,30 @@ function BrandFilter({ data }: PropsType) {
   );
   // console.log(brandsList);
 
-  const [brandCheckedList, setCheckedList] = useState(brandsList);
-  const [sliderValues, setSliderValues] = useState([0, 100]);
+  const [brandCheckedList, setBrandCheckedList] =
+    useState(brandsList);
+
+  const prices = completeProductsApiData?.data.map(
+    (product) => product.attributes.final_product_price
+  );
+  console.log(completeProductsApiData);
+
+  const [sliderValues, setSliderValues] = useState([
+    Math.min(...(prices ?? [0])),
+    Math.max(...(prices ?? [100]))
+  ]);
   const [rateCheckedList, setRateCheckedList] = useState(
     defaultRateCheckedList
   );
-  // console.log(brandCheckedList);
+  console.log(sliderValues);
 
   const checkAllBrands =
     brandsList.length === brandCheckedList.length;
   const onBrandChange = (list: string[]) => {
-    setCheckedList(list);
+    setBrandCheckedList(list);
   };
   const onBrandCheckAllChange = (e: CheckboxChangeEvent) => {
-    setCheckedList(e.target.checked ? brandsList : []);
+    setBrandCheckedList(e.target.checked ? brandsList : []);
   };
 
   const checkAllRates =
@@ -82,6 +99,12 @@ function BrandFilter({ data }: PropsType) {
     ) {
       setSliderValues(newValue);
     }
+  };
+
+  const handleApply = () => {
+    // params.set('brands', );
+    // searchParams.
+    // router.
   };
 
   return (
@@ -169,6 +192,7 @@ function BrandFilter({ data }: PropsType) {
         <Btn
           className='bg-green-600 px-3 py-[6px] text-sm font-normal text-white'
           defaultPadding={false}
+          onClick={handleApply}
         >
           <FaCheck />
           <span>{t('applyButton')}</span>
