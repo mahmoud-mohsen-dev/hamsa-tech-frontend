@@ -16,15 +16,21 @@ import { useEffect, useState } from 'react';
 import type { PaginationProps } from 'antd';
 import { v4 } from 'uuid';
 import { ProductsResponseDataType } from '@/types/getProducts';
+import { FaFilter } from 'react-icons/fa6';
+import Btn from '../Btn';
 
 function ProductsContent() {
   const [messageApi, contextHolder] = message.useMessage();
-  const { didMount } = useIsMount();
+  // const { didMount } = useIsMount();
+
   const {
     setProductsData,
     productsData,
     completeProductsApiData,
-    setCompleteProductsApiData
+    setCompleteProductsApiData,
+    globaLoading,
+    setGlobalLoading,
+    setToggleFilters
   } = useMyContext();
 
   const { setUserId } = useUser();
@@ -32,7 +38,7 @@ function ProductsContent() {
   const t = useTranslations('ProductsPage.filtersSidebar');
   const signinTranslation = useTranslations('SigninPage.content');
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -54,16 +60,29 @@ function ProductsContent() {
   const paramsSortBy = params.get('sort-by'); // Get the "sort-by" parameter from the URL
   const paramsPageSize = params.get('page-size'); // Get the "page-size" parameter from the URL
 
+  const brandParams = params.get('brands');
+  const priceMinParams = params.get('price-min');
+  const priceMaxParams = params.get('price-max');
+  const ratesParams = params.get('rates');
+
   const getProducts = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
+      setGlobalLoading(true);
       const { data: resData, error: resError } = await fetchProducts(
         category,
         subCategory,
         locale,
         paramsPage === null ? null : Number(paramsPage),
         paramsPageSize === null ? null : Number(paramsPageSize),
-        paramsSortBy
+        paramsSortBy,
+        brandParams === null ? null : brandParams.split(','),
+        priceMinParams === null || priceMaxParams === null ?
+          null
+        : [Number(priceMinParams), Number(priceMaxParams)],
+        ratesParams === null ? null : (
+          ratesParams.split(',').map((rate) => Number(rate))
+        )
       );
 
       if (!resData || resError) {
@@ -75,28 +94,36 @@ function ProductsContent() {
         setProductsData(resData.products.data);
       }
     } catch (err: any) {
+      setCompleteProductsApiData(null);
       setError(err);
       setProductsData([]);
     } finally {
-      setLoading(false);
+      // setLoading(false);
+      setGlobalLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (didMount) {
-      getProducts();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (didMount) {
+  //     getProducts();
+  //   }
+  // }, []);
 
   useEffect(() => {
+    // if (!didMount) {
     getProducts();
+    // }
   }, [
     category,
     subCategory,
     locale,
     paramsPage,
     paramsPageSize,
-    paramsSortBy
+    paramsSortBy,
+    brandParams,
+    priceMinParams,
+    priceMaxParams,
+    ratesParams
   ]);
 
   const fetchGoogleCallback = async () => {
@@ -198,13 +225,13 @@ function ProductsContent() {
   const onPaginationChange: PaginationProps['onChange'] = (
     pageNumber: number
   ) => {
-    console.log('Page: ', pageNumber);
+    // console.log('Page: ', pageNumber);
     params.set('page', pageNumber.toString());
     router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleParamsPage = (pageNumber: number) => {
-    console.log('Page: ', pageNumber);
+    // console.log('Page: ', pageNumber);
     params.set('page', pageNumber.toString());
   };
 
@@ -230,6 +257,7 @@ function ProductsContent() {
       params.set('page-size', '20');
     }
     if (!paramsPage || !paramsSortBy || !paramsPageSize) {
+      // console.log(params.toString());
       router.replace(`${pathname}?${params.toString()}`);
     }
   }, []);
@@ -242,7 +270,7 @@ function ProductsContent() {
   return (
     <div>
       {contextHolder}
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-wrap items-center justify-between gap-4'>
         <h4 className='text-sm font-medium text-black-medium'>
           {/* {data?.children?.length ?? 0}{' '} */}
           <span className='text-gray-normal'>
@@ -251,8 +279,15 @@ function ProductsContent() {
         </h4>
         <Sorter />
       </div>
+      <Btn
+        className='mt-3 flex items-center gap-2 bg-black-medium text-sm text-white lg:hidden'
+        onClick={() => setToggleFilters((prev) => !prev)}
+      >
+        <span>{t('filteringButtonText')}</span>
+        <FaFilter />
+      </Btn>
 
-      {loading ?
+      {globaLoading ?
         <Spin
           size='large'
           className='mt-5 grid min-h-[500px] w-full place-content-center'
@@ -263,7 +298,7 @@ function ProductsContent() {
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
       : <>
-          <div className='mt-5 grid grid-cols-3 gap-4'>
+          <div className='mt-5 grid gap-4 xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4'>
             {productsData &&
               productsData?.length > 0 &&
               productsData.map((product) => {
@@ -293,6 +328,10 @@ function ProductsContent() {
                       product?.attributes?.price,
                       product?.attributes?.sale_price
                     )}
+                    brand={
+                      product?.attributes?.brand?.data?.attributes
+                        ?.name ?? ''
+                    }
                     priceBeforeDeduction={
                       product?.attributes?.price ?? 0
                     }

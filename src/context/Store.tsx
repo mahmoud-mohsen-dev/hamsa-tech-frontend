@@ -95,6 +95,10 @@ const MyContext = createContext<{
   setCompleteProductsApiData: React.Dispatch<
     React.SetStateAction<ProductsResponseDataType>
   >;
+  globaLoading: boolean;
+  setGlobalLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleFilters: boolean;
+  setToggleFilters: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -132,6 +136,8 @@ export const StoreContextProvider = ({
   const [wishlistsData, setWishlistsData] =
     useState<WishlistsDataType>([]);
   const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+  const [globaLoading, setGlobalLoading] = useState(false);
+  const [toggleFilters, setToggleFilters] = useState(false);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -387,13 +393,15 @@ export const StoreContextProvider = ({
         calculateTotalOrderCost,
         wishlistsData,
         setWishlistsData,
-        // dataSource,
-        // setDataSource,
         findProductInWishlist,
         isWishlistLoading,
         setIsWishlistLoading,
         completeProductsApiData,
-        setCompleteProductsApiData
+        setCompleteProductsApiData,
+        globaLoading,
+        setGlobalLoading,
+        toggleFilters,
+        setToggleFilters
       }}
     >
       {children}

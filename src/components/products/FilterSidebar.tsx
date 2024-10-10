@@ -1,21 +1,20 @@
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { BrandsFilterResponseType } from '@/types/getBrandsFilter';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getLocale } from 'next-intl/server';
 import BrandFilter from '../UI/products/sidebar/BrandFilter';
 import MenuSidebar from './MenuSidebar';
 import { CategoriesData } from '@/types/getCategoriesFilter';
+// import { useMyContext } from '@/context/Store';
+import AsideClient from './AsideClient';
 
 //  brands(locale: "${locale ?? 'en'}", filters: { products: { id: { not: null }}}) {
 
 async function FilterSidebar() {
   const locale = await getLocale();
-  const t = await getTranslations({
-    locale: locale,
-    namespace: 'ProductsPage'
-  });
+
   const { data: brandsData, error: brandsError } =
     (await fetchGraphql(`{
-        brands(locale: "${locale ?? 'en'}") {
+        brands(locale: "${locale ?? 'en'}", pagination: { pageSize: 100 }) {
             data {
                 attributes {
                     name
@@ -67,23 +66,7 @@ async function FilterSidebar() {
   }
 
   return (
-    <aside
-      className='pb-5'
-      style={
-        locale === 'ar' ?
-          {
-            borderLeft: '1px solid rgba(5, 5, 5, 0.06)'
-          }
-        : {
-            borderRight: '1px solid rgba(5, 5, 5, 0.06)'
-          }
-      }
-    >
-      <h3
-        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} w-fit text-lg text-black-medium`}
-      >
-        {t('filtersSidebar.categoriesTitle')}
-      </h3>
+    <AsideClient>
       {categoriesSidebarData && (
         <MenuSidebar data={categoriesSidebarData} />
       )}
@@ -91,7 +74,7 @@ async function FilterSidebar() {
       {brandsData && brandsData.brands.data && (
         <BrandFilter data={brandsData.brands.data} />
       )}
-    </aside>
+    </AsideClient>
   );
 }
 

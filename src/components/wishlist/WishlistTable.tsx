@@ -224,6 +224,7 @@ function WishlistTable() {
       showSorterTooltip={{ target: 'sorter-icon' }}
       className='wishtlist-table mt-8 w-[calc(100%)]'
       loading={isWishlistLoading}
+      scroll={{ x: 'max-content' }}
       // style={{ minHeight: '750px' }}
     />
   );

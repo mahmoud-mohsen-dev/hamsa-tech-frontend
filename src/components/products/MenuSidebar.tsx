@@ -3,7 +3,7 @@ import { usePathname, useRouter } from '@/navigation';
 import { CategorySidebarType } from '@/types/getCategoriesFilter';
 import { Menu, MenuProps } from 'antd';
 import { useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { v4 } from 'uuid';
 
 function MenuSidebar({ data }: { data: CategorySidebarType[] }) {
@@ -12,6 +12,12 @@ function MenuSidebar({ data }: { data: CategorySidebarType[] }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const dataValues = data && Array.isArray(data) ? data : [];
+  const [openKeys, setOpenKeys] = useState<string[]>(
+    // params.get('category') !== null ?
+    //   [params.get('category') ?? '']
+    // :
+    []
+  ); // State for open keys
   // console.log(params);
   // console.log(data);
 
@@ -116,16 +122,37 @@ function MenuSidebar({ data }: { data: CategorySidebarType[] }) {
       : undefined;
   }, [searchParams]);
 
+  console.log(getQueryString());
+  console.log(
+    params.get('category') ?
+      [params.get('category') ?? '']
+    : undefined
+  );
+
+  // Handle open submenu change to allow only one open submenu at a time
+  const onOpenChange = (keys: string[]) => {
+    const latestOpenKey = keys.find(
+      (key) => openKeys.indexOf(key) === -1
+    );
+    if (latestOpenKey) {
+      setOpenKeys([latestOpenKey]); // Only open the most recent key
+    } else {
+      setOpenKeys([]); // Close all if none is selected
+    }
+  };
+
   return (
     <Menu
       mode='inline'
       // defaultSelectedKeys={['access-control-devices']}
       selectedKeys={getQueryString()}
-      defaultOpenKeys={
-        params.get('category') ?
-          [params.get('category') ?? '']
-        : undefined
-      }
+      // openKeys={
+      //   params.get('category') ?
+      //     [params.get('category') ?? '']
+      //   : undefined
+      // }
+      openKeys={openKeys}
+      onOpenChange={onOpenChange} // Set the new handler here
       onClick={onClick}
       style={{
         borderRightColor: 'transparent',

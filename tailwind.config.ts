@@ -27,7 +27,8 @@ const config: Config = {
         'md': '2rem',
         'lg': '3rem',
         'xl': '7rem',
-        '2xl': '8rem'
+        '2xl': '8rem',
+        '5xl': '8rem'
         // '3xl': '8rem',
         // '4xl': '8rem'
       }

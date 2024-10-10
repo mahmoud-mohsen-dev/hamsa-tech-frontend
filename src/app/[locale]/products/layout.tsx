@@ -31,7 +31,7 @@ export default async function ProductsLayout({
   // Enable static rendering
   unstable_setRequestLocale(locale);
   return (
-    <section className='mt-[100px] max-w-[1900px]'>
+    <section className='container mt-[100px] max-w-[1900px]'>
       {children}
     </section>
   );

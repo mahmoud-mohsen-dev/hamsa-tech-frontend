@@ -55,6 +55,7 @@
       "all": "All Products"
     },
     "filtersSidebar": {
+      "filteringButtonText": "Filtering and sorting",
       "categoriesTitle": "Categories",
       "brandTitle": "Brands",
       "priceRangeTitle": "Price Range",

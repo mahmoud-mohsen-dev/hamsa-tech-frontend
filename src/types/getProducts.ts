@@ -14,6 +14,14 @@ type SubCategory = {
     };
   };
 };
+type BrandType = {
+  data: {
+    attributes: {
+      slug: string;
+      name: string;
+    };
+  };
+};
 
 export type ProductType = {
   id: string;
@@ -25,6 +33,7 @@ export type ProductType = {
     final_product_price: number;
     stock: number;
     sub_category: SubCategory;
+    brand: BrandType;
     image_thumbnail: ImageThumbnail;
     average_reviews: number;
     total_reviews: number;

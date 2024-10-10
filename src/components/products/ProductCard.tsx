@@ -11,6 +11,7 @@ function ProductCard({
   alt,
   title,
   category,
+  brand,
   avgRate,
   totalRates,
   priceBeforeDeduction,
@@ -24,6 +25,7 @@ function ProductCard({
   alt: string;
   title: string;
   category: string;
+  brand: string;
   badge: string;
   avgRate: number;
   totalRates: number;
@@ -38,7 +40,7 @@ function ProductCard({
   // };
 
   return (
-    <Link href={linkSrc} className='relative'>
+    <Link href={linkSrc} className='relative min-w-[260px]'>
       <div className='relative w-full bg-white p-5 shadow-featured transition-all duration-75 ease-linear hover:shadow-featuredHovered'>
         <p
           className='absolute left-6 top-4 z-20 text-sm font-medium uppercase text-red-dark'
@@ -63,7 +65,7 @@ function ProductCard({
         />
         <div className='h-[100px]'>
           <h3 className='mb-1 h-[22px] overflow-hidden font-openSans text-sm font-normal capitalize leading-[22px] text-gray-medium'>
-            {category}
+            {category} - {brand}
           </h3>
           <h4 className='mb-1 h-[40px] font-openSans text-sm font-semibold capitalize leading-[20px] text-black-light'>
             {title}

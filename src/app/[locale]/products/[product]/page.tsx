@@ -696,6 +696,9 @@ export default async function Product({
                       product?.attributes?.sub_category?.data
                         ?.attributes?.name ?? ''
                     }
+                    brand={
+                      productData?.brand?.data?.attributes?.name ?? ''
+                    }
                     badge={getBadge(
                       locale ?? 'en',
                       productData?.updatedAt,

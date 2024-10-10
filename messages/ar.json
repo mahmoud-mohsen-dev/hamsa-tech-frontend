@@ -55,6 +55,7 @@
       "all": "جميع المنتجات"
     },
     "filtersSidebar": {
+      "filteringButtonText": "التصفية والفرز",
       "categoriesTitle": "الفئات",
       "brandTitle": "العلامات التجارية",
       "priceRangeTitle": "نطاق السعر",
