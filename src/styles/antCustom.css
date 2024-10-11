@@ -298,3 +298,10 @@ input[type='number']#order-info_shippingDetailsPostalCode {
 .products-pagination-in-arabic .anticon svg {
   transform: scale(-1);
 }
+
+/* aside-filter */
+@media screen and (min-width: 868px) {
+  aside.aside-filter {
+    overflow: unset;
+  }
+}

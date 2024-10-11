@@ -405,7 +405,7 @@ export default async function Product({
             )}
           />
           <section
-            className={`mx-2 mt-5 grid grid-cols-2 ${locale === 'ar' ? 'gap-28' : 'gap-44'}`}
+            className={`mx-2 mt-5 grid gap-10 2xl:grid-cols-2 ${locale === 'ar' ? '2xl:gap-28' : '2xl:gap-44'}`}
           >
             <ProductSlider
               productData={productData}
@@ -593,7 +593,7 @@ export default async function Product({
         </div>
         {/* More Details */}
         <section className='container max-w-[1900px] bg-blue-sky-ultralight py-[50px]'>
-          <div className='grid grid-cols-2 gap-5 px-6'>
+          <div className='grid gap-5 px-6 2xl:grid-cols-2'>
             {/* Download Center Section */}
             <div className='flex flex-col gap-10'>
               <div>
@@ -623,6 +623,7 @@ export default async function Product({
                     <iframe
                       width='557'
                       height='314'
+                      className='max-w-full'
                       src={
                         productData?.youtube_video?.link_source ?? ''
                       }
@@ -631,7 +632,7 @@ export default async function Product({
                       allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                       referrerPolicy='strict-origin-when-cross-origin'
                       allowFullScreen
-                    ></iframe>
+                    />
                   </div>
                 )}
             </div>
@@ -674,7 +675,7 @@ export default async function Product({
                 {t('relatedProductsTitleRedText')}
               </span>
             </h2>
-            <div className='mt-8 grid grid-cols-4 gap-5'>
+            <div className='mt-8 grid gap-5 lg:grid-cols-2 2xl:grid-cols-4'>
               {relatedProducts.map((product) => {
                 return (
                   <ProductCard

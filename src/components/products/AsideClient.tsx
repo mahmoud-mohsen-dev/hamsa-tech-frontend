@@ -19,7 +19,7 @@ function AsideClient({ children }: { children: React.ReactNode }) {
           : 'translate-x-0'
         : locale === 'ar' ? 'translate-x-full lg:translate-x-0'
         : '-translate-x-full lg:translate-x-0'
-      } lg-pb-0 fixed left-0 right-0 top-[48px] z-50 max-h-screen overflow-y-auto bg-white pb-20 pt-10 transition-transform duration-300 lg:static lg:block lg:max-h-fit lg:pt-0`}
+      } aside-filter fixed left-0 right-0 top-[48px] z-50 max-h-full overflow-y-auto bg-white pb-20 pt-10 transition-transform duration-300 lg:static lg:block lg:max-h-fit lg:pb-0 lg:pt-0`}
       style={
         locale === 'ar' ?
           {

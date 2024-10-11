@@ -33,8 +33,8 @@ function ProductSlider({
   }, [currentId, nextId]);
 
   return (
-    <div className='sticky top-[64px] ml-10 flex max-h-[450px] items-center gap-8'>
-      <div className='flex flex-col items-start justify-center gap-5'>
+    <div className='ml-10 flex max-h-[450px] flex-col-reverse items-center gap-8 2xl:sticky 2xl:top-[64px] 2xl:flex-row'>
+      <div className='flex items-start justify-center gap-5 2xl:flex-col'>
         {Array.isArray(images) &&
           images.length > 0 &&
           images.map((imgSlide, i) => {

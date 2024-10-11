@@ -35,7 +35,7 @@ function PaymentMethods({ form }: { form: FormInstance<any> }) {
       //     paymentValue === 'card' ? '#f2f7ff' : '#fafafa'
       // },
       extra: (
-        <div className='flex items-center gap-1'>
+        <div className='flex flex-wrap items-center gap-1'>
           <Image
             src='/payment-methods/mastercard.svg'
             alt='mastercard logo'

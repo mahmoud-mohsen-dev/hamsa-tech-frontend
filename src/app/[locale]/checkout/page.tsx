@@ -58,7 +58,7 @@ async function CheckoutPage({ params: { locale } }: PropsType) {
 
   return (
     <div className='container'>
-      <div className='mx-10 grid grid-cols-checkout text-black'>
+      <div className='grid text-black 2xl:mx-10 2xl:grid-cols-checkout'>
         <OrderInfo
           shippingCostData={
             shippingCostData?.shippingCosts?.data ?? []

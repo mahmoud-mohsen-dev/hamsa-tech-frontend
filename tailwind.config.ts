@@ -26,8 +26,8 @@ const config: Config = {
         // 'sm': '1rem',
         'md': '2rem',
         'lg': '3rem',
-        'xl': '7rem',
-        '2xl': '8rem',
+        'xl': '3rem',
+        '2xl': '3rem',
         '5xl': '8rem'
         // '3xl': '8rem',
         // '4xl': '8rem'
@@ -124,6 +124,7 @@ const config: Config = {
         footer: '1.2fr .7fr 1.3fr 1fr',
         checkout: 'minmax(350px,1.2fr) 1fr'
       },
+
       // transitionProperty: {
       //   spacing: 'all'
       // }
@@ -132,6 +133,18 @@ const config: Config = {
       }
     },
     plugins: [
+      plugin(function ({ addUtilities }: { addUtilities: any }) {
+        const newUtilities = {
+          '.container-none': {
+            'max-width': 'none',
+            'margin-left': '0',
+            'margin-right': '0',
+            'padding-left': '0',
+            'padding-right': '0'
+          }
+        };
+        addUtilities(newUtilities, ['responsive']);
+      }),
       plugin(function ({
         matchUtilities,
         theme

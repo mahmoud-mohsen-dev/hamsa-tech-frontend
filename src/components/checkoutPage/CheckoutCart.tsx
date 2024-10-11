@@ -125,7 +125,7 @@ function CheckoutCart() {
       }}
     >
       {contextHolder}
-      <div className='px-10 py-5'>
+      <div className='px-2 py-5 2xl:px-10'>
         <ul className='flex flex-col gap-3'>
           {cart.map((item) => {
             // let cost = 0;
@@ -145,42 +145,50 @@ function CheckoutCart() {
             return (
               <li
                 key={item.id}
-                className='grid grid-cols-[54px_1fr_75px_20px_85px] items-center gap-2'
+                className='flex flex-wrap items-center justify-between gap-2 xs:flex-nowrap'
               >
-                <div className='overflow-hidden rounded border border-solid border-gray-light'>
-                  <Image
-                    src={
-                      item?.product?.data?.attributes?.image_thumbnail
-                        ?.data?.attributes?.url ?? ''
-                    }
-                    alt={
-                      item?.product?.data?.attributes?.image_thumbnail
-                        ?.data?.attributes?.alternativeText ?? ''
-                    }
-                    width={54}
-                    height={54}
-                    quality={100}
-                    className='min-h-[54px] min-w-[54px] object-contain'
-                  />
+                <div className='grid w-full grid-cols-[54px_1fr] items-center gap-2'>
+                  <div className='overflow-hidden rounded border border-solid border-gray-light'>
+                    <Image
+                      src={
+                        item?.product?.data?.attributes
+                          ?.image_thumbnail?.data?.attributes?.url ??
+                        ''
+                      }
+                      alt={
+                        item?.product?.data?.attributes
+                          ?.image_thumbnail?.data?.attributes
+                          ?.alternativeText ?? ''
+                      }
+                      width={54}
+                      height={54}
+                      quality={100}
+                      className='min-h-[54px] min-w-[54px] object-contain'
+                    />
+                  </div>
+                  <h4 className={`mx-1.5 font-sans text-sm`}>
+                    {item?.product?.data?.attributes?.name ?? ''}
+                  </h4>
                 </div>
-                <h4 className={`mx-1.5 font-sans text-sm`}>
-                  {item?.product?.data?.attributes?.name ?? ''}
-                </h4>
-                <p className='font-sans text-sm' dir='ltr'>
-                  {formatCurrencyNumbers(
-                    item?.cost,
-                    t('currency'),
-                    locale
-                  )}
-                </p>
-                <p className='font-sans text-sm'>{item?.quantity}</p>
-                <p className='font-sans text-sm'>
-                  {formatCurrencyNumbers(
-                    item?.total_cost,
-                    t('currency'),
-                    locale
-                  )}
-                </p>
+                <div className='grid w-full grid-cols-3 grid-rows-1 justify-end gap-2 xs:grid-cols-[75px_20px_85px]'>
+                  <p className='font-sans text-sm' dir='ltr'>
+                    {formatCurrencyNumbers(
+                      item?.cost,
+                      t('currency'),
+                      locale
+                    )}
+                  </p>
+                  <p className='font-sans text-sm'>
+                    {item?.quantity}
+                  </p>
+                  <p className='font-sans text-sm'>
+                    {formatCurrencyNumbers(
+                      item?.total_cost,
+                      t('currency'),
+                      locale
+                    )}
+                  </p>
+                </div>
               </li>
             );
           })}

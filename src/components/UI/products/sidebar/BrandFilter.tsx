@@ -329,7 +329,7 @@ function BrandFilter({ data }: PropsType) {
         }}
       />
       <div
-        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} mt-5 flex items-center gap-2`}
+        className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} mb-[100px] mt-5 flex items-center gap-2`}
       >
         <Btn
           className='bg-green-600 px-3 py-[6px] text-sm font-normal text-white'

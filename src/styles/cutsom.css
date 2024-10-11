@@ -227,6 +227,13 @@ html:not([data-scroll='0']) .header .seach-btn {
   transition-property: opacity;
   transition-timing-function: linear;
   transition-duration: 80ms;
+  margin-top: 30px;
+}
+
+@media screen and (min-width: 1280px) {
+  .imageZoom::after {
+    margin-top: 0;
+  }
 }
 
 /* Ant desing spin */

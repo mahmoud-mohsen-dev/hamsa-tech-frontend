@@ -298,7 +298,7 @@ function ProductsContent() {
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
       : <>
-          <div className='mt-5 grid gap-4 xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4'>
+          <div className='mt-5 grid gap-4 xl:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4'>
             {productsData &&
               productsData?.length > 0 &&
               productsData.map((product) => {

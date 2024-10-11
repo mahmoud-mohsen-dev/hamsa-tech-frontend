@@ -10,7 +10,7 @@ import ProductsContent from '../UI/products/ProductsContent';
 
 function ProductsWrapper() {
   return (
-    <main>
+    <main className='mb-[100px]'>
       <section>
         {/* <ProductsContent serverProductsData={productsData} /> */}
         <ProductsContent />
