@@ -2,23 +2,26 @@ import { MetadataRoute } from 'next';
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   return {
-    name: 'My Awesome Web App',
-    short_name: 'MyApp',
-    description: 'An awesome web app for users',
+    name: 'Hamsa Tech',
+    short_name: 'Hamsa',
+    description:
+      'Hamsa Tech Store for selling surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices.',
     start_url: '/index.html',
     display: 'standalone',
+    theme_color: '#ffffff',
     background_color: '#ffffff',
-    theme_color: '#000000',
     icons: [
       {
-        src: '/icons/icon-192x192.png',
+        src: '/icons/web-app-manifest-192x192.png',
+        sizes: '192x192',
         type: 'image/png',
-        sizes: '192x192'
+        purpose: 'maskable'
       },
       {
-        src: '/icons/icon-512x512.png',
+        src: '/icons/web-app-manifest-512x512.png',
+        sizes: '512x512',
         type: 'image/png',
-        sizes: '512x512'
+        purpose: 'maskable'
       }
     ]
   };

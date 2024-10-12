@@ -343,7 +343,10 @@
     }
   },
   "BlogPage": {
-    "content": {},
+    "content": {
+      "title": "Our Blog",
+      "subtitle": "Discover latest articles on technology and security systems."
+    },
     "metaData": {
       "title": "Hamsa Tech Blog",
       "description": "Discover the latest news and updates from Hamsa Tech by following our blog. Read articles, share insights, and stay up-to-date with our products and services."

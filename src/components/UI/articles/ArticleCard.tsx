@@ -87,7 +87,7 @@ function ArticleCard({
             {content.title}
           </h2>
         </Link>
-        <p className='my-2 text-base font-normal text-gray-medium sm:my-4 sm:max-h-[120px] sm:leading-6'>
+        <p className='my-2 text-base font-normal text-gray-500 sm:my-4 sm:max-h-[120px] sm:leading-6'>
           {content.description}
         </p>
       </div>

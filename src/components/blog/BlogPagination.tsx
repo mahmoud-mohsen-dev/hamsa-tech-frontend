@@ -26,6 +26,7 @@ const BlogPagination = ({
       total={total}
       pageSize={pageSize}
       onChange={handlePageChange}
+      align='center'
       style={{ marginTop: 40 }}
     />
   );

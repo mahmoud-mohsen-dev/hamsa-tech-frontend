@@ -112,7 +112,7 @@ export type FeaturedBlogsSectionType = {
       attributes: {
         createdAt: string;
         title: string;
-        image: {
+        image_card: {
           data: {
             attributes: {
               url: string;

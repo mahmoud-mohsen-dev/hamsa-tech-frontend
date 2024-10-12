@@ -47,11 +47,11 @@ function Articles({ data }: PropsType) {
           >
             <ArticleCard
               imgSrc={
-                data?.blogs?.data[0]?.attributes?.image?.data
+                data?.blogs?.data[0]?.attributes?.image_card?.data
                   ?.attributes?.url ?? ''
               }
               alt={
-                data?.blogs?.data[0]?.attributes?.image?.data
+                data?.blogs?.data[0]?.attributes?.image_card?.data
                   ?.attributes?.alternativeText ?? ''
               }
               articleUrl={`/blog/${data?.blogs?.data[0]?.id}`}
@@ -87,11 +87,11 @@ function Articles({ data }: PropsType) {
           >
             <ArticleCard
               imgSrc={
-                data?.blogs?.data[1]?.attributes?.image?.data
+                data?.blogs?.data[1]?.attributes?.image_card?.data
                   ?.attributes?.url ?? ''
               }
               alt={
-                data?.blogs?.data[1]?.attributes?.image?.data
+                data?.blogs?.data[1]?.attributes?.image_card?.data
                   ?.attributes?.alternativeText ?? ''
               }
               articleUrl={`/blog/${data?.blogs?.data[1]?.id}`}
@@ -125,11 +125,11 @@ function Articles({ data }: PropsType) {
           >
             <ArticleCard
               imgSrc={
-                data?.blogs?.data[2]?.attributes?.image?.data
+                data?.blogs?.data[2]?.attributes?.image_card?.data
                   ?.attributes?.url ?? ''
               }
               alt={
-                data?.blogs?.data[2]?.attributes?.image?.data
+                data?.blogs?.data[2]?.attributes?.image_card?.data
                   ?.attributes?.alternativeText ?? ''
               }
               articleUrl={`/blog/${data?.blogs?.data[2]?.id}`}

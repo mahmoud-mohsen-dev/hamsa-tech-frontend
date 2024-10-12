@@ -186,6 +186,30 @@ export default async function LocaleLayout({
       lang={locale}
       dir={direction}
     >
+      {/* <head>
+        <link
+          rel='icon'
+          type='image/png'
+          href='/icons/favicon-48x48.png'
+          sizes='48x48'
+        />
+        <link
+          rel='icon'
+          type='image/svg+xml'
+          href='/icons/favicon.svg'
+        />
+        <link rel='shortcut icon' href='/icons/favicon.ico' />
+        <link
+          rel='apple-touch-icon'
+          sizes='180x180'
+          href='/icons/apple-touch-icon.png'
+        />
+        <meta
+          name='apple-mobile-web-app-title'
+          content='Hamsa Tech'
+        />
+        <link rel='manifest' href='/src/app/site.webmanifest' />
+      </head> */}
       <body className='flex h-full flex-col bg-white text-black-light'>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <StoreContextProvider

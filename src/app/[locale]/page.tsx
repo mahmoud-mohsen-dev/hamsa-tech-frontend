@@ -122,7 +122,7 @@ const getQueryHomePage = (locale: string) => `{
                 attributes {
                     createdAt
                     title
-                    image {
+                    image_card {
                         data {
                             attributes {
                                 url

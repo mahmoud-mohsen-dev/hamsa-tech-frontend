@@ -1,3 +1,36 @@
+export type ArticlesIdsType = {
+  data: {
+    blogs: {
+      data: { id: string }[];
+      meta: {
+        pagination: {
+          page: number;
+          pageSize: number;
+          pageCount: number;
+          total: number;
+        };
+      };
+    };
+  };
+  error: string | null;
+};
+
+export type TotalArticlesInALocaleType = {
+  data: {
+    blogs: {
+      meta: {
+        pagination: {
+          page: number;
+          pageSize: number;
+          pageCount: number;
+          total: number;
+        };
+      };
+    };
+  };
+  error: string | null;
+};
+
 export type ArticleCardType = {
   id: string;
   attributes: {
