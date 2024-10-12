@@ -8,7 +8,7 @@ import {
 import { Link } from '@/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
-function CategoryLink({
+function TagLink({
   linkUrl,
   linkText,
   className
@@ -37,7 +37,7 @@ function ArticleCard({
   alt: string;
   articleUrl: string;
   content: {
-    categories: { linkUrl: string; linkText: string }[];
+    tags: { linkUrl: string; linkText: string }[];
     title: string;
     description: string;
     publishDate: string;
@@ -57,26 +57,26 @@ function ArticleCard({
       </div>
       <div className='px-10 py-8'>
         <div className='flex w-fit flex-wrap items-center rounded bg-blue-dark px-4 py-[6px]'>
-          {content.categories.map((category, i, arr) => {
+          {content.tags.map((tag, i, arr) => {
             if (arr.length > 1 && i < arr.length && i > 0) {
               return (
                 <span key={uuidv4()} className='flex items-center'>
                   <span className='text-white-light'>, </span>
-                  <CategoryLink
+                  <TagLink
                     className='mx-1'
                     key={v4()}
-                    linkUrl={category.linkUrl}
-                    linkText={category.linkText}
+                    linkUrl={`/blog/${tag.linkUrl}`}
+                    linkText={tag.linkText}
                   />
                 </span>
               );
             }
             return (
               <span key={uuidv4()}>
-                <CategoryLink
-                  key={category.linkUrl}
-                  linkUrl={category.linkUrl}
-                  linkText={category.linkText}
+                <TagLink
+                  key={`/blog/${tag.linkUrl}`}
+                  linkUrl={tag.linkUrl}
+                  linkText={tag.linkText}
                 />
               </span>
             );

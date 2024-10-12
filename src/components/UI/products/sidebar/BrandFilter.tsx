@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Checkbox, Rate, Slider, Spin } from 'antd';
+import { Checkbox, ConfigProvider, Rate, Slider, Spin } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { v4 } from 'uuid';
 import Btn from '../../Btn';
@@ -274,22 +274,26 @@ function BrandFilter({ data }: PropsType) {
       >
         {t('priceRangeTitle')}
       </h3>
-      <Slider
-        min={minPriceValue}
-        max={maxPriceValue}
-        tooltip={{ open: false }}
-        range
-        defaultValue={sliderValues}
-        value={sliderValues}
-        onChange={onSliderChange}
-        disabled={false}
-        style={{
-          margin:
-            locale === 'en' ?
-              '10px 24px 5px 30px'
-            : '10px 30px 5px 24px'
-        }}
-      />
+      {/* <div> */}
+      <ConfigProvider direction={locale === 'ar' ? 'rtl' : 'ltr'}>
+        <Slider
+          min={minPriceValue}
+          max={maxPriceValue}
+          tooltip={{ open: false }}
+          range
+          defaultValue={sliderValues}
+          value={sliderValues}
+          onChange={onSliderChange}
+          disabled={false}
+          style={{
+            margin:
+              locale === 'en' ?
+                '10px 24px 5px 30px'
+              : '10px 30px 5px 24px'
+          }}
+        />
+      </ConfigProvider>
+      {/* </div> */}
       <p
         className={`${locale === 'ar' ? 'mr-[15px]' : 'ml-[24px]'} text-sm text-black-light`}
       >

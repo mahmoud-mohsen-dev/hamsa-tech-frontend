@@ -8,7 +8,7 @@ import { Button, Spin } from 'antd';
 import { useMyContext } from '@/context/Store';
 
 function ProductItem({ productData }: { productData: CartDataType }) {
-  const { updateCartItemQuantity } = useMyContext();
+  const { updateCartItemQuantity, drawerIsLoading } = useMyContext();
   const [isDataLoading, setIsDataLoading] = useState(false);
   const { attributes } = productData?.product?.data ?? {};
 
@@ -42,6 +42,7 @@ function ProductItem({ productData }: { productData: CartDataType }) {
         <Button
           type='link'
           className='opacity-60 transition-opacity duration-300 hover:opacity-100'
+          style={{ cursor: 'pointer' }}
           onClick={() => {
             updateCartItemQuantity(
               productData?.product?.data?.id,
@@ -49,6 +50,7 @@ function ProductItem({ productData }: { productData: CartDataType }) {
               setIsDataLoading
             );
           }}
+          disabled={drawerIsLoading}
         >
           <Image
             src='/icons/bin.svg'

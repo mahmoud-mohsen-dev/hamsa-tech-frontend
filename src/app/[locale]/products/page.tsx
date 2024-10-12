@@ -1,6 +1,11 @@
 import CustomBreadcrumb from '@/components/products/CustomBreadcrumb';
 import FilterSidebar from '@/components/products/FilterSidebar';
 import ProductsWrapper from '@/components/products/ProductsWrapper';
+import { fetchGraphql } from '@/services/graphqlCrud';
+import {
+  CategoriesData,
+  CategorySidebarType
+} from '@/types/getCategoriesFilter';
 import { HomeOutlined, ProductOutlined } from '@ant-design/icons';
 import {
   getTranslations,
@@ -19,7 +24,8 @@ interface PropsType {
 const getItems = (
   allProductsText: string,
   category: string | undefined,
-  subCategory?: string | undefined
+  subCategory: string | undefined = undefined,
+  categoriesData: CategorySidebarType[]
 ) => {
   const items = [
     {
@@ -36,16 +42,33 @@ const getItems = (
       )
     }
   ];
+  console.log('categoriesData');
+  console.log(categoriesData);
+  console.log(category);
+  console.log(
+    categoriesData.find(
+      (categoryItem) =>
+        categoryItem?.attributes?.slug &&
+        categoryItem.attributes.slug === category
+    )?.attributes.name ?? ''
+  );
+  const categoryFoundName = categoriesData.find(
+    (categoryItem) =>
+      categoryItem?.attributes?.slug &&
+      categoryItem.attributes.slug === category
+  );
+
   if (category && !subCategory) {
     items.push({
       href: `/products?${new URLSearchParams({ category })}`,
       title: (
         <div className='flex items-center gap-2'>
           <FaSitemap />
-          <span>{category ?? ''}</span>
+          <span>{categoryFoundName?.attributes?.name ?? ''}</span>
         </div>
       )
     });
+
     return items;
   }
 
@@ -55,7 +78,7 @@ const getItems = (
       title: (
         <div className='flex items-center gap-2'>
           <FaSitemap />
-          <span>{category ?? ''}</span>
+          <span>{categoryFoundName?.attributes?.name ?? ''}</span>
         </div>
       )
     });
@@ -64,7 +87,12 @@ const getItems = (
       title: (
         <div className='flex items-center gap-2'>
           <PiSecurityCameraDuotone />
-          <span>{subCategory ?? ''}</span>
+          <span>
+            {categoryFoundName?.attributes?.sub_categories?.data.find(
+              (subCategoryItem) =>
+                subCategoryItem.attributes.slug === subCategory
+            )?.attributes.name ?? ''}
+          </span>
         </div>
       )
     });
@@ -86,6 +114,39 @@ const Products = async ({
   // Enable static rendering
   unstable_setRequestLocale(locale);
 
+  const { data: categoriesData, error: categoriesError } =
+    (await fetchGraphql(`{
+        categories(locale: "${locale ?? 'en'}") {
+            data {
+                id
+                attributes {
+                    name
+                    slug
+                    sub_categories {
+                        data {
+                            id
+                            attributes {
+                                name
+                                slug
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }`)) as CategoriesData;
+  const categoriesSidebarData =
+    categoriesData?.categories?.data || null;
+  // console.log('++++++++++++++++++++');
+  // console.log(JSON.stringify(categoriesSidebarData));
+  // console.log(categoriesError);
+  // console.log('++++++++++++++++++++');
+
+  if (categoriesSidebarData === null || categoriesError) {
+    console.error('Error fetching categories data');
+    console.log(categoriesError);
+  }
+
   const category =
     Array.isArray(searchParams?.category) ?
       searchParams?.category[0]
@@ -99,13 +160,18 @@ const Products = async ({
     // <ConfigAntThemes>
     <section className='content container pt-[100px]'>
       <CustomBreadcrumb
-        items={getItems(allProductsText, category, subCategory)}
+        items={getItems(
+          allProductsText,
+          category,
+          subCategory,
+          categoriesSidebarData
+        )}
         locale={locale}
       />
       <div
-        className={`mt-5 grid ${locale === 'ar' ? 'lg:grid-cols-[240px_1fr]' : 'lg:grid-cols-[240px_1fr]'} gap-5`}
+        className={`mt-5 grid ${locale === 'ar' ? 'ml-8 lg:grid-cols-[240px_1fr]' : 'mr-8 lg:grid-cols-[240px_1fr]'} gap-5`}
       >
-        <FilterSidebar />
+        <FilterSidebar categoriesData={categoriesData} />
         <ProductsWrapper
         // productsData={productsData?.products?.data ?? null}
         />

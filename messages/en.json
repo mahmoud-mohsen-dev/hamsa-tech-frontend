@@ -341,5 +341,12 @@
       "title": "Hamsa Tech Wishlist Page",
       "description": "View and manage your favorite products in one place with the Hamsa Tech Wishlist. Save items for future purchase and easily access them anytime."
     }
+  },
+  "BlogPage": {
+    "content": {},
+    "metaData": {
+      "title": "Hamsa Tech Blog",
+      "description": "Discover the latest news and updates from Hamsa Tech by following our blog. Read articles, share insights, and stay up-to-date with our products and services."
+    }
   }
 }

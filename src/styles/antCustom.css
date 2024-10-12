@@ -295,7 +295,8 @@ input[type='number']#order-info_shippingDetailsPostalCode {
 }
 
 /* Product page pagination */
-.products-pagination-in-arabic .anticon svg {
+.pagination-in-arabic .anticon-right svg,
+.pagination-in-arabic .anticon-left svg {
   transform: scale(-1);
 }
 

@@ -15,7 +15,6 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { PaginationProps } from 'antd';
 import { v4 } from 'uuid';
-import { ProductsResponseDataType } from '@/types/getProducts';
 import { FaFilter } from 'react-icons/fa6';
 import Btn from '../Btn';
 
@@ -298,7 +297,7 @@ function ProductsContent() {
           className='mt-5 grid min-h-[500px] w-full place-content-center'
         />
       : <>
-          <div className='mt-5 grid gap-4 xl:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4'>
+          <div className='mt-5 grid gap-4 xl:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4'>
             {productsData &&
               productsData?.length > 0 &&
               productsData.map((product) => {
@@ -350,9 +349,7 @@ function ProductsContent() {
           </div>
           <Pagination
             align='start'
-            className={
-              locale === 'ar' ? 'products-pagination-in-arabic' : ''
-            }
+            className={locale === 'ar' ? 'pagination-in-arabic' : ''}
             defaultCurrent={1}
             current={
               (
