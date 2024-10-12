@@ -1,16 +1,14 @@
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { ArticlesResponseType } from '@/types/articlesResponseTypes';
-// import ArticleDetail from '@/components/blog/ArticleDetail';
 import { unstable_setRequestLocale } from 'next-intl/server';
-
-export const revalidate = 60; // Revalidate every 60 seconds
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { id: string; locale: string };
 };
 
-const getBlogQuery = (id: string) => `
-  query {
+const getBlogByIdQuery = (id: string) => `
+  {
     blog(id: "${id}") {
       data {
         id
@@ -31,27 +29,28 @@ const getBlogQuery = (id: string) => `
   }
 `;
 
-export async function generateStaticParams() {
-  const { data } = await fetchGraphql(`{ blogs { data { id } } }`);
-  return data.blogs.data.map((blog: any) => ({ id: blog.id }));
-}
+export const revalidate = 60; // Revalidate after 60 seconds
 
-export async function BlogPage({ params: { locale, id } }: Props) {
+export default async function BlogPostPage({
+  params: { id, locale }
+}: Props) {
   unstable_setRequestLocale(locale);
-  const { data, error } = await fetchGraphql(getBlogQuery(id));
+  const { data, error } = await fetchGraphql(getBlogByIdQuery(id));
+  console.log(JSON.stringify(data));
+
   if (error || !data?.blog?.data) {
-    throw new Error('Blog not found');
+    return notFound(); // 404 if no data
   }
 
+  const blog = data.blog.data;
+
   return (
-    <div>
-      <h1>{data.blog.data.attributes.title}</h1>
-      <p>
-        By {data.blog.data.attributes.author.data.attributes.name}
+    <div className='container mx-auto'>
+      <h1 className='text-3xl font-bold'>{blog.attributes.title}</h1>
+      <p className='mt-2'>
+        By {blog.attributes.author.data.attributes.name}
       </p>
-      <div>{data.blog.data.attributes.content}</div>
+      {/* <div className='mt-5'>{blog.attributes.content}</div> */}
     </div>
   );
 }
-
-export default BlogPage;

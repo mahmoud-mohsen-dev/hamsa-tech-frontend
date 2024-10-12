@@ -1,57 +1,34 @@
 'use client';
+
 import { useRouter } from '@/navigation';
 import { Pagination } from 'antd';
-import type { PaginationProps } from 'antd';
-import { useLocale } from 'next-intl';
-import { useSearchParams } from 'next/navigation';
 
-function BlogPagination() {
-  const locale = useLocale();
+type BlogPaginationProps = {
+  total: number;
+  currentPage: number;
+  pageSize: number;
+};
+
+const BlogPagination = ({
+  total,
+  currentPage,
+  pageSize
+}: BlogPaginationProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
 
-  const onPaginationChange: PaginationProps['onChange'] = (
-    pageNumber: number
-  ) => {
-    // Update the URL to reflect the page number
-    const url = new URL(window.location.href);
-    url.searchParams.set('page', pageNumber.toString());
-    router.push(url.toString());
+  const handlePageChange = (page: number) => {
+    router.push(`/blog/page/${page}`);
   };
 
   return (
     <Pagination
-      align='center'
-      className={locale === 'ar' ? 'pagination-in-arabic' : ''}
-      defaultCurrent={1}
-      current={
-        //   (
-        //     Number(paramsPage) > 0 &&
-        //     completeProductsApiData?.meta?.pagination?.pageCount &&
-        //     Number(paramsPage) <=
-        //       completeProductsApiData.meta.pagination.pageCount
-        //   ) ?
-        //     Number(paramsPage)
-        //   : (function () {
-        //       setTimeout(() => {
-        //         handleParamsPage(1);
-        //       }, 2500);
-        //       return 1;
-        //     })()
-        1
-      }
-      total={
-        // data?.blogs.meta?.pagination?.pageCount ?
-        //   data.blogs.meta.pagination.pageCount
-        // : 1
-        50
-      }
-      pageSize={10}
-      onChange={onPaginationChange}
+      current={currentPage}
+      total={total}
+      pageSize={pageSize}
+      onChange={handlePageChange}
       style={{ marginTop: 40 }}
     />
   );
-}
+};
 
 export default BlogPagination;

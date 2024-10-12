@@ -42,16 +42,16 @@ const getItems = (
       )
     }
   ];
-  console.log('categoriesData');
-  console.log(categoriesData);
-  console.log(category);
-  console.log(
-    categoriesData.find(
-      (categoryItem) =>
-        categoryItem?.attributes?.slug &&
-        categoryItem.attributes.slug === category
-    )?.attributes.name ?? ''
-  );
+  // console.log('categoriesData');
+  // console.log(categoriesData);
+  // console.log(category);
+  // console.log(
+  //   categoriesData.find(
+  //     (categoryItem) =>
+  //       categoryItem?.attributes?.slug &&
+  //       categoryItem.attributes.slug === category
+  //   )?.attributes.name ?? ''
+  // );
   const categoryFoundName = categoriesData.find(
     (categoryItem) =>
       categoryItem?.attributes?.slug &&

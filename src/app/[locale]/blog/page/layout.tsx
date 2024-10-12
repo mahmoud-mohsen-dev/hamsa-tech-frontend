@@ -24,9 +24,9 @@ export async function generateMetadata({
   };
 }
 
-function BlogLayout({ children, params: { locale } }: PropsType) {
+function PageLayout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
   return <div>{children}</div>;
 }
 
-export default BlogLayout;
+export default PageLayout;

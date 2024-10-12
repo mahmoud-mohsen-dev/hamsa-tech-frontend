@@ -176,7 +176,7 @@ export default async function LocaleLayout({
     console.error(productsError);
   }
 
-  console.log(JSON.stringify(productsData));
+  // console.log(JSON.stringify(productsData));
 
   // console.log(JSON.stringify(navbarProductsCategoriesData));
 

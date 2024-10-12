@@ -56,13 +56,12 @@ function Articles({ data }: PropsType) {
               }
               articleUrl={`/blog/${data?.blogs?.data[0]?.id}`}
               content={{
-                categories:
-                  data?.blogs?.data[0]?.attributes?.tags?.data?.map(
-                    (tag) => ({
-                      linkUrl: tag?.attributes?.slug ?? '/',
-                      linkText: tag?.attributes?.name
-                    })
-                  ),
+                tags: data?.blogs?.data[0]?.attributes?.tags?.data?.map(
+                  (tag) => ({
+                    linkUrl: tag?.attributes?.slug ?? '/',
+                    linkText: tag?.attributes?.name
+                  })
+                ),
                 title: data?.blogs?.data[0]?.attributes?.title ?? '',
                 description: truncateSentence(
                   data?.blogs?.data[0]?.attributes
@@ -97,13 +96,12 @@ function Articles({ data }: PropsType) {
               }
               articleUrl={`/blog/${data?.blogs?.data[1]?.id}`}
               content={{
-                categories:
-                  data?.blogs?.data[1]?.attributes?.tags?.data?.map(
-                    (tag) => ({
-                      linkUrl: tag?.attributes?.slug ?? '/',
-                      linkText: tag?.attributes?.name
-                    })
-                  ),
+                tags: data?.blogs?.data[1]?.attributes?.tags?.data?.map(
+                  (tag) => ({
+                    linkUrl: tag?.attributes?.slug ?? '/',
+                    linkText: tag?.attributes?.name
+                  })
+                ),
                 title: data?.blogs?.data[1]?.attributes?.title ?? '',
                 description: truncateSentence(
                   data?.blogs?.data[1]?.attributes
@@ -136,13 +134,12 @@ function Articles({ data }: PropsType) {
               }
               articleUrl={`/blog/${data?.blogs?.data[2]?.id}`}
               content={{
-                categories:
-                  data?.blogs?.data[2]?.attributes?.tags?.data?.map(
-                    (tag) => ({
-                      linkUrl: tag?.attributes?.slug ?? '/',
-                      linkText: tag?.attributes?.name
-                    })
-                  ),
+                tags: data?.blogs?.data[2]?.attributes?.tags?.data?.map(
+                  (tag) => ({
+                    linkUrl: tag?.attributes?.slug ?? '/',
+                    linkText: tag?.attributes?.name
+                  })
+                ),
                 title: data?.blogs?.data[2]?.attributes?.title ?? '',
                 description: truncateSentence(
                   data?.blogs?.data[2]?.attributes
