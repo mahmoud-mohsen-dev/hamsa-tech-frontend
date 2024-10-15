@@ -220,6 +220,7 @@
       "selectGovernorateForTotalOrder": "اختر المحافظة لعرض إجمالي الطلب",
       "formValidationErrorMessages": {
         "inputEmailOrPhone": "يرجى إدخال بريدك الإلكتروني أو رقم هاتفك!",
+        "inputDeliveryPhone": "يرجى تقديم رقم الاتصال الخاص بك للتوصيل!",
         "selectCountry": "يرجى اختيار الدولة!",
         "inputFirstName": "يرجى إدخال اسمك الأول!",
         "inputLastName": "يرجى إدخال اسمك الأخير!",

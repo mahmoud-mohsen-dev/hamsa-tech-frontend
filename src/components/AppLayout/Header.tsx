@@ -68,7 +68,6 @@ const getCartQuery = (cartId: number) => {
                 product_details {
                     id
                     quantity
-                    cost
                     total_cost
                     product {
                         data {
@@ -77,6 +76,7 @@ const getCartQuery = (cartId: number) => {
                                 name
                                 price
                                 sale_price
+                                final_product_price
                                 image_thumbnail {
                                     data {
                                         id
@@ -191,6 +191,7 @@ const getWishlistDataQuery = (wishlistId: string) => {
                             name
                             price
                             sale_price
+                            final_product_price
                             image_thumbnail {
                                 data {
                                     attributes {

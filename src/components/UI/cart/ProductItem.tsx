@@ -68,7 +68,12 @@ function ProductItem({ productData }: { productData: CartDataType }) {
           />
         : <>
             <h2 className='font-inter text-xs font-semibold text-blue-gray-light'>
-              {productData?.quantity} &#215; {productData.cost} EGP
+              {productData?.quantity} &#215;{' '}
+              {
+                productData?.product?.data?.attributes
+                  ?.final_product_price
+              }{' '}
+              EGP
             </h2>
             <h2 className='mt-1 font-inter text-base font-medium text-black-light'>
               = {productData?.total_cost}

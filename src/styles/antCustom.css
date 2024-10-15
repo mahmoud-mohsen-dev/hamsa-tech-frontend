@@ -306,3 +306,12 @@ input[type='number']#order-info_shippingDetailsPostalCode {
     overflow: unset;
   }
 }
+
+.row-link {
+  cursor: pointer; /* Change the cursor to a pointer */
+}
+
+/* .row-link:hover {
+  background-color: #f5f5f5; /* Optional: Add a hover effect */
+/* }
+ */

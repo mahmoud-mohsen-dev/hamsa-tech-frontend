@@ -1,9 +1,9 @@
 export const capitalize = (value: any) => {
-  const stringify = String(value);
+  // const stringify = String(value);
   // console.log(stringify);
-  if (typeof stringify === 'string') {
-    return stringify
-      .split(' ')
+  if (typeof value === 'string' && value.length > 0) {
+    return value
+      .split(/[\s_]+/) // Split by any whitespace (\s) or underscore (_)
       .map(
         (word) => word[0].toUpperCase() + word.slice(1).toLowerCase()
       )

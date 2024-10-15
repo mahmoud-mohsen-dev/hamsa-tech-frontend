@@ -219,6 +219,7 @@
       "selectGovernorateForTotalOrder": "Select the governorate to view the total order",
       "formValidationErrorMessages": {
         "inputEmailOrPhone": "Please input your email or phone number!",
+        "inputDeliveryPhone": "Please provide your contact number for delivery!",
         "selectCountry": "Please select a country!",
         "inputFirstName": "Please input your first name!",
         "inputLastName": "Please input your last name!",

@@ -27,7 +27,7 @@ export async function generateMetadata({
 function InvoiceLayout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
   return (
-    <div className='grid min-h-screen place-content-center'>
+    <div className='grid min-h-screen place-content-center py-[100px]'>
       {children}
     </div>
   );

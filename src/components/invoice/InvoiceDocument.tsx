@@ -1,5 +1,8 @@
 // 'use client';
 
+import { OrderInfoType } from '@/types/orderResponseTypes';
+import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
+import { formatEnglishNumbers } from '@/utils/numbersFormating';
 import {
   Document,
   Page,
@@ -29,6 +32,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
+    marginBottom: 6,
     fontWeight: 'bold',
     color: '#1F2937'
   },
@@ -52,8 +56,9 @@ const styles = StyleSheet.create({
   logoRed: {
     color: '#D7150E'
   },
-  companyDetails: {
-    textAlign: 'right'
+  date: {
+    fontSize: 12,
+    color: '#374151'
     // fontSize: 14,
     // color: '#374151'
   },
@@ -134,14 +139,34 @@ const styles = StyleSheet.create({
 });
 
 // Create Invoice component for PDF
-function InvoiceDocument() {
+export function InvoiceDocument({
+  orderData
+}: {
+  orderData: OrderInfoType;
+}) {
+  const billTo =
+    orderData?.attributes?.shipping_address?.data?.attributes ?? null;
+  console.log(billTo);
   return (
     <Document>
       <Page size='A4' style={styles.page}>
         <View style={styles.container}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Invoice #0472</Text>
+            <View>
+              <Text style={styles.title}>
+                Invoice #{orderData?.id}
+              </Text>
+              <Text
+                style={[styles.blackBold, styles.bold, styles.date]}
+              >
+                Date:{' '}
+                {convertIsoStringToDateFormat(
+                  orderData?.attributes?.createdAt ??
+                    new Date().toISOString()
+                )}
+              </Text>
+            </View>
             <Svg
               width='45'
               height='45'
@@ -165,22 +190,28 @@ function InvoiceDocument() {
             <Text style={[styles.logoBlue, styles.bold]}>Hamsa</Text>
             <Text style={[styles.logoRed, styles.bold]}>Tech</Text>
           </View>
-          {/* <View
-            style={[styles.companyDetails, styles.companAddressText]}
-          >
-            <Text>291 N 4th St, San Jose, CA 95112, USA</Text>
-            <Text>August 1, 2021</Text>
-          </View> */}
 
           {/* Bill To Section */}
           <View style={styles.section}>
             <Text style={styles.billToTitle}>Bill to</Text>
             <Text style={styles.billToAddress}>
-              Themesberg Inc., LOUISVILLE, Selby 3864 Johnson Street,
-              United States of America
+              {billTo?.first_name ?? ''} {billTo?.last_name ?? ''}
             </Text>
             <Text style={styles.billToAddress}>
-              VAT Code: AA-1234567890
+              {billTo?.address_1 ?
+                `Address: ${billTo?.address_1}`
+              : ''}{' '}
+              {billTo?.address_2 ? `, ${billTo?.address_2}` : ''}
+            </Text>
+
+            <Text style={styles.billToAddress}>
+              {billTo?.city ? `City: ${billTo.city}` : ''}{' '}
+              {billTo?.zip_code ?
+                `, Postal code: ${billTo?.zip_code}`
+              : ''}
+            </Text>
+            <Text style={styles.billToAddress}>
+              {billTo?.delivery_phone ?? ''}
             </Text>
           </View>
 
@@ -201,38 +232,42 @@ function InvoiceDocument() {
               </Text>
             </View>
 
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.flexBasis40]}>
-                Product A
-              </Text>
-              <Text style={[styles.tableCell, styles.flexBasis20]}>
-                $50.00
-              </Text>
-              <Text style={[styles.tableCell, styles.flexBasis20]}>
-                2
-              </Text>
-              <Text style={[styles.tableCell, styles.flexBasis20]}>
-                $100.00
-              </Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.flexBasis40]}>
-                Product B
-              </Text>
-              <Text style={[styles.tableCell, styles.flexBasis20]}>
-                $30.00
-              </Text>
-              <Text style={[styles.tableCell, styles.flexBasis20]}>
-                1
-              </Text>
-              <Text style={[styles.tableCell, styles.flexBasis20]}>
-                $30.00
-              </Text>
-            </View>
+            {orderData?.attributes.cart.map((item) => {
+              return (
+                <View
+                  style={styles.tableRow}
+                  key={item.product.data.id}
+                >
+                  <Text
+                    style={[styles.tableCell, styles.flexBasis40]}
+                  >
+                    {item?.product?.data?.attributes?.name ?? ''}
+                  </Text>
+                  <Text
+                    style={[styles.tableCell, styles.flexBasis20]}
+                  >
+                    {formatEnglishNumbers(
+                      item?.product?.data?.attributes
+                        ?.final_product_price ?? 0
+                    )}
+                  </Text>
+                  <Text
+                    style={[styles.tableCell, styles.flexBasis20]}
+                  >
+                    {item?.quantity ?? 1}
+                  </Text>
+                  <Text
+                    style={[styles.tableCell, styles.flexBasis20]}
+                  >
+                    {formatEnglishNumbers(item?.total_cost ?? 0)}
+                  </Text>
+                </View>
+              );
+            })}
 
             <View style={[styles.totalTableRow, styles.blackBold]}>
               <Text style={[styles.tableCell, styles.flexBasis40]}>
-                Total
+                Subtotal
               </Text>
               <Text
                 style={[styles.tableCell, styles.flexBasis20]}
@@ -241,7 +276,9 @@ function InvoiceDocument() {
                 style={[styles.tableCell, styles.flexBasis20]}
               ></Text>
               <Text style={[styles.tableCell, styles.flexBasis20]}>
-                $130.00
+                {formatEnglishNumbers(
+                  orderData?.attributes?.subtotal_cart_cost ?? 0
+                )}
               </Text>
             </View>
           </View>
@@ -250,15 +287,27 @@ function InvoiceDocument() {
           <View style={styles.totals}>
             <View style={styles.totalRow}>
               <Text>Subtotal</Text>
-              <Text>$415.00</Text>
+              <Text>
+                {formatEnglishNumbers(
+                  orderData?.attributes?.subtotal_cart_cost ?? 0
+                )}
+              </Text>
             </View>
             <View style={styles.totalRow}>
               <Text>Discount</Text>
-              <Text>$64.00</Text>
+              <Text>
+                {formatEnglishNumbers(
+                  orderData?.attributes?.coupon_applied_value ?? 0
+                )}
+              </Text>
             </View>
             <View style={styles.totalRow}>
               <Text>Shipping</Text>
-              <Text>$35.00</Text>
+              <Text>
+                {formatEnglishNumbers(
+                  orderData?.attributes?.delivery_cost ?? 0
+                )}
+              </Text>
             </View>
             <View
               style={[
@@ -269,7 +318,11 @@ function InvoiceDocument() {
               ]}
             >
               <Text>Total</Text>
-              <Text>$351.00</Text>
+              <Text>
+                {formatEnglishNumbers(
+                  orderData?.attributes?.total_order_cost ?? 0
+                )}
+              </Text>
             </View>
           </View>
         </View>
@@ -278,4 +331,4 @@ function InvoiceDocument() {
   );
 }
 
-export default InvoiceDocument;
+// export default InvoiceDocument;

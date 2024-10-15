@@ -173,7 +173,8 @@ function CheckoutCart() {
                 <div className='grid w-full grid-cols-3 grid-rows-1 justify-end gap-2 xs:grid-cols-[75px_20px_85px]'>
                   <p className='font-sans text-sm' dir='ltr'>
                     {formatCurrencyNumbers(
-                      item?.cost,
+                      item?.product.data.attributes
+                        .final_product_price,
                       t('currency'),
                       locale
                     )}

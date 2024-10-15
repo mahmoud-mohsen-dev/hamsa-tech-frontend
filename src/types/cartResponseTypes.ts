@@ -12,7 +12,7 @@ export type CreateCartResponseType = {
 export type CartDataType = {
   id: string;
   quantity: number;
-  cost: number;
+  // cost: number;
   total_cost: number;
   product: {
     data: {
@@ -21,6 +21,7 @@ export type CartDataType = {
         name: string;
         price: number;
         sale_price: number;
+        final_product_price: number;
         image_thumbnail: {
           data: {
             id: string;

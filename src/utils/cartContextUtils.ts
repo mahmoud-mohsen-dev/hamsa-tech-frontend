@@ -28,15 +28,17 @@ export const updateCartInTheBackend = (
               quantity
             : cartItem.quantity, // Use the provided quantity
           product: cartItem.product.data.id,
-          cost: cartItem.cost,
-          total_cost: cartItem.cost * quantity
+          // cost: cartItem.product.data.attributes.final_product_price,
+          total_cost:
+            cartItem.product.data.attributes.final_product_price *
+            quantity
         };
       }
       // the rest of the all product that didn't change
       return {
         quantity: cartItem.quantity,
         product: cartItem.product.data.id,
-        cost: cartItem.cost,
+        // cost: cartItem.cost,
         total_cost: cartItem.total_cost
       };
     })
@@ -56,13 +58,6 @@ export const updateCartInTheBackend = (
           quantity
         : 1,
       product: productId,
-      cost:
-        (
-          product?.attributes?.sale_price &&
-          product?.attributes?.sale_price > 0
-        ) ?
-          product.attributes.sale_price
-        : (product?.attributes?.price ?? 0),
       total_cost:
         (
           product?.attributes?.sale_price &&
@@ -90,12 +85,10 @@ export const updateCartInTheBackend = (
         cartItem &&
         cartItem?.quantity &&
         cartItem?.product &&
-        cartItem?.cost &&
         cartItem?.total_cost
       ) {
         return `{
           quantity: ${cartItem.quantity},
-          cost: ${cartItem.cost},
           total_cost: ${cartItem.total_cost},
           product: ${cartItem.product}
         }`;
@@ -114,7 +107,6 @@ export const updateCartInTheBackend = (
           product_details {
             id
             quantity
-            cost
             total_cost
             product {
               data {
@@ -123,6 +115,7 @@ export const updateCartInTheBackend = (
                   name
                   price
                   sale_price
+                  final_product_price
                   image_thumbnail {
                     data {
                       attributes {
@@ -152,13 +145,11 @@ export const aggregateProductsDetails = (
   productDetails: {
     quantity: number;
     product: string;
-    cost: number;
     total_cost: number;
   }[]
 ): {
   quantity: number;
   product: string;
-  cost: number;
   total_cost: number;
 }[] => {
   // Create a map to store unique products by their ID
@@ -167,7 +158,7 @@ export const aggregateProductsDetails = (
     {
       quantity: number;
       product: string;
-      cost: number;
+      // cost: number;
       total_cost: number;
     }
   >();

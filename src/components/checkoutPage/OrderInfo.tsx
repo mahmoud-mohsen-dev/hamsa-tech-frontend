@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ConfigProvider, Form, message } from 'antd';
+import { Button, ConfigProvider, Form, message, Spin } from 'antd';
 import AddressFormItems from './AddressFormItems';
 import BillingAddress from './BillingAddress';
 import PaymentMethods from './PaymentMethods';
@@ -10,11 +10,15 @@ import ShippingCost from './ShippingCost';
 import { useForm } from 'antd/es/form/Form';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
 import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useMyContext } from '@/context/Store';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
-import { getCartId, getCookie } from '@/utils/cookieUtils';
+import {
+  getCartId,
+  getCookie,
+  getIdFromToken
+} from '@/utils/cookieUtils';
 import { UpdateGuestUserResponseType } from '@/types/guestUserReponses';
 import {
   CreateAddressResponseType,
@@ -22,6 +26,9 @@ import {
 } from '@/types/addressResponseTypes';
 import { CreateOrderResponseType } from '@/types/orderResponseTypes';
 import { CartDataType } from '@/types/cartResponseTypes';
+import { uploadInvoicePdf } from '@/services/invoicesPDFHandlers';
+import { capitalize } from '@/utils/helpers';
+import { useRouter } from '@/navigation';
 
 const updateGuestUserQuery = (
   guestUserId: string,
@@ -126,12 +133,10 @@ const createOrderQuery = ({
         cartItem &&
         cartItem?.quantity &&
         cartItem?.product?.data?.id &&
-        cartItem?.cost &&
         cartItem?.total_cost
       ) {
         return `{
           quantity: ${cartItem.quantity},
-          cost: ${cartItem.cost},
           total_cost: ${cartItem.total_cost},
           product: ${cartItem.product.data.id}
         }`;
@@ -163,6 +168,52 @@ const createOrderQuery = ({
     ) {
         data {
             id
+            attributes {
+                delivery_status
+                total_order_cost
+                payment_method
+                payment_status
+                delivery_cost
+                coupon_applied_value
+                subtotal_cart_cost
+                createdAt
+                user {
+                    data {
+                        id
+                    }
+                }
+                guest_user {
+                    data {
+                        id
+                    }
+                }
+                shipping_address {
+                    data {
+                        attributes {
+                            city
+                            address_1
+                            zip_code
+                            address_2
+                            first_name
+                            last_name
+                            delivery_phone
+                        }
+                    }
+                }
+                cart {
+                    product {
+                        data {
+                            id
+                            attributes {
+                                name
+                                final_product_price
+                            }
+                        }
+                    }
+                    quantity
+                    total_cost
+                }
+            }
         }
     }
   }`;
@@ -194,13 +245,13 @@ const getCreateShippingAddressQuery = ({
   return `mutation CreateAddress {
     createAddress(
         data: {
-            city: "${city}"
-            address_1: "${address1}"
-            address_2: "${address2 ?? ''}"
+            city: "${capitalize(city ?? '')}"
+            address_1: "${capitalize(address1 ?? '')}"
+            address_2: "${capitalize(address2 ?? '')}"
             zip_code: ${zipCode ?? 0}
             guest_user: ${guestUserId ? `"${guestUserId}"` : null}
-            first_name: "${firstName}"
-            last_name: "${lastName}"
+            first_name: "${capitalize(firstName ?? '')}"
+            last_name: "${capitalize(lastName ?? '')}"
             delivery_phone: "${deliveryPhone ?? ''}"
             shipping_cost: ${shippingCostId ? `"${shippingCostId}"` : null}
             publishedAt: "${new Date().toISOString()}"
@@ -208,6 +259,7 @@ const getCreateShippingAddressQuery = ({
     ) {
         data {
             id
+            
         }
     }
   }`;
@@ -291,15 +343,21 @@ function OrderInfo({
   const {
     setFreeShippingAt,
     governoratesData,
+    // setGlobalLoading,
     cart,
     calculateSubTotalCartCost,
     couponData,
     calculateNetDeliveryCost,
     calculateCouponDeductionValue,
-    calculateTotalOrderCost
+    calculateTotalOrderCost,
+    setLoadingMessage,
+    setErrorMessage,
+    setSuccessMessage
   } = useMyContext();
-  const [messageApi, contextHolder] = message.useMessage();
+  // const [messageApi, contextHolder] = message.useMessage();
+  const router = useRouter();
   const t = useTranslations('CheckoutPage.content');
+  // const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (
@@ -328,10 +386,7 @@ function OrderInfo({
         shippingDetailsPostalCode
       } = formValues;
 
-      messageApi.open({
-        type: 'loading',
-        content: t('form.loading')
-      });
+      setLoadingMessage(true);
 
       const { data: guestUserData, error: guestUserError } =
         (await fetchGraphqlClient(
@@ -356,13 +411,13 @@ function OrderInfo({
         (await fetchGraphqlClient(
           updateAddressQuery({
             shippingAddressId: getCookie('shippingAddressId') ?? '',
-            city: shippingDetailsCity,
-            address1: shippingDetailsAddress,
-            address2: shippingDetailsAddress2,
+            city: capitalize(shippingDetailsCity ?? ''),
+            address1: capitalize(shippingDetailsAddress ?? ''),
+            address2: capitalize(shippingDetailsAddress2 ?? ''),
             zipCode: shippingDetailsPostalCode,
             guestUserId: getCookie('guestUserId') ?? '',
-            firstName: shippingDetailsFirstName,
-            lastName: shippingDetailsLastName,
+            firstName: capitalize(shippingDetailsFirstName ?? ''),
+            lastName: capitalize(shippingDetailsLastName ?? ''),
             deliveryPhone: shippingDetailsPhone,
             shippingCostId: shippingCostId
           })
@@ -373,11 +428,19 @@ function OrderInfo({
       if (formValues?.billingMethod === 'different') {
         const { addressData, addressError } =
           await createBillingAddress({
-            firstName: formValues?.billingDetailsFirstName ?? '',
-            lastName: formValues?.billingDetailsLastName ?? '',
-            address1: formValues?.billingDetailsAddress ?? '',
-            address2: formValues?.billingDetailsAddress2 ?? '',
-            city: formValues?.billingDetailsCity ?? '',
+            firstName: capitalize(
+              formValues?.billingDetailsFirstName ?? ''
+            ),
+            lastName: capitalize(
+              formValues?.billingDetailsLastName ?? ''
+            ),
+            address1: capitalize(
+              formValues?.billingDetailsAddress ?? ''
+            ),
+            address2: capitalize(
+              formValues?.billingDetailsAddress2 ?? ''
+            ),
+            city: capitalize(formValues?.billingDetailsCity ?? ''),
             zipCode: formValues?.billingDetailsPostalCode ?? 0,
             shippingCostId: shippingCostId,
             guestUserId: getCookie('guestUserId'),
@@ -388,7 +451,9 @@ function OrderInfo({
             'Failed to create billing address',
             addressError
           );
-          messageApi.error(t('form.addressCreationError'));
+          setLoadingMessage(false);
+          setErrorMessage(t('form.addressCreationError'));
+          return;
         }
         if (addressData) {
           billingAddressId = addressData;
@@ -400,7 +465,7 @@ function OrderInfo({
           createOrderQuery({
             cart,
             subTotalCartCost: calculateSubTotalCartCost(),
-            userId: null, // 1. TODO: get user value
+            userId: getIdFromToken(), // 1. TODO: get user value
             guestUserId: getCookie('guestUserId'),
             shippingAddressId:
               addressData?.updateAddress?.data?.id ?? null,
@@ -422,39 +487,57 @@ function OrderInfo({
         console.error('Failed to create guest user data');
         console.error(guestUserError);
         console.error(guestUserData);
-        messageApi.error(t('form.guestUserError'));
+        setLoadingMessage(false);
+        setErrorMessage(t('form.guestUserError'));
+        return;
       }
 
       if (addressError || !addressData?.updateAddress?.data?.id) {
         console.error('Failed to create address');
         console.error(addressError);
         console.error(addressData);
-        messageApi.error(t('form.addressCreationError'));
+        setLoadingMessage(false);
+        setErrorMessage(t('form.addressCreationError'));
+        return;
       }
 
-      if (orderError || !orderData?.createOrder?.data?.id) {
+      if (
+        orderError ||
+        !orderData?.createOrder?.data?.id ||
+        !orderData?.createOrder?.data
+      ) {
         console.error('Failed to create a new order');
         console.error(orderError);
         console.error(orderData);
-        messageApi.error(t('form.orderCreationError'));
+        setLoadingMessage(false);
+        setErrorMessage(t('form.orderCreationError'));
+        return;
       } else {
         console.log(orderData);
       }
 
-      await messageApi.success(t('form.successMessage'));
-
+      const response = await uploadInvoicePdf(
+        orderData?.createOrder?.data ?? null
+      );
+      console.log(response);
+      // Your API calls and logic here
+      setLoadingMessage(false);
+      setSuccessMessage(t('form.successMessage')); // Trigger success
+      router.push(`/orders/${orderData.createOrder.data.id}`);
       // success();
     } catch (err) {
       console.error('Error during form submission:', err);
-      messageApi.error(t('form.orderError'));
+      setLoadingMessage(false);
+      setErrorMessage(t('form.orderError'));
     } finally {
-      messageApi.destroy();
+      setLoadingMessage(false);
+      // messageApi.destroy();
     }
   };
 
   // Function to handle form submission failure (validation errors)
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
-    messageApi.error(
+    setErrorMessage(
       errorInfo?.errorFields[0]?.errors[0] ??
         t('form.formSubmissionFailed')
     );
@@ -486,7 +569,6 @@ function OrderInfo({
         }
       }}
     >
-      {contextHolder}
       <Form
         name='order-info'
         onFinish={onFinish}

@@ -99,6 +99,16 @@ const MyContext = createContext<{
   setGlobalLoading: React.Dispatch<React.SetStateAction<boolean>>;
   toggleFilters: boolean;
   setToggleFilters: React.Dispatch<React.SetStateAction<boolean>>;
+  loadingMessage: boolean;
+  setLoadingMessage: React.Dispatch<React.SetStateAction<boolean>>;
+  errorMessage: string | null;
+  setErrorMessage: React.Dispatch<
+    React.SetStateAction<string | null>
+  >;
+  successMessage: string | null;
+  setSuccessMessage: React.Dispatch<
+    React.SetStateAction<string | null>
+  >;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -138,6 +148,14 @@ export const StoreContextProvider = ({
   const [isWishlistLoading, setIsWishlistLoading] = useState(false);
   const [globaLoading, setGlobalLoading] = useState(false);
   const [toggleFilters, setToggleFilters] = useState(false);
+
+  const [loadingMessage, setLoadingMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(
+    null
+  );
+  const [successMessage, setSuccessMessage] = useState<string | null>(
+    null
+  );
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -401,7 +419,13 @@ export const StoreContextProvider = ({
         globaLoading,
         setGlobalLoading,
         toggleFilters,
-        setToggleFilters
+        setToggleFilters,
+        loadingMessage,
+        setLoadingMessage,
+        errorMessage,
+        setErrorMessage,
+        successMessage,
+        setSuccessMessage
       }}
     >
       {children}

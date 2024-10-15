@@ -127,6 +127,7 @@ function AddressFormItems({
           className='basis-1/3'
         >
           <Select
+            showSearch
             options={convertShippingCostsToOptions(governoratesData)}
             onChange={(value: string) => {
               governoratesData.map((item) => {
@@ -155,6 +156,14 @@ function AddressFormItems({
       <Form.Item
         name={`${name}Phone`}
         style={{ marginBottom: '20px' }}
+        rules={[
+          {
+            required: true,
+            message: t(
+              'formValidationErrorMessages.inputDeliveryPhone'
+            )
+          }
+        ]}
       >
         <Input
           type='text'

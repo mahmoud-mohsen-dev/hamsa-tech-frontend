@@ -40,6 +40,7 @@ export interface WishlistDataType {
     name: string;
     price: number;
     sale_price: number;
+    final_product_price: number;
     image_thumbnail: {
       data: {
         attributes: {

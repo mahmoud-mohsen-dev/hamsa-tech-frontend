@@ -1,4 +1,5 @@
 import CheckoutCart from '@/components/checkoutPage/CheckoutCart';
+import CheckoutWrapper from '@/components/checkoutPage/CheckoutWrapper';
 import OrderInfo from '@/components/checkoutPage/OrderInfo';
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { FreeShippingResponseType } from '@/types/freeShippingResponseType';
@@ -58,17 +59,12 @@ async function CheckoutPage({ params: { locale } }: PropsType) {
 
   return (
     <div className='container'>
-      <div className='grid text-black 2xl:mx-10 2xl:grid-cols-checkout'>
-        <OrderInfo
-          shippingCostData={
-            shippingCostData?.shippingCosts?.data ?? []
-          }
-          freeShippingData={
-            freeShippingData?.freeShipping?.data?.attributes
-          }
-        />
-        <CheckoutCart />
-      </div>
+      <CheckoutWrapper
+        shippingCostData={shippingCostData?.shippingCosts?.data ?? []}
+        freeShippingData={
+          freeShippingData?.freeShipping?.data?.attributes
+        }
+      />
     </div>
   );
 }
