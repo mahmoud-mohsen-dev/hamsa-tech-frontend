@@ -1,10 +1,4 @@
-// 'use client';
-// import InvoicePDFButton from '@/components/invoice/InvoicePDFViewer';
-import { useLocale } from 'next-intl';
 import Image from 'next/image';
-// import { Spin } from 'antd';
-
-// import { useEffect, useState } from 'react';
 
 import {
   fetchGraphqlClient,
@@ -14,14 +8,7 @@ import { GetOrderResponseType } from '@/types/orderResponseTypes';
 import { notFound } from 'next/navigation';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { capitalize } from '@/utils/helpers';
-import {
-  formatCurrencyNumbers,
-  formatEnglishNumbers
-} from '@/utils/numbersFormating';
-// import Btn from '@/components/UI/Btn';
-import { MdCloudDownload } from 'react-icons/md';
-
-// import dynamic from 'next/dynamic';
+import { formatEnglishNumbers } from '@/utils/numbersFormating';
 import DownloadButton from '@/components/invoice/DownloadButton';
 
 const getOrderQuery = (orderId: string) => {

@@ -1,7 +1,5 @@
 'use client';
 
-// import { useMyContext } from '@/context/Store';
-// import { useUser } from '@/context/UserContext';
 import { Link, usePathname, useRouter } from '@/navigation';
 import { getOrdersAuthenticated } from '@/services/orders';
 import {
@@ -11,105 +9,11 @@ import {
 import { getIdFromToken } from '@/utils/cookieUtils';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import { Spin, Table } from 'antd';
-import {
-  notFound,
-  // useParams,
-  useSearchParams
-} from 'next/navigation';
+import { Table } from 'antd';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Loading from '../loading';
 import { capitalize } from '@/utils/helpers';
 import { ColumnType } from 'antd/es/table';
-
-// function page({ params }: { params: { locale: string } }) {
-//   // const [loading, setIsloading] = useState(false)
-//   // const { userId } = useUser();
-//   const [loading, setIsloading] = useState(false);
-//   const [orders, setOrders] = useState<OrderDataType[]>([]);
-//   const searchParams = useSearchParams();
-//   const pathname = usePathname();
-//   const router = useRouter();
-
-//   const pageParams = searchParams.get('page');
-//   // const
-
-//   useEffect(() => {
-//     if (!pageParams) {
-//       const newParams = new URLSearchParams(searchParams.toString());
-//       newParams.set('page', '1');
-//       router.replace(pathname + '?' + newParams.toString());
-//       return;
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     if (typeof window !== 'undefined') {
-//       const userId = getIdFromToken();
-//       setIsloading(true);
-//       getOrdersAuthenticated(Number(pageParams) ?? 1, userId ?? '')
-//         .then((data) => {
-//           setOrders(data);
-//         })
-//         .finally(() => {
-//           setIsloading(false);
-//         });
-//     }
-//   }, [searchParams, pageParams, pathname, router]);
-
-//   // if (!getIdFromToken()) {
-//   //   notFound();
-//   // }
-
-//   return (
-//     <div>
-//       {loading ?
-//         <Loading />
-//       : <>
-//           <ul className=''>
-//             {orders.length > 0 &&
-//               orders.map((order, i, arr) => {
-//                 return (
-//                   <li key={order.id}>
-//                     <Link
-//                       href={`/orders/${order.id}`}
-//                       className={`flex items-center gap-5 ${i + 1 < arr.length ? 'border-b border-b-gray-light' : ''} px-8 py-5 text-black`}
-//                     >
-//                       <span>#{order.id}</span>
-//                       <span>
-//                         {convertIsoStringToDateFormat(
-//                           order?.attributes?.createdAt ?? ''
-//                         )}
-//                       </span>
-//                       <span>
-//                         Delivery Status:{' '}
-//                         {order?.attributes?.delivery_status ?? ''}
-//                       </span>
-//                       <span>
-//                         Payment Status:{' '}
-//                         {order?.attributes?.payment_status ?? ''}
-//                       </span>
-//                       <span>
-//                         Payment Method:{' '}
-//                         {order?.attributes?.payment_method ?? ''}
-//                       </span>
-//                       <span>
-//                         {formatCurrencyNumbers(
-//                           order?.attributes?.total_order_cost ?? 0,
-//                           'EGP',
-//                           params.locale
-//                         )}
-//                       </span>
-//                     </Link>
-//                   </li>
-//                 );
-//               })}
-//           </ul>
-//         </>
-//       }
-//     </div>
-//   );
-// }
 
 type DataSource = {
   key: string;
@@ -121,7 +25,7 @@ type DataSource = {
   total_order_cost: number;
 };
 
-function page({ params }: { params: { locale: string } }) {
+function OrdersPage({ params }: { params: { locale: string } }) {
   const [loading, setIsloading] = useState(true);
   const [orders, setOrders] = useState<{
     data: OrderDataType[];
@@ -297,4 +201,4 @@ function page({ params }: { params: { locale: string } }) {
   );
 }
 
-export default page;
+export default OrdersPage;
