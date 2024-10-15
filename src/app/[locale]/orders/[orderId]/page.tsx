@@ -1,15 +1,129 @@
 import Image from 'next/image';
 
 import {
+  fetchGraphqlByArgsToken,
   fetchGraphqlClient,
-  fetchGraphqlClientAuthenticated
+  fetchGraphqlServerAuthenticated
 } from '@/services/graphqlCrud';
-import { GetOrderResponseType } from '@/types/orderResponseTypes';
+import {
+  GetOrderResponseType,
+  OrdersPaginationResponseType
+} from '@/types/orderResponseTypes';
 import { notFound } from 'next/navigation';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { capitalize } from '@/utils/helpers';
 import { formatEnglishNumbers } from '@/utils/numbersFormating';
 import DownloadButton from '@/components/invoice/DownloadButton';
+import { unstable_setRequestLocale } from 'next-intl/server';
+
+// Helper function to recursively fetch all orders
+const fetchAllOrdersIds = async () => {
+  let allOrdersId: { id: string }[] = [];
+  let page = 1;
+  let hasMore = true;
+  const maxRetries = 3; // Maximum number of retries
+  const retryDelay = 1000; // Delay in milliseconds between retries
+
+  while (hasMore) {
+    const query = `
+      {
+        orders(pagination: { page: ${page}, pageSize: 10 }) {
+          data {
+            id
+          }
+          meta {
+            pagination {
+              page
+              pageSize
+              pageCount
+              total
+            }
+          }   
+        }
+      }
+    `;
+
+    let retries = 0;
+    let error;
+
+    while (retries < maxRetries) {
+      try {
+        const { data, error: fetchError } =
+          (await fetchGraphqlServerAuthenticated(
+            query
+          )) as OrdersPaginationResponseType;
+
+        if (
+          fetchError ||
+          !data?.orders?.data ||
+          !data?.orders?.meta?.pagination?.page ||
+          !data?.orders?.meta?.pagination?.pageCount ||
+          !data?.orders?.meta?.pagination?.pageSize ||
+          !data?.orders?.meta?.pagination?.total
+        ) {
+          error = fetchError; // Save the error for logging
+          throw new Error('Fetch error'); // Force a retry on error
+        }
+
+        // Append the current page's order IDs to the list
+        allOrdersId = [...allOrdersId, ...data.orders.data];
+
+        // Check if there are more pages to fetch
+        const pagination = data.orders.meta.pagination;
+        page += 1;
+        hasMore = page <= pagination.pageCount;
+
+        break; // Exit retry loop if successful
+      } catch (err: any) {
+        console.error(
+          `Attempt ${retries + 1} failed for fetching orders:`,
+          err.message
+        );
+        retries += 1;
+
+        if (retries >= maxRetries) {
+          console.error(
+            'Max retries reached. Fetching orders failed:',
+            error
+          );
+          return []; // Return an empty array if max retries are reached
+        }
+
+        await new Promise((res) => setTimeout(res, retryDelay)); // Wait before retrying
+      }
+    }
+  }
+
+  console.log('Fetched order IDs:', allOrdersId);
+  return allOrdersId;
+};
+
+// Updated generateStaticParams function
+export async function generateStaticParams() {
+  // Fetch all order IDs
+  const ordersIds = await fetchAllOrdersIds();
+
+  if (!ordersIds.length) {
+    console.error('Failed to fetch orders IDs');
+    return [];
+  }
+
+  // Create the params for static generation
+  const enParams = ordersIds.map((order) => ({
+    orderId: order.id,
+    locale: 'en'
+  }));
+  const arParams = ordersIds.map((order) => ({
+    orderId: order.id,
+    locale: 'ar'
+  }));
+
+  const params = [...enParams, ...arParams];
+
+  console.log('Generated orders static params:', params);
+
+  return params;
+}
 
 const getOrderQuery = (orderId: string) => {
   return `{
@@ -34,6 +148,13 @@ const getOrderQuery = (orderId: string) => {
                             first_name
                             last_name
                             delivery_phone
+                            shipping_cost {
+                                data {
+                                    attributes {
+                                        governorate
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -72,6 +193,7 @@ async function InvoicePage({
 }: {
   params: { orderId: string; locale: string };
 }) {
+  unstable_setRequestLocale(locale);
   // const [isClient, setIsClient] = useState(false);
 
   // const locale = useLocale();
@@ -79,9 +201,9 @@ async function InvoicePage({
   // useEffect(() => {
   //   setIsClient(true);
   // }, []);
-
-  const { data, error } = (await fetchGraphqlClient(
-    getOrderQuery(orderId)
+  const { data, error } = (await fetchGraphqlByArgsToken(
+    getOrderQuery(orderId),
+    process.env.API_TOKEN
   )) as GetOrderResponseType;
 
   // console.log(JSON.stringify(data));
@@ -92,6 +214,8 @@ async function InvoicePage({
   const invoiceUrl = attributes?.invoice?.data?.attributes?.url;
 
   if (!attributes || error) {
+    console.error('Invalid order', error);
+    console.error('Attributes', attributes);
     notFound();
   }
 
@@ -145,17 +269,20 @@ async function InvoicePage({
             {(shippingAddress?.address_1 ||
               shippingAddress?.address_2) && <br />}
             {shippingAddress?.address_1 &&
-              `Address: ${capitalize(shippingAddress?.address_1)}`}
+              `${capitalize(shippingAddress?.address_1)}`}
             {shippingAddress?.address_2 &&
-              `, ${capitalize(shippingAddress?.address_2)}`}
+              ` - ${capitalize(shippingAddress?.address_2)}`}
             <br />
             {shippingAddress?.city &&
-              `City: ${capitalize(shippingAddress.city)}`}
+              `${capitalize(shippingAddress.city)}`}
+            {shippingAddress?.shipping_cost?.data?.attributes
+              ?.governorate &&
+              ` - ${capitalize(shippingAddress.shipping_cost.data.attributes.governorate)}`}
             {(
               shippingAddress?.zip_code &&
               shippingAddress?.zip_code > 0
             ) ?
-              `, Postal code: ${shippingAddress?.zip_code}`
+              ` - ${shippingAddress?.zip_code}`
             : ''}
             <br />
             {shippingAddress?.delivery_phone ?? ''}

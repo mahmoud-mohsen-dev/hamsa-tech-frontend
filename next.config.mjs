@@ -5,7 +5,14 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['freshcart.codescandy.com', 'res.cloudinary.com']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '', // Leave this empty if you're not using a specific port
+        pathname: '/**' // Match all paths from this domain
+      }
+    ]
   }
 };
 

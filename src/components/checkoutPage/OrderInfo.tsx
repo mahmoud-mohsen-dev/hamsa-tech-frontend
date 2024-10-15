@@ -197,6 +197,13 @@ const createOrderQuery = ({
                             first_name
                             last_name
                             delivery_phone
+                            shipping_cost {
+                              data {
+                                  attributes {
+                                      governorate
+                                  }
+                              }
+                            }
                         }
                     }
                 }

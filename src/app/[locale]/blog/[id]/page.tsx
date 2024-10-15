@@ -15,11 +15,13 @@ const fetchAllBlogsIds = async (locale: string) => {
   let allBlogIds: { id: string }[] = [];
   let page = 1;
   let hasMore = true;
+  const maxRetries = 3; // Maximum number of retries
+  const retryDelay = 1000; // Delay in milliseconds between retries
 
   while (hasMore) {
     const query = `
       query {
-        blogs(locale: "${locale}", pagination: { page: ${page}, pageSize: 100 }) {
+        blogs(locale: "${locale}", pagination: { page: ${page}, pageSize: 10 }) {
           data {
             id
           }
@@ -35,28 +37,54 @@ const fetchAllBlogsIds = async (locale: string) => {
       }
     `;
 
-    const { data, error } = (await fetchGraphql(
-      query
-    )) as ArticlesIdsType;
+    let retries = 0;
+    let error;
 
-    if (
-      error ||
-      !data?.blogs?.data ||
-      !data?.blogs?.meta?.pagination
-    ) {
-      console.error('Error fetching blogs:', error);
-      return [];
+    while (retries < maxRetries) {
+      try {
+        const { data, error: fetchError } = (await fetchGraphql(
+          query
+        )) as ArticlesIdsType;
+
+        if (
+          fetchError ||
+          !data?.blogs?.data ||
+          !data?.blogs?.meta?.pagination
+        ) {
+          error = fetchError; // Save the error for logging
+          throw new Error('Fetch error'); // Force a retry on error
+        }
+
+        // Append the current page's blog IDs to the list
+        allBlogIds = [...allBlogIds, ...data.blogs.data];
+
+        // Check if there are more pages to fetch
+        const pagination = data.blogs.meta.pagination;
+        page += 1;
+        hasMore = page <= pagination.pageCount;
+
+        break; // Exit retry loop if successful
+      } catch (err: any) {
+        console.error(
+          `Attempt ${retries + 1} failed for locale "${locale}":`,
+          err.message
+        );
+        retries += 1;
+
+        if (retries >= maxRetries) {
+          console.error(
+            'Max retries reached. Fetching blogs failed:',
+            error
+          );
+          return []; // Return an empty array if max retries are reached
+        }
+
+        await new Promise((res) => setTimeout(res, retryDelay)); // Wait before retrying
+      }
     }
-
-    // Append the current page's blog IDs to the list
-    allBlogIds = [...allBlogIds, ...data.blogs.data];
-
-    // Check if there are more pages to fetch
-    const pagination = data.blogs.meta.pagination;
-    page += 1;
-    hasMore = page <= pagination.pageCount;
   }
-  console.log(allBlogIds);
+
+  console.log('Fetched blog IDs:', allBlogIds);
   return allBlogIds;
 };
 
@@ -83,7 +111,7 @@ export async function generateStaticParams() {
 
   const params = [...enParams, ...arParams];
 
-  console.log('Generated static params:', params);
+  console.log('Generated static blog params:', params);
 
   return params;
 }
@@ -117,7 +145,7 @@ export default async function BlogPostPage({
 }: Props) {
   unstable_setRequestLocale(locale);
   const { data, error } = await fetchGraphql(getBlogByIdQuery(id));
-  console.log(JSON.stringify(data));
+  // console.log(JSON.stringify(data));
 
   if (error || !data?.blog?.data) {
     return notFound(); // 404 if no data

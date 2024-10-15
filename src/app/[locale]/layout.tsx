@@ -1,5 +1,5 @@
 import { ReactNode, Suspense } from 'react';
-import { Open_Sans, Inter } from 'next/font/google';
+import { Open_Sans, Inter, Cairo } from 'next/font/google';
 import { getLangDir } from 'rtl-detect';
 import { StoreContextProvider } from '../../context/Store';
 import { NextIntlClientProvider } from 'next-intl';

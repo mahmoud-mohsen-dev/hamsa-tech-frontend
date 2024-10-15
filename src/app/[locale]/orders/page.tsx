@@ -14,6 +14,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { capitalize } from '@/utils/helpers';
 import { ColumnType } from 'antd/es/table';
+// import { unstable_setRequestLocale } from 'next-intl/server';
 
 type DataSource = {
   key: string;
@@ -179,7 +180,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
         pagination={{
           total: orders?.meta?.pagination?.total ?? 0,
           pageSize: orders?.meta?.pagination?.pageSize ?? 10,
-          current: Number(pageParams) ?? 1,
+          current: Number(pageParams) > 0 ? Number(pageParams) : 1,
           onChange: (page) => {
             const newParams = new URLSearchParams(
               searchParams.toString()

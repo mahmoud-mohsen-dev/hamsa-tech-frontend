@@ -7,6 +7,13 @@ type ShippingAddressType = {
   first_name: string;
   last_name: string;
   delivery_phone: string;
+  shipping_cost: {
+    data: {
+      attributes: {
+        governorate: string;
+      };
+    };
+  };
 };
 
 // Define the structure of the Product
@@ -101,6 +108,13 @@ export type OrderInfoType = {
           first_name: string;
           last_name: string;
           delivery_phone: string;
+          shipping_cost: {
+            data: {
+              attributes: {
+                governorate: string;
+              };
+            };
+          };
         };
       } | null;
     } | null;
@@ -164,5 +178,39 @@ export type GetOrdersAuthenticatedResponse = {
       };
     };
   };
+  error: string | null;
+};
+
+export type OrdersPaginationResponseType = {
+  data: {
+    orders: {
+      data: { id: string }[];
+      meta: {
+        pagination: {
+          page: number;
+          pageSize: number;
+          pageCount: number;
+          total: number;
+        };
+      };
+    };
+  } | null;
+  error: string | null;
+};
+
+export type OrdersUserIdResponseType = {
+  data: {
+    order: {
+      data: {
+        attributes: {
+          user: {
+            data: {
+              id: string;
+            };
+          } | null;
+        };
+      };
+    };
+  } | null;
   error: string | null;
 };

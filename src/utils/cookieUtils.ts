@@ -109,3 +109,20 @@ export const getIdFromToken = (): string | null => {
   }
   return null; // Return null if the cookie is not set
 };
+
+// Helper function to extract userId from the token
+export function getIdFromTokenArgs(
+  token: string | null
+): string | null {
+  try {
+    if (!token) {
+      console.error('Token not required');
+      return null;
+    }
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.id || null;
+  } catch (e) {
+    console.error('Error decoding token:', e);
+    return null;
+  }
+}

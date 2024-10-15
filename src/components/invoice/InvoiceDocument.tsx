@@ -3,6 +3,7 @@
 import { OrderInfoType } from '@/types/orderResponseTypes';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { formatEnglishNumbers } from '@/utils/numbersFormating';
+import { reverseArabicWords } from '@/utils/stringHelpers';
 import {
   Document,
   Page,
@@ -10,15 +11,32 @@ import {
   Text,
   View,
   Svg,
-  Path
+  Path,
+  Font
 } from '@react-pdf/renderer';
+
+// Register the Cairo font
+Font.register({
+  family: 'Cairo',
+  fonts: [
+    {
+      src: '/fonts/cairo/Cairo-Regular.ttf',
+      fontWeight: 400
+    },
+    {
+      src: '/fonts/cairo/Cairo-Bold.ttf',
+      fontWeight: 700
+    }
+  ]
+});
 
 // Create styles
 
 const styles = StyleSheet.create({
   page: {
     padding: 20,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    fontFamily: 'Cairo'
   },
   container: {
     padding: 15
@@ -28,11 +46,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 5
+    marginBottom: 3
   },
   title: {
     fontSize: 16,
-    marginBottom: 6,
+    marginBottom: 4,
     fontWeight: 'bold',
     color: '#1F2937'
   },
@@ -47,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     textTransform: 'uppercase',
     gap: 4,
-    marginBottom: 5,
+    marginBottom: 2,
     fontSize: 12
   },
   logoBlue: {
@@ -67,12 +85,12 @@ const styles = StyleSheet.create({
     color: '#374151'
   },
   section: {
-    marginBottom: 10
+    marginBottom: 2
   },
   billToTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 2,
     color: '#1F2937'
   },
   billToAddress: {
@@ -96,7 +114,7 @@ const styles = StyleSheet.create({
   },
   tableCell: {
     padding: 8,
-    fontSize: 12
+    fontSize: 10
   },
   flexBasis20: {
     flexBasis: '20%'
@@ -110,7 +128,7 @@ const styles = StyleSheet.create({
 
     borderTopStyle: 'solid',
     borderTopWidth: 1,
-    fontWeight: 800,
+    fontWeight: 'bold',
     flexDirection: 'row'
   },
   totals: {
@@ -123,10 +141,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     fontSize: 12,
     color: '#1F2937',
-    marginBottom: 6
+    marginBottom: 2
   },
 
-  finalTotal: { fontSize: 14, marginTop: 2 },
+  finalTotal: { fontSize: 12 },
   bold: {
     fontWeight: 'bold'
   },
@@ -195,20 +213,18 @@ export function InvoiceDocument({
           <View style={styles.section}>
             <Text style={styles.billToTitle}>Bill to</Text>
             <Text style={styles.billToAddress}>
-              {billTo?.first_name ?? ''} {billTo?.last_name ?? ''}
+              {`${billTo?.first_name ?? ''} ${billTo?.last_name ?? ''}`}
             </Text>
             <Text style={styles.billToAddress}>
-              {billTo?.address_1 ?
-                `Address: ${billTo?.address_1}`
-              : ''}{' '}
-              {billTo?.address_2 ? `, ${billTo?.address_2}` : ''}
+              {`${
+                billTo?.address_1 ? `${billTo?.address_1}` : ''
+              } ${billTo?.address_2 ? ` - ${billTo?.address_2}` : ''}`}
             </Text>
 
             <Text style={styles.billToAddress}>
-              {billTo?.city ? `City: ${billTo.city}` : ''}{' '}
-              {billTo?.zip_code ?
-                `, Postal code: ${billTo?.zip_code}`
-              : ''}
+              {`${billTo?.city ? `${billTo.city}` : ''} ${billTo?.shipping_cost?.data?.attributes?.governorate ? ` - ${billTo?.shipping_cost?.data?.attributes?.governorate}` : ''} ${
+                billTo?.zip_code ? ` - ${billTo?.zip_code}` : ''
+              }`}
             </Text>
             <Text style={styles.billToAddress}>
               {billTo?.delivery_phone ?? ''}
