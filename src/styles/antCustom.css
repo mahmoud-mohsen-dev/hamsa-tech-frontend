@@ -101,6 +101,15 @@
   .ant-select-selector {
   border-color: transparent;
 }
+.header .language-select.ant-select {
+  display: none;
+}
+
+@media screen and (min-width: 1280px) {
+  .header .language-select.ant-select {
+    display: inline-block;
+  }
+}
 
 .ant-input-compact-item:not(
     .ant-input-compact-last-item

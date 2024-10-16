@@ -143,6 +143,8 @@ export default async function BlogPage({
   )) as ArticlesResponseType;
 
   if (error || !data?.blogs?.data || data?.blogs?.data.length === 0) {
+    console.error('Error fetching blogs:', error);
+    console.error('Error fetching blogs data:', data);
     return notFound(); // 404 if no data
   }
 

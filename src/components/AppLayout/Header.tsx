@@ -544,10 +544,10 @@ function Header({ navLinks, productsSubNav }: PropsType) {
           />
         </div>
 
-        <div className='hidden items-center 2xl:flex'>
+        <div className='flex items-center'>
           <Link
             href='/wishlist'
-            className='wishlist relative ml-4 text-white'
+            className='wishlist relative ml-3 text-white 2xl:ml-4'
           >
             {wishlistsData.length > 0 && (
               <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
@@ -561,13 +561,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
 
           <Link
             href={userId ? '/profile' : '/signin'}
-            className='profile ml-5 text-white'
+            className='profile ml-3 text-white 2xl:ml-5'
           >
             <ProfileDropdownMenu />
           </Link>
 
           <button
-            className='shopping-cart relative ml-5'
+            className='shopping-cart relative ml-4 2xl:ml-5'
             onClick={() => {
               setOpenDrawer(true);
               setDrawerIsLoading(true);
@@ -586,13 +586,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
             <TiShoppingCart size={24} className='text-inherit' />
           </button>
 
-          <div className='ml-5 h-[22px] w-[1px] rounded-sm bg-[#eaeaea]'></div>
+          <div className='ml-5 hidden h-[22px] w-[1px] rounded-sm bg-[#eaeaea] 2xl:block'></div>
           <ModalSearchInput />
           <SelectLanguage defaultValue={defaultValue} />
-        </div>
 
-        <div className='flex h-full items-center justify-center 2xl:hidden'>
-          <HamburgerMenuIcon />
+          <div className='flex h-full items-center justify-center 2xl:hidden'>
+            <HamburgerMenuIcon />
+          </div>
         </div>
       </div>
     </header>

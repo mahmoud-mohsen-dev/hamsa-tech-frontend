@@ -19,7 +19,7 @@ function ModalSearchInput() {
     setIsModalOpen(false);
   };
   return (
-    <div className='modal-search-input ml-5'>
+    <div className='modal-search-input ml-5 hidden 2xl:block'>
       <Button
         type='link'
         onClick={showModal}

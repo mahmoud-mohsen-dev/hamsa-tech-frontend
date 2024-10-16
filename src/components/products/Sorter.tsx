@@ -81,7 +81,7 @@ function Sorter() {
 
   return (
     <div
-      className='flex items-center gap-3'
+      className='flex flex-wrap items-center gap-3'
       // initialValues={{ pageSize: 20, sortBy: 'featured' }}
     >
       {/* <Form.Item name='pageSize' style={{ marginBottom: 0 }}> */}

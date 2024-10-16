@@ -348,7 +348,7 @@ function ProductsContent() {
               })}
           </div>
           <Pagination
-            align='start'
+            align='center'
             className={locale === 'ar' ? 'pagination-in-arabic' : ''}
             defaultCurrent={1}
             current={
