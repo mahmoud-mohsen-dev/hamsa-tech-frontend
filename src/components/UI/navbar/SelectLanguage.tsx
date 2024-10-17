@@ -7,7 +7,17 @@ import { useParams } from 'next/navigation';
 import { useTransition } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 
-function SelectLanguage({ defaultValue }: { defaultValue: string }) {
+function SelectLanguage({
+  defaultValue,
+  className = 'language-select',
+  styleWidth = 90,
+  styleIconColor = undefined
+}: {
+  defaultValue: string;
+  className?: string;
+  styleWidth?: number | string;
+  styleIconColor?: { color: string };
+}) {
   const { nextProductId } = useMyContext();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -39,13 +49,13 @@ function SelectLanguage({ defaultValue }: { defaultValue: string }) {
       defaultValue={defaultValue}
       disabled={isPending}
       onChange={onSelectChange}
-      style={{ width: 80, marginLeft: '.5rem' }}
-      className='language-select'
+      style={{ width: styleWidth, marginLeft: '.5rem' }}
+      className={className}
       options={[
         {
           value: 'en',
           label: (
-            <p className='flex items-center justify-between gap-1'>
+            <p className='flex items-center gap-[10px]'>
               <span>EN</span>
               <Image
                 src={'/languages/us.png'}
@@ -60,7 +70,7 @@ function SelectLanguage({ defaultValue }: { defaultValue: string }) {
         {
           value: 'ar',
           label: (
-            <p className='flex items-center justify-between gap-1'>
+            <p className='flex items-center gap-[10px]'>
               <span>AR</span>
               <Image
                 src={'/languages/eg.png'}
@@ -73,7 +83,13 @@ function SelectLanguage({ defaultValue }: { defaultValue: string }) {
           )
         }
       ]}
-      suffixIcon={<IoIosArrowDown size={14} className='text-white' />}
+      suffixIcon={
+        <IoIosArrowDown
+          size={14}
+          className='text-white'
+          style={{ ...styleIconColor }}
+        />
+      }
     />
   );
 }

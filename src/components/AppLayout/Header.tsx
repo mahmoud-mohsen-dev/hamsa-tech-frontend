@@ -3,7 +3,6 @@ import useScrollHandler from '@/hooks/useScrollHander';
 import Navbar from '../UI/navbar/Navbar';
 import { useEffect, useState } from 'react';
 import { TiShoppingCart } from 'react-icons/ti';
-import { UserOutlined } from '@ant-design/icons';
 import { HiOutlineHeart } from 'react-icons/hi';
 import ModalSearchInput from '../UI/navbar/ModalSearchInput';
 import HamburgerMenuIcon from '../UI/navbar/HamburgerMenuIcon';
@@ -547,7 +546,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
         <div className='flex items-center'>
           <Link
             href='/wishlist'
-            className='wishlist relative ml-3 text-white 2xl:ml-4'
+            className='wishlist relative ml-3 hidden text-white 2xl:ml-4 2xl:block'
           >
             {wishlistsData.length > 0 && (
               <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
@@ -561,13 +560,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
 
           <Link
             href={userId ? '/profile' : '/signin'}
-            className='profile ml-3 text-white 2xl:ml-5'
+            className='profile ml-3 hidden text-white 2xl:ml-5 2xl:block'
           >
             <ProfileDropdownMenu />
           </Link>
 
           <button
-            className='shopping-cart relative ml-4 2xl:ml-5'
+            className={`shopping-cart relative ${locale === 'ar' ? 'ml-5' : 'mr-5 2xl:ml-5 2xl:mr-0'}`}
             onClick={() => {
               setOpenDrawer(true);
               setDrawerIsLoading(true);
@@ -590,9 +589,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
           <ModalSearchInput />
           <SelectLanguage defaultValue={defaultValue} />
 
-          <div className='flex h-full items-center justify-center 2xl:hidden'>
-            <HamburgerMenuIcon />
-          </div>
+          {/* <div className='flex h-full items-center justify-center text-inherit 2xl:hidden'> */}
+          <HamburgerMenuIcon
+            navLinks={navLinks}
+            productsSubNav={productsSubNav}
+          />
+
+          {/* </div> */}
         </div>
       </div>
     </header>

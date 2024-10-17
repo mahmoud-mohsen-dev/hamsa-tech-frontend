@@ -6,7 +6,13 @@ import { useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { v4 } from 'uuid';
 
-function MenuSidebar({ data }: { data: CategorySidebarType[] }) {
+function MenuSidebar({
+  data,
+  onClose
+}: {
+  data: CategorySidebarType[];
+  onClose: () => void;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -78,8 +84,9 @@ function MenuSidebar({ data }: { data: CategorySidebarType[] }) {
     // });
 
     // console.log(foundItem);
+    onClose();
     router.push(
-      pathname +
+      '/products' +
         '?' +
         createQueryString(
           'category',

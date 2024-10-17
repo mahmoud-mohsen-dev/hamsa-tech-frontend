@@ -15,7 +15,7 @@ interface PropsType {
 function HeroSection({ data }: PropsType) {
   const [isAnimationIsOn, setIsAnimationIsOn] = useState(true);
   const imageContainerStyles =
-    'relative max-h-screen min-h-[400px] before:absolute before:left-0 before:top-0 before:h-full before:max-h-screen before:w-full before:bg-[#00000020] before:bg-blend-normal before:content-[""]';
+    'relative max-h-screen before:absolute before:left-0 before:top-0 before:h-full before:max-h-screen before:w-full before:bg-[#00000020] before:bg-blend-normal before:content-[""]';
 
   const handlebeforeChange = () => {
     setIsAnimationIsOn(false);

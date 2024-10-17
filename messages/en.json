@@ -50,6 +50,10 @@
       "description": "Surveillance cameras · Barcode and cashier devices · Sound systems · Networks · Fingerprint device · Surveillance cameras · Barcode and cashier devices."
     }
   },
+  "NavbarDrawer": {
+    "logo_part_1": "Hamsa",
+    "logo_part_2": "Tech"
+  },
   "ProductsPage": {
     "breadcrumb": {
       "all": "All Products"

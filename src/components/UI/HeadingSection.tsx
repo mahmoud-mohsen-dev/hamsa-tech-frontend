@@ -20,7 +20,7 @@ function HeadingSection({
         {children}
       </SectionHeading>
       <div
-        className={`m-auto mb-10 max-w-[600px] text-pretty text-center font-openSans capitalize text-gray-medium opacity-80 ${locale === 'ar' ? 'text-2xl' : 'text-lg'}`}
+        className={`m-auto mb-10 max-w-[600px] text-pretty text-center font-openSans capitalize text-gray-medium opacity-80 ${locale === 'ar' ? 'text-lg md:text-2xl' : 'text-lg'}`}
       >
         {subHeading}
       </div>

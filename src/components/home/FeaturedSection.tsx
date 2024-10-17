@@ -30,7 +30,7 @@ function Featured({ data }: PropsType) {
           {data.products.data.map((product) => {
             return (
               <div
-                className='w-full md:basis-[calc(50%-20px)] xl:basis-1/4'
+                className='w-full md:basis-[calc(50%-10px)] xl:basis-1/4'
                 key={product.id}
               >
                 <FeaturedProductCard

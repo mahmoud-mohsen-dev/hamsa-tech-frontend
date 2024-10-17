@@ -101,6 +101,7 @@
   .ant-select-selector {
   border-color: transparent;
 }
+
 .header .language-select.ant-select {
   display: none;
 }
@@ -174,6 +175,13 @@
   font-weight: 500;
 }
 
+/* Nav Drawer Screen Small menu*/
+.nav-drawer-screen-small
+  .ant-menu-light.ant-menu-root.ant-menu-inline {
+  border-inline-end: 0px solid transparent;
+  margin: 0px !important;
+}
+
 /* Cart drawer */
 .ant-drawer-content.reverse .ant-drawer-header-title {
   flex-direction: row-reverse;
@@ -211,61 +219,100 @@
 }
 
 /* Collapse */
-/* Active first child */
+/* Navbar Drawer Collaspe */
+.nav-drawer-screen-small
+  .ant-collapse
+  > .ant-collapse-item.ant-collapse-item-active
+  .ant-collapse-content
+  > .ant-collapse-content-box {
+  padding: 0px;
+}
+
+.nav-drawer-screen-small
+  .ant-collapse
+  > .ant-collapse-item:not(.ant-collapse-item-active)
+  .ant-collapse-header {
+  background-color: white;
+}
+
+/* ============ Start Of Active ============= */
+/* Header */
+/* Header when Active for middle items*/
 .ant-collapse
   > .ant-collapse-item.ant-collapse-item-active
   .ant-collapse-header {
   border: 1px solid #1773b0;
   background-color: #ecf4ff;
+  border-radius: 0px;
+}
+
+/* Header when Active for firts item*/
+.ant-collapse
+  > .ant-collapse-item:first-child.ant-collapse-item-active
+  .ant-collapse-header {
   border-radius: 4px 4px 0px 0px;
 }
 
+/* Header when Active for last item*/
 .ant-collapse
-  > .ant-collapse-item:first-child:not(.ant-collapse-item-active) {
-  border-bottom: 0px;
+  > .ant-collapse-item:last-child.ant-collapse-item-active
+  .ant-collapse-header {
+  border-radius: 0px 0px 4px 4px;
 }
 
-.ant-collapse
-  > .ant-collapse-item.ant-collapse-item-active:first-child
-  .ant-collapse-content
-  > .ant-collapse-content-box {
-  border-bottom: 0px;
-}
-
-/* first not active */
-.ant-collapse > .ant-collapse-item .ant-collapse-header {
-  border: 1px solid #dedede;
-  border-radius: 4px 4px 0px 0px;
-}
-
+/* Body Content */
 /* Body content of all when active*/
 .ant-collapse
   > .ant-collapse-item.ant-collapse-item-active
   .ant-collapse-content
   > .ant-collapse-content-box {
-  border-width: 0 1px 1px 1px;
+  border-width: 0px 1px 1px 1px;
   border-color: #dedede;
   border-style: solid;
   background-color: rgba(0, 0, 0, 0.043);
-
   padding-top: 16px;
 }
 
-/* Body content of all*/
+/* ============ End Of Active ============= */
+/* ============ Start Of Not Active ============= */
+/* Header */
+/* Not active for all */
 .ant-collapse
-  > .ant-collapse-item:last-child
-  .ant-collapse-content
-  > .ant-collapse-content-box {
-  border-radius: 0px 0px 4px 4px;
+  > .ant-collapse-item:not(.ant-collapse-item-active)
+  .ant-collapse-header {
+  border: 1px solid #dedede;
 }
 
-/* Not active last child header */
+/* Not active for first header  */
+.ant-collapse
+  > .ant-collapse-item:first-child:not(.ant-collapse-item-active)
+  .ant-collapse-header {
+  border-radius: 4px 4px 0px 0px;
+  border-width: 1px 1px 1px 1px;
+}
+
+/* Not active for middle headers*/
+.ant-collapse
+  > .ant-collapse-item:not(
+    .ant-collapse-item-active,
+    :first-child,
+    :last-child
+  )
+  .ant-collapse-header {
+  border-radius: 0px;
+  border-width: 0px 1px 1px 1px;
+}
+
+/* Not active for last header */
 .ant-collapse
   .ant-collapse-item:last-child:not(.ant-collapse-item-active)
   .ant-collapse-header {
-  border-top: 0px;
+  border-width: 0px 1px 1px 1px;
   border-radius: 0px 0px 4px 4px;
 }
+
+/* Body */
+/* ============ End Of Not Active ============= */
 
 /* Only on billing address first shild active */
 #billing-address .ant-collapse .same .ant-collapse-content {

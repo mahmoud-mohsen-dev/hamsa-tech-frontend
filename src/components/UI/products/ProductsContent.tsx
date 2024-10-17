@@ -289,7 +289,8 @@ function ProductsContent() {
       {globaLoading ?
         <Spin
           size='large'
-          className='mt-5 grid min-h-[500px] w-full place-content-center'
+          className='min-h-[500px] w-full place-content-center'
+          style={{ display: 'grid' }}
         />
       : productsData === null || productsData.length === 0 ?
         <Empty

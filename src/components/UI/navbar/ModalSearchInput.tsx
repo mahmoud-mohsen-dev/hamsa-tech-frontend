@@ -4,7 +4,11 @@ import { useState } from 'react';
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import SearchInputField from './SearchInputField';
 
-function ModalSearchInput() {
+function ModalSearchInput({
+  styleColor = undefined
+}: {
+  styleColor?: undefined | string;
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -19,11 +23,15 @@ function ModalSearchInput() {
     setIsModalOpen(false);
   };
   return (
-    <div className='modal-search-input ml-5 hidden 2xl:block'>
+    <div className='modal-search-input ml-5 hidden text-inherit 2xl:block'>
       <Button
         type='link'
         onClick={showModal}
-        style={{ padding: 0 }}
+        style={
+          styleColor ?
+            { padding: 0, color: styleColor }
+          : { padding: 0 }
+        }
         className='seach-btn'
       >
         <FaMagnifyingGlass />
