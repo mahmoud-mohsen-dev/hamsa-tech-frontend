@@ -11,7 +11,7 @@ function MenuSidebar({
   onClose
 }: {
   data: CategorySidebarType[];
-  onClose: () => void;
+  onClose?: () => void;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -84,7 +84,9 @@ function MenuSidebar({
     // });
 
     // console.log(foundItem);
-    onClose();
+    if (onClose) {
+      onClose();
+    }
     router.push(
       '/products' +
         '?' +
