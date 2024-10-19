@@ -12,7 +12,7 @@ import {
   MenuProps
 } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { TiShoppingCart } from 'react-icons/ti';
 import { HiOutlineHeart } from 'react-icons/hi';
 import { v4 } from 'uuid';
@@ -42,22 +42,35 @@ function NavDrawerScreenSmall({
   productsSubNav
 }: PropsType) {
   const router = useRouter();
+  const defaultNavPathnames = [
+    'products',
+    'offers',
+    'blog',
+    'about-us',
+    'support',
+    'wishlist',
+    'account',
+    'signin'
+  ];
+  const pathname = usePathname();
+
   const [openKeys, setOpenKeys] = useState<string[]>(
     // params.get('category') !== null ?
     //   [params.get('category') ?? '']
     // :
-    []
+    () => [
+      defaultNavPathnames.find((pathnameDefaultItem) =>
+        pathname.split('/').includes(pathnameDefaultItem)
+      ) ?? ''
+    ]
   ); // State for open keys
   const { userId } = useUser();
   // const { wishlistsData } = useMyContext();
   const [isPending, startTransition] = useTransition();
-  const pathname = usePathname();
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations('NavbarDrawer');
   const languageTranslation = useTranslations('LocaleSwitcher');
-  console.log('drawer');
-  console.log(navLinks);
 
   const dataValues =
     (
@@ -71,6 +84,17 @@ function NavDrawerScreenSmall({
   // const onClick: MenuProps['onClick'] = (e) => {
   //   // setCurrentActiveSubCategory([e.key ?? '']);
   // };
+
+  useEffect(() => {
+    setOpenKeys(() => {
+      const getpathName = () => [
+        defaultNavPathnames.find((pathnameDefaultItem) =>
+          pathname.split('/').includes(pathnameDefaultItem)
+        ) ?? ''
+      ];
+      return getpathName();
+    });
+  }, [pathname]);
 
   // Handle open menu change to allow only one open submenu at a time
   const onOpenChange = (keys: string[]) => {
@@ -96,14 +120,14 @@ function NavDrawerScreenSmall({
     dataValues.map((item) => {
       return item.slug === 'products' ?
           {
-            key: item?.id,
+            key: item?.slug,
             label: (
               <button
                 onClick={() => {
                   onClose();
                   router.push(item?.slug ?? '/');
                 }}
-                className='capitalize text-black-light'
+                className='w-[50%] px-4 py-3 text-start capitalize text-black-light'
               >
                 {item?.name ?? ''}
               </button>
@@ -122,7 +146,7 @@ function NavDrawerScreenSmall({
             )
           }
         : {
-            key: item?.id,
+            key: item?.slug,
             showArrow: false,
             label: (
               <button
@@ -130,7 +154,7 @@ function NavDrawerScreenSmall({
                   onClose();
                   router.push(item?.slug ?? '/');
                 }}
-                className='capitalize text-black'
+                className='w-full px-4 py-3 text-start capitalize text-black'
               >
                 {item?.name ?? ''}
               </button>
@@ -151,7 +175,7 @@ function NavDrawerScreenSmall({
               onClose();
               router.push('/wishlist');
             }}
-            className='capitalize text-black-light'
+            className='w-full px-4 py-3 text-start capitalize text-black-light'
           >
             {t('wishlistLabel')}
           </button>
@@ -159,15 +183,15 @@ function NavDrawerScreenSmall({
       },
 
       {
-        key: 'profile',
+        key: 'account',
         showArrow: false,
         label: (
           <button
             onClick={() => {
               onClose();
-              router.push(userId ? '/profile' : '/signin');
+              router.push(userId ? '/account/settings' : '/signin');
             }}
-            className='capitalize text-black-light'
+            className='w-full px-4 py-3 text-start capitalize text-black-light'
           >
             {t('profileLabel')}
           </button>
@@ -185,9 +209,9 @@ function NavDrawerScreenSmall({
             onClose();
             router.push('/signin');
           }}
-          className='text-black-light'
+          className='w-full text-start text-black-light'
         >
-          <div className='flex items-center gap-2 capitalize'>
+          <div className='flex items-center gap-2 px-4 py-3 capitalize'>
             <span>{t('signoutLabel')}</span>
           </div>
         </button>
@@ -199,11 +223,14 @@ function NavDrawerScreenSmall({
       {
         key: 'language',
         label: (
-          <p className='capitalize'>{languageTranslation('label')}</p>
+          <p className='px-4 py-3 capitalize'>
+            {languageTranslation('label')}
+          </p>
         ),
         showArrow: false,
         children: [
           <button
+            key='en'
             disabled={isPending}
             onClick={() => {
               onClose();
@@ -233,12 +260,14 @@ function NavDrawerScreenSmall({
             </span>
           </button>,
           <Divider
+            key='divider'
             style={{
               marginBlock: 0
               // , backgroundColor: '#dedede'
             }}
           />,
           <button
+            key='ar'
             disabled={isPending}
             onClick={() => {
               onClose();
@@ -319,6 +348,7 @@ function NavDrawerScreenSmall({
       styles={{
         // header: { backgroundColor: 'white' },
         // mask: { backgroundColor: 'transparent' },
+        header: { paddingInline: '16px' },
         body: {
           paddingInline: 0,
           paddingBlock: 0,

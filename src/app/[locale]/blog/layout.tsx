@@ -26,7 +26,7 @@ export async function generateMetadata({
 
 function BlogLayout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  return <div>{children}</div>;
+  return <div className='my-8'>{children}</div>;
 }
 
 export default BlogLayout;

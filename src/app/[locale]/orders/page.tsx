@@ -9,11 +9,16 @@ import {
 import { getIdFromToken } from '@/utils/cookieUtils';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import { Table } from 'antd';
+import { Divider, Table } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { capitalize } from '@/utils/helpers';
 import { ColumnType } from 'antd/es/table';
+import { RiShoppingBag3Fill } from 'react-icons/ri';
+import { GoGear } from 'react-icons/go';
+import { FaMapLocationDot } from 'react-icons/fa6';
+import { LuLogOut } from 'react-icons/lu';
+import { GrMapLocation } from 'react-icons/gr';
 // import { unstable_setRequestLocale } from 'next-intl/server';
 
 type DataSource = {
@@ -172,7 +177,46 @@ function OrdersPage({ params }: { params: { locale: string } }) {
     })) ?? [];
 
   return (
-    <div>
+    <div className='grid min-h-full justify-center lg:grid-cols-[1fr_3fr] 2xl:px-20'>
+      <ul className='mx-auto flex h-fit w-[75%] flex-col justify-center'>
+        <li className='border-b border-solid border-gray-light'>
+          <Link
+            href={'/account/orders'}
+            className='flex flex-wrap items-center gap-4 bg-black-light px-4 py-2 text-white'
+          >
+            <RiShoppingBag3Fill />
+            <span>Your Orders</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={'/account/address'}
+            className='flex flex-wrap items-center gap-4 px-4 py-2 text-black-light'
+          >
+            <GrMapLocation />
+            <span>Address</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={'/account/settings'}
+            className='flex flex-wrap items-center gap-4 px-4 py-2 text-black-light'
+          >
+            <GoGear />
+            <span>Settings</span>
+          </Link>
+        </li>
+        <Divider style={{ marginBlock: '10px' }} />
+        <li>
+          <Link
+            href={'/signin'}
+            className='flex flex-wrap items-center gap-4 px-4 py-2 text-black-light'
+          >
+            <LuLogOut />
+            <span>Log out</span>
+          </Link>
+        </li>
+      </ul>
       <Table
         columns={columns}
         dataSource={dataSource}
@@ -187,6 +231,9 @@ function OrdersPage({ params }: { params: { locale: string } }) {
             );
             newParams.set('page', page.toString());
             router.replace(pathname + '?' + newParams.toString());
+          },
+          style: {
+            marginBottom: 0
           }
         }}
         rowKey='id'

@@ -158,7 +158,7 @@ const Products = async ({
 
   return (
     // <ConfigAntThemes>
-    <section className='content container pt-[100px]'>
+    <section className='content container'>
       <CustomBreadcrumb
         items={getItems(
           allProductsText,

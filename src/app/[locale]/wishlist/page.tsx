@@ -13,7 +13,7 @@ async function WishlistPage({ params: { locale } }: PropsType) {
   const t = await getTranslations('WishlistPage.content');
 
   return (
-    <div className='mx-auto flex flex-col items-center justify-start px-6 font-inter md:min-h-[calc(100vh-170px)]'>
+    <div className='mx-auto flex flex-col items-center justify-start px-6 font-inter md:min-h-[calc(100vh-160px)]'>
       <div className='w-full'>
         <h2 className='text-4xl font-semibold text-black-medium'>
           {t('title')}

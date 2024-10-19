@@ -26,11 +26,7 @@ export async function generateMetadata({
 
 function WishlistLayout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  return (
-    <section className='container py-[80px] pt-[120px]'>
-      {children}
-    </section>
-  );
+  return <section className='container py-12'>{children}</section>;
 }
 
 export default WishlistLayout;

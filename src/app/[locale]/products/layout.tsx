@@ -30,5 +30,7 @@ export default async function ProductsLayout({
 }: PropsType) {
   // Enable static rendering
   unstable_setRequestLocale(locale);
-  return <section className='max-w-[1900px]'>{children}</section>;
+  return (
+    <section className='mt-5 max-w-[1900px]'>{children}</section>
+  );
 }

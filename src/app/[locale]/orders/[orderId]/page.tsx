@@ -220,10 +220,10 @@ async function InvoicePage({
   }
 
   return (
-    <>
+    <section className='mx-auto w-fit'>
       <DownloadButton invoiceUrl={invoiceUrl} orderId={orderId} />
       <div
-        className='boder-gray-100 mt-5 rounded-lg border bg-white p-6 font-inter shadow 2xl:min-w-[850px]'
+        className='boder-gray-100 mt-5 rounded-lg border bg-white p-6 font-inter shadow 2xl:w-[850px]'
         dir='ltr'
       >
         <div className='flex flex-col'>
@@ -389,7 +389,7 @@ async function InvoicePage({
         </div>
       </div>
       {/* // : <Spin size='large' />} */}
-    </>
+    </section>
   );
 }
 

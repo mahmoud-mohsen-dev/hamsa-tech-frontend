@@ -13,7 +13,7 @@ async function OffersPage({ params: { locale } }: PropsType) {
 
   return (
     <section>
-      <div className='container grid min-h-[750px] place-content-center'>
+      <div className='container grid min-h-[calc(100vh-160px)] place-content-center'>
         <h3 className='font-openSans text-xl font-semibold text-black-light'>
           {t('noOffersMessage')}
         </h3>

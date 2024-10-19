@@ -273,6 +273,9 @@
 }
 
 /* Nav Drawer Screen Small menu*/
+.ant-drawer .nav-drawer-screen-small .ant-drawer-close {
+  margin-inline-end: 0px;
+}
 .nav-drawer-screen-small
   .ant-menu-light.ant-menu-root.ant-menu-inline {
   border-inline-end: 0px solid transparent;
@@ -318,12 +321,7 @@
 /* Collapse */
 /* Navbar Drawer Collaspe */
 
-/* Header when Active for firts item*/
-/* Header when Active for last item*/
-.nav-drawer-screen-small
-  .ant-collapse
-  > .ant-collapse-item.ant-collapse-item-active
-  .ant-collapse-header,
+/* Header when Active */
 .nav-drawer-screen-small
   .ant-collapse
   > .ant-collapse-item.ant-collapse-item-active
@@ -331,6 +329,15 @@
   border-radius: 0px;
   border-right: 0px;
   border-left: 0px;
+  padding: 0px;
+}
+
+/* Header when not Active*/
+.nav-drawer-screen-small
+  .ant-collapse
+  > .ant-collapse-item:not(.ant-collapse-item-active)
+  .ant-collapse-header {
+  padding: 0px;
 }
 
 .nav-drawer-screen-small

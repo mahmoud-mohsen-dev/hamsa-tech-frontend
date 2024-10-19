@@ -26,7 +26,7 @@ export async function generateMetadata({
 
 function layout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  return <div className='mt-[64px]'>{children}</div>;
+  return <div className='py-12'>{children}</div>;
 }
 
 export default layout;

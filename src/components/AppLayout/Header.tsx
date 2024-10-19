@@ -516,7 +516,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
 
   return (
     <header
-      className={`header fixed left-1/2 top-0 z-[100] flex h-[48px] w-full max-w-[1900px] -translate-x-1/2 items-center bg-transparent md:h-[64px] ${pathname === '/' ? 'bg-transparent' : 'colored-navbar'} ${linkHovered ? 'colored-navbar' : 'bg-transparent'}`}
+      className={`header fixed left-0 top-0 z-[100] flex h-[48px] w-full max-w-[100vw] items-center bg-transparent md:h-[64px] 2xl:left-1/2 2xl:max-w-[1900px] 2xl:-translate-x-1/2 ${pathname === '/' ? 'bg-transparent' : 'colored-navbar'} ${linkHovered ? 'colored-navbar' : 'bg-transparent'}`}
     >
       <div className='container flex h-full items-stretch justify-between'>
         <div className='flex h-full items-center 2xl:gap-5 3xl:gap-10'>

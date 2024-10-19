@@ -49,7 +49,7 @@ async function SupportPage({ params: { locale } }: PropsType) {
         <p className='mt-1 text-base'>{t('subtitle')}</p>
         <SupportForm />
       </div>
-      <div className='my-12 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr));] gap-3 font-inter sm:px-20'>
+      <div className='mt-12 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr));] gap-3 font-inter sm:px-20'>
         <div className='flex items-center gap-5 rounded-md border border-gray-light px-8 py-5'>
           <TbDeviceLandlinePhone size={48} />
           <div>

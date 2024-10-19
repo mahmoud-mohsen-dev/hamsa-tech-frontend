@@ -11,7 +11,7 @@ function ContactUs({ data }: PropsType) {
   const locale = useLocale();
 
   return (
-    <div className='mx-auto max-w-[1900px]'>
+    <div className='mx-auto min-w-[100%] max-w-[1900px] overflow-hidden'>
       <div
         data-aos={locale === 'ar' ? 'fade-left' : 'fade-right'}
         data-aos-delay='150'

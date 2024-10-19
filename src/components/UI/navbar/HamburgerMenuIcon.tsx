@@ -23,7 +23,7 @@ function HamburgerMenuIcon({ navLinks, productsSubNav }: PropsType) {
   return (
     <>
       <button
-        className='h-10 w-10'
+        className='h-[1.75rem] w-[1.75rem]'
         onClick={() => {
           showDrawer();
         }}

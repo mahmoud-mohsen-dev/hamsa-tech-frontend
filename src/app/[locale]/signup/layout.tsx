@@ -26,7 +26,7 @@ export async function generateMetadata({
 
 function SignupLayout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  return <section className='container'>{children}</section>;
+  return <section className='container py-12'>{children}</section>;
 }
 
 export default SignupLayout;
