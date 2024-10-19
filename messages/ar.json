@@ -1,6 +1,6 @@
 {
   "LocaleSwitcher": {
-    "label": "Change language",
+    "label": "تغيير اللغة",
     "locale": "{locale, select, ar {العربية} en {English} other {Unknown}}"
   },
   "Error": {
@@ -52,7 +52,11 @@
   },
   "NavbarDrawer": {
     "logo_part_1": "همسة",
-    "logo_part_2": "تك"
+    "logo_part_2": "تك",
+    "wishlistLabel": "قائمة الأمنيات",
+    "profileLabel": "الملف الشخصي",
+    "signoutlabel": "تسجيل خروج",
+    "searchPlaceholder": "ابحث عن المنتجات..."
   },
   "ProductsPage": {
     "breadcrumb": {

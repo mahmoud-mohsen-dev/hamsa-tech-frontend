@@ -52,7 +52,11 @@
   },
   "NavbarDrawer": {
     "logo_part_1": "Hamsa",
-    "logo_part_2": "Tech"
+    "logo_part_2": "Tech",
+    "wishlistLabel": "Wishlist",
+    "profileLabel": "Profile",
+    "signoutLabel": "Sign out",
+    "searchPlaceholder": "Search for products..."
   },
   "ProductsPage": {
     "breadcrumb": {

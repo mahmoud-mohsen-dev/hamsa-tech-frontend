@@ -1,6 +1,6 @@
 'use client';
 import MenuSidebar from '@/components/products/MenuSidebar';
-import { Link, useRouter } from '@/navigation';
+import { Link, usePathname, useRouter } from '@/navigation';
 import { NavbarLink } from '@/types/getIndexLayout';
 import { CategoryType } from '@/types/getNavbarProductsCategories';
 import {
@@ -12,7 +12,7 @@ import {
   MenuProps
 } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { TiShoppingCart } from 'react-icons/ti';
 import { HiOutlineHeart } from 'react-icons/hi';
 import { v4 } from 'uuid';
@@ -23,6 +23,8 @@ import ModalSearchInput from './ModalSearchInput';
 import SelectLanguage from './SelectLanguage';
 import ArrowDownAnimatedIcon from '../ArrowDownAnimatedIcon';
 import Image from 'next/image';
+import SearchInputField from './SearchInputField';
+import { useParams } from 'next/navigation';
 
 const { SubMenu } = Menu;
 
@@ -47,9 +49,13 @@ function NavDrawerScreenSmall({
     []
   ); // State for open keys
   const { userId } = useUser();
-  const { wishlistsData } = useMyContext();
+  // const { wishlistsData } = useMyContext();
+  const [isPending, startTransition] = useTransition();
+  const pathname = usePathname();
+  const params = useParams();
   const locale = useLocale();
   const t = useTranslations('NavbarDrawer');
+  const languageTranslation = useTranslations('LocaleSwitcher');
   console.log('drawer');
   console.log(navLinks);
 
@@ -62,11 +68,9 @@ function NavDrawerScreenSmall({
     ) ?
       navLinks
     : [];
-  //   const items = [];
-  //   console.log(items);
-  const onClick: MenuProps['onClick'] = (e) => {
-    // setCurrentActiveSubCategory([e.key ?? '']);
-  };
+  // const onClick: MenuProps['onClick'] = (e) => {
+  //   // setCurrentActiveSubCategory([e.key ?? '']);
+  // };
 
   // Handle open menu change to allow only one open submenu at a time
   const onOpenChange = (keys: string[]) => {
@@ -87,6 +91,7 @@ function NavDrawerScreenSmall({
     });
   };
 
+  const finalItems: CollapseProps['items'] = [];
   const collapseItems: CollapseProps['items'] =
     dataValues.map((item) => {
       return item.slug === 'products' ?
@@ -98,7 +103,7 @@ function NavDrawerScreenSmall({
                   onClose();
                   router.push(item?.slug ?? '/');
                 }}
-                className='text-black-light'
+                className='capitalize text-black-light'
               >
                 {item?.name ?? ''}
               </button>
@@ -125,13 +130,158 @@ function NavDrawerScreenSmall({
                   onClose();
                   router.push(item?.slug ?? '/');
                 }}
-                className='text-black'
+                className='capitalize text-black'
               >
                 {item?.name ?? ''}
               </button>
             )
           };
     }) ?? [];
+
+  finalItems.push(...collapseItems);
+
+  finalItems.push(
+    ...[
+      {
+        key: 'wishlist',
+        showArrow: false,
+        label: (
+          <button
+            onClick={() => {
+              onClose();
+              router.push('/wishlist');
+            }}
+            className='capitalize text-black-light'
+          >
+            {t('wishlistLabel')}
+          </button>
+        )
+      },
+
+      {
+        key: 'profile',
+        showArrow: false,
+        label: (
+          <button
+            onClick={() => {
+              onClose();
+              router.push(userId ? '/profile' : '/signin');
+            }}
+            className='capitalize text-black-light'
+          >
+            {t('profileLabel')}
+          </button>
+        )
+      }
+    ]
+  );
+  if (userId) {
+    collapseItems.push({
+      key: 'sign out',
+      showArrow: false,
+      label: (
+        <button
+          onClick={() => {
+            onClose();
+            router.push('/signin');
+          }}
+          className='text-black-light'
+        >
+          <div className='flex items-center gap-2 capitalize'>
+            <span>{t('signoutLabel')}</span>
+          </div>
+        </button>
+      )
+    });
+  }
+  finalItems.push(
+    ...[
+      {
+        key: 'language',
+        label: (
+          <p className='capitalize'>{languageTranslation('label')}</p>
+        ),
+        showArrow: false,
+        children: [
+          <button
+            disabled={isPending}
+            onClick={() => {
+              onClose();
+              startTransition(() => {
+                router.replace(
+                  // @ts-expect-error -- TypeScript will validate that only known `params`
+                  // are used in combination with a given `pathname`. Since the two will
+                  // always match for the current route, we can skip runtime checks.
+                  { pathname, params },
+                  { locale: 'en' }
+                );
+              });
+            }}
+            className='flex w-full items-center gap-[10px] px-6 py-3 text-black-light disabled:cursor-not-allowed'
+          >
+            <Image
+              src={'/languages/us.png'}
+              alt='USA Flag'
+              width={14}
+              height={14}
+              quality={100}
+            />
+            <span>
+              {languageTranslation('locale', {
+                locale: 'en'
+              })}
+            </span>
+          </button>,
+          <Divider
+            style={{
+              marginBlock: 0
+              // , backgroundColor: '#dedede'
+            }}
+          />,
+          <button
+            disabled={isPending}
+            onClick={() => {
+              onClose();
+              startTransition(() => {
+                router.replace(
+                  // @ts-expect-error -- TypeScript will validate that only known `params`
+                  // are used in combination with a given `pathname`. Since the two will
+                  // always match for the current route, we can skip runtime checks.
+                  { pathname, params },
+                  { locale: 'ar' }
+                );
+              });
+            }}
+            className='flex w-full items-center gap-[10px] px-6 py-3 text-black-light disabled:cursor-not-allowed'
+          >
+            <Image
+              src={'/languages/eg.png'}
+              alt='Egypt Flag'
+              width={14}
+              height={14}
+              quality={100}
+            />
+            <span>
+              {languageTranslation('locale', {
+                locale: 'ar'
+              })}
+            </span>
+          </button>
+        ],
+        extra: (
+          <ArrowDownAnimatedIcon
+            iconIsActive={'language' === openKeys[0]}
+            handleIconIsActive={() => handleiconIsActive('language')}
+          />
+        ),
+        styles: {
+          body: {
+            backgroundColor: 'white'
+          }
+        }
+      }
+    ]
+  );
 
   return (
     <Drawer
@@ -166,11 +316,25 @@ function NavDrawerScreenSmall({
       width={500}
       className={`reverse nav-drawer-screen-small`}
       placement={locale === 'ar' ? 'left' : 'right'}
+      styles={{
+        // header: { backgroundColor: 'white' },
+        // mask: { backgroundColor: 'transparent' },
+        body: {
+          paddingInline: 0,
+          paddingBlock: 0,
+          overflowY: 'auto',
+          flexBasis: 'calc(100vh - 90px)'
+        }
+      }}
+      // style={{ backgroundColor: 'transparent' }}
     >
-      <div className='min-h-[100vh-57px] overflow-y-auto'>
+      <div className=''>
         <div>
+          <div className='w-full bg-white px-4 py-3'>
+            <SearchInputField style={{ marginTop: 0 }} />
+          </div>
           <Collapse
-            items={collapseItems}
+            items={finalItems}
             // defaultActiveKey={['1']}
             activeKey={openKeys}
             onChange={onOpenChange}
@@ -179,48 +343,6 @@ function NavDrawerScreenSmall({
             //   style={{ padding: 0 }}
             //   itemsStyle={{ padding: 0 }}
           />
-        </div>
-        {/* <Divider /> */}
-        <div className='my-6 flex flex-col items-center gap-5'>
-          <Link
-            href='/wishlist'
-            className='wishlist relative text-black-light'
-          >
-            {wishlistsData.length > 0 && (
-              <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
-                <p className='text-[.5rem] leading-[1rem] text-white'>
-                  {wishlistsData.length}
-                </p>
-              </div>
-            )}
-            <div className='flex items-center gap-2'>
-              <span>Wishlist</span>
-              <HiOutlineHeart size={22} className='text-inherit' />
-            </div>
-          </Link>
-          <Link
-            href={userId ? '/profile' : '/signin'}
-            className='profile text-black-light'
-          >
-            <div className='flex items-center gap-2'>
-              <span>Profile</span>
-              <ProfileDropdownMenu />
-            </div>
-          </Link>
-
-          {/* <div className='h-[1px] w-full rounded-sm bg-[#eaeaea]'></div> */}
-        </div>
-        {/* <Divider /> */}
-        <div className='my-5 flex flex-col items-center gap-5'>
-          <ModalSearchInput styleColor='#333' />
-          <div>
-            <SelectLanguage
-              defaultValue={locale}
-              className='select-language-screen-small'
-              styleWidth={'100%'}
-              styleIconColor={{ color: '#333' }}
-            />
-          </div>
         </div>
       </div>
     </Drawer>

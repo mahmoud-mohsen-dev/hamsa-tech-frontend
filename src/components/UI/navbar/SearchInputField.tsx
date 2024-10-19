@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { AutoComplete, Input } from 'antd';
 import type { AutoCompleteProps } from 'antd';
 import { v4 } from 'uuid';
+import { useLocale, useTranslations } from 'next-intl';
 
 const getRandomInt = (max: number, min = 0) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -39,10 +40,14 @@ const searchResult = (query: string) =>
       };
     });
 
-const SearchInputField: React.FC = () => {
+const SearchInputField: React.FC<{ style?: React.CSSProperties }> = ({
+  style
+}) => {
   const [options, setOptions] = useState<
     AutoCompleteProps['options']
   >([]);
+  const locale = useLocale();
+  const t = useTranslations('NavbarDrawer');
 
   const handleSearch = (value: string) => {
     setOptions(value ? searchResult(value) : []);
@@ -51,19 +56,20 @@ const SearchInputField: React.FC = () => {
   const onSelect = (value: string) => {
     console.log('onSelect', value);
   };
+  const defaultStyles: React.CSSProperties = {
+    width: '100%',
+    height: 'fit-content',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    cursor: 'default'
+  };
 
   return (
     <AutoComplete
-      popupMatchSelectWidth={250}
-      style={{
-        width: '100%',
-        marginTop: 50,
-        height: 36,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column'
-      }}
+      // popupMatchSelectWidth={'100%'}
+      style={style ? { ...defaultStyles, ...style } : defaultStyles}
       options={options}
       onSelect={onSelect}
       onSearch={handleSearch}
@@ -71,9 +77,9 @@ const SearchInputField: React.FC = () => {
     >
       <Input.Search
         // size='large'
-        placeholder='Search'
+        placeholder={t('searchPlaceholder')}
         enterButton
-        className='search-input-navbar transition-all duration-300'
+        className={`search-input-navbar ${locale === 'ar' ? 'is-arabic' : ''} transition-all duration-300`}
       />
     </AutoComplete>
   );
