@@ -559,7 +559,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
           </Link>
 
           <Link
-            href={userId ? '/profile' : '/signin'}
+            href={userId ? '/account/settings' : '/signin'}
             className='profile ml-3 hidden text-white 2xl:ml-5 2xl:block'
           >
             <ProfileDropdownMenu />

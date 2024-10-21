@@ -55,6 +55,7 @@
     "logo_part_2": "تك",
     "wishlistLabel": "قائمة الأمنيات",
     "profileLabel": "الملف الشخصي",
+    "signinLabel": "تسجيل الدخول",
     "signoutlabel": "تسجيل خروج",
     "searchPlaceholder": "ابحث عن المنتجات..."
   },
@@ -193,8 +194,11 @@
       "countryValueOne": "مصر",
       "firstNameTitle": "الاسم الأول",
       "lastNameTitle": "الاسم الأخير",
-      "addressTitle": "العنوان",
-      "streetTitle": "شقة، طابق، جناح، إلخ. (اختياري)",
+      "streetTitle": "معلومات الشارع",
+      "additionalAddressTitle": "معلومات إضافية عن العنوان (اختياري)",
+      "buildingTitle": "المبنى",
+      "floorTitle": "الطابق",
+      "apartmentTitle": "الشقة",
       "cityTitle": "المدينة",
       "governorateTitle": "المحافظة",
       "postalCode": "الرمز البريدي (اختياري)",
@@ -233,9 +237,14 @@
         "inputFirstName": "يرجى إدخال اسمك الأول!",
         "inputLastName": "يرجى إدخال اسمك الأخير!",
         "inputAddress": "يرجى إدخال عنوانك!",
+        "inputBuilding": "يرجى إدخال رقم العمارة!",
+        "inputFloor": "يرجى إدخال رقم الطابق!",
+        "inputApartment": "يرجى إدخال رقم الشقة!",
         "inputCity": "يرجى إدخال مدينتك!",
         "selectGovernorate": "يرجى اختيار المحافظة!",
-        "couponCodeRequired": "يرجى إدخال رمز القسيمة!"
+        "couponCodeRequired": "يرجى إدخال رمز القسيمة!",
+        "apartmentNumberValidation": "يجب أن يكون رقم الشقة أكبر من صفر",
+        "postalCodeValidation": "يجب أن يكون الرمز البريدي مكونًا من 5 أرقام!"
       },
       "couponCode": {
         "couponNotValid": "القسيمة غير صالحة!",

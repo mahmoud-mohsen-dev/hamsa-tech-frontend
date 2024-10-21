@@ -55,6 +55,7 @@
     "logo_part_2": "Tech",
     "wishlistLabel": "Wishlist",
     "profileLabel": "Profile",
+    "signinLabel": "Sign in",
     "signoutLabel": "Sign out",
     "searchPlaceholder": "Search for products..."
   },
@@ -192,8 +193,11 @@
       "countryValueOne": "Egypt",
       "firstNameTitle": "First Name",
       "lastNameTitle": "Last Name",
-      "addressTitle": "Address",
-      "streetTitle": "Apartment, floor, suite, etc. (optional)",
+      "streetTitle": "Street Information",
+      "additionalAddressTitle": "Additional Address Info. (optional)",
+      "buildingTitle": "Building",
+      "floorTitle": "Floor",
+      "apartmentTitle": "Aparment",
       "cityTitle": "City",
       "governorateTitle": "Governorate",
       "postalCode": "postal code (optional)",
@@ -233,8 +237,13 @@
         "inputLastName": "Please input your last name!",
         "inputAddress": "Please input your address!",
         "inputCity": "Please input your city!",
+        "inputBuilding": "Please input your building number!",
+        "inputFloor": "Please input your floor number!",
+        "inputApartment": "Please input your apartment number!",
         "selectGovernorate": "Please select your governorate!",
-        "couponCodeRequired": "Please enter a copoun code!"
+        "couponCodeRequired": "Please enter a copoun code!",
+        "apartmentNumberValidation": "Apartment number must be greater than zero",
+        "postalCodeValidation": "Postal code must be a 5-digit number!"
       },
       "couponCode": {
         "couponNotValid": "Coupon not valid!",

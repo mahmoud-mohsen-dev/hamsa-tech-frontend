@@ -167,7 +167,7 @@ function LoginForm() {
         >
           <Input.Password placeholder={t('passwordPlaceholder')} />
         </Form.Item>
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-wrap items-center justify-between gap-2'>
           <Form.Item
             name='rememberMe'
             aria-describedby='remember'

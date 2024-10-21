@@ -53,10 +53,14 @@ const updateGuestUserQuery = (
 };
 
 const updateAddressQuery = ({
+  userId,
   shippingAddressId,
   city,
   address1,
   address2,
+  building,
+  floor,
+  apartment,
   zipCode,
   guestUserId,
   firstName,
@@ -64,11 +68,15 @@ const updateAddressQuery = ({
   deliveryPhone,
   shippingCostId
 }: {
+  userId: string | null;
   shippingAddressId: string;
   city: string;
   address1: string;
   address2?: string;
-  zipCode?: number;
+  building: string;
+  floor: string;
+  apartment: number;
+  zipCode?: string;
   guestUserId: string;
   firstName: string;
   lastName: string;
@@ -82,12 +90,16 @@ const updateAddressQuery = ({
             city: "${city}"
             address_1: "${address1}"
             address_2: "${address2 ?? ''}"
-            zip_code: ${zipCode ?? 0}
-            guest_user: ${guestUserId}
+            zip_code: ${Number(zipCode) ?? 0}
+            guest_user: ${guestUserId ? `"${guestUserId}"` : null}
             first_name: "${firstName}"
             last_name: "${lastName}"
             delivery_phone: "${deliveryPhone ?? ''}"
             shipping_cost: ${shippingCostId}
+            user: ${userId ? `"${userId}"` : null}
+            building: "${building}"
+            floor: "${floor}"
+            apartment: ${apartment}
         }
     ) {
         data {
@@ -194,6 +206,9 @@ const createOrderQuery = ({
                             address_1
                             zip_code
                             address_2
+                            building
+                            floor
+                            apartment
                             first_name
                             last_name
                             delivery_phone
@@ -230,7 +245,11 @@ interface CreateAddressProps {
   city: string;
   address1: string;
   address2: string;
-  zipCode: number;
+  building: string;
+  floor: string;
+  apartment: number;
+  zipCode?: string;
+  userId: string | null;
   guestUserId: string | null;
   firstName: string;
   lastName: string;
@@ -242,7 +261,11 @@ const getCreateShippingAddressQuery = ({
   city,
   address1,
   address2,
+  building,
+  floor,
+  apartment,
   zipCode,
+  userId,
   guestUserId,
   firstName,
   lastName,
@@ -255,7 +278,11 @@ const getCreateShippingAddressQuery = ({
             city: "${capitalize(city ?? '')}"
             address_1: "${capitalize(address1 ?? '')}"
             address_2: "${capitalize(address2 ?? '')}"
-            zip_code: ${zipCode ?? 0}
+            building: "${building}"
+            floor: "${floor}"
+            apartment: ${apartment}
+            zip_code: ${Number(zipCode) ?? 0}
+            user: ${userId ? `"${userId}"` : null}
             guest_user: ${guestUserId ? `"${guestUserId}"` : null}
             first_name: "${capitalize(firstName ?? '')}"
             last_name: "${capitalize(lastName ?? '')}"
@@ -276,7 +303,11 @@ const createBillingAddress = async ({
   city,
   address1,
   address2,
+  building,
+  floor,
+  apartment,
   zipCode,
+  userId,
   guestUserId,
   firstName,
   lastName,
@@ -290,7 +321,11 @@ const createBillingAddress = async ({
           city,
           address1,
           address2,
+          building,
+          floor,
+          apartment,
           zipCode,
+          userId,
           guestUserId,
           firstName,
           lastName,
@@ -320,23 +355,30 @@ interface OderFormValuesType {
   sendNewsLetter: boolean;
   shippingDetailsAddress: string;
   shippingDetailsAddress2?: string;
+  shippingDetailsBuilding: string;
+  shippingDetailsFloor: string;
+  shippingDetailsApartment: number;
   shippingDetailsCity: string;
   shippingDetailsCountry: string;
   shippingDetailsFirstName: string;
   shippingDetailsGovernorate: string;
   shippingDetailsLastName: string;
   shippingDetailsPhone?: string;
-  shippingDetailsPostalCode?: number;
+  shippingDetailsPostalCode?: string;
+
   // Optional billing details
   billingDetailsAddress?: string;
   billingDetailsAddress2?: string;
+  billingDetailsBuilding: string;
+  billingDetailsFloor: string;
+  billingDetailsApartment: number;
   billingDetailsCity?: string;
   billingDetailsCountry?: string;
   billingDetailsFirstName?: string;
   billingDetailsGovernorate?: string;
   billingDetailsLastName?: string;
   billingDetailsPhone?: string;
-  billingDetailsPostalCode?: number;
+  billingDetailsPostalCode?: string;
 }
 
 function OrderInfo({
@@ -388,6 +430,9 @@ function OrderInfo({
         shippingDetailsPhone,
         shippingDetailsAddress,
         shippingDetailsAddress2,
+        shippingDetailsBuilding,
+        shippingDetailsFloor,
+        shippingDetailsApartment,
         shippingDetailsGovernorate,
         shippingDetailsCity,
         shippingDetailsPostalCode
@@ -421,7 +466,11 @@ function OrderInfo({
             city: capitalize(shippingDetailsCity ?? ''),
             address1: capitalize(shippingDetailsAddress ?? ''),
             address2: capitalize(shippingDetailsAddress2 ?? ''),
+            building: shippingDetailsBuilding,
+            floor: shippingDetailsFloor,
+            apartment: shippingDetailsApartment,
             zipCode: shippingDetailsPostalCode,
+            userId: getIdFromToken(),
             guestUserId: getCookie('guestUserId') ?? '',
             firstName: capitalize(shippingDetailsFirstName ?? ''),
             lastName: capitalize(shippingDetailsLastName ?? ''),
@@ -447,8 +496,12 @@ function OrderInfo({
             address2: capitalize(
               formValues?.billingDetailsAddress2 ?? ''
             ),
+            building: formValues?.billingDetailsBuilding,
+            floor: formValues?.billingDetailsFloor,
+            apartment: formValues?.billingDetailsApartment,
             city: capitalize(formValues?.billingDetailsCity ?? ''),
-            zipCode: formValues?.billingDetailsPostalCode ?? 0,
+            zipCode: formValues?.billingDetailsPostalCode,
+            userId: getIdFromToken(),
             shippingCostId: shippingCostId,
             guestUserId: getCookie('guestUserId'),
             deliveryPhone: formValues?.billingDetailsPhone ?? ''

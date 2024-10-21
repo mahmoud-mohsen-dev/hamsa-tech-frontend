@@ -87,14 +87,87 @@ function AddressFormItems({
         ]}
         style={{ marginBottom: '20px' }}
       >
-        <Input type='text' placeholder={t('addressTitle')} />
+        <Input type='text' placeholder={t('streetTitle')} />
       </Form.Item>
       <Form.Item
         name={`${name}Address2`}
         style={{ marginBottom: '20px' }}
       >
-        <Input type='text' placeholder={t('streetTitle')} />
+        <Input
+          type='text'
+          placeholder={t('additionalAddressTitle')}
+        />
       </Form.Item>
+      <div className='flex w-full gap-4'>
+        <Form.Item
+          name={`${name}Building`}
+          rules={[
+            {
+              required: true,
+              message: t('formValidationErrorMessages.inputBuilding')
+            }
+          ]}
+          style={{ marginBottom: '20px' }}
+          className='basis-1/3'
+        >
+          <Input
+            type='text'
+            placeholder={t('buildingTitle')}
+            style={{ height: '45px' }}
+          />
+        </Form.Item>
+        <Form.Item
+          name={`${name}Floor`}
+          rules={[
+            {
+              required: true,
+              message: t('formValidationErrorMessages.inputFloor')
+            }
+          ]}
+          style={{ marginBottom: '20px' }}
+          className='basis-1/3'
+        >
+          <Input
+            type='text'
+            placeholder={t('floorTitle')}
+            style={{ height: '45px' }}
+          />
+        </Form.Item>
+        <Form.Item
+          name={`${name}Apartment`}
+          rules={[
+            {
+              required: true,
+              message: t('formValidationErrorMessages.inputApartment')
+            },
+            {
+              validator: (_, value) => {
+                if (value && value > 0) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error(
+                    t(
+                      'formValidationErrorMessages.apartmentNumberValidation'
+                    )
+                  )
+                );
+              }
+            }
+          ]}
+          style={{ marginBottom: '20px' }}
+          className='basis-1/3'
+        >
+          <Input
+            type='number'
+            placeholder={t('apartmentTitle')}
+            style={{ height: '45px' }}
+            // min={0}
+          />
+        </Form.Item>
+      </div>
+
+      {/*  */}
       <div className='flex w-full gap-4'>
         <Form.Item
           name={`${name}City`}
@@ -145,9 +218,17 @@ function AddressFormItems({
           name={`${name}PostalCode`}
           style={{ marginBottom: '20px' }}
           className='basis-1/3'
+          rules={[
+            {
+              pattern: /^[0-9]{5}$/, // The pattern for postal code format (e.g., 5 digits)
+              message: t(
+                'formValidationErrorMessages.postalCodeValidation'
+              )
+            }
+          ]}
         >
           <Input
-            type='number'
+            type='text'
             placeholder={t('postalCode')}
             style={{ height: '45px' }}
           />

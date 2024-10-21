@@ -19,7 +19,7 @@ interface LoggedInProps {
 }
 interface LoggedOutProps {
   account: string;
-  profile: string;
+  // profile: string;
   signIn: string;
 }
 
@@ -47,7 +47,10 @@ const itemsWhenLoggedIn: ({
     {
       key: '2',
       label: (
-        <Link href='/profile' className='flex items-center gap-3'>
+        <Link
+          href='/account/settings'
+          className='flex items-center gap-3'
+        >
           <CgProfile size={14} />
           <span>{profile}</span>
         </Link>
@@ -70,11 +73,11 @@ const itemsWhenLoggedIn: ({
 
 const itemsWhenLoggedOut: ({
   account,
-  profile,
+  // profile,
   signIn
 }: LoggedOutProps) => MenuProps['items'] = ({
   account,
-  profile,
+  // profile,
   signIn
 }) => {
   return [
@@ -89,15 +92,6 @@ const itemsWhenLoggedOut: ({
     },
     {
       key: '2',
-      label: (
-        <Link href='/profile' className='flex items-center gap-3'>
-          <CgProfile size={14} />
-          <span>{profile}</span>
-        </Link>
-      )
-    },
-    {
-      key: '4',
       label: (
         <Link
           href='/signin'
@@ -118,7 +112,7 @@ const ProfileDropdownMenu: React.FC = () => {
   const [items, setItems] = React.useState<MenuProps['items']>(
     itemsWhenLoggedOut({
       account: t('accountLabel'),
-      profile: t('profileLabel'),
+      // profile: t('profileLabel'),
       signIn: t('signinLabel')
     })
   );
@@ -144,7 +138,7 @@ const ProfileDropdownMenu: React.FC = () => {
       setItems(
         itemsWhenLoggedOut({
           account: t('accountLabel'),
-          profile: t('profileLabel'),
+          // profile: t('profileLabel'),
           signIn: t('signinLabel')
         })
       );

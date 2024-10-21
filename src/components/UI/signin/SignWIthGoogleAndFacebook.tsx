@@ -8,7 +8,7 @@ async function SignWIthGoogleAndFacebook() {
   const t = await getTranslations('SigninPage.content');
   return (
     <>
-      <div className='flex items-center gap-3 font-inter text-xs'>
+      <div className='flex flex-col items-center gap-3 font-inter text-xs sm:flex-row'>
         <LinkLogin
           href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/connect/google`}
         >

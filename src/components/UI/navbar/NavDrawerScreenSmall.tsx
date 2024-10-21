@@ -25,6 +25,7 @@ import ArrowDownAnimatedIcon from '../ArrowDownAnimatedIcon';
 import Image from 'next/image';
 import SearchInputField from './SearchInputField';
 import { useParams } from 'next/navigation';
+import { removeCookie } from '@/utils/cookieUtils';
 
 const { SubMenu } = Menu;
 
@@ -51,6 +52,7 @@ function NavDrawerScreenSmall({
     'wishlist',
     'account',
     'signin'
+    // 'signout'
   ];
   const pathname = usePathname();
 
@@ -64,8 +66,8 @@ function NavDrawerScreenSmall({
       ) ?? ''
     ]
   ); // State for open keys
-  const { userId } = useUser();
-  // const { wishlistsData } = useMyContext();
+  const { userId, setUserId } = useUser();
+  // const {  } = useMyContext();
   const [isPending, startTransition] = useTransition();
   const params = useParams();
   const locale = useLocale();
@@ -125,7 +127,7 @@ function NavDrawerScreenSmall({
               <button
                 onClick={() => {
                   onClose();
-                  router.push(item?.slug ?? '/');
+                  router.push(item?.slug ? `/${item.slug}` : '/');
                 }}
                 className='w-[50%] px-4 py-3 text-start capitalize text-black-light'
               >
@@ -146,13 +148,13 @@ function NavDrawerScreenSmall({
             )
           }
         : {
-            key: item?.slug,
+            key: item?.slug.split('/')[0] ?? item.slug,
             showArrow: false,
             label: (
               <button
                 onClick={() => {
                   onClose();
-                  router.push(item?.slug ?? '/');
+                  router.push(item?.slug ? `/${item.slug}` : '/');
                 }}
                 className='w-full px-4 py-3 text-start capitalize text-black'
               >
@@ -180,8 +182,12 @@ function NavDrawerScreenSmall({
             {t('wishlistLabel')}
           </button>
         )
-      },
+      }
+    ]
+  );
 
+  if (userId) {
+    finalItems.push(
       {
         key: 'account',
         showArrow: false,
@@ -189,19 +195,37 @@ function NavDrawerScreenSmall({
           <button
             onClick={() => {
               onClose();
-              router.push(userId ? '/account/settings' : '/signin');
+              router.push('/account/settings');
             }}
             className='w-full px-4 py-3 text-start capitalize text-black-light'
           >
             {t('profileLabel')}
           </button>
         )
+      },
+      {
+        key: 'signout',
+        showArrow: false,
+        label: (
+          <button
+            onClick={() => {
+              onClose();
+              removeCookie('token');
+              setUserId(null);
+              router.push('/signin');
+            }}
+            className='w-full text-start text-black-light'
+          >
+            <div className='flex items-center gap-2 px-4 py-3 capitalize'>
+              <span>{t('signoutLabel')}</span>
+            </div>
+          </button>
+        )
       }
-    ]
-  );
-  if (userId) {
-    collapseItems.push({
-      key: 'sign out',
+    );
+  } else {
+    finalItems.push({
+      key: 'signin',
       showArrow: false,
       label: (
         <button
@@ -209,15 +233,17 @@ function NavDrawerScreenSmall({
             onClose();
             router.push('/signin');
           }}
-          className='w-full text-start text-black-light'
+          className='w-full px-4 py-3 text-start capitalize text-black-light'
         >
-          <div className='flex items-center gap-2 px-4 py-3 capitalize'>
-            <span>{t('signoutLabel')}</span>
-          </div>
+          {t('signinLabel')}
         </button>
       )
     });
+
+    // console.log(collapseItems);
   }
+  // console.log(finalItems);
+
   finalItems.push(
     ...[
       {
@@ -311,6 +337,7 @@ function NavDrawerScreenSmall({
       }
     ]
   );
+  // console.log(finalItems);
 
   return (
     <Drawer

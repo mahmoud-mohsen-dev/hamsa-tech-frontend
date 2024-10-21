@@ -19,7 +19,7 @@ export default function Error({ error, reset = () => {} }: Props) {
   }, [error]);
 
   return (
-    <section className='grid place-content-center py-12 md:min-h-[calc(100vh-160px)]'>
+    <section className='grid min-h-[calc(100vh-48px)] place-content-center py-12 md:min-h-[calc(100vh-64px)]'>
       <div className='mx-auto max-w-screen-xl px-4 lg:px-6'>
         <div className='mx-auto max-w-screen-sm text-center'>
           <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-blue-sky-medium lg:text-9xl'>

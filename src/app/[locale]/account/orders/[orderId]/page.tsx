@@ -144,6 +144,9 @@ const getOrderQuery = (orderId: string) => {
                             city
                             address_1
                             address_2
+                            building
+                            floor
+                            apartment
                             zip_code
                             first_name
                             last_name
@@ -272,6 +275,17 @@ async function InvoicePage({
               `${capitalize(shippingAddress?.address_1)}`}
             {shippingAddress?.address_2 &&
               ` - ${capitalize(shippingAddress?.address_2)}`}
+            <br />
+            {shippingAddress?.building &&
+              `Building: ${shippingAddress.building}`}
+            {shippingAddress?.floor &&
+              ` - Floor: ${shippingAddress.floor}`}
+            {(
+              shippingAddress?.apartment &&
+              shippingAddress?.apartment > 0
+            ) ?
+              ` - Apartment: ${shippingAddress?.apartment}`
+            : ''}
             <br />
             {shippingAddress?.city &&
               `${capitalize(shippingAddress.city)}`}

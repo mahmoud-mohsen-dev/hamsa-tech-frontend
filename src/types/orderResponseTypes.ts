@@ -3,6 +3,9 @@ type ShippingAddressType = {
   city: string;
   address_1: string;
   address_2: string;
+  building:string;
+  floor:string;
+  apartment: number;
   zip_code: number;
   first_name: string;
   last_name: string;
@@ -105,6 +108,9 @@ export type OrderInfoType = {
           address_1: string;
           zip_code: number;
           address_2: string;
+          building: string;
+          floor: string;
+          apartment: number;
           first_name: string;
           last_name: string;
           delivery_phone: string;

@@ -158,7 +158,7 @@ export default async function BlogPage({
         <h1 className='text-4xl font-bold'>{t('title')}</h1>
         <p className='mt-2'>{t('subtitle')}</p>
       </div>
-      <div className='mt-10 grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8'>
+      <div className='mt-10 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8'>
         {blogs.map((blog) => (
           <ArticleCard
             key={blog.id}

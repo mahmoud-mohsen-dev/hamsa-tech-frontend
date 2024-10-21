@@ -220,7 +220,13 @@ export function InvoiceDocument({
                 billTo?.address_1 ? `${billTo?.address_1}` : ''
               } ${billTo?.address_2 ? ` - ${billTo?.address_2}` : ''}`}
             </Text>
-
+            <Text style={styles.billToAddress}>
+              {`${billTo?.building ? `Building: ${billTo.building}` : ''} ${billTo?.floor ? ` - Floor: ${billTo?.floor}` : ''} ${
+                billTo?.apartment ?
+                  ` - Apartment: ${billTo?.apartment}`
+                : ''
+              }`}
+            </Text>
             <Text style={styles.billToAddress}>
               {`${billTo?.city ? `${billTo.city}` : ''} ${billTo?.shipping_cost?.data?.attributes?.governorate ? ` - ${billTo?.shipping_cost?.data?.attributes?.governorate}` : ''} ${
                 billTo?.zip_code ? ` - ${billTo?.zip_code}` : ''

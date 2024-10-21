@@ -6,10 +6,10 @@ import {
   OrderDataType,
   PaginationMeta
 } from '@/types/orderResponseTypes';
-import { getIdFromToken } from '@/utils/cookieUtils';
+import { getIdFromToken, removeCookie } from '@/utils/cookieUtils';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import { Divider, Table } from 'antd';
+import { Button, Divider, Table } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { capitalize } from '@/utils/helpers';
@@ -19,6 +19,8 @@ import { GoGear } from 'react-icons/go';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { LuLogOut } from 'react-icons/lu';
 import { GrMapLocation } from 'react-icons/gr';
+import { useUser } from '@/context/UserContext';
+import SubNavLink from '@/components/account/SubNavLink';
 // import { unstable_setRequestLocale } from 'next-intl/server';
 
 type DataSource = {
@@ -39,6 +41,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       pagination: PaginationMeta;
     };
   } | null>(null);
+  const { setUserId } = useUser();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -178,43 +181,38 @@ function OrdersPage({ params }: { params: { locale: string } }) {
 
   return (
     <div className='grid min-h-full justify-center lg:grid-cols-[1fr_3fr] 2xl:px-20'>
-      <ul className='mx-auto flex h-fit w-[75%] flex-col justify-center'>
-        <li className='border-b border-solid border-gray-light'>
-          <Link
-            href={'/account/orders'}
-            className='flex flex-wrap items-center gap-4 bg-black-light px-4 py-2 text-white'
-          >
+      <ul className='mx-auto flex h-fit w-[75%] flex-col justify-center gap-3'>
+        <li>
+          <SubNavLink href={'/account/orders'} page='orders'>
             <RiShoppingBag3Fill />
             <span>Your Orders</span>
-          </Link>
+          </SubNavLink>
         </li>
         <li>
-          <Link
-            href={'/account/address'}
-            className='flex flex-wrap items-center gap-4 px-4 py-2 text-black-light'
-          >
+          <SubNavLink href={'/account/addresses'} page='addresses'>
             <GrMapLocation />
-            <span>Address</span>
-          </Link>
+            <span>Addresses</span>
+          </SubNavLink>
         </li>
         <li>
-          <Link
-            href={'/account/settings'}
-            className='flex flex-wrap items-center gap-4 px-4 py-2 text-black-light'
-          >
+          <SubNavLink href={'/account/settings'} page='settings'>
             <GoGear />
             <span>Settings</span>
-          </Link>
+          </SubNavLink>
         </li>
         <Divider style={{ marginBlock: '10px' }} />
         <li>
-          <Link
-            href={'/signin'}
-            className='flex flex-wrap items-center gap-4 px-4 py-2 text-black-light'
+          <button
+            onClick={() => {
+              router.push('/signin');
+              removeCookie('token');
+              setUserId(null);
+            }}
+            className='flex w-full flex-wrap items-center gap-4 px-4 py-2 text-black-light transition-colors duration-100 hover:bg-gray-ultralight'
           >
             <LuLogOut />
             <span>Log out</span>
-          </Link>
+          </button>
         </li>
       </ul>
       <Table
