@@ -3,7 +3,7 @@ import {
   unstable_setRequestLocale
 } from 'next-intl/server';
 
-// export const revalidate = 120; // invalidate every 60 seconds
+export const revalidate = 120; // invalidate every 60 seconds
 
 type PropsType = {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ export async function generateMetadata({
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'BlogPage.metaData'
+    namespace: 'AboutUsPage.metaData'
   });
 
   return {
@@ -26,7 +26,7 @@ export async function generateMetadata({
 
 function InvoiceLayout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  return <div className='container py-12'>{children}</div>;
+  return <div className='container pb-16 pt-12'>{children}</div>;
 }
 
 export default InvoiceLayout;

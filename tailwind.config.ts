@@ -38,7 +38,9 @@ const config: Config = {
         'gradient-radial':
           'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'mini-map-overlay':
+          'linear-gradient(transparent,transparent 20%,rgba(0,0,0,0.1) 40%,rgba(0,0,0,0.4) 60%,rgba(0,0,0,0.6) 80%,rgba(0,0,0,0.6))'
       },
       colors: {
         //======= Shades Of Blue ========
