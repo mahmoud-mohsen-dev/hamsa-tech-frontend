@@ -1,8 +1,5 @@
-// import { pdf } from '@react-pdf/renderer';
 // Your PDF Component
 import type { OrderInfoType } from '@/types/orderResponseTypes';
-import { getCookie } from '@/utils/cookieUtils';
-import { createElement } from 'react';
 
 const generatePdfBlob = async (orderData: OrderInfoType) => {
   const { pdf } = await import('@react-pdf/renderer');
@@ -28,8 +25,6 @@ export const uploadInvoicePdf = async (orderData: OrderInfoType) => {
   formData.append('ref', 'api::order.order');
   formData.append('refId', orderData?.id ?? '');
   formData.append('field', 'invoice');
-
-
 
   try {
     const response = await fetch(
