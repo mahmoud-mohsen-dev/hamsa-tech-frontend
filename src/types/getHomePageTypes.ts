@@ -103,9 +103,10 @@ export type AboutUsSectionType = {
 
 // Featured blogs section type
 export type FeaturedBlogsSectionType = {
-  section_name: string;
+  // section_name: string;
   heading_in_black: string;
   heading_in_red: string;
+  slug: string;
   blogs: {
     data: {
       id: string;

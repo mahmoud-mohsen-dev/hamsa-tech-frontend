@@ -164,7 +164,7 @@ function Articles({ data }: PropsType) {
           data-aos-once='true'
         >
           <Link
-            href='/'
+            href={data?.slug ?? '/'}
             className='mx-auto mt-8 flex w-fit items-center gap-3 text-base font-medium text-blue-gray-light transition-colors duration-300 hover:text-yellow-medium'
           >
             <span>{t('allPostsButton')}</span>

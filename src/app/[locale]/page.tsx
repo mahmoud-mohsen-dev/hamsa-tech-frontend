@@ -113,9 +113,9 @@ const getQueryHomePage = (locale: string) => `{
           }
         }
         featured_blogs {
-          section_name
           heading_in_black
           heading_in_red
+          slug
           blogs {
             data {
                 id
