@@ -31,6 +31,7 @@ export type ProductType = {
     price: number;
     sale_price: number;
     final_product_price: number;
+    description: string;
     stock: number;
     sub_category: SubCategory;
     brand: BrandType;

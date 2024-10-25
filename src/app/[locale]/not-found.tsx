@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 // import PageLayout from '@/components-old/PageLayout';
 import { Link } from '@/navigation';
+import useAddColoredNavClass from '@/hooks/useAddColoredNavClass';
 
 // Note that `app/[locale]/[...rest]/page.tsx`
 // is necessary for this page to render.
@@ -9,7 +10,7 @@ export default function NotFoundPage() {
   const t = useTranslations('NotFoundPage');
 
   return (
-    <section className='grid min-h-[calc(100vh-48px)] place-content-center bg-white md:min-h-[calc(100vh-64px)]'>
+    <section className='not-found grid min-h-[calc(100vh-48px)] place-content-center bg-white md:min-h-[calc(100vh-64px)]'>
       <div className='mx-auto max-w-screen-xl px-4 lg:px-6'>
         <div className='mx-auto max-w-screen-sm text-center'>
           <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-blue-sky-medium lg:text-9xl'>

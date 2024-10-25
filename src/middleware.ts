@@ -80,6 +80,13 @@ async function orderPageHandler(
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  console.log(pathname);
+
+  // Exclude API routes from being handled by next-intl middleware
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   // Regex pattern to match paths like /ar/orders/[orderId] or /en/orders/[orderId]
   const regexPattern = /^\/(ar|en)\/orders\/\d+/;
 
@@ -104,12 +111,10 @@ export const config = {
     // Enable a redirect to a matching locale at the root
     '/',
 
-    // Set a cookie to remember the previous locale for
-    // all requests that have a locale prefix
+    // Match all locale-prefixed paths
     '/(ar|en)/:path*',
 
-    // Enable redirects that add missing locales
-    // (e.g. `/pathnames` -> `/en/pathnames`)
-    '/((?!_next|_vercel|.*\\..*).*)'
+    // Exclude _next, _vercel, API, and static files
+    '/((?!_next|_vercel|.*\\..*|api).*)'
   ]
 };

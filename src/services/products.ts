@@ -12,6 +12,7 @@ export const getProductsQuery = (queryArgs: string) => {
                   price
                   sale_price
                   final_product_price
+                  description
                   stock
                   sub_category {
                       data {

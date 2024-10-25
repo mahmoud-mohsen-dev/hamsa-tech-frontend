@@ -3,8 +3,8 @@ type ShippingAddressType = {
   city: string;
   address_1: string;
   address_2: string;
-  building:string;
-  floor:string;
+  building: string;
+  floor: string;
   apartment: number;
   zip_code: number;
   first_name: string;
@@ -124,6 +124,29 @@ export type OrderInfoType = {
         };
       } | null;
     } | null;
+    billing_address: {
+      data: {
+        attributes: {
+          city: string;
+          address_1: string;
+          zip_code: number;
+          address_2: string;
+          building: string;
+          floor: string;
+          apartment: number;
+          first_name: string;
+          last_name: string;
+          delivery_phone: string;
+          shipping_cost: {
+            data: {
+              attributes: {
+                governorate: string;
+              };
+            };
+          };
+        };
+      } | null;
+    } | null;
     cart: {
       product: {
         data: {
@@ -131,6 +154,7 @@ export type OrderInfoType = {
           attributes: {
             name: string;
             final_product_price: number;
+            description: string;
           };
         };
       };

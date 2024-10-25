@@ -29,6 +29,11 @@ import { CartDataType } from '@/types/cartResponseTypes';
 import { uploadInvoicePdf } from '@/services/invoicesPDFHandlers';
 import { capitalize } from '@/utils/helpers';
 import { useRouter } from '@/navigation';
+import {
+  CustomerPaymentDetailsType,
+  PaymentDataType,
+  PaymentRequest
+} from '@/types/paymentResonseType';
 
 const updateGuestUserQuery = (
   guestUserId: string,
@@ -52,62 +57,62 @@ const updateGuestUserQuery = (
   }`;
 };
 
-const updateAddressQuery = ({
-  userId,
-  shippingAddressId,
-  city,
-  address1,
-  address2,
-  building,
-  floor,
-  apartment,
-  zipCode,
-  guestUserId,
-  firstName,
-  lastName,
-  deliveryPhone,
-  shippingCostId
-}: {
-  userId: string | null;
-  shippingAddressId: string;
-  city: string;
-  address1: string;
-  address2?: string;
-  building: string;
-  floor: string;
-  apartment: number;
-  zipCode?: string;
-  guestUserId: string;
-  firstName: string;
-  lastName: string;
-  deliveryPhone?: string;
-  shippingCostId: string;
-}) => {
-  return `mutation UpdateAddress {
-    updateAddress(
-        id: "${shippingAddressId}"
-        data: {
-            city: "${city}"
-            address_1: "${address1}"
-            address_2: "${address2 ?? ''}"
-            zip_code: ${Number(zipCode) ?? 0}
-            guest_user: ${guestUserId ? `"${guestUserId}"` : null}
-            first_name: "${firstName}"
-            last_name: "${lastName}"
-            delivery_phone: "${deliveryPhone ?? ''}"
-            shipping_cost: ${shippingCostId}
-            user: ${userId ? `"${userId}"` : null}
-            building: "${building}"
-            floor: "${floor}"
-            apartment: ${apartment}
-        }
-    ) {
-        data {
-            id
-        }
-    }
-  }`;
-};
+// const createAddressQuery = ({
+//   userId,
+//   // shippingAddressId,
+//   city,
+//   address1,
+//   address2,
+//   building,
+//   floor,
+//   apartment,
+//   zipCode,
+//   guestUserId,
+//   firstName,
+//   lastName,
+//   deliveryPhone,
+//   shippingCostId
+// }: {
+//   userId: string | null;
+//   // shippingAddressId: string;
+//   city: string;
+//   address1: string;
+//   address2?: string;
+//   building: string;
+//   floor: string;
+//   apartment: string;
+//   zipCode?: string;
+//   guestUserId: string;
+//   firstName: string;
+//   lastName: string;
+//   deliveryPhone?: string;
+//   shippingCostId: string;
+// }) => {
+//   return `mutation CreateAddress {
+//     createAddress(
+//         data: {
+//             city: "${city}"
+//             address_1: "${address1}"
+//             address_2: "${address2 ?? ''}"
+//             zip_code: ${!isNaN(Number(zipCode)) ? Number(zipCode) : 0}
+//             apartment: ${!isNaN(Number(apartment)) ? Number(apartment) : 0}
+//             guest_user: ${guestUserId ? `"${guestUserId}"` : null}
+//             first_name: "${firstName}"
+//             last_name: "${lastName}"
+//             delivery_phone: "${deliveryPhone ?? ''}"
+//             shipping_cost: ${shippingCostId}
+//             user: ${userId ? `"${userId}"` : null}
+//             building: "${building}"
+//             floor: "${floor}"
+//             publishedAt: "${new Date().toISOString()}"
+//         }
+//     ) {
+//         data {
+//             id
+//         }
+//     }
+//   }`;
+// };
 
 const createOrderQuery = ({
   cart,
@@ -150,7 +155,8 @@ const createOrderQuery = ({
         return `{
           quantity: ${cartItem.quantity},
           total_cost: ${cartItem.total_cost},
-          product: ${cartItem.product.data.id}
+          product: ${cartItem.product.data.id},
+          description: "${cartItem?.product?.data?.attributes?.description ?? ''}"
         }`;
       }
       return false;
@@ -222,12 +228,36 @@ const createOrderQuery = ({
                         }
                     }
                 }
+                billing_address {
+                    data {
+                        attributes {
+                            city
+                            address_1
+                            zip_code
+                            address_2
+                            building
+                            floor
+                            apartment
+                            first_name
+                            last_name
+                            delivery_phone
+                            shipping_cost {
+                              data {
+                                  attributes {
+                                      governorate
+                                  }
+                              }
+                            }
+                        }
+                    }
+                }
                 cart {
                     product {
                         data {
                             id
                             attributes {
                                 name
+                                description
                                 final_product_price
                             }
                         }
@@ -247,7 +277,7 @@ interface CreateAddressProps {
   address2: string;
   building: string;
   floor: string;
-  apartment: number;
+  apartment: string;
   zipCode?: string;
   userId: string | null;
   guestUserId: string | null;
@@ -280,8 +310,8 @@ const getCreateShippingAddressQuery = ({
             address_2: "${capitalize(address2 ?? '')}"
             building: "${building}"
             floor: "${floor}"
-            apartment: ${apartment}
-            zip_code: ${Number(zipCode) ?? 0}
+            apartment: ${!isNaN(Number(apartment)) ? Number(apartment) : 0}
+            zip_code: ${!isNaN(Number(zipCode)) ? Number(zipCode) : 0}
             user: ${userId ? `"${userId}"` : null}
             guest_user: ${guestUserId ? `"${guestUserId}"` : null}
             first_name: "${capitalize(firstName ?? '')}"
@@ -299,7 +329,7 @@ const getCreateShippingAddressQuery = ({
   }`;
 };
 
-const createBillingAddress = async ({
+const createAddress = async ({
   city,
   address1,
   address2,
@@ -357,7 +387,7 @@ interface OderFormValuesType {
   shippingDetailsAddress2?: string;
   shippingDetailsBuilding: string;
   shippingDetailsFloor: string;
-  shippingDetailsApartment: number;
+  shippingDetailsApartment: string;
   shippingDetailsCity: string;
   shippingDetailsCountry: string;
   shippingDetailsFirstName: string;
@@ -371,7 +401,7 @@ interface OderFormValuesType {
   billingDetailsAddress2?: string;
   billingDetailsBuilding: string;
   billingDetailsFloor: string;
-  billingDetailsApartment: number;
+  billingDetailsApartment: string;
   billingDetailsCity?: string;
   billingDetailsCountry?: string;
   billingDetailsFirstName?: string;
@@ -408,6 +438,76 @@ function OrderInfo({
   const t = useTranslations('CheckoutPage.content');
   // const [loading, setLoading] = useState(false);
 
+  const handlePayment = async ({
+    emailOrPhone,
+    shippingAddressData,
+    billingAddressData,
+    total_order_cost,
+    items,
+    order_id
+  }: PaymentDataType) => {
+    // setLoadingMessage(true);
+
+    // const customerDetails = {
+    //   first_name: 'John',
+    //   last_name: 'Doe',
+    //   phone_number: '+201234567890',
+    //   email: 'johndoe@example.com',
+    //   city: 'Cairo',
+    //   country: 'EG',
+    //   street: '123 Nile Street',
+    //   building: '12',
+    //   floor: '5',
+    //   apartment: '20'
+    // };
+    if (
+      !emailOrPhone ||
+      shippingAddressData === null ||
+      billingAddressData === null ||
+      total_order_cost === null ||
+      items === null ||
+      order_id === null
+    ) {
+      console.error('Invalid order details', {
+        emailOrPhone,
+        shippingAddressData,
+        billingAddressData,
+        total_order_cost,
+        items,
+        order_id
+      });
+      setErrorMessage('Invalid order details');
+    }
+
+    const response = await fetch('/api/paymob', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        emailOrPhone,
+        shippingAddressData,
+        billingAddressData,
+        total_order_cost,
+        items,
+        order_id
+      })
+    });
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    // setLoadingMessage(false);
+
+    if (data.success) {
+      // Redirect user to Paymob payment URL
+      // window.location.href = data.paymentUrl;
+      window.location.replace(data.paymentUrl);
+    } else {
+      console.error('Payment gateway failed', data.error);
+      setErrorMessage('Payment gateway failed');
+    }
+  };
+
   useEffect(() => {
     if (
       typeof freeShippingData === 'object' &&
@@ -417,6 +517,7 @@ function OrderInfo({
       setFreeShippingAt(freeShippingData);
     }
   }, [freeShippingData]);
+
   // Function to handle form submission
   const onFinish = async (formValues: OderFormValuesType) => {
     try {
@@ -459,64 +560,78 @@ function OrderInfo({
         )?.id ?? '';
 
       // Get address information
-      const { data: addressData, error: addressError } =
-        (await fetchGraphqlClient(
-          updateAddressQuery({
-            shippingAddressId: getCookie('shippingAddressId') ?? '',
-            city: capitalize(shippingDetailsCity ?? ''),
-            address1: capitalize(shippingDetailsAddress ?? ''),
-            address2: capitalize(shippingDetailsAddress2 ?? ''),
-            building: shippingDetailsBuilding,
-            floor: shippingDetailsFloor,
-            apartment: shippingDetailsApartment,
-            zipCode: shippingDetailsPostalCode,
-            userId: getIdFromToken(),
-            guestUserId: getCookie('guestUserId') ?? '',
-            firstName: capitalize(shippingDetailsFirstName ?? ''),
-            lastName: capitalize(shippingDetailsLastName ?? ''),
-            deliveryPhone: shippingDetailsPhone,
-            shippingCostId: shippingCostId
-          })
-        )) as updateAddressResponseType;
+      const {
+        addressData: deliveryAddressId,
+        addressError: deliveryAddressError
+      } = await createAddress({
+        firstName: capitalize(shippingDetailsFirstName ?? ''),
+        lastName: capitalize(shippingDetailsLastName ?? ''),
+        address1: capitalize(shippingDetailsAddress ?? ''),
+        address2: capitalize(shippingDetailsAddress2 ?? ''),
+        building: shippingDetailsBuilding,
+        floor: shippingDetailsFloor,
+        apartment: shippingDetailsApartment,
+        city: capitalize(shippingDetailsCity ?? ''),
+        shippingCostId: shippingCostId,
+        zipCode: shippingDetailsPostalCode,
+        deliveryPhone: shippingDetailsPhone ?? '',
+        userId: getIdFromToken(),
+        guestUserId: getCookie('guestUserId')
+      });
 
-      let billingAddressId =
-        addressData?.updateAddress?.data?.id ?? null;
+      if (deliveryAddressError || !deliveryAddressId) {
+        console.error('Failed to create delivery address data');
+        console.error(deliveryAddressError);
+        console.error(deliveryAddressId);
+        setLoadingMessage(false);
+        setErrorMessage(t('form.orderCreationError'));
+        return;
+      }
+
+      console.warn('deliveryAddressId', deliveryAddressId);
+      console.warn('deliveryAddressError', deliveryAddressError);
+
+      let billingAddressId = deliveryAddressId ?? null;
       if (formValues?.billingMethod === 'different') {
-        const { addressData, addressError } =
-          await createBillingAddress({
-            firstName: capitalize(
-              formValues?.billingDetailsFirstName ?? ''
-            ),
-            lastName: capitalize(
-              formValues?.billingDetailsLastName ?? ''
-            ),
-            address1: capitalize(
-              formValues?.billingDetailsAddress ?? ''
-            ),
-            address2: capitalize(
-              formValues?.billingDetailsAddress2 ?? ''
-            ),
-            building: formValues?.billingDetailsBuilding,
-            floor: formValues?.billingDetailsFloor,
-            apartment: formValues?.billingDetailsApartment,
-            city: capitalize(formValues?.billingDetailsCity ?? ''),
-            zipCode: formValues?.billingDetailsPostalCode,
-            userId: getIdFromToken(),
-            shippingCostId: shippingCostId,
-            guestUserId: getCookie('guestUserId'),
-            deliveryPhone: formValues?.billingDetailsPhone ?? ''
-          });
-        if (addressError || !addressData) {
+        const {
+          addressData: billingAddressResponseId,
+          addressError: billingAddressError
+        } = await createAddress({
+          firstName: capitalize(
+            formValues?.billingDetailsFirstName ?? ''
+          ),
+          lastName: capitalize(
+            formValues?.billingDetailsLastName ?? ''
+          ),
+          address1: capitalize(
+            formValues?.billingDetailsAddress ?? ''
+          ),
+          address2: capitalize(
+            formValues?.billingDetailsAddress2 ?? ''
+          ),
+          building: formValues?.billingDetailsBuilding ?? '',
+          floor: formValues?.billingDetailsFloor ?? '',
+          apartment: formValues?.billingDetailsApartment ?? '0',
+          city: capitalize(formValues?.billingDetailsCity ?? ''),
+          shippingCostId: shippingCostId,
+          zipCode: formValues?.billingDetailsPostalCode ?? '',
+          deliveryPhone: formValues?.billingDetailsPhone ?? '',
+          userId: getIdFromToken(),
+          guestUserId: getCookie('guestUserId')
+        });
+
+        if (billingAddressError || !billingAddressResponseId) {
           console.error(
             'Failed to create billing address',
-            addressError
+            billingAddressError
           );
+          console.error(billingAddressResponseId);
           setLoadingMessage(false);
           setErrorMessage(t('form.addressCreationError'));
           return;
         }
-        if (addressData) {
-          billingAddressId = addressData;
+        if (billingAddressResponseId) {
+          billingAddressId = billingAddressResponseId;
         }
       }
 
@@ -527,8 +642,7 @@ function OrderInfo({
             subTotalCartCost: calculateSubTotalCartCost(),
             userId: getIdFromToken(), // 1. TODO: get user value
             guestUserId: getCookie('guestUserId'),
-            shippingAddressId:
-              addressData?.updateAddress?.data?.id ?? null,
+            shippingAddressId: deliveryAddressId,
             paymentMethod: formValues?.paymentMethod,
             billingAddressId,
             couponId: couponData?.id ?? null, // 2. TODO: get coupon ID value
@@ -552,14 +666,14 @@ function OrderInfo({
         return;
       }
 
-      if (addressError || !addressData?.updateAddress?.data?.id) {
-        console.error('Failed to create address');
-        console.error(addressError);
-        console.error(addressData);
-        setLoadingMessage(false);
-        setErrorMessage(t('form.addressCreationError'));
-        return;
-      }
+      // if (addressError || !addressData?.updateAddress?.data?.id) {
+      //   console.error('Failed to update address');
+      //   console.error(addressError);
+      //   console.error(addressData);
+      //   setLoadingMessage(false);
+      //   setErrorMessage(t('form.addressCreationError'));
+      //   return;
+      // }
 
       if (
         orderError ||
@@ -580,10 +694,34 @@ function OrderInfo({
         orderData?.createOrder?.data ?? null
       );
       console.log(response);
+
+      const paymentData: PaymentDataType = {
+        emailOrPhone,
+        billingAddressData:
+          orderData?.createOrder?.data?.attributes?.billing_address
+            ?.data?.attributes ?? null,
+        shippingAddressData:
+          orderData?.createOrder?.data?.attributes?.shipping_address
+            ?.data?.attributes ?? null,
+        items: orderData?.createOrder?.data?.attributes?.cart ?? null,
+        order_id: orderData?.createOrder?.data?.id ?? null,
+        total_order_cost:
+          orderData?.createOrder?.data?.attributes
+            ?.total_order_cost ?? null
+      };
+
+      if (
+        orderData?.createOrder?.data?.attributes?.payment_method ===
+        'card'
+      ) {
+        console.log('handlePayment was called');
+        await handlePayment(paymentData);
+      }
+
       // Your API calls and logic here
       setLoadingMessage(false);
       setSuccessMessage(t('form.successMessage')); // Trigger success
-      router.push(`/orders/${orderData.createOrder.data.id}`);
+      // router.push(`/orders/${orderData.createOrder.data.id}`);
       // success();
     } catch (err) {
       console.error('Error during form submission:', err);

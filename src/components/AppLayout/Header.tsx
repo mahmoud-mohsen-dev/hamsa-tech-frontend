@@ -76,6 +76,7 @@ const getCartQuery = (cartId: number) => {
                                 price
                                 sale_price
                                 final_product_price
+                                description
                                 image_thumbnail {
                                     data {
                                         id
@@ -117,19 +118,19 @@ const getCreateGuestUserQuery = () => {
   }`;
 };
 
-const getCreateShippingAddressQuery = () => {
-  return `mutation CreateAddress {
-    createAddress(
-        data: {
-            publishedAt: "${new Date().toISOString()}"
-        }
-    ) {
-        data {
-            id
-        }
-    }
-  }`;
-};
+// const getCreateShippingAddressQuery = () => {
+//   return `mutation CreateAddress {
+//     createAddress(
+//         data: {
+//             publishedAt: "${new Date().toISOString()}"
+//         }
+//     ) {
+//         data {
+//             id
+//         }
+//     }
+//   }`;
+// };
 
 const getCreateWishlistQuery = (
   guestUserId: string | null,
@@ -368,34 +369,34 @@ function Header({ navLinks, productsSubNav }: PropsType) {
       }
     };
 
-    const handleShippingAddress = async () => {
-      try {
-        const {
-          data: shippingAddressData,
-          error: shippingAddressError
-        } = (await fetchGraphqlClient(
-          getCreateShippingAddressQuery()
-        )) as CreateAddressResponseType;
+    // const handleShippingAddress = async () => {
+    //   try {
+    //     const {
+    //       data: shippingAddressData,
+    //       error: shippingAddressError
+    //     } = (await fetchGraphqlClient(
+    //       getCreateShippingAddressQuery()
+    //     )) as CreateAddressResponseType;
 
-        if (
-          shippingAddressError ||
-          !shippingAddressData?.createAddress?.data?.id
-        ) {
-          console.error('Failed to create guest user');
-        }
+    //     if (
+    //       shippingAddressError ||
+    //       !shippingAddressData?.createAddress?.data?.id
+    //     ) {
+    //       console.error('Failed to create guest user');
+    //     }
 
-        if (shippingAddressData?.createAddress?.data?.id) {
-          setCookie(
-            'shippingAddressId',
-            shippingAddressData?.createAddress?.data?.id
-          );
-        } else {
-          console.error('Failed to get shipping address ID from API');
-        }
-      } catch (e) {
-        console.error('Failed to create address', e);
-      }
-    };
+    //     if (shippingAddressData?.createAddress?.data?.id) {
+    //       setCookie(
+    //         'shippingAddressId',
+    //         shippingAddressData?.createAddress?.data?.id
+    //       );
+    //     } else {
+    //       console.error('Failed to get shipping address ID from API');
+    //     }
+    //   } catch (e) {
+    //     console.error('Failed to create address', e);
+    //   }
+    // };
 
     const createWishlistTranslations = async (arId: string) => {
       try {
@@ -490,12 +491,12 @@ function Header({ navLinks, productsSubNav }: PropsType) {
         await handleGuestUser();
       }
 
-      const shippingAddressIdExists = doesCookieByNameExist(
-        'shippingAddressId'
-      );
-      if (!shippingAddressIdExists) {
-        await handleShippingAddress();
-      }
+      // const shippingAddressIdExists = doesCookieByNameExist(
+      //   'shippingAddressId'
+      // );
+      // if (!shippingAddressIdExists) {
+      //   await handleShippingAddress();
+      // }
 
       const wishlistIdExists = doesCookieByNameExist('wishlistIds');
       if (!wishlistIdExists) {

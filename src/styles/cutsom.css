@@ -1,4 +1,4 @@
-/* Navbar */
+/* =============== Navbar Background and Color Changes =============== */
 html:not([data-scroll='0']) .header,
 .header.colored-navbar {
   background-color: white;
@@ -10,19 +10,22 @@ html:not([data-scroll='0']) .header,
   transition: none;
 }
 
+/* Logo Image for Scroll */
 html[data-scroll='0'] .header .logo_img {
   background-image: url('/hamsa-logo-white.svg');
-  background-size: cover;
-  background-position: center;
 }
 
 html:not([data-scroll='0']) .header .logo_img,
 .content .header.colored-navbar .logo_img {
   background-image: url('/hamsa-logo.svg');
+}
+
+.header .logo_img {
   background-size: cover;
   background-position: center;
 }
 
+/* Logo Text Color */
 html:not([data-scroll='0']) .header .logo_hamsa,
 .header.colored-navbar .logo_hamsa {
   color: #17457c;
@@ -33,6 +36,7 @@ html:not([data-scroll='0']) .header .logo_tech,
   color: #d7150e;
 }
 
+/* Navbar Link Colors */
 html:not([data-scroll='0']) .header .nav_link,
 .header.colored-navbar .nav_link {
   color: #333333;
@@ -42,6 +46,7 @@ html:not([data-scroll='0']) .header .nav_link,
   color: #d62c26;
 }
 
+/* Ant Design Selectors for Navbar */
 html:not([data-scroll='0'])
   .header
   .ant-select-single.ant-select-show-arrow
@@ -54,35 +59,12 @@ html:not([data-scroll='0']) .header .ant-select .ant-select-arrow svg,
   color: #333333;
 }
 
-/* Language Selector */
-.header
-  .ant-select:not(.ant-select-customize-input)
-  .ant-select-selector,
-.header.colored-navbar
-  .ant-select:not(.ant-select-customize-input)
-  .ant-select-selector {
+.header .ant-select,
+.header.colored-navbar .ant-select {
   transition: none;
 }
 
-.header
-  .ant-select-single
-  .ant-select-selector
-  .ant-select-selection-item,
-.header.colored-navbar
-  .ant-select-single
-  .ant-select-selector
-  .ant-select-selection-item {
-  transition: none;
-}
-
-.header .ant-select .ant-select-arrow {
-  transition: none;
-}
-.header .seach-btn {
-  transition: none;
-}
-
-/* right side navbar icons */
+/* Right-side Navbar Icons */
 html[data-scroll='0'] .header .shopping-cart,
 html[data-scroll='0'] .header .wishlist,
 html[data-scroll='0'] .header .profile,
@@ -90,6 +72,7 @@ html[data-scroll='0'] .header .seach-btn,
 html[data-scroll='0'] .header .hamburger-menu {
   color: white;
 }
+
 html:not([data-scroll='0']) .header .shopping-cart,
 html:not([data-scroll='0']) .header .wishlist,
 html:not([data-scroll='0']) .header .profile,
@@ -106,6 +89,7 @@ html:not([data-scroll='0']) .header .hamburger-menu {
   color: #333333;
 }
 
+/* Search Input in Navbar */
 .header
   .search-input-navbar
   .ant-input-group
@@ -114,6 +98,7 @@ html:not([data-scroll='0']) .header .hamburger-menu {
   border-color: #333333;
 }
 
+/* =============== End of Navbar Background and Color Changes =============== 
 /* Category Card */
 .category-card:hover .heading-icon::before {
   color: white;

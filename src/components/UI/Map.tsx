@@ -113,16 +113,6 @@ const MapComponent = ({
           lat={lat}
           lng={lng}
         />
-        {/* <Marker
-          position={{
-            lat,
-            lng
-          }}
-          icon={{
-            // url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
-            url: '/icons/pin-map-icon.png'
-          }}
-        /> */}
         <MarkerWithInfoWindow
           title={branchName}
           body={address}

@@ -8,6 +8,7 @@ import { FooterSectionType } from '@/types/getIndexLayout';
 import { useLocale, useTranslations } from 'next-intl';
 import { getSocialMediaIcon } from '@/utils/getSocialMediaIcon';
 import Image from 'next/image';
+import Anchor from '../UI/Anchor';
 
 interface PropsType {
   data: FooterSectionType;
@@ -45,13 +46,15 @@ function Footer({ data }: PropsType) {
           <div className='mb-5 flex items-center gap-4 xl:mb-8'>
             {data?.social_links.map((link) => {
               return (
-                <Link
+                <Anchor
                   key={link.id}
-                  href={link.url}
+                  href={link?.url ?? '/'}
+                  target='_blank'
+                  applyDefaultClasses={false}
                   className='flex h-[35px] w-[35px] items-center justify-center rounded-lg bg-white bg-opacity-10 text-sm transition-colors duration-300 hover:bg-blue-300 hover:text-black-light'
                 >
                   {getSocialMediaIcon(link.icon)}
-                </Link>
+                </Anchor>
               );
             })}
           </div>

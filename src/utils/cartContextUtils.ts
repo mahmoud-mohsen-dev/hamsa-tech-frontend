@@ -31,7 +31,9 @@ export const updateCartInTheBackend = (
           // cost: cartItem.product.data.attributes.final_product_price,
           total_cost:
             cartItem.product.data.attributes.final_product_price *
-            quantity
+            quantity,
+          description:
+            cartItem?.product?.data?.attributes?.description ?? ''
         };
       }
       // the rest of the all product that didn't change
@@ -39,7 +41,9 @@ export const updateCartInTheBackend = (
         quantity: cartItem.quantity,
         product: cartItem.product.data.id,
         // cost: cartItem.cost,
-        total_cost: cartItem.total_cost
+        total_cost: cartItem.total_cost,
+        description:
+          cartItem?.product?.data?.attributes?.description ?? ''
       };
     })
     .filter((cartItem) => cartItem !== null); // Remove nulls (deleted products)
@@ -64,7 +68,8 @@ export const updateCartInTheBackend = (
           product?.attributes?.sale_price > 0
         ) ?
           product.attributes.sale_price * quantity
-        : (product?.attributes?.price ?? 0) * quantity
+        : (product?.attributes?.price ?? 0) * quantity,
+      description: product?.attributes?.description ?? ''
     });
   }
 
@@ -91,6 +96,7 @@ export const updateCartInTheBackend = (
           quantity: ${cartItem.quantity},
           total_cost: ${cartItem.total_cost},
           product: ${cartItem.product}
+          description: "${cartItem?.description ?? ''}"
         }`;
       }
       return false;
@@ -116,6 +122,7 @@ export const updateCartInTheBackend = (
                   price
                   sale_price
                   final_product_price
+                  description
                   image_thumbnail {
                     data {
                       attributes {
@@ -146,11 +153,13 @@ export const aggregateProductsDetails = (
     quantity: number;
     product: string;
     total_cost: number;
+    description: string;
   }[]
 ): {
   quantity: number;
   product: string;
   total_cost: number;
+  description: string;
 }[] => {
   // Create a map to store unique products by their ID
   const productMap = new Map<
@@ -160,6 +169,7 @@ export const aggregateProductsDetails = (
       product: string;
       // cost: number;
       total_cost: number;
+      description: string;
     }
   >();
 

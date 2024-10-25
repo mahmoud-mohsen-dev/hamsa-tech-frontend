@@ -4,8 +4,8 @@ import { usePathname } from '@/navigation';
 
 function Main({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  console.log(pathname);
-  console.log(pathname === '/ar');
+  // console.log(pathname);
+  // console.log(pathname === '/ar');
 
   return (
     <main

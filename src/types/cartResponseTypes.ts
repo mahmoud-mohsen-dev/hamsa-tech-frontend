@@ -22,6 +22,7 @@ export type CartDataType = {
         price: number;
         sale_price: number;
         final_product_price: number;
+        description: string;
         image_thumbnail: {
           data: {
             id: string;
