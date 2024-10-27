@@ -2,20 +2,19 @@ import {
   getTranslations,
   unstable_setRequestLocale
 } from 'next-intl/server';
+import React from 'react';
 
 type PropsType = {
   children: React.ReactNode;
   params: { locale: string };
 };
 
-export const revalidate = 120; // invalidate every 60 seconds
-
 export async function generateMetadata({
   params: { locale }
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'CheckoutPage.metaData'
+    namespace: 'CallbackCheckoutPage.metaData'
   });
 
   return {

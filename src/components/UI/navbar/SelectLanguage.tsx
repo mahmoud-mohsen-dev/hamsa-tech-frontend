@@ -25,20 +25,29 @@ function SelectLanguage({
   const params = useParams();
 
   function onSelectChange(event: string) {
-    console.log(event);
     const nextLocale = event;
+    let query = {};
+
+    // Ensure we're on the client side before accessing window
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(
+        window.location.search
+      );
+      query = Object.fromEntries(searchParams.entries());
+    }
+
     startTransition(() => {
       if (params.product && typeof params.product === 'string') {
-        router.push(
+        router.replace(
           { pathname: `/products/${String(nextProductId)}` },
           { locale: nextLocale }
         );
       } else {
         router.replace(
-          // @ts-expect-error -- TypeScript will validate that only known `params`
-          // are used in combination with a given `pathname`. Since the two will
-          // always match for the current route, we can skip runtime checks.
-          { pathname, params },
+          {
+            pathname,
+            query
+          },
           { locale: nextLocale }
         );
       }

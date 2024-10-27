@@ -230,6 +230,7 @@
       "phoneTooltip": "في حال احتجنا إلى الاتصال بك بشأن طلبك",
       "selectGovernorateForShippingCosts": "اختر المحافظة لعرض تكلفة الشحن",
       "selectGovernorateForTotalOrder": "اختر المحافظة لعرض إجمالي الطلب",
+      "downloadInvoiceButtonText": "تحميل الفاتورة",
       "formValidationErrorMessages": {
         "inputEmailOrPhone": "يرجى إدخال بريدك الإلكتروني أو رقم هاتفك!",
         "inputDeliveryPhone": "يرجى تقديم رقم الاتصال الخاص بك للتوصيل!",
@@ -264,6 +265,29 @@
     "metaData": {
       "title": "صفحة إتمام الشراء - همسة تك",
       "description": "أكمل عملية الشراء بأمان لمنتجات أنظمة المراقبة، أجهزة نقاط البيع، التحكم في الوصول، والمزيد في همسة تك. اختر من بين خيارات دفع متعددة بما في ذلك البطاقة، المحفظة أو التقسيط."
+    }
+  },
+  "CallbackCheckoutPage": {
+    "content": {
+      "orderSuccessTitle": "تم الطلب بنجاح!",
+      "orderSuccessMessage": "شكرًا على الشراء! سيتم معالجة طلبك في غضون 24 ساعة خلال أيام العمل. سنقوم بإعلامك عبر البريد الإلكتروني بمجرد شحن طلبك.",
+      "orderSummary": "ملخص الطلب",
+      "orderId": "رقم الطلب:",
+      "orderDate": "التاريخ:",
+      "orderTotal": "الإجمالي:",
+      "shippingMethod": "طريقة الشحن:",
+      "paymentMethod": "طريقة الدفع:",
+      "paymentStatus": "حالة الدفع:",
+      "estimatedDelivery": "التوصيل المتوقع:",
+      "backToShop": "العودة إلى المتجر",
+      "shippingStandard": "توصيل قياسي",
+      "paymentCard": "بطاقة",
+      "paymentStatusPaid": "مدفوع",
+      "currency": "ج.م"
+    },
+    "metaData": {
+      "title": "حالة الدفع وتفاصيل الطلب | همسة تك",
+      "description": "تحقق من حالة الدفع الخاصة بك بأمان عبر همسة تك واطلع على تفاصيل طلبك بالكامل، بما في ذلك تأكيد الدفع الناجح أو المعلق."
     }
   },
   "SigninPage": {

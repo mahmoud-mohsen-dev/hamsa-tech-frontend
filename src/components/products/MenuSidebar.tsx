@@ -14,7 +14,7 @@ function MenuSidebar({
   onClose?: () => void;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
   const dataValues = data && Array.isArray(data) ? data : [];

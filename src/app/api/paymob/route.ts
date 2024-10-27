@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
     const authData = await authResponse.json();
     const token = authData.token;
-    console.log(token);
+    // console.log(token);
 
     // Step 2: Create an order
     const orderResponse = await fetch(
@@ -125,7 +125,7 @@ export async function POST(req: Request) {
     }
 
     const orderData = await orderResponse.json();
-    console.log(JSON.stringify(orderData));
+    // console.log(JSON.stringify(orderData));
     const orderId = orderData.id;
 
     // Step 3: Generate a payment key
@@ -165,13 +165,13 @@ export async function POST(req: Request) {
     );
 
     if (!paymentKeyResponse.ok) {
-      console.log(paymentKeyResponse);
-      console.log(JSON.stringify(paymentKeyResponse));
+      // console.log(paymentKeyResponse);
+      // console.log(JSON.stringify(paymentKeyResponse));
       throw new Error('Failed to generate payment key');
     }
 
     const paymentKeyData = await paymentKeyResponse.json();
-    console.log(JSON.stringify(paymentKeyData));
+    // console.log(JSON.stringify(paymentKeyData));
     const paymentToken = paymentKeyData.token;
 
     // Step 4: Return the payment URL

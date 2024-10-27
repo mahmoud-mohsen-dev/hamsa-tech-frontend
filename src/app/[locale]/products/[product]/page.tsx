@@ -390,7 +390,7 @@ export default async function Product({
   return (
     <>
       <div id='product-page'>
-        <div className='container'>
+        <div className='container pb-[50px]'>
           <CustomBreadcrumb
             items={getItems(
               t('breadcrumb.all'),

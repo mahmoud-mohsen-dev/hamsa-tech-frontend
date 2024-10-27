@@ -229,6 +229,7 @@
       "phoneTooltip": "In case we need to contact you about your order",
       "selectGovernorateForShippingCosts": "Select the governorate to view shipping costs",
       "selectGovernorateForTotalOrder": "Select the governorate to view the total order",
+      "downloadInvoiceButtonText": "Download Invoice",
       "formValidationErrorMessages": {
         "inputEmailOrPhone": "Please input your email or phone number!",
         "inputDeliveryPhone": "Please provide your contact number for delivery!",
@@ -263,6 +264,29 @@
     "metaData": {
       "title": "Hamsa Tech checkout Page",
       "description": "Securely complete your purchase for surveillance cameras, POS systems, access control, and more at Hamsa Tec. Choose from a variety of payment options, including card, wallet, or installments."
+    }
+  },
+  "CallbackCheckoutPage": {
+    "content": {
+      "orderSuccessTitle": "Order Successful!",
+      "orderSuccessMessage": "Thank you for your purchase! Your order will be processed within 24 hours during working days. We will notify you by email once your order has been shipped.",
+      "orderSummary": "Order Summary",
+      "orderId": "Order ID:",
+      "orderDate": "Date:",
+      "orderTotal": "Total:",
+      "shippingMethod": "Shipping:",
+      "paymentMethod": "Payment Method:",
+      "paymentStatus": "Payment Status:",
+      "estimatedDelivery": "Estimated delivery:",
+      "backToShop": "Back to Shop",
+      "shippingStandard": "Standard Delivery",
+      "paymentCard": "Card",
+      "paymentStatusPaid": "Paid",
+      "currency": "EGP"
+    },
+    "metaData": {
+      "title": "Payment Status & Order Details | Hamsa Tech",
+      "description": "Securely verify your payment status with Hamsa Tech and review complete order details, including confirmation of successful or pending payments."
     }
   },
   "SigninPage": {

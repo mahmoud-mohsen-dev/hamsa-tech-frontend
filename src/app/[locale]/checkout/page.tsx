@@ -58,7 +58,7 @@ async function CheckoutPage({ params: { locale } }: PropsType) {
   }
 
   return (
-    <div className='container'>
+    <div className='container pb-12 pt-5'>
       <CheckoutWrapper
         shippingCostData={shippingCostData?.shippingCosts?.data ?? []}
         freeShippingData={

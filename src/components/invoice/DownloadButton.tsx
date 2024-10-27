@@ -2,16 +2,20 @@
 'use client';
 import { MdCloudDownload } from 'react-icons/md';
 import Btn from '@/components/UI/Btn';
+import { useTranslations } from 'next-intl';
 
 interface DownloadButtonProps {
   invoiceUrl: string | undefined;
   orderId: string;
+  className?: string;
 }
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({
   invoiceUrl,
-  orderId
+  orderId,
+  className = ''
 }) => {
+  const t = useTranslations('CheckoutPage.content');
   const handleDownload = async () => {
     try {
       if (!invoiceUrl) {
@@ -40,11 +44,11 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   return (
     invoiceUrl && (
       <Btn
-        className='bg-red-shade-350 text-white'
+        className={`bg-red-shade-350 text-white transition-colors duration-300 hover:bg-red-700 ${className}`}
         onClick={handleDownload}
       >
         <MdCloudDownload size={18} />
-        <span>Download Invoice</span>
+        <span>{t('downloadInvoiceButtonText')}</span>
       </Btn>
     )
   );
