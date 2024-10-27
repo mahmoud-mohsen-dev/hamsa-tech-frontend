@@ -34,6 +34,7 @@ function CheckoutWrapper({
         type: 'loading',
         content: t('form.loading')
       });
+      window.scrollTo(0, 0);
     } else {
       messageApi.destroy();
       setLoadingMessage(false);
@@ -60,7 +61,7 @@ function CheckoutWrapper({
     <>
       {contextHolder}
       {loadingMessage ?
-        <div className='container grid min-h-[500px] place-content-center'>
+        <div className='container grid min-h-[calc(100vh-48px-20px)] place-content-center'>
           <Spin size='large' />
         </div>
       : <div className='grid text-black 2xl:mx-10 2xl:grid-cols-checkout'>

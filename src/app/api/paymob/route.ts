@@ -78,11 +78,12 @@ export async function POST(req: Request) {
           'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify({
+          merchant_order_id: order_id,
+          api_source: 'INVOICE',
           delivery_needed: 'true',
           amount_cents: total_order_cost * 100, // Amount in cents
           currency: 'EGP',
           notify_user_with_email: true,
-          api_source: 'INVOICE',
           items: items.map((item) => {
             return {
               name:
