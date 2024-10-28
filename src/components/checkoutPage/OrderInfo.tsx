@@ -721,7 +721,15 @@ function OrderInfo({
       // Your API calls and logic here
       setLoadingMessage(false);
       setSuccessMessage(t('form.successMessage')); // Trigger success
-      // router.push(`/orders/${orderData.createOrder.data.id}`);
+
+      if (
+        orderData?.createOrder?.data?.attributes?.payment_method ===
+        'cash_on_delivery'
+      ) {
+        router.push(
+          `/checkout/callback?oid=${orderData.createOrder.data.id}`
+        );
+      }
       // success();
     } catch (err) {
       console.error('Error during form submission:', err);
