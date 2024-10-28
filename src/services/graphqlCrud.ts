@@ -66,14 +66,16 @@ export async function fetchGraphqlClientAuthenticated(query: string) {
 }
 
 export async function fetchGraphqlServerAuthenticated(query: string) {
-  const token = process.env.API_TOKEN;
+  const token = `${process.env.API_TOKEN}`;
+  // console.log(token);
+  // console.log(`${process.env.API_BASE_URL}/graphql`);
   const response = await fetch(
     `${process.env.API_BASE_URL}/graphql`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }) // Add token to headers if it exists
+        'Authorization': `Bearer ${token}` // Add token to headers if it exists
       },
       body: JSON.stringify({
         query: query
@@ -82,6 +84,10 @@ export async function fetchGraphqlServerAuthenticated(query: string) {
   );
 
   const data = await response.json();
+  // console.log(response);
+  // console.log(JSON.stringify(data));
+  // console.log(data?.errors ?? null);
+  // console.log(data?.error ?? null);
   // console.log(data.errors[0].message);
   return {
     data: data?.data || null,
@@ -101,7 +107,7 @@ export async function fetchGraphqlByArgsToken(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }) // Add token to headers if it exists
+        'Authorization': `Bearer ${token}` // Add token to headers if it exists
       },
       body: JSON.stringify({
         query: query
@@ -110,6 +116,7 @@ export async function fetchGraphqlByArgsToken(
   );
 
   const data = await response.json();
+  // console.log(JSON.stringify(data));
   // console.log(data.errors[0].message);
   return {
     data: data?.data || null,

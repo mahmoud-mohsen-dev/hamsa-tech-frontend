@@ -1,6 +1,7 @@
-// import { getIdFromToken } from '@/utils/cookieUtils';
-import { fetchGraphqlClientAuthenticated } from './graphqlCrud';
+'use server';
+
 import { GetOrdersAuthenticatedResponse } from '@/types/orderResponseTypes';
+import { fetchGraphqlServerWebAuthenticated } from './graphqlCrudServerOnly';
 
 const getOrdersQuery = ({
   page,
@@ -49,9 +50,11 @@ export const getOrdersAuthenticated = async (
     // }, 0);
     // const userId = (await Promise.resolve(getIdFromToken())) ?? '';
 
-    const { data, error } = (await fetchGraphqlClientAuthenticated(
+    const { data, error } = (await fetchGraphqlServerWebAuthenticated(
       getOrdersQuery({ page, userId })
     )) as GetOrdersAuthenticatedResponse;
+    console.log('getOrdersAuthenticated error', error);
+    console.log('getOrdersAuthenticated data', data);
 
     if (!error && data?.orders?.data && data.orders.data.length > 0) {
       return data.orders;

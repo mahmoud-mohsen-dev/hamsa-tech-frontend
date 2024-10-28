@@ -3,7 +3,7 @@
 import { OrderInfoType } from '@/types/orderResponseTypes';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { formatEnglishNumbers } from '@/utils/numbersFormating';
-import { reverseArabicWords } from '@/utils/stringHelpers';
+// import { reverseArabicWords } from '@/utils/stringHelpers';
 import {
   Document,
   Page,
@@ -162,6 +162,7 @@ export function InvoiceDocument({
 }: {
   orderData: OrderInfoType;
 }) {
+  console.log('orderData at InvoiceDocument component', orderData);
   const billTo =
     orderData?.attributes?.shipping_address?.data?.attributes ?? null;
   console.log(billTo);
@@ -173,7 +174,7 @@ export function InvoiceDocument({
           <View style={styles.header}>
             <View>
               <Text style={styles.title}>
-                Invoice #{orderData?.id}
+                Invoice #{orderData?.id ?? ''}
               </Text>
               <Text
                 style={[styles.blackBold, styles.bold, styles.date]}

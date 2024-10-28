@@ -63,6 +63,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       setIsloading(true);
       getOrdersAuthenticated(Number(pageParams) ?? 1, userId ?? '')
         .then((data) => {
+          // console.log('order data client', data);
           setOrders(data);
         })
         .finally(() => {
@@ -102,7 +103,9 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       dataIndex: 'id',
       key: 'id',
       render: (text: string, record: DataSource) => (
-        <Link href={`/orders/${record.id}`}>#{record.id}</Link>
+        <Link href={`/account/orders/${record.id}`}>
+          #{record.id}
+        </Link>
       )
     },
     {
@@ -237,7 +240,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
         rowKey='id'
         onRow={(record) => ({
           onClick: () => {
-            router.push(`/orders/${record.id}`);
+            router.push(`/account/orders/${record.id}`);
           }
         })}
         style={{ width: '100%' }}

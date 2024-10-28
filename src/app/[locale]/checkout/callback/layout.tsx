@@ -24,7 +24,7 @@ export async function generateMetadata({
 }
 
 function layout({ children, params: { locale } }: PropsType) {
-  unstable_setRequestLocale(locale);
+  // unstable_setRequestLocale(locale);
   return <div>{children}</div>;
 }
 

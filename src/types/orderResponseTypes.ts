@@ -73,6 +73,7 @@ export type GetOrderResponseType = {
   data: {
     order: {
       data: {
+        id: string;
         attributes: OrderAttributesType;
       };
     };

@@ -8,8 +8,9 @@ import {
 import { NextResponse } from 'next/server';
 import { type NextRequest } from 'next/server';
 import { getIdFromTokenArgs } from './utils/cookieUtils';
-import { fetchGraphqlByArgsToken } from './services/graphqlCrud';
+
 import { OrdersUserIdResponseType } from './types/orderResponseTypes';
+import { fetchGraphqlServerWebAuthenticated } from './services/graphqlCrudServerOnly';
 
 function fetchOrderUserIdQuery(orderId: string) {
   return `
@@ -44,6 +45,7 @@ async function orderPageHandler(
 ) {
   // Get the user token from cookies
   const token = request.cookies.get('token')?.value;
+  console.log('token', token);
 
   if (!token) {
     request.nextUrl.pathname = `/${locale}/not-found`; // Redirect if no token
@@ -53,15 +55,16 @@ async function orderPageHandler(
 
   // Decode the token to get the user ID
   const userId = getIdFromTokenArgs(token);
+  console.log('userId', userId);
 
   // Fetch the order's user ID from GraphQL
-  const { data, error } = (await fetchGraphqlByArgsToken(
-    fetchOrderUserIdQuery(orderId),
-    token
+  const { data, error } = (await fetchGraphqlServerWebAuthenticated(
+    fetchOrderUserIdQuery(orderId)
   )) as OrdersUserIdResponseType;
 
   const orderUserId =
     data?.order?.data?.attributes?.user?.data?.id ?? null;
+  console.log('orderUserId', orderUserId);
 
   // Check if the user ID matches the order's user ID
   if (
@@ -75,12 +78,13 @@ async function orderPageHandler(
     // return NextResponse.redirect(request.nextUrl);
   }
 
+  console.log(request.nextUrl.pathname);
+
   return request; // Allow the request to proceed
 }
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  console.log(pathname);
 
   // Exclude API routes from being handled by next-intl middleware
   if (pathname.startsWith('/api')) {
@@ -88,16 +92,19 @@ export async function middleware(request: NextRequest) {
   }
 
   // Regex pattern to match paths like /ar/orders/[orderId] or /en/orders/[orderId]
-  const regexPattern = /^\/(ar|en)\/orders\/\d+/;
+  const regexPattern = /^\/(ar|en)\/account\/orders\/\d+/;
 
   const pathnameArr = pathname.split('/');
   const locale = pathnameArr[1]; // Extract locale from the URL
 
   // Check if the request is for an order page
   const isOrderPage = regexPattern.test(pathname);
-  const orderId = pathnameArr[3]; // Extract orderId from the URL
+  const orderId = pathnameArr[4]; // Extract orderId from the URL
   // Check if the request is for an order page
   if (isOrderPage) {
+    console.log('isOrderPage', isOrderPage);
+    console.log(pathname);
+    console.log(orderId);
     await orderPageHandler(request, locale, orderId);
   }
 

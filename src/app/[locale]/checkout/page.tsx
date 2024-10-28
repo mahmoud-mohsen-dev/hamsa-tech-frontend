@@ -1,6 +1,4 @@
-import CheckoutCart from '@/components/checkoutPage/CheckoutCart';
 import CheckoutWrapper from '@/components/checkoutPage/CheckoutWrapper';
-import OrderInfo from '@/components/checkoutPage/OrderInfo';
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { FreeShippingResponseType } from '@/types/freeShippingResponseType';
 import { GetShippingCostResponseType } from '@/types/shippingCostResponseTypes';

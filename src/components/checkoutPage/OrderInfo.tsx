@@ -34,6 +34,7 @@ import {
   PaymentDataType,
   PaymentRequest
 } from '@/types/paymentResonseType';
+import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 
 const updateGuestUserQuery = (
   guestUserId: string,
@@ -636,7 +637,7 @@ function OrderInfo({
       }
 
       const { data: orderData, error: orderError } =
-        (await fetchGraphqlClient(
+        (await fetchGraphqlServerWebAuthenticated(
           createOrderQuery({
             cart,
             subTotalCartCost: calculateSubTotalCartCost(),
@@ -689,11 +690,13 @@ function OrderInfo({
       } else {
         console.log(orderData);
       }
-
-      const response = await uploadInvoicePdf(
-        orderData?.createOrder?.data ?? null
-      );
-      console.log(response);
+      console.log(orderData?.createOrder?.data);
+      if (orderData?.createOrder?.data) {
+        const response = await uploadInvoicePdf(
+          orderData?.createOrder?.data ?? null
+        );
+        console.log(response);
+      }
 
       const paymentData: PaymentDataType = {
         emailOrPhone,

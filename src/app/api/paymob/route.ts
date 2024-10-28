@@ -35,16 +35,16 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log(
-      JSON.stringify({
-        emailOrPhone,
-        order_id,
-        total_order_cost,
-        items,
-        shippingAddressData,
-        billingAddressData
-      })
-    );
+    // console.log(
+    //   JSON.stringify({
+    //     emailOrPhone,
+    //     order_id,
+    //     total_order_cost,
+    //     items,
+    //     shippingAddressData,
+    //     billingAddressData
+    //   })
+    // );
 
     // Step 1: Authenticate with Paymob
     const authResponse = await fetch(

@@ -117,13 +117,33 @@ function validateHMAC(
 // Function to handle transaction response callbacksrequests
 // To Calculate HMAC
 export async function GET(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  const searchParams = url?.searchParams ?? null;
   try {
-    const url = new URL(req.url);
+    if (!searchParams) {
+      return NextResponse.json(
+        {
+          error: { message: 'No query parameters found' },
+          data: null
+        },
+        { status: 400 }
+      );
+    }
+
+    const hmac = searchParams.get('hmac') ?? null;
+    const params: Record<string, string> = {};
+    searchParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    // const hmac = req.nextUrl.searchParams.get('hmac') || null;
+    // const params = Object.fromEntries(
+    //   req.nextUrl.searchParams.entries()
+    // ) as Record<string, string>;
+
     // console.log(url);
-    const hmac = url.searchParams.get('hmac');
-    const params = Object.fromEntries(
-      url.searchParams.entries()
-    ) as Record<string, string>;
+    // console.log(hmac);
+    // console.log(searchParams);
+    // console.log(params);
 
     if (!hmac || !validateHMAC(params, hmac)) {
       return NextResponse.json(

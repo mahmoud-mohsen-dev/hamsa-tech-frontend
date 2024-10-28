@@ -3,11 +3,13 @@ import type { OrderInfoType } from '@/types/orderResponseTypes';
 
 const generatePdfBlob = async (orderData: OrderInfoType) => {
   const { pdf } = await import('@react-pdf/renderer');
+  console.log(pdf);
   const { InvoiceDocument } = await import(
     '../components/invoice/InvoiceDocument'
   );
   // Create a React element with props
   const element = <InvoiceDocument orderData={orderData} />;
+  console.log(element);
 
   // Generate PDF blob from the React element
   const blob = pdf(element).toBlob();
@@ -16,6 +18,12 @@ const generatePdfBlob = async (orderData: OrderInfoType) => {
 };
 
 export const uploadInvoicePdf = async (orderData: OrderInfoType) => {
+  console.log('uploadInvoicePdf orderData before:', orderData);
+  if (!orderData?.id) {
+    console.log("orderData id don't exist exists");
+    return; // exit early if orderData.id does not exist
+  }
+  console.log('uploadInvoicePdf orderData', orderData);
   const pdfBlob = await generatePdfBlob(orderData);
   console.log(pdfBlob);
 
@@ -37,7 +45,9 @@ export const uploadInvoicePdf = async (orderData: OrderInfoType) => {
         // }
       }
     );
+    console.log(response);
     const data = await response.json();
+    console.log('data of invoicesPdfHandler: ', data);
 
     // Handle response data
     console.log('Upload response:', data);

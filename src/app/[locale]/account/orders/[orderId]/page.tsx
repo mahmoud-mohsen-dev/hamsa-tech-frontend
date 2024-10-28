@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import {
   fetchGraphqlByArgsToken,
-  fetchGraphqlClient,
+  // fetchGraphqlClient,
   fetchGraphqlServerAuthenticated
 } from '@/services/graphqlCrud';
 import {
@@ -53,8 +53,10 @@ const fetchAllOrdersIds = async () => {
             query
           )) as OrdersPaginationResponseType;
 
+        // console.log(JSON.stringify(data));
+
         if (
-          fetchError ||
+          fetchError !== null ||
           !data?.orders?.data ||
           !data?.orders?.meta?.pagination?.page ||
           !data?.orders?.meta?.pagination?.pageCount ||
@@ -62,6 +64,7 @@ const fetchAllOrdersIds = async () => {
           !data?.orders?.meta?.pagination?.total
         ) {
           error = fetchError; // Save the error for logging
+          console.error(error);
           throw new Error('Fetch error'); // Force a retry on error
         }
 
@@ -94,7 +97,7 @@ const fetchAllOrdersIds = async () => {
     }
   }
 
-  console.log('Fetched order IDs:', allOrdersId);
+  // console.log('Fetched order IDs:', allOrdersId);
   return allOrdersId;
 };
 
@@ -129,6 +132,7 @@ const getOrderQuery = (orderId: string) => {
   return `{
     order(id: "${orderId}") {
         data {
+            id
             attributes {
                 delivery_status
                 payment_status
@@ -209,7 +213,8 @@ async function InvoicePage({
     process.env.API_TOKEN
   )) as GetOrderResponseType;
 
-  // console.log(JSON.stringify(data));
+  // console.log(JSON.stringify(data ?? null));
+  // console.log(JSON.stringify(error ?? null));
 
   const attributes = data?.order?.data?.attributes;
   const shippingAddress =

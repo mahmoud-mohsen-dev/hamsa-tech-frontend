@@ -20,6 +20,7 @@ import Btn from '@/components/UI/Btn';
 import { IoStorefrontSharp } from 'react-icons/io5';
 import { getCookie, getIdFromToken } from '@/utils/cookieUtils';
 import { capitalize } from '@/utils/helpers';
+import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 
 const getOrderSummaryByIdQuery = (orderId: string) => {
   return `{
@@ -81,12 +82,14 @@ const CallbackCheckoutPage = () => {
   );
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !orderId) {
+    const queryString =
+      searchParams ?
+        new URLSearchParams(searchParams).toString()
+      : ''; // Convert searchParams to query string if available
+    console.log(!!queryString);
+
+    if (typeof window !== 'undefined' && !orderId && !!queryString) {
       const url = window.location.origin; // URL (e.g., "https://example.com")
-      const queryString =
-        searchParams ?
-          new URLSearchParams(searchParams).toString()
-        : ''; // Convert searchParams to query string if available
 
       const apiUrl = `${url}/api/paymob/callback${queryString ? `?${queryString}` : ''}`; // e.g. http://localhost:3000/api/checkout/callback?order-id=90&test=55
       // console.log(apiUrl);
@@ -135,9 +138,10 @@ const CallbackCheckoutPage = () => {
             throw new Error(`Didn't provide credentials`);
           }
 
-          const { data, error } = (await fetchGraphqlClient(
-            getOrderSummaryByIdQuery(orderId)
-          )) as GetOrderSummaryByIdType;
+          const { data, error } =
+            (await fetchGraphqlServerWebAuthenticated(
+              getOrderSummaryByIdQuery(orderId)
+            )) as GetOrderSummaryByIdType;
 
           if (error || !data?.order?.data) {
             console.error(error);

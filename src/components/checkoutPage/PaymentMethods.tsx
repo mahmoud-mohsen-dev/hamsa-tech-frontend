@@ -48,12 +48,12 @@ function PaymentMethods({ form }: { form: FormInstance<any> }) {
             width={38}
             height={24}
           />
-          <Image
+          {/* <Image
             src='/payment-methods/valu.svg'
             alt='valu logo'
             width={38}
             height={24}
-          />
+          /> */}
           <Image
             src='/payment-methods/meeza.svg'
             alt='meeza logo'
