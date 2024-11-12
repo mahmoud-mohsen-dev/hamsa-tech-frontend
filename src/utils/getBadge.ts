@@ -11,7 +11,7 @@ export const getBadge = (
   const isArabic = locale === 'ar';
 
   if (stock === 0) {
-    return isArabic ? 'إنتهى من المخزن' : 'Out Of Stock';
+    return isArabic ? 'إنتهى من المخزون' : 'Out Of Stock';
   }
 
   if (isNew) {

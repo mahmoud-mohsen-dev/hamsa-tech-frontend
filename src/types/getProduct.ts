@@ -93,6 +93,7 @@ export interface ProductDataType {
     data: {
       attributes: {
         url: string;
+        name?: string | null;
         alternativeText: string | null;
       };
     };
@@ -101,6 +102,7 @@ export interface ProductDataType {
     data: {
       attributes: {
         url: string;
+        name?: string | null;
         alternativeText: string | null;
       };
     };

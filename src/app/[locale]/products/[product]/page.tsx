@@ -33,6 +33,8 @@ import ProductCard from '@/components/products/ProductCard';
 import { v4 } from 'uuid';
 import { getBadge } from '@/utils/getBadge';
 import TabsSection from '@/components/productPage/TabsSection';
+import { pdf } from '@react-pdf/renderer';
+import DownloadBtn from '@/components/UI/DownloadBtn';
 
 const getQueryProductPage = (id: string) => `{
   product(id: "${id}") {
@@ -111,6 +113,7 @@ const getQueryProductPage = (id: string) => `{
             data {
                 attributes {
                     url
+                    name
                     alternativeText
                 }
             }
@@ -119,6 +122,7 @@ const getQueryProductPage = (id: string) => `{
             data {
                 attributes {
                     url
+                    name
                     alternativeText
                 }
             }
@@ -415,14 +419,14 @@ export default async function Product({
             <div>
               {/* Basic Data */}
               <section>
-                <h4 className='text-blue-dark'>
+                <h4 className='capitalize text-blue-dark'>
                   {productData?.sub_category?.data?.attributes
                     ?.name ?? ''}
                 </h4>
-                <h2 className='mt-3 text-3xl font-semibold text-black-medium'>
+                <h2 className='mt-3 text-3xl font-semibold capitalize text-black-medium'>
                   {productData?.name}
                 </h2>
-                <h4 className='mt-5 text-xl font-normal text-gray-medium'>
+                <h4 className='mt-5 text-xl font-normal text-gray-500'>
                   {productData?.description}
                 </h4>
                 <div className='mt-5 flex items-center gap-2'>
@@ -593,30 +597,18 @@ export default async function Product({
         </div>
         {/* More Details */}
         <section className='container max-w-[1900px] bg-blue-sky-ultralight py-[50px]'>
-          <div className='grid gap-5 px-6 2xl:grid-cols-2'>
+          <div
+            className={`grid px-6 ${
+              (
+                productData?.datasheet?.data?.attributes?.url ||
+                productData?.user_manual?.data?.attributes?.url
+              ) ?
+                'gap-5 2xl:grid-cols-2'
+              : 'justify-center'
+            }`}
+          >
             {/* Download Center Section */}
             <div className='flex flex-col gap-10'>
-              <div>
-                <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
-                  {t('downloadCenterSectionTitle')}
-                </h2>
-                <div className='mt-10 flex flex-wrap items-center justify-center gap-5'>
-                  <Btn
-                    className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
-                    defaultPadding={false}
-                  >
-                    <FaBook size={24} />
-                    <span>{t('dataSheetButtonText')}</span>
-                  </Btn>
-                  <Btn
-                    className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
-                    defaultPadding={false}
-                  >
-                    <FaAddressBook size={24} />
-                    <span>{t('userManualButtonText')}</span>
-                  </Btn>
-                </div>
-              </div>
               {productData?.youtube_video?.link_source &&
                 productData?.youtube_video?.title && (
                   <div className='flex h-full flex-col items-center justify-center'>
@@ -635,7 +627,52 @@ export default async function Product({
                     />
                   </div>
                 )}
+
+              {(productData?.datasheet?.data?.attributes?.url ||
+                productData?.user_manual?.data?.attributes?.url) && (
+                <div>
+                  <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+                    {t('downloadCenterSectionTitle')}
+                  </h2>
+                  <div className='mt-10 flex flex-wrap items-center justify-center gap-5'>
+                    {productData?.datasheet?.data?.attributes
+                      ?.url && (
+                      <DownloadBtn
+                        pdfUrl={
+                          productData?.datasheet?.data?.attributes
+                            ?.url ?? null
+                        }
+                        name={
+                          productData?.datasheet?.data?.attributes
+                            ?.name ?? null
+                        }
+                      >
+                        <FaBook size={24} />
+                        <span>{t('dataSheetButtonText')}</span>
+                      </DownloadBtn>
+                    )}
+
+                    {productData?.user_manual?.data?.attributes
+                      ?.url && (
+                      <DownloadBtn
+                        pdfUrl={
+                          productData?.user_manual?.data?.attributes
+                            ?.url ?? null
+                        }
+                        name={
+                          productData?.user_manual?.data?.attributes
+                            ?.name ?? null
+                        }
+                      >
+                        <FaAddressBook size={24} />
+                        <span>{t('userManualButtonText')}</span>
+                      </DownloadBtn>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
+
             {/* ============================= */}
 
             {/* About Product Section */}
@@ -643,10 +680,10 @@ export default async function Product({
               <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
                 {t('aboutThisProductSectionTitle')}
               </h2>
-              <ul className='mt-10 list-disc'>
-                {productData?.features.map((item) => (
+              <ul className='mx-auto mt-10 w-fit list-disc'>
+                {productData?.features.map((item, i) => (
                   <li
-                    key={item?.id}
+                    key={item?.id ?? i}
                     className='mt-3 text-sm text-blue-gray-light'
                   >
                     {item?.feature ?? ''}
