@@ -350,12 +350,109 @@
         "passwordLetterError": "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل",
         "passwordNumberError": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل",
         "passwordInvalidCharacters": "يمكن أن تحتوي كلمة المرور على أحرف إنجليزية وأرقام ورموز خاصة فقط",
-        "emailTakenError": "البريد الإلكتروني مستخدم بالفعل. برجاء استخدام بريد آخر."
+        "emailTakenError": "البريد الإلكتروني مستخدم بالفعل. برجاء استخدام بريد آخر.",
+        "confirmPassowrdRequired": "يرجى تأكيد كلمة المرور",
+        "passwordMismatch": "كلمة المرور الجديدة التي أدخلتها لا تتطابق"
       }
     },
     "metaData": {
       "title": "صفحة إنشاء حساب همسة تك",
       "description": "إنشاء حساب همسة تك الخاص بك بأمان"
+    }
+  },
+  "ForgetPasswordPage": {
+    "content": {
+      "title": "هل نسيت كلمة المرور؟",
+      "description": "لا تقلق! فقط اكتب بريدك الإلكتروني وسنرسل لك رمزًا لإعادة تعيين كلمة المرور الخاصة بك!",
+      "emailLabel": "بريدك الإلكتروني",
+      "emailPlaceholder": "name@company.com",
+      "resetPasswordButton": "إعادة تعيين كلمة المرور",
+      "formValidationErrorMessages": {
+        "emailRequired": "البريد الإلكتروني مطلوب!",
+        "errorDuringFormSubmission": "حدث خطأ أثناء إرسال النموذج",
+        "emailNotFound": "لم يتم العثور على حساب بهذا البريد الإلكتروني.",
+        "resetPasswordSuccessMessage": "تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني.",
+        "resetPasswordFailedMessage": "فشل في إرسال رمز إعادة التعيين. يرجى المحاولة لاحقًا."
+      }
+    },
+    "metaData": {
+      "title": "صفحة إعادة تعيين كلمة المرور من همسة تك",
+      "description": "إعادة تعيين كلمة المرور لحسابك في همسة تك"
+    }
+  },
+  "OtpVerificationPage": {
+    "content": {
+      "headerTitle": "تأكيد عنوان البريد الإلكتروني",
+      "instruction": "أدخل رمز التحقق المكون من 4 أرقام الذي تم إرساله إلى بريدك الإلكتروني.",
+      "verifyButton": "تأكيد الحساب",
+      "resendText": "لم تتلق الرمز؟",
+      "resendLink": "إعادة الإرسال",
+      "verificationSuccess": "تم التحقق من رمز OTP بنجاح!",
+      "invalidOtp": "يرجى إدخال رمز مكون من 4 أرقام صالح."
+    },
+    "metaData": {
+      "title": "صفحة تأكيد OTP من همسة تك",
+      "description": "قم بتأكيد حسابك في همسة تك باستخدام رمز OTP المرسل إلى بريدك الإلكتروني"
+    }
+  },
+  "ChangePasswordPage": {
+    "content": {
+      "headerTitle": "تغيير كلمة المرور",
+      "passwordRequired": "يرجى إدخال كلمة المرور",
+      "confirmPasswordRequired": "يرجى تأكيد كلمة المرور",
+      "passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+      "passwordPlaceholder": "أدخل كلمة المرور الجديدة",
+      "confirmPasswordPlaceholder": "أدخل تأكيد كلمة المرور",
+      "submitButton": "تغيير كلمة المرور",
+      "passwordMismatchError": "كلمة المرور وتأكيد كلمة المرور لا يتطابقان",
+      "passwordChangeSuccess": "تم تغيير كلمة المرور بنجاح!",
+      "passwordChangeError": "حدث خطأ أثناء تغيير كلمة المرور. حاول مرة أخرى.",
+      "formSubmissionFailed": "فشل إرسال النموذج. يرجى المحاولة مرة أخرى."
+    },
+    "metaData": {
+      "title": "تغيير كلمة المرور | همسة تك",
+      "description": "قم بتغيير كلمة المرور الخاصة بحسابك في همسة تك."
+    }
+  },
+  "AccountLayoutPage": {
+    "siderbarAccountTitle": "الحساب",
+    "siderbarOrdersTitle": "طلباتي",
+    "siderbarAddressTitle": "العناوين",
+    "siderbarSettingsTitle": "الإعدادات",
+    "siderbarSignOutTitle": "سَجل خروج",
+    "metaData": {
+      "title": "لوحة حساب همسة تك",
+      "description": "إدارة حسابك وطلبك وعناوينك في همسة تك"
+    },
+    "OrdersPage": {
+      "metaData": {
+        "title": "صفحة الطلبات من همسة تك",
+        "description": "عرض وإدارة طلباتك مع همسة تك"
+      },
+      "content": {
+        "table": {
+          "header": {
+            "orderId": "رقم الطلب",
+            "orderDate": "التاريخ",
+            "orderDeliveryStatus": "حالة التوصيل",
+            "orderPaymentStatus": "حالة الدفع",
+            "orderPaymentMethod": "طريقة الدفع",
+            "orderTotalCost": "إجمالي تكلفة الطلب"
+          }
+        }
+      }
+    },
+    "AddressPage": {
+      "metaData": {
+        "title": "صفحة العناوين من همسة تك",
+        "description": "إدارة العناوين المحفوظة على همسة تك"
+      }
+    },
+    "SettingsPage": {
+      "metaData": {
+        "title": "صفحة الإعدادات من همسة تك",
+        "description": "تخصيص إعدادات حسابك مع همسة تك"
+      }
     }
   },
   "WishlistPage": {

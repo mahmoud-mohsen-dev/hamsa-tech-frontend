@@ -17,6 +17,7 @@ import {
   getCookie,
   getIdFromToken,
   removeCartId,
+  removeCookie,
   setCartId,
   setCookie
 } from '@/utils/cookieUtils';
@@ -29,7 +30,6 @@ import {
 import { useMyContext } from '@/context/Store';
 import { aggregateCartItems } from '@/utils/cartContextUtils';
 import { CreateGuestUserResponseType } from '@/types/guestUserReponses';
-import { CreateAddressResponseType } from '@/types/addressResponseTypes';
 import ProfileDropdownMenu from '../UI/navbar/ProfileDropdownMenu';
 import { useUser } from '@/context/UserContext';
 import {
@@ -62,6 +62,7 @@ const getCartQuery = (cartId: number) => {
   return `{
     cart(id: ${cartId}) {
         data {
+            id
             attributes {
                 total_cart_cost
                 product_details {
@@ -101,6 +102,18 @@ const getCartQuery = (cartId: number) => {
         }
     }
   }`;
+};
+
+const checkGuestUserIdExistQuery = (userId: string) => {
+  return `{
+      guestUser(
+          id: "${userId}"
+      ) {
+          data {
+              id
+          }
+      }
+    }`;
 };
 
 const getCreateGuestUserQuery = () => {
@@ -240,6 +253,7 @@ export const getWishlistsData = async (
       passedArgId =
         locale === 'ar' ? wishlistIdsValue.ar : wishlistIdsValue.en;
     }
+
     // const wishlitsId = locale === 'ar' ? JSON.parse(wishlistIds)
     const { data: wishlistsData, error: wishlistsError } =
       (await fetchGraphqlClient(
@@ -254,14 +268,13 @@ export const getWishlistsData = async (
         'Error fetching wishlists data: ',
         wishlistsError
       );
-      return;
+      return null;
     }
 
-    setWishlistsData(
-      wishlistsData?.wishlist?.data?.attributes?.products?.data
-    );
+    return wishlistsData.wishlist.data.attributes.products.data;
   } catch (err) {
     console.error('Error fetching wishlist data: ', err);
+    return null;
   } finally {
     setIsWishlistLoading(false);
   }
@@ -299,32 +312,37 @@ function Header({ navLinks, productsSubNav }: PropsType) {
   // const [linkHovered,] = useState('');
   useScrollHandler();
 
+  const createCart = async () => {
+    try {
+      const { data, error }: CreateCartResponseType =
+        await fetchGraphqlClient(createCartQuery());
+
+      if (error || !data || data.createCart.data === null) {
+        console.error(error);
+        removeCartId();
+        setCart([]);
+      } else if (data?.createCart?.data?.id) {
+        setCartId(data.createCart.data.id);
+      }
+    } catch (error) {
+      console.error('Failed to create cart', error);
+    }
+  };
+
   useEffect(() => {
     const handleCart = async () => {
       const cartId = getCartId();
 
       if (!cartId) {
-        try {
-          const { data, error }: CreateCartResponseType =
-            await fetchGraphqlClient(createCartQuery());
-
-          if (error || !data || data.createCart.data === null) {
-            console.error(error);
-            removeCartId();
-            setCart([]);
-          } else if (data?.createCart?.data?.id) {
-            setCartId(data.createCart.data.id);
-          }
-        } catch (error) {
-          console.error('Failed to create or guest user cart', error);
-        }
+        await createCart();
       } else {
         try {
           const { data, error }: GetCartResponseType =
             await fetchGraphqlClient(getCartQuery(Number(cartId)));
 
-          if (error || !data) {
+          if (error || !data || !data?.cart?.data?.id) {
             console.error(error);
+            await createCart();
           } else {
             if (data?.cart?.data?.attributes?.product_details) {
               const updatedCartData = aggregateCartItems(
@@ -342,7 +360,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
       }
     };
 
-    const handleGuestUser = async () => {
+    const handleCreateGuestUser = async () => {
       try {
         const { data: guestUserData, error: guestUserError } =
           (await fetchGraphqlClient(
@@ -363,40 +381,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
           );
         } else {
           console.error('Failed to get guest user ID from API');
+          removeCookie('guestUserId');
         }
       } catch (e) {
         console.error('Failed to create guest user', e);
+        removeCookie('guestUserId');
       }
     };
-
-    // const handleShippingAddress = async () => {
-    //   try {
-    //     const {
-    //       data: shippingAddressData,
-    //       error: shippingAddressError
-    //     } = (await fetchGraphqlClient(
-    //       getCreateShippingAddressQuery()
-    //     )) as CreateAddressResponseType;
-
-    //     if (
-    //       shippingAddressError ||
-    //       !shippingAddressData?.createAddress?.data?.id
-    //     ) {
-    //       console.error('Failed to create guest user');
-    //     }
-
-    //     if (shippingAddressData?.createAddress?.data?.id) {
-    //       setCookie(
-    //         'shippingAddressId',
-    //         shippingAddressData?.createAddress?.data?.id
-    //       );
-    //     } else {
-    //       console.error('Failed to get shipping address ID from API');
-    //     }
-    //   } catch (e) {
-    //     console.error('Failed to create address', e);
-    //   }
-    // };
 
     const createWishlistTranslations = async (arId: string) => {
       try {
@@ -486,9 +477,24 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     const handleRequests = async () => {
       handleCart();
 
-      const guestUserIdExists = doesCookieByNameExist('guestUserId');
-      if (!guestUserIdExists) {
-        await handleGuestUser();
+      const guestUserId = getCookie('guestUserId');
+      if (!guestUserId) {
+        await handleCreateGuestUser();
+      } else {
+        try {
+          const { data, error } = await fetchGraphqlClient(
+            checkGuestUserIdExistQuery(guestUserId)
+          );
+          if (error || !data?.guestUser?.data?.id) {
+            console.error("Guest user don't exist", error);
+            await handleCreateGuestUser();
+          }
+        } catch (error) {
+          console.error(
+            'server error when calling guset user',
+            error
+          );
+        }
       }
 
       // const shippingAddressIdExists = doesCookieByNameExist(
@@ -504,11 +510,41 @@ function Header({ navLinks, productsSubNav }: PropsType) {
         const userId = getIdFromToken();
         await createWishlist(guestUserId, userId);
       } else {
-        getWishlistsData(
+        const wishlistEnData = await getWishlistsData(
+          'en',
+          setIsWishlistLoading,
+          setWishlistsData
+        );
+        const wishlistArData = await getWishlistsData(
+          'ar',
+          setIsWishlistLoading,
+          setWishlistsData
+        );
+
+        if (!wishlistArData || !wishlistEnData) {
+          await createWishlist(guestUserId, userId);
+          const data = await getWishlistsData(
+            locale,
+            setIsWishlistLoading,
+            setWishlistsData
+          );
+          if (data) {
+            setWishlistsData(data);
+          } else {
+            setWishlistsData([]);
+          }
+        }
+
+        const localeWishlistData = await getWishlistsData(
           locale,
           setIsWishlistLoading,
           setWishlistsData
         );
+        if (localeWishlistData) {
+          setWishlistsData(localeWishlistData);
+        } else {
+          setWishlistsData([]);
+        }
       }
     };
 
@@ -588,7 +624,10 @@ function Header({ navLinks, productsSubNav }: PropsType) {
 
           <div className='ml-5 hidden h-[22px] w-[1px] rounded-sm bg-[#eaeaea] 2xl:block'></div>
           <ModalSearchInput />
-          <SelectLanguage defaultValue={defaultValue} />
+          <SelectLanguage
+            defaultValue={defaultValue}
+            styleWidth={85}
+          />
 
           {/* <div className='flex h-full items-center justify-center text-inherit 2xl:hidden'> */}
           <HamburgerMenuIcon

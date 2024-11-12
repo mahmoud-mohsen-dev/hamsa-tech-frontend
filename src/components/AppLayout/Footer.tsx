@@ -25,11 +25,11 @@ function Footer({ data }: PropsType) {
       // data-aos-duration='300'
       // data-aos-easing='linear'
       // data-aos-once='true'
-      className='mx-auto w-full max-w-[1900px] bg-blue-gray-medium py-16'
+      className='mx-auto w-full max-w-[1900px] bg-blue-gray-medium py-8'
     >
       <div className='container grid grid-cols-1 gap-8 text-white md:grid-cols-2 xl:grid-cols-footer xl:gap-5'>
         <div>
-          <div className='mb-5 flex items-center gap-5 xl:mb-8'>
+          <div className='mb-5 flex items-center gap-5 xl:mb-7'>
             <Image
               src='/hamsa-logo-white.svg'
               alt='hamsa logo'
@@ -40,10 +40,10 @@ function Footer({ data }: PropsType) {
             />
             <h2 className='text-2xl font-bold'>{t('companyName')}</h2>
           </div>
-          <h4 className='mb-5 max-w-[320px] text-pretty text-lg font-light opacity-80 xl:mb-8'>
+          <h4 className='mb-5 max-w-[320px] text-pretty text-lg font-light opacity-80 xl:mb-7'>
             {data?.description}
           </h4>
-          <div className='mb-5 flex items-center gap-4 xl:mb-8'>
+          <div className='= flex items-center gap-4'>
             {data?.social_links.map((link) => {
               return (
                 <Anchor
@@ -59,8 +59,8 @@ function Footer({ data }: PropsType) {
             })}
           </div>
         </div>
-        <div className=''>
-          <h2 className='mb-5 text-2xl font-bold xl:mb-8'>
+        <div>
+          <h2 className='mb-5 text-2xl font-bold xl:mb-7'>
             {t('quickLinksTitle')}
           </h2>
           <ul className='flex flex-col gap-1.5'>
@@ -83,7 +83,7 @@ function Footer({ data }: PropsType) {
           </ul>
         </div>
         <div>
-          <h2 className='mb-5 text-2xl font-bold xl:mb-8'>
+          <h2 className='mb-5 text-2xl font-bold xl:mb-7'>
             {t('newsletterTitle')}
           </h2>
           <h4 className='mb-5 opacity-80'>
@@ -91,8 +91,8 @@ function Footer({ data }: PropsType) {
           </h4>
           <SubcribeInput />
         </div>
-        <div className=''>
-          <h2 className='mb-5 text-2xl font-bold xl:mb-8'>
+        <div>
+          <h2 className='mb-5 text-2xl font-bold xl:mb-7'>
             {t('contactTitle')}
           </h2>
           <div>

@@ -8,7 +8,7 @@ type PropsType = {
   params: { locale: string };
 };
 
-export const revalidate = 120; // invalidate every 60 seconds
+export const revalidate = 60; // invalidate every 60 seconds
 // export function generateStaticParams() {
 //   //   return locales.map((locale) => ({ locale }));
 // }

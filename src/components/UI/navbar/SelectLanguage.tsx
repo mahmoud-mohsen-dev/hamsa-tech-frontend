@@ -64,7 +64,7 @@ function SelectLanguage({
         {
           value: 'en',
           label: (
-            <p className='flex items-center gap-[10px]'>
+            <p className='flex items-center justify-between'>
               <span>EN</span>
               <Image
                 src={'/languages/us.png'}
@@ -79,7 +79,7 @@ function SelectLanguage({
         {
           value: 'ar',
           label: (
-            <p className='flex items-center gap-[10px]'>
+            <p className='flex items-center justify-between'>
               <span>AR</span>
               <Image
                 src={'/languages/eg.png'}

@@ -25,6 +25,7 @@ import CustomSWRConfig from '@/lib/CustomSWRConfig';
 import { getProductsQuery } from '@/services/products';
 import { ProductsResponseType } from '@/types/getProducts';
 import { UserProvider } from '@/context/UserContext';
+import Script from 'next/script';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -264,6 +265,14 @@ export default async function LocaleLayout({
           </StoreContextProvider>
         </NextIntlClientProvider>
       </body>
+
+      {process.env.UMAMI_URL && process.env.UMAMI_WEBSITE_ID && (
+        <Script
+          defer
+          src={process.env.UMAMI_URL}
+          data-website-id={process.env.UMAMI_WEBSITE_ID}
+        />
+      )}
     </html>
   );
 }

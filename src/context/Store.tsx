@@ -66,9 +66,9 @@ const MyContext = createContext<{
   setSelectedGovernorate: React.Dispatch<
     React.SetStateAction<ShippingCostDataType | null>
   >;
-  freeShippingAt: undefined | FreeShippingAttributesType;
+  freeShippingAt: null | FreeShippingAttributesType;
   setFreeShippingAt: React.Dispatch<
-    React.SetStateAction<undefined | FreeShippingAttributesType>
+    React.SetStateAction<null | FreeShippingAttributesType>
   >;
   couponData: CouponDataType | null;
   setCouponData: React.Dispatch<
@@ -138,8 +138,8 @@ export const StoreContextProvider = ({
   const [selectedGovernorate, setSelectedGovernorate] =
     useState<ShippingCostDataType | null>(null);
   const [freeShippingAt, setFreeShippingAt] = useState<
-    undefined | FreeShippingAttributesType
-  >(undefined);
+    null | FreeShippingAttributesType
+  >(null);
   const [couponData, setCouponData] = useState<CouponDataType | null>(
     null
   );

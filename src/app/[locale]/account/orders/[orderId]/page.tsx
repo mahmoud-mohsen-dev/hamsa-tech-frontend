@@ -228,10 +228,10 @@ async function InvoicePage({
   }
 
   return (
-    <section className='mx-auto w-fit'>
+    <section>
       <DownloadButton invoiceUrl={invoiceUrl} orderId={orderId} />
       <div
-        className='boder-gray-100 mt-5 rounded-lg border bg-white p-6 font-inter shadow 2xl:w-[850px]'
+        className='boder-gray-100 mt-5 rounded-lg border bg-white p-6 font-inter shadow'
         dir='ltr'
       >
         <div className='flex flex-col'>

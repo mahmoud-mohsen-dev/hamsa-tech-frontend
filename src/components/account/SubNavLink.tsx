@@ -17,7 +17,7 @@ function SubNavLink({
   return (
     <Link
       href={href}
-      className={`flex flex-wrap items-center gap-4 px-4 py-2 transition-colors duration-100 ${isActive ? 'bg-black-light text-white' : 'text-black-light hover:bg-gray-ultralight'}`}
+      className={`flex flex-wrap items-center gap-4 px-4 py-4 leading-[22px] transition-colors duration-100 ${isActive ? 'bg-black-light text-white' : 'text-black-light hover:bg-gray-ultralight'}`}
     >
       {children}
     </Link>

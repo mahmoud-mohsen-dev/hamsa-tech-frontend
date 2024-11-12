@@ -6,22 +6,16 @@ import {
   OrderDataType,
   PaginationMeta
 } from '@/types/orderResponseTypes';
-import { getIdFromToken, removeCookie } from '@/utils/cookieUtils';
+import { getIdFromToken } from '@/utils/cookieUtils';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import { Button, Divider, Table } from 'antd';
+import { Table } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { capitalize } from '@/utils/helpers';
 import { ColumnType } from 'antd/es/table';
-import { RiShoppingBag3Fill } from 'react-icons/ri';
-import { GoGear } from 'react-icons/go';
-import { FaMapLocationDot } from 'react-icons/fa6';
-import { LuLogOut } from 'react-icons/lu';
-import { GrMapLocation } from 'react-icons/gr';
-import { useUser } from '@/context/UserContext';
-import SubNavLink from '@/components/account/SubNavLink';
-// import { unstable_setRequestLocale } from 'next-intl/server';
+import { useTranslations } from 'use-intl';
+import { useLocale } from 'next-intl';
 
 type DataSource = {
   key: string;
@@ -33,7 +27,7 @@ type DataSource = {
   total_order_cost: number;
 };
 
-function OrdersPage({ params }: { params: { locale: string } }) {
+function OrdersPage() {
   const [loading, setIsloading] = useState(true);
   const [orders, setOrders] = useState<{
     data: OrderDataType[];
@@ -41,10 +35,11 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       pagination: PaginationMeta;
     };
   } | null>(null);
-  const { setUserId } = useUser();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('AccountLayoutPage.OrdersPage');
 
   const pageParams = searchParams.get('page');
 
@@ -99,7 +94,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
   // Table columns configuration for Ant Design
   const columns: ColumnType<DataSource>[] = [
     {
-      title: 'Order ID',
+      title: t('content.table.header.orderId'),
       dataIndex: 'id',
       key: 'id',
       render: (text: string, record: DataSource) => (
@@ -109,14 +104,14 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       )
     },
     {
-      title: 'Date',
+      title: t('content.table.header.orderDate'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (createdAt: string) =>
         convertIsoStringToDateFormat(createdAt ?? '')
     },
     {
-      title: 'Delivery Status',
+      title: t('content.table.header.orderDeliveryStatus'),
       dataIndex: 'delivery_status',
       key: 'delivery_status',
       render: (status: string) => (
@@ -130,7 +125,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       )
     },
     {
-      title: 'Payment Status',
+      title: t('content.table.header.orderPaymentStatus'),
       dataIndex: 'payment_status',
       key: 'payment_status',
       render: (status) => (
@@ -144,7 +139,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       )
     },
     {
-      title: 'Payment Method',
+      title: t('content.table.header.orderPaymentMethod'),
       dataIndex: 'payment_method',
       key: 'payment_method',
       render: (status: string) => (
@@ -158,15 +153,11 @@ function OrdersPage({ params }: { params: { locale: string } }) {
       )
     },
     {
-      title: 'Total Order Cost',
+      title: t('content.table.header.orderTotalCost'),
       dataIndex: 'total_order_cost',
       key: 'total_order_cost',
       render: (total_order_cost: number) =>
-        formatCurrencyNumbers(
-          total_order_cost ?? 0,
-          'EGP',
-          params.locale
-        )
+        formatCurrencyNumbers(total_order_cost ?? 0, 'EGP', locale)
     }
   ];
 
@@ -183,41 +174,7 @@ function OrdersPage({ params }: { params: { locale: string } }) {
     })) ?? [];
 
   return (
-    <div className='grid min-h-full justify-center lg:grid-cols-[1fr_3fr] 2xl:px-20'>
-      <ul className='mx-auto flex h-fit w-[75%] flex-col justify-center gap-3'>
-        <li>
-          <SubNavLink href={'/account/orders'} page='orders'>
-            <RiShoppingBag3Fill />
-            <span>Your Orders</span>
-          </SubNavLink>
-        </li>
-        <li>
-          <SubNavLink href={'/account/addresses'} page='addresses'>
-            <GrMapLocation />
-            <span>Addresses</span>
-          </SubNavLink>
-        </li>
-        <li>
-          <SubNavLink href={'/account/settings'} page='settings'>
-            <GoGear />
-            <span>Settings</span>
-          </SubNavLink>
-        </li>
-        <Divider style={{ marginBlock: '10px' }} />
-        <li>
-          <button
-            onClick={() => {
-              router.push('/signin');
-              removeCookie('token');
-              setUserId(null);
-            }}
-            className='flex w-full flex-wrap items-center gap-4 px-4 py-2 text-black-light transition-colors duration-100 hover:bg-gray-ultralight'
-          >
-            <LuLogOut />
-            <span>Log out</span>
-          </button>
-        </li>
-      </ul>
+    <div className='orders-table'>
       <Table
         columns={columns}
         dataSource={dataSource}
@@ -235,7 +192,8 @@ function OrdersPage({ params }: { params: { locale: string } }) {
           },
           style: {
             marginBottom: 0
-          }
+          },
+          className: locale === 'ar' ? 'pagination-in-arabic' : ''
         }}
         rowKey='id'
         onRow={(record) => ({

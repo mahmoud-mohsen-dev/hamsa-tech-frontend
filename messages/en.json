@@ -349,12 +349,109 @@
         "passwordLetterError": "Password must contain at least one letter",
         "passwordNumberError": "Password must contain at least one number",
         "passwordInvalidCharacters": "Password can only contain English letters, numbers, and special characters",
-        "emailTakenError": "This email is already in use. Try another one."
+        "emailTakenError": "This email is already in use. Try another one.",
+        "confirmPassowrdRequired": "Please confirm your password",
+        "passwordMismatch": "The new password that you entered do not match"
       }
     },
     "metaData": {
       "title": "Hamsa Tech Sign up Page",
       "description": "Securely create your Hamsa Tech account"
+    }
+  },
+  "ForgetPasswordPage": {
+    "content": {
+      "title": "Forgot your password?",
+      "description": "Don't worry! Just type in your email and we will send you a code to reset your password!",
+      "emailLabel": "Your email",
+      "emailPlaceholder": "name@company.com",
+      "resetPasswordButton": "Reset password",
+      "formValidationErrorMessages": {
+        "emailRequired": "Email is required!",
+        "errorDuringFormSubmission": "Error during form submission",
+        "emailNotFound": "No account found with this email.",
+        "resetPasswordSuccessMessage": "A reset code has been sent to your email.",
+        "resetPasswordFailedMessage": "Failed to send reset code. Please try again later."
+      }
+    },
+    "metaData": {
+      "title": "Hamsa Tech Password Reset Page",
+      "description": "Reset your Hamsa Tech account password"
+    }
+  },
+  "OtpVerificationPage": {
+    "content": {
+      "headerTitle": "Email Address Verification",
+      "instruction": "Enter the 4-digit verification code sent to your email.",
+      "verifyButton": "Verify Account",
+      "resendText": "Didn't receive the code?",
+      "resendLink": "Resend",
+      "verificationSuccess": "OTP verified successfully!",
+      "invalidOtp": "Please enter a valid 4-digit code."
+    },
+    "metaData": {
+      "title": "Hamsa Tech OTP Verification Page",
+      "description": "Verify your Hamsa Tech account using an OTP code sent to your email"
+    }
+  },
+  "ChangePasswordPage": {
+    "content": {
+      "headerTitle": "Change Password",
+      "passwordRequired": "Please enter your password",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordMinLength": "Password must be at least 8 characters long",
+      "passwordPlaceholder": "Enter new password",
+      "confirmPasswordPlaceholder": "Confirm password",
+      "submitButton": "Change Password",
+      "passwordMismatchError": "Password and confirm password do not match",
+      "passwordChangeSuccess": "Password changed successfully!",
+      "passwordChangeError": "An error occurred while changing the password. Please try again.",
+      "formSubmissionFailed": "Form submission failed. Please try again."
+    },
+    "metaData": {
+      "title": "Change Password | Hamsa Tech",
+      "description": "Change the password for your account at Hamsa Tech."
+    }
+  },
+  "AccountLayoutPage": {
+    "siderbarAccountTitle": "Account",
+    "siderbarOrdersTitle": "My Orders",
+    "siderbarAddressTitle": "Addresses",
+    "siderbarSettingsTitle": "Settings",
+    "siderbarSignOutTitle": "Sign Out",
+    "metaData": {
+      "title": "Hamsa Tech Account Dashboard",
+      "description": "Manage your account, orders, and addresses on Hamsa Tech"
+    },
+    "OrdersPage": {
+      "content": {
+        "table": {
+          "header": {
+            "orderId": "Order ID",
+            "orderDate": "Date",
+            "orderDeliveryStatus": "Delivery Status",
+            "orderPaymentStatus": "Payment Status",
+            "orderPaymentMethod": "Payment Method",
+            "orderTotalCost": "Total Order Cost"
+          }
+        }
+      },
+      "metaData": {
+        "title": "Hamsa Tech Orders Page",
+        "description": "View and manage your orders with Hamsa Tech"
+      }
+    },
+    "AddressPage": {
+      "metaData": {
+        "title": "Hamsa Tech Addresses Page",
+        "description": "Manage your saved addresses on Hamsa Tech"
+      }
+    },
+    "SettingsPage": {
+      "metaData": {
+        "title": "Hamsa Tech Settings Page",
+        "description": "Customize your account settings with Hamsa Tech"
+      }
     }
   },
   "WishlistPage": {

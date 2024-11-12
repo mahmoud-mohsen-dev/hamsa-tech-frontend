@@ -48,6 +48,7 @@ export type GetCartResponseType = {
   data: {
     cart: {
       data: {
+        id: string;
         attributes: {
           total_cart_cost: number;
           product_details: CartDataType[];

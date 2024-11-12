@@ -409,8 +409,8 @@ export default async function Product({
           >
             <ProductSlider
               productData={productData}
-              currentId={productResData?.product?.data.id ?? 0}
-              nextId={productData?.localizations?.data[0].id ?? 0}
+              currentId={productResData?.product?.data?.id ?? 0}
+              nextId={productData?.localizations?.data[0]?.id ?? 0}
             />
             <div>
               {/* Basic Data */}
@@ -713,7 +713,11 @@ export default async function Product({
                     currentPrice={
                       product?.attributes?.sale_price ?? 0
                     }
-                    linkSrc={`/products/${product.id}`}
+                    linkSrc={
+                      product && product.id ?
+                        `/products/${product.id}`
+                      : '/products'
+                    }
                     stock={product?.attributes?.stock ?? 0}
                     totalRates={
                       product?.attributes?.total_reviews ?? 0

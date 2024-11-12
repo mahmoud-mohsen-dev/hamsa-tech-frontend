@@ -35,6 +35,7 @@ import {
   PaymentRequest
 } from '@/types/paymentResonseType';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
+import { createAddress } from '@/services/shippingAddress';
 
 const updateGuestUserQuery = (
   guestUserId: string,
@@ -272,114 +273,7 @@ const createOrderQuery = ({
   }`;
 };
 
-interface CreateAddressProps {
-  city: string;
-  address1: string;
-  address2: string;
-  building: string;
-  floor: string;
-  apartment: string;
-  zipCode?: string;
-  userId: string | null;
-  guestUserId: string | null;
-  firstName: string;
-  lastName: string;
-  deliveryPhone: string;
-  shippingCostId: string | null;
-}
-
-const getCreateShippingAddressQuery = ({
-  city,
-  address1,
-  address2,
-  building,
-  floor,
-  apartment,
-  zipCode,
-  userId,
-  guestUserId,
-  firstName,
-  lastName,
-  deliveryPhone,
-  shippingCostId
-}: CreateAddressProps) => {
-  return `mutation CreateAddress {
-    createAddress(
-        data: {
-            city: "${capitalize(city ?? '')}"
-            address_1: "${capitalize(address1 ?? '')}"
-            address_2: "${capitalize(address2 ?? '')}"
-            building: "${building}"
-            floor: "${floor}"
-            apartment: ${!isNaN(Number(apartment)) ? Number(apartment) : 0}
-            zip_code: ${!isNaN(Number(zipCode)) ? Number(zipCode) : 0}
-            user: ${userId ? `"${userId}"` : null}
-            guest_user: ${guestUserId ? `"${guestUserId}"` : null}
-            first_name: "${capitalize(firstName ?? '')}"
-            last_name: "${capitalize(lastName ?? '')}"
-            delivery_phone: "${deliveryPhone ?? ''}"
-            shipping_cost: ${shippingCostId ? `"${shippingCostId}"` : null}
-            publishedAt: "${new Date().toISOString()}"
-        }
-    ) {
-        data {
-            id
-            
-        }
-    }
-  }`;
-};
-
-const createAddress = async ({
-  city,
-  address1,
-  address2,
-  building,
-  floor,
-  apartment,
-  zipCode,
-  userId,
-  guestUserId,
-  firstName,
-  lastName,
-  deliveryPhone,
-  shippingCostId
-}: CreateAddressProps) => {
-  try {
-    const { data: addressData, error: addressError } =
-      (await fetchGraphqlClient(
-        getCreateShippingAddressQuery({
-          city,
-          address1,
-          address2,
-          building,
-          floor,
-          apartment,
-          zipCode,
-          userId,
-          guestUserId,
-          firstName,
-          lastName,
-          deliveryPhone,
-          shippingCostId
-        })
-      )) as CreateAddressResponseType;
-
-    if (addressData?.createAddress?.data?.id) {
-      return {
-        addressData: addressData.createAddress.data.id,
-        addressError: null
-      };
-    }
-    console.error(addressError);
-    return { addressData: null, addressError: addressError };
-  } catch (err) {
-    console.error('Error creating billing address:', err);
-    return { addressData: null, addressError: err };
-  }
-};
-
-interface OderFormValuesType {
+interface OrderFormValuesType {
   billingMethod: 'same' | 'different';
   emailOrPhone: string;
   paymentMethod: 'card' | 'cash_on_delivery';
@@ -413,15 +307,12 @@ interface OderFormValuesType {
 }
 
 function OrderInfo({
-  shippingCostData,
-  freeShippingData
+  shippingCostData
 }: {
   shippingCostData: ShippingCostDataType[] | [];
-  freeShippingData: FreeShippingAttributesType | undefined;
 }) {
   const [form] = useForm();
   const {
-    setFreeShippingAt,
     governoratesData,
     // setGlobalLoading,
     cart,
@@ -509,18 +400,8 @@ function OrderInfo({
     }
   };
 
-  useEffect(() => {
-    if (
-      typeof freeShippingData === 'object' &&
-      freeShippingData.apply_free_shipping_if_total_cart_cost_equals &&
-      freeShippingData.enable
-    ) {
-      setFreeShippingAt(freeShippingData);
-    }
-  }, [freeShippingData]);
-
   // Function to handle form submission
-  const onFinish = async (formValues: OderFormValuesType) => {
+  const onFinish = async (formValues: OrderFormValuesType) => {
     try {
       console.log('Received values of form: ', formValues);
       const cartId = getCartId() ?? '';
@@ -560,7 +441,7 @@ function OrderInfo({
               shippingDetailsGovernorate
         )?.id ?? '';
 
-      // Get address information
+      // Create a new address
       const {
         addressData: deliveryAddressId,
         addressError: deliveryAddressError
@@ -589,8 +470,8 @@ function OrderInfo({
         return;
       }
 
-      console.warn('deliveryAddressId', deliveryAddressId);
-      console.warn('deliveryAddressError', deliveryAddressError);
+      // console.warn('deliveryAddressId', deliveryAddressId);
+      // console.warn('deliveryAddressError', deliveryAddressError);
 
       let billingAddressId = deliveryAddressId ?? null;
       if (formValues?.billingMethod === 'different') {
@@ -721,7 +602,6 @@ function OrderInfo({
         await handlePayment(paymentData);
       }
 
-      // Your API calls and logic here
       setLoadingMessage(false);
       setSuccessMessage(t('form.successMessage')); // Trigger success
 

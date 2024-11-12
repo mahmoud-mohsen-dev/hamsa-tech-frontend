@@ -3,8 +3,6 @@ import {
   unstable_setRequestLocale
 } from 'next-intl/server';
 
-export const revalidate = 60; // invalidate every 60 seconds
-
 interface PropsType {
   children: React.ReactNode;
   params: { locale: string };
@@ -15,7 +13,7 @@ export async function generateMetadata({
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'ProductsPage.metaData'
+    namespace: 'ForgetPasswordPage.metaData'
   });
 
   return {
@@ -24,13 +22,10 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductsLayout({
-  children,
-  params: { locale }
-}: PropsType) {
+function LoginLayout({ children, params: { locale } }: PropsType) {
   // Enable static rendering
   unstable_setRequestLocale(locale);
-  return (
-    <section className='mt-5 max-w-[1900px]'>{children}</section>
-  );
+  return <section className='container py-12'>{children}</section>;
 }
+
+export default LoginLayout;

@@ -12,7 +12,7 @@ function AddressFormItems({
   shippingCostData
 }: {
   name: string;
-  shippingCostData: ShippingCostDataType[];
+  shippingCostData: ShippingCostDataType[] | null;
 }) {
   const {
     updateGovernoratesData,
@@ -23,7 +23,7 @@ function AddressFormItems({
   const t = useTranslations('CheckoutPage.content');
 
   useEffect(() => {
-    if (shippingCostData.length > 0) {
+    if (shippingCostData && shippingCostData.length > 0) {
       updateGovernoratesData(shippingCostData);
     }
   }, [shippingCostData]);
@@ -49,7 +49,7 @@ function AddressFormItems({
           suffixIcon={<IoIosArrowDown size={18} />}
         />
       </Form.Item>
-      <div className='flex w-full gap-4'>
+      <div className='flex w-full flex-col sm:flex-row sm:gap-4'>
         <Form.Item
           name={`${name}FirstName`}
           rules={[
@@ -98,7 +98,7 @@ function AddressFormItems({
           placeholder={t('additionalAddressTitle')}
         />
       </Form.Item>
-      <div className='flex w-full gap-4'>
+      <div className='flex w-full flex-col sm:flex-row sm:gap-4'>
         <Form.Item
           name={`${name}Building`}
           rules={[
@@ -168,7 +168,7 @@ function AddressFormItems({
       </div>
 
       {/*  */}
-      <div className='flex w-full gap-4'>
+      <div className='flex w-full flex-col sm:flex-row sm:gap-4'>
         <Form.Item
           name={`${name}City`}
           rules={[

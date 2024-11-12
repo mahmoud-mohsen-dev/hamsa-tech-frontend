@@ -8,7 +8,7 @@ function AppProgress({
   freeShippingAt
 }: {
   totalCartCosts?: number;
-  freeShippingAt: FreeShippingAttributesType | undefined;
+  freeShippingAt: FreeShippingAttributesType | null;
 }) {
   const t = useTranslations('CartDrawer.spendMessage');
   // const freeShippingAt = 1000;
@@ -17,13 +17,13 @@ function AppProgress({
   let difference = 0;
   // prettier-ignore
   if (
-    freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals &&
-    freeShippingAt.enable
+    freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals  && freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals > 0 &&
+    freeShippingAt?.enable
   ) {
     applyFreeShipping = true;
-    percent = (Number(totalCartCosts || 0) * 100) / freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals;
+    percent = (Number(totalCartCosts || 0) * 100) / freeShippingAt.apply_free_shipping_if_total_cart_cost_equals;
     difference =
-      freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals -
+      freeShippingAt.apply_free_shipping_if_total_cart_cost_equals -
       totalCartCosts;
   }
 
@@ -40,7 +40,7 @@ function AppProgress({
         <div className='progress-label w-full text-sm font-medium'>
           <BsBoxSeam size={20} className='mx-2.5' />
           <div>
-            {difference >= 0 && (
+            {difference > 0 && (
               <>
                 <span>{t('start')} </span>
                 <b className='font-bold uppercase'>

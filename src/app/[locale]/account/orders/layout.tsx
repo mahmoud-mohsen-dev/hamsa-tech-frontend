@@ -15,7 +15,7 @@ export async function generateMetadata({
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'BlogPage.metaData'
+    namespace: 'AccountLayoutPage.OrdersPage.metaData'
   });
 
   return {
@@ -26,7 +26,7 @@ export async function generateMetadata({
 
 function InvoiceLayout({ children, params: { locale } }: PropsType) {
   unstable_setRequestLocale(locale);
-  return <div className='container py-12'>{children}</div>;
+  return <div className='h-full'>{children}</div>;
 }
 
 export default InvoiceLayout;

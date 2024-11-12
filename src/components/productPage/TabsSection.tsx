@@ -88,7 +88,7 @@ async function ConentOfSpecification({
   const items = specification.map((item, i) => (
     <li
       key={item?.id}
-      className={`grid w-full grid-cols-2 py-4 pl-7 pr-4 ${i % 2 === 0 ? 'border-y border-solid border-y-blue-accent-dark bg-gray-lighter text-gray-normal' : 'bg-white text-gray-normal'}`}
+      className={`grid w-full grid-cols-[1fr_1.5fr] py-4 pl-7 pr-4 ${i % 2 === 0 ? 'border-y border-solid border-y-blue-accent-dark bg-gray-lighter text-gray-normal' : 'bg-white text-gray-normal'}`}
     >
       <span className='font-semibold capitalize'>
         {item?.name ?? ''}:
@@ -97,19 +97,20 @@ async function ConentOfSpecification({
     </li>
   ));
 
-  const halfLength = Math.ceil(items.length / 2);
+  // const halfLength = Math.ceil(items.length / 2);
 
-  const leftSide = items.slice(0, halfLength);
-  const rightSide = items.slice(halfLength, items.length);
+  // const leftSide = items.slice(0, halfLength);
+  // const rightSide = items.slice(halfLength, items.length);
 
   return (
     <div>
       <h3 className='mb-3 font-openSans text-base font-bold capitalize text-black-medium'>
         {t('moreDetailsTitle')}
       </h3>
-      <ul className='grid w-full grid-cols-2 gap-2'>
-        <div className='flex w-full flex-col'>{leftSide}</div>
-        <div className='flex w-full flex-col'>{rightSide}</div>
+      <ul className='w-full xl:grid xl:grid-cols-2 xl:gap-2'>
+        {/* <div className='flex w-full flex-col'>{leftSide}</div>
+        <div className='flex w-full flex-col'>{rightSide}</div> */}
+        <div className='flex w-full flex-col'>{items}</div>
       </ul>
     </div>
   );
