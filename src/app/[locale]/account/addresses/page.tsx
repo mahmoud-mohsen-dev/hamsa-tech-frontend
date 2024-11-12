@@ -26,6 +26,7 @@ import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import { useMyContext } from '@/context/Store';
 import {
   createAddress,
+  getShippingQuery,
   getUserAddressesAuthenticated
 } from '@/services/shippingAddress';
 import { capitalize } from '@/utils/helpers';
@@ -35,7 +36,6 @@ import {
   fetchGraphql,
   fetchGraphqlClient
 } from '@/services/graphqlCrud';
-import { getShippingQuery } from '../../checkout/page';
 import {
   GetShippingCostResponseType,
   ShippingCostDataType

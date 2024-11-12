@@ -186,3 +186,18 @@ export const getUserAddressesAuthenticated = async () => {
     };
   }
 };
+
+export const getShippingQuery = (locale: string) => {
+  return `{
+    shippingCosts(locale: "${locale ?? 'en'}", pagination: { pageSize: 100 }, sort: "governorate:asc") {
+        data {
+            id
+            attributes {
+                governorate
+                delivery_cost
+                delivery_duration_in_days
+            }
+        }
+    }
+  }`;
+};
