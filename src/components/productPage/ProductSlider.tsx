@@ -33,8 +33,8 @@ function ProductSlider({
   }, [currentId, nextId]);
 
   return (
-    <div className='ml-10 flex max-h-[450px] flex-col-reverse items-center gap-8 2xl:sticky 2xl:top-[64px] 2xl:flex-row'>
-      <div className='flex items-start justify-center gap-5 2xl:flex-col'>
+    <div className='flex max-h-fit flex-col-reverse items-center gap-8 2xl:sticky 2xl:top-[64px] 2xl:ml-10 2xl:flex-row'>
+      <div className='flex flex-wrap items-start justify-center gap-5 2xl:flex-col'>
         {Array.isArray(images) &&
           images.length > 0 &&
           images.map((imgSlide, i) => {
@@ -43,13 +43,13 @@ function ProductSlider({
                 className={`h-[90px] w-[90px] border-2 p-[5px] ${activeImg.index === i ? 'border-yellow-medium' : 'border-transparent'}`}
                 // key={productData?.images?.data[0].id}
                 key={v4()}
-                onMouseEnter={() => {
-                  setActiveImg({
-                    imgSrc: imgSlide.attributes.url ?? '',
-                    alt: imgSlide?.attributes.alternativeText ?? '',
-                    index: i
-                  });
-                }}
+                // onMouseEnter={() => {
+                //   setActiveImg({
+                //     imgSrc: imgSlide.attributes.url ?? '',
+                //     alt: imgSlide?.attributes.alternativeText ?? '',
+                //     index: i
+                //   });
+                // }}
                 onClick={() => {
                   setActiveImg({
                     imgSrc: imgSlide.attributes.url ?? '',

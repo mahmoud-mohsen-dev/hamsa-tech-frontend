@@ -361,7 +361,7 @@ function OrderProduct({
         style={{ borderRadius: '6px' }}
       />
       <Btn
-        className={`rounded-md bg-green-dark px-[16px] text-base text-white`}
+        className={`w-full rounded-md bg-green-dark px-[16px] text-base text-white md:w-fit`}
         onClick={handleAddToCart}
         disabled={quantity === 0}
       >
@@ -382,7 +382,7 @@ function OrderProduct({
         }
       </Btn>
       <Btn
-        className={`rounded-md bg-red-shade-350 px-[16px] text-base text-white`}
+        className={`w-full rounded-md bg-red-shade-350 px-[16px] text-base text-white md:w-fit`}
         onClick={handleAddToWishList}
       >
         {isWishlistLoading ?

@@ -171,7 +171,7 @@ async function Review({ review }: { review: reviewType }) {
           </div>
 
           <div>
-            <div className='mt-2 flex items-center gap-4'>
+            <div className='mt-2 flex flex-col gap-4 2xl:flex-row 2xl:items-center'>
               <Rate
                 disabled
                 defaultValue={review?.attributes?.rating ?? 0}
@@ -249,41 +249,44 @@ async function ContentOfReviews({
   // console.log(avgRatings);
 
   return (
-    <div className='grid grid-cols-[350px_1fr] gap-20'>
+    <div className='grid gap-20 md:grid-cols-[250px_1fr] xl:grid-cols-[350px_1fr]'>
       <div>
         <h3 className='font-openSans text-base font-bold text-black-medium'>
           {t('customerReviewsTitle')}
         </h3>
-        <div className='mt-4 flex items-center gap-1'>
+        <div className='mt-4 flex flex-col flex-wrap gap-3 lg:flex-row'>
           <Rate
             disabled
             defaultValue={Number(avgRatings.toFixed(1)) ?? 0}
             allowHalf={true}
           />
           {/* <div className='ml-3 inline-flex items-center gap-1'> */}
-          <span
-            className={`${locale === 'ar' ? 'mr-3' : 'ml-3'} text-xs font-bold text-blue-gray-medium`}
-          >
-            {isNaN(Number(avgRatings.toFixed(1))) ?
-              0
-            : (Number(avgRatings.toFixed(1)) ?? 0)}
-          </span>
-          <span className='text-xs font-bold text-blue-gray-medium'>
-            {t('outOfText')}
-          </span>
-          <span className='text-xs font-bold text-blue-gray-medium'>
-            5
-          </span>
-          <span
-            className={`${locale === 'ar' ? 'mr-3' : 'ml-3'} flex items-center gap-1 text-xs font-semibold text-blue-gray-light`}
-          >
-            <span>{totalNumberOfRates ?? 0}</span>
-            <span>
-              {totalNumberOfRates > 1 ?
-                t('reviewsText')
-              : t('reviewText')}
+          <div className={`flex flex-wrap items-center gap-1`}>
+            <span
+              className={`text-xs font-bold text-blue-gray-medium`}
+            >
+              {isNaN(Number(avgRatings.toFixed(1))) ?
+                0
+              : (Number(avgRatings.toFixed(1)) ?? 0)}
             </span>
-          </span>
+            <span className='text-xs font-bold text-blue-gray-medium'>
+              {t('outOfText')}
+            </span>
+            <span className='text-xs font-bold text-blue-gray-medium'>
+              5
+            </span>
+            <span
+              className={`flex items-center gap-1 text-xs font-semibold text-blue-gray-light`}
+            >
+              <span>({totalNumberOfRates ?? 0}</span>
+              <span>
+                {totalNumberOfRates > 1 ?
+                  t('reviewsText')
+                : t('reviewText')}
+                )
+              </span>
+            </span>
+          </div>
           {/* </div> */}
         </div>
         <div className='mt-4 flex items-center gap-2'>

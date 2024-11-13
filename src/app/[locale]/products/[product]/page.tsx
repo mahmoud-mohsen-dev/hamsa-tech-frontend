@@ -603,7 +603,7 @@ export default async function Product({
                 productData?.datasheet?.data?.attributes?.url ||
                 productData?.user_manual?.data?.attributes?.url
               ) ?
-                'gap-5 2xl:grid-cols-2'
+                'gap-10 2xl:grid-cols-2 2xl:gap-5'
               : 'justify-center'
             }`}
           >
@@ -613,9 +613,9 @@ export default async function Product({
                 productData?.youtube_video?.title && (
                   <div className='flex h-full flex-col items-center justify-center'>
                     <iframe
-                      width='557'
-                      height='314'
-                      className='max-w-full'
+                      width='400'
+                      height='250'
+                      className='aspect-video h-fit max-w-full md:max-w-[400px]'
                       src={
                         productData?.youtube_video?.link_source ?? ''
                       }
@@ -631,10 +631,10 @@ export default async function Product({
               {(productData?.datasheet?.data?.attributes?.url ||
                 productData?.user_manual?.data?.attributes?.url) && (
                 <div>
-                  <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+                  <h2 className='text-2xl font-bold text-black-light xl:text-3xl 2xl:mx-auto 2xl:w-fit'>
                     {t('downloadCenterSectionTitle')}
                   </h2>
-                  <div className='mt-10 flex flex-wrap items-center justify-center gap-5'>
+                  <div className='mt-5 flex flex-wrap items-center justify-start gap-5 2xl:mt-10 2xl:justify-center'>
                     {productData?.datasheet?.data?.attributes
                       ?.url && (
                       <DownloadBtn
@@ -677,10 +677,12 @@ export default async function Product({
 
             {/* About Product Section */}
             <div>
-              <h2 className='mx-auto w-fit text-3xl font-bold text-black-light'>
+              <h2 className='text-xl font-bold text-black-light xl:text-3xl'>
                 {t('aboutThisProductSectionTitle')}
               </h2>
-              <ul className='mx-auto mt-10 w-fit list-disc'>
+              <ul
+                className={`${locale === 'ar' ? 'mr-5' : 'ml-5'} mt-5 list-disc 2xl:mt-10`}
+              >
                 {productData?.features.map((item, i) => (
                   <li
                     key={item?.id ?? i}

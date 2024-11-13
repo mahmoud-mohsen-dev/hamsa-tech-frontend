@@ -1,7 +1,7 @@
 function Info({
   infoKey,
   value,
-  className,
+  className = '',
   isCapitalized = true
 }: {
   infoKey: string;
@@ -11,13 +11,13 @@ function Info({
 }) {
   return value ?
       <div
-        className={`ml-6 mt-3 flex items-center gap-20 ${className}`}
+        className={`mt-3 grid grid-cols-[120px_1fr] gap-4 md:grid-cols-[200px_1fr] md:gap-5 2xl:ml-6 ${className}`}
       >
-        <h3 className='min-w-[180px] text-base font-semibold capitalize text-gray-normal'>
+        <h3 className='text-base font-semibold capitalize text-gray-normal'>
           {infoKey}
         </h3>
         <h3
-          className={`flex text-base font-normal text-gray-normal ${isCapitalized ? 'capitalize' : 'normal-case'}`}
+          className={`text-base font-normal text-gray-normal ${isCapitalized ? 'capitalize' : 'normal-case'}`}
         >
           {value ?? ''}
         </h3>

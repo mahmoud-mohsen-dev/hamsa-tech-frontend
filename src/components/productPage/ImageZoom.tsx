@@ -53,7 +53,7 @@ export default function ImageZoom({
 
   return (
     <div
-      className='imageZoom mt-5 h-[350px] w-[500px] overflow-hidden'
+      className='imageZoom h-full w-full overflow-hidden 2xl:mt-5 2xl:h-[350px] 2xl:w-[500px]'
       style={zoomStyle as React.CSSProperties}
       onMouseMove={handleMouseMove}
       onMouseOut={handleMouseOut}
