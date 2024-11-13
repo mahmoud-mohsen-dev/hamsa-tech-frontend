@@ -95,8 +95,8 @@ export const updateCartInTheBackend = (
         return `{
           quantity: ${cartItem.quantity},
           total_cost: ${cartItem.total_cost},
-          product: ${cartItem.product}
-          description: "${cartItem?.description ?? ''}"
+          product: ${cartItem.product},
+          description: ${JSON.stringify(cartItem?.description ?? '')}
         }`;
       }
       return false;

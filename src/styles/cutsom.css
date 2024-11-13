@@ -147,7 +147,7 @@ html:not([data-scroll='0']) .header .hamburger-menu {
 /* Product Page */
 .imageZoom {
   width: 500px;
-  height: 350px;
+  height: 300px;
   position: relative;
 }
 
@@ -160,7 +160,7 @@ html:not([data-scroll='0']) .header .hamburger-menu {
   opacity: var(--opacity);
   content: '';
   width: 100%;
-  height: 100%;
+  height: 300px;
   background-color: white;
   background-image: var(--url);
   background-size: 200%;

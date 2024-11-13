@@ -33,8 +33,8 @@ function ProductSlider({
   }, [currentId, nextId]);
 
   return (
-    <div className='flex max-h-fit flex-col-reverse items-center gap-8 2xl:sticky 2xl:top-[64px] 2xl:ml-10 2xl:flex-row'>
-      <div className='flex flex-wrap items-start justify-center gap-5 2xl:flex-col'>
+    <div className='flex max-h-fit flex-col-reverse items-center justify-center 2xl:sticky 2xl:top-[64px] 3xl:flex-row'>
+      <div className='flex flex-wrap items-start justify-center gap-5 3xl:flex-col'>
         {Array.isArray(images) &&
           images.length > 0 &&
           images.map((imgSlide, i) => {
@@ -77,7 +77,7 @@ function ProductSlider({
             );
           })}
       </div>
-      <div>
+      <div className='m-8'>
         <ImageZoom imgSrc={activeImg.imgSrc} alt={activeImg.alt} />
       </div>
     </div>

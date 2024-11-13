@@ -53,7 +53,7 @@ export default function ImageZoom({
 
   return (
     <div
-      className='imageZoom h-full w-full overflow-hidden 2xl:mt-5 2xl:h-[350px] 2xl:w-[500px]'
+      className='imageZoom h-fit max-h-[300px] w-full overflow-hidden'
       style={zoomStyle as React.CSSProperties}
       onMouseMove={handleMouseMove}
       onMouseOut={handleMouseOut}
@@ -62,10 +62,10 @@ export default function ImageZoom({
         src={imgSrc}
         alt={alt}
         width={500}
-        height={350}
+        height={300}
         quality={100}
         style={{
-          maxHeight: '100%',
+          maxHeight: '300px',
           maxWidth: '100%',
           objectFit: 'contain',
           objectPosition: 'center',

@@ -409,14 +409,14 @@ export default async function Product({
             )}
           />
           <section
-            className={`mx-2 mt-5 grid gap-10 2xl:grid-cols-2 ${locale === 'ar' ? '2xl:gap-28' : '2xl:gap-44'}`}
+            className={`mx-2 mt-5 grid items-start 2xl:grid-cols-2`}
           >
             <ProductSlider
               productData={productData}
               currentId={productResData?.product?.data?.id ?? 0}
               nextId={productData?.localizations?.data[0]?.id ?? 0}
             />
-            <div>
+            <div className='mt-5 2xl:mt-0'>
               {/* Basic Data */}
               <section>
                 <h4 className='capitalize text-blue-dark'>
@@ -426,7 +426,7 @@ export default async function Product({
                 <h2 className='mt-3 text-3xl font-semibold capitalize text-black-medium'>
                   {productData?.name}
                 </h2>
-                <h4 className='mt-5 text-xl font-normal text-gray-500'>
+                <h4 className='mt-5 text-sm font-normal text-gray-500 sm:text-base md:text-xl'>
                   {productData?.description}
                 </h4>
                 <div className='mt-5 flex items-center gap-2'>
@@ -608,10 +608,10 @@ export default async function Product({
             }`}
           >
             {/* Download Center Section */}
-            <div className='flex flex-col gap-10'>
+            <div className='flex flex-col items-center justify-center gap-10'>
               {productData?.youtube_video?.link_source &&
                 productData?.youtube_video?.title && (
-                  <div className='flex h-full flex-col items-center justify-center'>
+                  <div className='flex flex-col items-center'>
                     <iframe
                       width='400'
                       height='250'
@@ -631,7 +631,7 @@ export default async function Product({
               {(productData?.datasheet?.data?.attributes?.url ||
                 productData?.user_manual?.data?.attributes?.url) && (
                 <div>
-                  <h2 className='text-2xl font-bold text-black-light xl:text-3xl 2xl:mx-auto 2xl:w-fit'>
+                  <h2 className='w-fit text-2xl font-bold text-black-light xl:text-3xl 2xl:mx-auto'>
                     {t('downloadCenterSectionTitle')}
                   </h2>
                   <div className='mt-5 flex flex-wrap items-center justify-start gap-5 2xl:mt-10 2xl:justify-center'>
