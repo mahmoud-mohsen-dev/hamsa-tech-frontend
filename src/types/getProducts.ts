@@ -33,6 +33,7 @@ export type ProductType = {
     final_product_price: number;
     description: string;
     stock: number;
+    modal_name: string;
     sub_category: SubCategory;
     brand: BrandType;
     image_thumbnail: ImageThumbnail;

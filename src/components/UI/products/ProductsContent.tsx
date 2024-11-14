@@ -321,6 +321,7 @@ function ProductsContent() {
                       product?.attributes?.sub_category?.data
                         ?.attributes?.name ?? ''
                     }
+                    modalName={product?.attributes?.modal_name ?? ''}
                     badge={getBadge(
                       locale,
                       product?.attributes?.updatedAt,

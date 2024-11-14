@@ -166,6 +166,7 @@ const getQueryProductPage = (id: string) => `{
                     price
                     sale_price
                     stock
+                    modal_name
                     sub_category {
                         data {
                             attributes {
@@ -195,6 +196,7 @@ const getQueryProductPage = (id: string) => `{
                     price
                     sale_price
                     stock
+                    modal_name
                     sub_category {
                         data {
                             attributes {
@@ -224,6 +226,7 @@ const getQueryProductPage = (id: string) => `{
                     price
                     sale_price
                     stock
+                    modal_name
                     sub_category {
                         data {
                             attributes {
@@ -253,6 +256,7 @@ const getQueryProductPage = (id: string) => `{
                     price
                     sale_price
                     stock
+                    modal_name
                     sub_category {
                         data {
                             attributes {
@@ -409,7 +413,7 @@ export default async function Product({
             )}
           />
           <section
-            className={`mx-2 mt-5 grid items-start 2xl:grid-cols-2`}
+            className={`mx-2 mt-5 grid items-start 2xl:grid-cols-2 2xl:gap-2`}
           >
             <ProductSlider
               productData={productData}
@@ -714,7 +718,7 @@ export default async function Product({
                 {t('relatedProductsTitleRedText')}
               </span>
             </h2>
-            <div className='mt-8 grid gap-5 lg:grid-cols-2 2xl:grid-cols-4'>
+            <div className='mt-8 grid gap-5 lg:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4'>
               {relatedProducts.map((product) => {
                 return (
                   <ProductCard
@@ -739,6 +743,7 @@ export default async function Product({
                     brand={
                       productData?.brand?.data?.attributes?.name ?? ''
                     }
+                    modalName={productData?.modal_name ?? ''}
                     badge={getBadge(
                       locale ?? 'en',
                       productData?.updatedAt,

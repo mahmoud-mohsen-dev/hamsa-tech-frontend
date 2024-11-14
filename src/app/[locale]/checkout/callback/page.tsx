@@ -18,9 +18,16 @@ import {
 import DownloadButton from '@/components/invoice/DownloadButton';
 import Btn from '@/components/UI/Btn';
 import { IoStorefrontSharp } from 'react-icons/io5';
-import { getCookie, getIdFromToken } from '@/utils/cookieUtils';
+import {
+  getCookie,
+  getIdFromToken,
+  removeCookie,
+  setCartId
+} from '@/utils/cookieUtils';
 import { capitalize } from '@/utils/helpers';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
+import { emptyCart } from '@/services/cart';
+import { useMyContext } from '@/context/Store';
 
 const getOrderSummaryByIdQuery = (orderId: string) => {
   return `{
@@ -69,6 +76,36 @@ const getOrderSummaryByIdQuery = (orderId: string) => {
     }`;
 };
 
+const convertPaymentMethodsInArabic = (value: string) => {
+  switch (value) {
+    case 'cash_on_delivery':
+      return 'الدفع عند الإستلام';
+    case 'card':
+      return 'كارت';
+    default:
+      return '-';
+  }
+};
+
+const convertPaymentStatusInArabic = (value: string) => {
+  switch (value) {
+    case 'pending':
+      return 'معلق';
+    case 'paid_off':
+      return 'مدفوع';
+    case 'refunded':
+      return 'تم رد المبلغ';
+    case 'partially_refunded':
+      return 'تم رد جزء من المبلغ';
+    case 'failed':
+      return 'فشل';
+    case 'canceled':
+      return 'تم إلغاؤه';
+    default:
+      return '-';
+  }
+};
+
 const CallbackCheckoutPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +117,7 @@ const CallbackCheckoutPage = () => {
   const [orderData, setOrderData] = useState<OrderSummaryType | null>(
     null
   );
+  const { setCart } = useMyContext();
 
   useEffect(() => {
     const queryString =
@@ -154,6 +192,12 @@ const CallbackCheckoutPage = () => {
             null;
           const userResponseID =
             data?.order?.data?.attributes?.user?.data?.id ?? null;
+
+          const cartId = getCookie('cartId');
+          const updatedCartId = await emptyCart(cartId);
+          if (updatedCartId) {
+            setCart([]);
+          }
 
           if (
             (userResponseID && userId && userResponseID === userId) ||
@@ -335,7 +379,14 @@ const CallbackCheckoutPage = () => {
                 </span>
                 <span className='font-semibold text-black-light'>
                   {orderData?.attributes?.payment_method ?
-                    capitalize(orderData?.attributes?.payment_method)
+                    locale === 'ar' ?
+                      convertPaymentMethodsInArabic(
+                        orderData.attributes.payment_method
+                      )
+                    : capitalize(
+                        orderData?.attributes?.payment_method
+                      )
+
                   : '-'}
                 </span>
               </div>
@@ -345,7 +396,14 @@ const CallbackCheckoutPage = () => {
                 </span>
                 <span className='font-semibold text-black-light'>
                   {orderData?.attributes?.payment_status ?
-                    capitalize(orderData?.attributes?.payment_status)
+                    locale === 'ar' ?
+                      convertPaymentStatusInArabic(
+                        orderData.attributes.payment_status
+                      )
+                    : capitalize(
+                        orderData?.attributes?.payment_status
+                      )
+
                   : '-'}
                 </span>
               </div>

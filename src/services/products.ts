@@ -14,6 +14,7 @@ export const getProductsQuery = (queryArgs: string) => {
                   final_product_price
                   description
                   stock
+                  modal_name
                   sub_category {
                       data {
                           attributes {

@@ -1,5 +1,6 @@
 import { CartDataType } from '@/types/cartResponseTypes';
 import { ProductType } from '@/types/getProducts';
+import { formatForGraphQL } from './helpers';
 
 export const updateCartInTheBackend = (
   cartId: string,
@@ -32,8 +33,9 @@ export const updateCartInTheBackend = (
           total_cost:
             cartItem.product.data.attributes.final_product_price *
             quantity,
-          description:
-            cartItem?.product?.data?.attributes?.description ?? ''
+          description: productId ?? ''
+          // description:
+          //   cartItem?.product?.data?.attributes?.description ?? ''
         };
       }
       // the rest of the all product that didn't change
@@ -42,8 +44,9 @@ export const updateCartInTheBackend = (
         product: cartItem.product.data.id,
         // cost: cartItem.cost,
         total_cost: cartItem.total_cost,
-        description:
-          cartItem?.product?.data?.attributes?.description ?? ''
+        // description:
+        //   cartItem?.product?.data?.attributes?.description ?? ''
+        description: productId ?? ''
       };
     })
     .filter((cartItem) => cartItem !== null); // Remove nulls (deleted products)
@@ -69,7 +72,8 @@ export const updateCartInTheBackend = (
         ) ?
           product.attributes.sale_price * quantity
         : (product?.attributes?.price ?? 0) * quantity,
-      description: product?.attributes?.description ?? ''
+      // description: product?.attributes?.description ?? ''
+      description: productId ?? ''
     });
   }
 
@@ -96,7 +100,7 @@ export const updateCartInTheBackend = (
           quantity: ${cartItem.quantity},
           total_cost: ${cartItem.total_cost},
           product: ${cartItem.product},
-          description: ${JSON.stringify(cartItem?.description ?? '')}
+          description: "(Product ID: ${cartItem?.description ?? ''})"
         }`;
       }
       return false;

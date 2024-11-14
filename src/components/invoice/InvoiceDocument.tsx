@@ -162,10 +162,10 @@ export function InvoiceDocument({
 }: {
   orderData: OrderInfoType;
 }) {
-  console.log('orderData at InvoiceDocument component', orderData);
+  // console.log('orderData at InvoiceDocument component', orderData);
   const billTo =
     orderData?.attributes?.shipping_address?.data?.attributes ?? null;
-  console.log(billTo);
+  // console.log(billTo);
   return (
     <Document>
       <Page size='A4' style={styles.page}>

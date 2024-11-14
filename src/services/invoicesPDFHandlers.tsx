@@ -3,13 +3,13 @@ import type { OrderInfoType } from '@/types/orderResponseTypes';
 
 const generatePdfBlob = async (orderData: OrderInfoType) => {
   const { pdf } = await import('@react-pdf/renderer');
-  console.log(pdf);
+  // console.log(pdf);
   const { InvoiceDocument } = await import(
     '../components/invoice/InvoiceDocument'
   );
   // Create a React element with props
   const element = <InvoiceDocument orderData={orderData} />;
-  console.log(element);
+  // console.log(element);
 
   // Generate PDF blob from the React element
   const blob = pdf(element).toBlob();
@@ -18,14 +18,14 @@ const generatePdfBlob = async (orderData: OrderInfoType) => {
 };
 
 export const uploadInvoicePdf = async (orderData: OrderInfoType) => {
-  console.log('uploadInvoicePdf orderData before:', orderData);
+  // console.log('uploadInvoicePdf orderData before:', orderData);
   if (!orderData?.id) {
     console.log("orderData id don't exist exists");
     return; // exit early if orderData.id does not exist
   }
-  console.log('uploadInvoicePdf orderData', orderData);
+  // console.log('uploadInvoicePdf orderData', orderData);
   const pdfBlob = await generatePdfBlob(orderData);
-  console.log(pdfBlob);
+  // console.log(pdfBlob);
 
   const formData = new FormData();
   formData.append('files', pdfBlob, `invoice_${orderData?.id}.pdf`);
@@ -45,12 +45,12 @@ export const uploadInvoicePdf = async (orderData: OrderInfoType) => {
         // }
       }
     );
-    console.log(response);
+    // console.log(response);
     const data = await response.json();
-    console.log('data of invoicesPdfHandler: ', data);
+    // console.log('data of invoicesPdfHandler: ', data);
 
     // Handle response data
-    console.log('Upload response:', data);
+    // console.log('Upload response:', data);
     return data;
   } catch (error) {
     console.error('PDF upload failed:', error);

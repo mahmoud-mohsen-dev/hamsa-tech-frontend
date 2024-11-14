@@ -48,3 +48,24 @@ export function truncateSentence(sentence: string, length: number) {
   }
   return sentence; // Return the original sentence if it's within the limit
 }
+
+export function formatForGraphQL(input: any) {
+  if (typeof input !== 'string') {
+    console.error('Input must be a string');
+    console.error(input);
+    return '';
+  }
+
+  // Use JSON.stringify to automatically escape special characters
+  // return JSON.stringify(input).slice(1, -1); // Remove surrounding quotes
+
+  return input
+    .replace(/\\/g, '\\\\') // Escape backslashes
+    .replace(/"/g, '\\"') // Escape double quotes
+    .replace(/'/g, "\\'") // Escape single quotes
+    .replace(/\n/g, '\\n') // Escape newlines
+    .replace(/\r/g, '\\r') // Escape carriage returns
+    .replace(/\t/g, '\\t') // Escape tabs
+    .replace(/\f/g, '\\f') // Escape form feeds
+    .replace(/\b/g, '\\b'); // Escape backspaces
+}

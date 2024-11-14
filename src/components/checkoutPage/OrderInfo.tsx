@@ -153,12 +153,13 @@ const createOrderQuery = ({
         cartItem?.quantity &&
         cartItem?.product?.data?.id &&
         cartItem?.total_cost
+        // this was on the last line on the return down after the parenthesis // description: "${cartItem?.product?.data?.attributes?.description ?? ''}"
       ) {
         return `{
           quantity: ${cartItem.quantity},
           total_cost: ${cartItem.total_cost},
           product: ${cartItem.product.data.id},
-          description: "${cartItem?.product?.data?.attributes?.description ?? ''}"
+          description: "(Product ID: ${cartItem?.id ?? ''})"
         }`;
       }
       return false;
@@ -668,7 +669,8 @@ function OrderInfo({
           sendNewsLetter: false,
           shippingDetailsCountry: 'egypt',
           billingDetailsCountry: 'egypt',
-          paymentMethod: 'card',
+          // paymentMethod: 'card',
+          paymentMethod: 'cash_on_delivery',
           billingMethod: 'same'
         }}
       >

@@ -17,7 +17,8 @@ function ProductCard({
   priceBeforeDeduction,
   badge,
   currentPrice,
-  stock
+  stock,
+  modalName
 }: {
   id: string;
   linkSrc: string;
@@ -32,6 +33,7 @@ function ProductCard({
   priceBeforeDeduction: number;
   currentPrice: number;
   stock: number;
+  modalName: string;
 }) {
   const t = useTranslations('ProductsPage.content');
   // const handleClick = (event: React.SyntheticEvent) => {
@@ -64,13 +66,16 @@ function ProductCard({
           className='mb-5 mt-2.5 object-contain transition-["scale"] duration-1000 ease-linear hover:scale-110'
         />
         <div className='h-[100px]'>
+          <p className='mb-2.5 h-[14px] text-sm font-normal uppercase text-gray-normal'>
+            {modalName}
+          </p>
           <h3 className='mb-1 h-[22px] overflow-hidden font-openSans text-sm font-normal capitalize leading-[22px] text-gray-medium'>
-            {category} - {brand}
+            {brand} - {category}
           </h3>
           <h4 className='mb-1 h-[40px] font-openSans text-sm font-semibold capitalize leading-[20px] text-black-light'>
             {title}
           </h4>
-          <div className='mb-2.5 flex h-[20px] items-center gap-2'>
+          {/* <div className='mb-2.5 flex h-[20px] items-center gap-2'>
             <Rate defaultValue={avgRate} allowHalf disabled />
             <span className='text-sm font-normal text-gray-medium'>
               ({totalRates}{' '}
@@ -79,7 +84,7 @@ function ProductCard({
               : t('productCardReview')}
               )
             </span>
-          </div>
+          </div> */}
         </div>
 
         {/* price and add button */}

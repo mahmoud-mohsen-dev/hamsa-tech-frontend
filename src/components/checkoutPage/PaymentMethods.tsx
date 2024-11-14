@@ -6,7 +6,10 @@ import { useTranslations } from 'next-intl';
 
 function PaymentMethods({ form }: { form: FormInstance<any> }) {
   const t = useTranslations('CheckoutPage.content');
-  const [paymentValue, setPaymentValue] = useState('card');
+  // const [paymentValue, setPaymentValue] = useState('card');
+  const [paymentValue, setPaymentValue] = useState(
+    'cash_on_delivery'
+  );
 
   const onCollapsePaymentChange = (key: string | string[]) => {
     if (Array.isArray(key) && key[0]) {
@@ -19,64 +22,64 @@ function PaymentMethods({ form }: { form: FormInstance<any> }) {
   // };
   // console.log(paymentValue, 'paymentValue');
   const getPaymentItems: () => CollapseProps['items'] = () => [
-    {
-      key: 'card',
-      label: (
-        <Radio
-          value='card'
-          style={{ width: '100%' }}
-          // checked={paymentValue === 'card'}
-        >
-          {t('payWithCreditCardTitle')}
-        </Radio>
-      ),
-      // style: {
-      //   backgroundColor:
-      //     paymentValue === 'card' ? '#f2f7ff' : '#fafafa'
-      // },
-      extra: (
-        <div className='flex flex-wrap items-center gap-1'>
-          <Image
-            src='/payment-methods/mastercard.svg'
-            alt='mastercard logo'
-            width={38}
-            height={24}
-          />
-          <Image
-            src='/payment-methods/visa.svg'
-            alt='visa logo'
-            width={38}
-            height={24}
-          />
-          {/* <Image
-            src='/payment-methods/valu.svg'
-            alt='valu logo'
-            width={38}
-            height={24}
-          /> */}
-          <Image
-            src='/payment-methods/meeza.svg'
-            alt='meeza logo'
-            width={38}
-            height={24}
-          />
-        </div>
-      ),
-      showArrow: false,
-      children: (
-        <div className='flex flex-col items-center justify-center gap-2'>
-          <Image
-            src='/payment-methods/redirect.svg'
-            alt='pay with card icon'
-            width={164}
-            height={81}
-          />
-          <p className='max-w-[340px] text-center'>
-            {t('payCithCardSubtitle')}
-          </p>
-        </div>
-      )
-    },
+    // {
+    //   key: 'card',
+    //   label: (
+    //     <Radio
+    //       value='card'
+    //       style={{ width: '100%' }}
+    //       // checked={paymentValue === 'card'}
+    //     >
+    //       {t('payWithCreditCardTitle')}
+    //     </Radio>
+    //   ),
+    //   // style: {
+    //   //   backgroundColor:
+    //   //     paymentValue === 'card' ? '#f2f7ff' : '#fafafa'
+    //   // },
+    //   extra: (
+    //     <div className='flex flex-wrap items-center gap-1'>
+    //       <Image
+    //         src='/payment-methods/mastercard.svg'
+    //         alt='mastercard logo'
+    //         width={38}
+    //         height={24}
+    //       />
+    //       <Image
+    //         src='/payment-methods/visa.svg'
+    //         alt='visa logo'
+    //         width={38}
+    //         height={24}
+    //       />
+    //       {/* <Image
+    //         src='/payment-methods/valu.svg'
+    //         alt='valu logo'
+    //         width={38}
+    //         height={24}
+    //       /> */}
+    //       <Image
+    //         src='/payment-methods/meeza.svg'
+    //         alt='meeza logo'
+    //         width={38}
+    //         height={24}
+    //       />
+    //     </div>
+    //   ),
+    //   showArrow: false,
+    //   children: (
+    //     <div className='flex flex-col items-center justify-center gap-2'>
+    //       <Image
+    //         src='/payment-methods/redirect.svg'
+    //         alt='pay with card icon'
+    //         width={164}
+    //         height={81}
+    //       />
+    //       <p className='max-w-[340px] text-center'>
+    //         {t('payCithCardSubtitle')}
+    //       </p>
+    //     </div>
+    //   )
+    // },
     {
       key: 'cash_on_delivery',
       label: (
@@ -107,7 +110,8 @@ function PaymentMethods({ form }: { form: FormInstance<any> }) {
         <Radio.Group style={{ width: '100%' }}>
           <Collapse
             bordered={false}
-            defaultActiveKey={['card']}
+            // defaultActiveKey={['card']}
+            defaultActiveKey={['cash_on_delivery']}
             activeKey={[paymentValue]}
             onChange={onCollapsePaymentChange}
             accordion
