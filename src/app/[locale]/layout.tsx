@@ -62,8 +62,8 @@ export async function generateMetadata({
 
   const siteUrl = process.env.BASE_URL || 'https://hamsatech-eg.com'; // Base URL of your site
   // const faviconUrl = `${siteUrl}/favicon.ico`;
-  const faviconUrl = `${siteUrl}/icons/apple-touch-icon.png`;
   const isArabic = locale === 'ar';
+  const wideImgUrl = `${siteUrl}/icons/social-meta-tag-img-wide-${isArabic ? 'ar' : 'en'}.png`;
 
   const openGraph = {
     type: 'website',
@@ -72,8 +72,17 @@ export async function generateMetadata({
     url: `${siteUrl}/${locale}`,
     images: [
       {
-        url: faviconUrl,
+        url: wideImgUrl,
         width: 1200,
+        height: 630,
+        alt:
+          isArabic ?
+            'Hamsa Tech - Quality Surveillance and Technology Solutions'
+          : 'همسة تك - أنظمة مراقبة وحلول تكنولوجيا عالية الجودة'
+      },
+      {
+        url: `${siteUrl}/icons/social-meta-tag-img-wide-rectangle.png`,
+        width: 630,
         height: 630,
         alt:
           isArabic ?
@@ -82,7 +91,7 @@ export async function generateMetadata({
       }
     ],
     locale: isArabic ? 'ar_EG' : 'en_US',
-    site_name: isArabic ? 'همسة تك' : 'Hamsa Tech'
+    siteName: isArabic ? 'همسة تك' : 'Hamsa Tech'
   };
 
   const twitter = {
@@ -90,7 +99,7 @@ export async function generateMetadata({
     site: '@hamsa_tech', // Your Twitter handle
     title: t('title'),
     description: t('description'),
-    image: faviconUrl,
+    image: wideImgUrl,
     imageAlt: t('title')
   };
 

@@ -4,7 +4,7 @@ import '@/styles/globals.css';
 export async function generateMetadata() {
   const siteUrl = process.env.BASE_URL || 'https://hamsatech-eg.com'; // Base URL of your site
   // const faviconUrl = `${siteUrl}/favicon.ico`;
-  const faviconUrl = `${siteUrl}/icons/apple-touch-icon.png`;
+  const wideImgUrl = `${siteUrl}/icons/social-meta-tag-img-wide-en.png`;
   const metaObject = {
     title: 'Hamsa Tech Store',
     description:
@@ -20,13 +20,19 @@ export async function generateMetadata() {
     url: `${siteUrl}`,
     images: [
       {
-        url: faviconUrl,
+        url: wideImgUrl,
         width: 1200,
+        height: 630,
+        alt: 'Hamsa Tech - Quality Surveillance and Technology Solutions'
+      },
+      {
+        url: `${siteUrl}/icons/social-meta-tag-img-wide-rectangle.png`,
+        width: 630,
         height: 630,
         alt: 'Hamsa Tech - Quality Surveillance and Technology Solutions'
       }
     ],
-    site_name: 'Hamsa Tech'
+    siteName: 'Hamsa Tech'
   };
 
   const twitter = {
@@ -34,7 +40,7 @@ export async function generateMetadata() {
     site: '@hamsa_tech', // Your Twitter handle
     title: metaObject.title,
     description: metaObject.description,
-    image: faviconUrl,
+    image: wideImgUrl,
     imageAlt: metaObject.title
   };
 
