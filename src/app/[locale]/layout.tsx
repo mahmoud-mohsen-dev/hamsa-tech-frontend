@@ -82,6 +82,8 @@ export async function generateMetadata({
       },
       {
         url: `${siteUrl}/icons/social-meta-tag-img-rectangle.png`,
+        width: 1000,
+        height: 1000,
         alt:
           isArabic ?
             'Hamsa Tech - Quality Surveillance and Technology Solutions'
