@@ -487,9 +487,10 @@ export default async function Product({
                         ?.attributes?.name ?? ''
                     }
                     brand={
-                      productData?.brand?.data?.attributes?.name ?? ''
+                      product?.attributes?.brand?.data?.attributes
+                        ?.name ?? ''
                     }
-                    modalName={productData?.modal_name ?? ''}
+                    modalName={product?.attributes?.modal_name ?? ''}
                     badge={getBadge(
                       locale ?? 'en',
                       productData?.updatedAt,

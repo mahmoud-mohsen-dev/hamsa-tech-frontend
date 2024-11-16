@@ -49,9 +49,42 @@ export async function generateMetadata({
     productData?.brand?.data?.attributes?.name ||
     '';
 
+  function cleanString(input: string) {
+    if (typeof input !== 'string') return '';
+    return input
+      .replace(/,|\n|\u202B/g, '')
+      .trim()
+      .split(' ')
+      .join(', ');
+  }
+
+  const getKeywords = () => {
+    if (!productData?.seo?.keywords) {
+      return [
+        productData?.modal_name ?? null,
+        productData?.brand?.data?.attributes?.name ?? null,
+        productData?.sub_category?.data?.attributes?.category?.data
+          ?.attributes?.name ?? null,
+        productData?.sub_category?.data?.attributes?.name ?? null,
+        productData?.tags?.data
+          ?.map((tag) => tag?.attributes?.name ?? null)
+          .filter((attributes) => attributes)
+          .join(', ')
+      ]
+        .map((keyword) =>
+          keyword ? keyword.toLocaleLowerCase() : keyword
+        )
+        .filter((keyword) => keyword)
+        .join(', ');
+    }
+
+    return cleanString(productData?.seo?.keywords ?? null);
+  };
+
   return {
     title: title,
     description: description.split('\n').join(' '),
+    keywords: getKeywords(),
     openGraph: {
       title: title,
       description: description.split('\n').join(' '),
@@ -69,7 +102,9 @@ export async function generateMetadata({
             title ||
             ''
         }
-      ]
+      ],
+      locale: isArabic ? 'ar_EG' : 'en_US',
+      siteName: isArabic ? 'همسة تك' : 'Hamsa Tech'
     },
     twitter: {
       card: 'summary_large_image',

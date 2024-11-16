@@ -120,6 +120,11 @@ export interface ProductDataType {
     data: { id: string; attributes: { locale: string } }[];
   };
   locale: string;
+  seo?: {
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string;
+  };
 }
 
 // Define the product response type
@@ -143,6 +148,15 @@ export interface RelatedProduct {
     price: number;
     sale_price: number;
     stock: number;
+    modal_name: string;
+    brand: {
+      data: {
+        attributes: {
+          slug: string;
+          name: string;
+        };
+      };
+    };
     sub_category: {
       data: { attributes: { name: string } };
     };

@@ -12,8 +12,8 @@ const isNewProduct = (createdAt: string): boolean => {
   // Convert milliseconds to days
   const differenceInDays = differenceInMillis / (1000 * 60 * 60 * 24);
 
-  // Check if the difference is less than 7 days (1 week)
-  return differenceInDays < 7;
+  // Check if the difference is less than 45 days
+  return differenceInDays < 45;
 };
 
 export { isNewProduct };

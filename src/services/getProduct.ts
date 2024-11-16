@@ -129,6 +129,14 @@ export const getQueryProductPage = (id: string) => `{
                     sale_price
                     stock
                     modal_name
+                    brand {
+                        data {
+                            attributes {
+                                name
+                                slug
+                            }
+                        }
+                    }
                     sub_category {
                         data {
                             attributes {
@@ -159,6 +167,14 @@ export const getQueryProductPage = (id: string) => `{
                     sale_price
                     stock
                     modal_name
+                    brand {
+                        data {
+                            attributes {
+                                name
+                                slug
+                            }
+                        }
+                    }
                     sub_category {
                         data {
                             attributes {
@@ -189,6 +205,14 @@ export const getQueryProductPage = (id: string) => `{
                     sale_price
                     stock
                     modal_name
+                    brand {
+                        data {
+                            attributes {
+                                name
+                                slug
+                            }
+                        }
+                    }
                     sub_category {
                         data {
                             attributes {
@@ -219,6 +243,14 @@ export const getQueryProductPage = (id: string) => `{
                     sale_price
                     stock
                     modal_name
+                    brand {
+                        data {
+                            attributes {
+                                name
+                                slug
+                            }
+                        }
+                    }
                     sub_category {
                         data {
                             attributes {
@@ -248,6 +280,11 @@ export const getQueryProductPage = (id: string) => `{
             }
         }
         locale
+        seo {
+            metaTitle
+            metaDescription
+            keywords
+        }
       }
     }
   }
