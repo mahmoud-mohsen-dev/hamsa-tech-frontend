@@ -3,7 +3,8 @@ import '@/styles/globals.css';
 
 export async function generateMetadata() {
   const siteUrl = process.env.BASE_URL || 'https://hamsatech-eg.com'; // Base URL of your site
-  const faviconUrl = `${siteUrl}/favicon.ico`;
+  // const faviconUrl = `${siteUrl}/favicon.ico`;
+  const faviconUrl = `${siteUrl}/icons/apple-touch-icon.png`;
   const metaObject = {
     title: 'Hamsa Tech Store',
     description:
@@ -41,13 +42,13 @@ export async function generateMetadata() {
     title: metaObject.title,
     description: metaObject.description,
     keywords: metaObject.keywords,
-    alternates: {
-      // canonical: isArabic ? `${siteUrl}/ar` : `${siteUrl}/en`,
-      languages: {
-        en: `${siteUrl}/en`,
-        ar: `${siteUrl}/ar`
-      }
-    },
+    // alternates: {
+    //   // canonical: isArabic ? `${siteUrl}/ar` : `${siteUrl}/en`,
+    //   languages: {
+    //     en: `${siteUrl}/en`,
+    //     ar: `${siteUrl}/ar`
+    //   }
+    // },
     openGraph: openGraph,
     twitter: twitter,
     robots: 'index, follow',

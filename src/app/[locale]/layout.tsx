@@ -61,7 +61,8 @@ export async function generateMetadata({
   });
 
   const siteUrl = process.env.BASE_URL || 'https://hamsatech-eg.com'; // Base URL of your site
-  const faviconUrl = `${siteUrl}/favicon.ico`;
+  // const faviconUrl = `${siteUrl}/favicon.ico`;
+  const faviconUrl = `${siteUrl}/icons/apple-touch-icon.png`;
   const isArabic = locale === 'ar';
 
   const openGraph = {
