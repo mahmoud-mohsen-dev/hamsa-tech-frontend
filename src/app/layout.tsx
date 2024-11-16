@@ -26,9 +26,7 @@ export async function generateMetadata() {
         alt: 'Hamsa Tech - Quality Surveillance and Technology Solutions'
       },
       {
-        url: `${siteUrl}/icons/social-meta-tag-img-wide-rectangle.png`,
-        width: 630,
-        height: 630,
+        url: `${siteUrl}/icons/social-meta-tag-img-rectangle.png`,
         alt: 'Hamsa Tech - Quality Surveillance and Technology Solutions'
       }
     ],

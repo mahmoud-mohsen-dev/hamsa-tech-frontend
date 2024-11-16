@@ -81,9 +81,7 @@ export async function generateMetadata({
           : 'همسة تك - أنظمة مراقبة وحلول تكنولوجيا عالية الجودة'
       },
       {
-        url: `${siteUrl}/icons/social-meta-tag-img-wide-rectangle.png`,
-        width: 630,
-        height: 630,
+        url: `${siteUrl}/icons/social-meta-tag-img-rectangle.png`,
         alt:
           isArabic ?
             'Hamsa Tech - Quality Surveillance and Technology Solutions'
