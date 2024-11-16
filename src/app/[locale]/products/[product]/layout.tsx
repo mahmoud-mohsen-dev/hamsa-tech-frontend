@@ -56,14 +56,13 @@ export async function generateMetadata({
       title: title,
       description: description.split('\n').join(' '),
       url: productUrl,
-      // type: 'product',
       images: [
         {
           url:
             productData?.image_thumbnail?.data?.attributes?.url ||
             `${siteUrl}/icons/product-not-available.png`,
-          width: 800,
-          height: 600,
+          // width: 800,
+          // height: 600,
           alt:
             productData?.image_thumbnail?.data?.attributes
               ?.alternativeText ||
@@ -94,6 +93,12 @@ export async function generateMetadata({
             'en-US': `${siteUrl}/en/products/${product}`,
             'ar-EG': `${siteUrl}/ar/products/${nextProductId}`
           }
+    },
+    other: {
+      ['og:type']: 'product',
+      ['product:price.amount']:
+        productData?.final_product_price ?? '0',
+      ['product:price.currency']: 'EGP'
     }
   };
 }
