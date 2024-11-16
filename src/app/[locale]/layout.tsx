@@ -60,10 +60,58 @@ export async function generateMetadata({
     namespace: 'HomePage.metaData'
   });
 
-  return {
+  const siteUrl = process.env.BASE_URL || 'https://hamsatech-eg.com'; // Base URL of your site
+  const faviconUrl = `${siteUrl}/favicon.ico`;
+  const isArabic = locale === 'ar';
+
+  const openGraph = {
+    type: 'website',
     title: t('title'),
-    description: t('description')
+    description: t('description'),
+    url: `${siteUrl}/${locale}`,
+    images: [
+      {
+        url: faviconUrl,
+        width: 1200,
+        height: 630,
+        alt:
+          isArabic ?
+            'Hamsa Tech - Quality Surveillance and Technology Solutions'
+          : 'همسة تك - أنظمة مراقبة وحلول تكنولوجيا عالية الجودة'
+      }
+    ],
+    locale: isArabic ? 'ar_EG' : 'en_US',
+    site_name: isArabic ? 'همسة تك' : 'Hamsa Tech'
   };
+
+  const twitter = {
+    card: 'summary_large_image',
+    site: '@hamsa_tech', // Your Twitter handle
+    title: t('title'),
+    description: t('description'),
+    image: faviconUrl,
+    imageAlt: t('title')
+  };
+
+  const metadata = {
+    title: t('title'),
+    description: t('description'),
+    keywords: t('keywords'),
+    alternates: {
+      canonical: isArabic ? `${siteUrl}/ar` : `${siteUrl}/en`,
+      languages: {
+        en: `${siteUrl}/en`,
+        ar: `${siteUrl}/ar`
+      }
+    },
+    openGraph: openGraph,
+    twitter: twitter,
+    robots: 'index, follow',
+    googlebot: 'index, follow',
+    canonical: `${siteUrl}/${locale}`
+  };
+
+  return metadata;
 }
 
 const getQueryLayoutPage = (locale: string) => `{

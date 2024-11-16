@@ -561,7 +561,7 @@ export default async function Product({
                     <div className='flex flex-wrap items-center gap-3'>
                       <Link
                         href={
-                          'https://www.facebook.com/sharer/sharer.php?u=https://hamsa-tech.vercel.app/'
+                          'https://www.facebook.com/sharer/sharer.php?u=https://hamsatech-eg.com'
                         }
                         target='_blank'
                         className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
@@ -570,7 +570,7 @@ export default async function Product({
                       </Link>
                       <Link
                         href={
-                          'href="https://twitter.com/intent/tweet?original_referer=https://hamsa-tech.vercel.app/'
+                          'href="https://twitter.com/intent/tweet?original_referer=https://hamsatech-eg.com'
                         }
                         target='_blank'
                         className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
@@ -690,7 +690,7 @@ export default async function Product({
                 {productData?.features.map((item, i) => (
                   <li
                     key={item?.id ?? i}
-                    className='mt-3 text-sm text-blue-gray-light'
+                    className='mt-3 text-base text-blue-gray-light'
                   >
                     {item?.feature ?? ''}
                   </li>
