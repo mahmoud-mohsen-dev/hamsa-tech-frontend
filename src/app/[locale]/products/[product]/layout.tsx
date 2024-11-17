@@ -43,8 +43,13 @@ export async function generateMetadata({
   const isArabic = locale === 'ar';
   const nextProductId = productData?.localizations?.data[0]?.id;
 
-  const title = productData?.name || productData?.modal_name || '';
+  const title =
+    productData?.seo?.metaTitle ||
+    productData?.name ||
+    productData?.modal_name ||
+    '';
   const description =
+    productData?.seo?.metaDescription ||
     productData?.description ||
     productData?.brand?.data?.attributes?.name ||
     '';

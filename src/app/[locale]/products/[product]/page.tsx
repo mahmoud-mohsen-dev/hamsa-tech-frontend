@@ -36,6 +36,7 @@ import TabsSection from '@/components/productPage/TabsSection';
 import { pdf } from '@react-pdf/renderer';
 import DownloadBtn from '@/components/UI/DownloadBtn';
 import { getQueryProductPage } from '@/services/getProduct';
+import { TbMail } from 'react-icons/tb';
 
 const getItems = (
   allProductsText: string,
@@ -140,6 +141,8 @@ export default async function Product({
   const offPercent =
     ((productData?.price - productData?.sale_price) * 100) /
     productData?.price;
+
+  const productUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/${locale}/products/${product}`;
 
   return (
     <>
@@ -306,36 +309,38 @@ export default async function Product({
                   value={
                     <div className='flex flex-wrap items-center gap-3'>
                       <Link
-                        href={
-                          'https://www.facebook.com/sharer/sharer.php?u=https://hamsatech-eg.com'
-                        }
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${productUrl}`}
                         target='_blank'
                         className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
                       >
                         <FaFacebookF size={20} />
                       </Link>
                       <Link
-                        href={
-                          'href="https://twitter.com/intent/tweet?original_referer=https://hamsatech-eg.com'
-                        }
+                        href={`https://twitter.com/intent/tweet?text=${
+                          locale === 'ar' ?
+                            `🔥 لا تفوّت الفرصة! احصل على ${productData?.name || productData?.modal_name || ''} بسعر مذهل لفترة محدودة.%0A%0A🛒 تسوّق الآن ➡️ ${productUrl}
+`
+                          : `🔥 Don’t miss out! Get the ${productData?.name || productData?.modal_name || ''} at an amazing price for a limited time.%0A%0A🛒 Shop now ➡️ ${productUrl}`
+                        }`}
                         target='_blank'
                         className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
                       >
                         <RiTwitterXLine size={20} />
                       </Link>
                       <Link
-                        href={'https://www.instagram.com'}
-                        target='_blank'
-                        className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
-                      >
-                        <FaInstagram size={20} />
-                      </Link>
-                      <Link
-                        href={'https://www.whatsapp.com'}
+                        href={`https://api.whatsapp.com/send?text=Check out this amazing product: ${productUrl}`}
                         target='_blank'
                         className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
                       >
                         <FaWhatsapp size={20} />
+                      </Link>
+                      <Link
+                        href={`https://mail.google.com/mail/u/0/?to=%7Bemail_address%7D&su=Check+out+this+product&body=Hello,%0AI%27m+reaching+out+to+share+with+you+this+amazing+product+:%0A%0A${productUrl}%0A%0AI+hope+you+will+find+it+useful.%0ABest+regards,&bcc=%7Bemail_address%7D&cc=%7Bemail_address%7D&fs=1&tf=cm`}
+                        target='_blank'
+                        className='rounded-[4px] bg-blue-sky-ultralight p-2 transition-colors duration-150 ease-out hover:text-blue-accent'
+                      >
+                        {/* <FaInstagram size={20} /> */}
+                        <TbMail size={20} />
                       </Link>
                     </div>
                   }
