@@ -69,3 +69,16 @@ export function formatForGraphQL(input: any) {
     .replace(/\f/g, '\\f') // Escape form feeds
     .replace(/\b/g, '\\b'); // Escape backspaces
 }
+
+type AnyObject = Record<string, any>;
+
+export const filterTruthyValues = (obj: unknown): AnyObject => {
+  // Check if the input is an object and not null
+  if (typeof obj !== 'object' || obj === null) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key, value]) => Boolean(value))
+  );
+};

@@ -336,6 +336,14 @@
       "privacyPolicy": "سياسة الخصوصية",
       "newsLetterCheckboxLable": "الحصول على التحديثات والعروض الخاصة!",
       "formValidationErrorMessages": {
+        "firstNamePlaceholder": "الاسم الأول",
+        "lastNamePlaceholder": "الاسم الأخير",
+        "firstNameIsRequired": "الاسم الأول مطلوب",
+        "lastNameIsRequired": "الاسم الأخير مطلوب",
+        "firstNameMaxLengthError": "يجب أن يكون الاسم الأول أقل من 16 حرفًا",
+        "lastNameMaxLengthError": "يجب أن يكون الاسم الأخير أقل من 16 حرفًا",
+        "firstNameOnlyLetters": "يمكن أن يحتوي الاسم الأول على حروف إنجليزية أو عربية فقط",
+        "lastNameOnlyLetters": "يمكن أن يحتوي الاسم الأخير على حروف إنجليزية أو عربية فقط",
         "fullNameRequired": "الاسم الكامل مطلوب",
         "emailRequired": "البريد الإلكتروني مطلوب",
         "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
@@ -450,6 +458,59 @@
       }
     },
     "SettingsPage": {
+      "content": {
+        "profileSettings": "إعدادات الملف الشخصي",
+        "changePasswordSettings": "إعدادات تغيير كلمة المرور",
+        "avatar": {
+          "changePicture": "تغيير الصورة",
+          "noImage": "لا توجد صورة",
+          "altText": "صورة رمزية للمستخدم {userId}"
+        },
+        "form": {
+          "firstNameLabel": "الاسم الأول",
+          "lastNameLabel": "الاسم الأخير",
+          "emailLabel": "البريد الإلكتروني",
+          "phoneLabel": "رقم الهاتف",
+          "birthDateLabel": "تاريخ الميلاد",
+          "saveButton": "حفظ",
+          "oldPasswordLabel": "كلمة المرور القديمة",
+          "newPasswordLabel": "كلمة المرور الجديدة",
+          "confirmNewPasswordLabel": "تأكيد كلمة المرور",
+          "forgotPasswordLabel": "نسيت كلمة المرور",
+          "placeholder": {
+            "firstName": "الاسم الأول",
+            "lastName": "الاسم الأخير",
+            "email": "your.email@mail.com",
+            "birthDate": "اختر تاريخ ميلادك",
+            "oldPassword": "أدخل كلمة المرور القديمة",
+            "newPassword": "أدخل كلمة المرور الجديدة",
+            "confirmNewPassword": "أكد كلمة المرور الجديدة"
+          }
+        },
+        "deleteAccount": {
+          "title": "حذف الحساب",
+          "description": "لم تعد ترغب في استخدام خدماتنا؟ يمكنك حذف حسابك هنا. هذا الإجراء لا يمكن التراجع عنه. سيتم حذف جميع المعلومات المرتبطة بهذا الحساب نهائيًا.",
+          "deleteButton": "نعم، احذف حسابي",
+          "cancelButton": "إلغاء"
+        },
+        "messages": {
+          "accountDeleted": "تم حذف الحساب بنجاح",
+          "profileUpdated": "تم تعديل إعدادات الملف الشخصي بنجاح",
+          "passwordUpdated": "تم تحديث كلمة المرور بنجاح",
+          "confirm": {
+            "title": "هل تريد حذف حسابك؟",
+            "description": "هذا الإجراء لا يمكن التراجع عنه. سيتم حذف جميع المعلومات المرتبطة بهذا الحساب نهائيًا."
+          },
+          "validationErrors": {
+            "countryCode": "اختر رمز الدولة",
+            "emailRequired": "يرجى إدخال بريدك الإلكتروني.",
+            "emailInvalid": "يرجى إدخال بريد إلكتروني صالح.",
+            "oldPasswordRequired": "كلمة المرور القديمة مطلوبة",
+            "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+            "errorOccuredWhileDeletingAccount": "حدث خطأ أثناء حذف الحساب."
+          }
+        }
+      },
       "metaData": {
         "title": "صفحة الإعدادات من همسة تك",
         "description": "تخصيص إعدادات حسابك مع همسة تك"

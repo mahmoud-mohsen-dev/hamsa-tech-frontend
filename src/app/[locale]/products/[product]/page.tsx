@@ -241,12 +241,12 @@ export default async function Product({
                     productData?.localizations?.data[0]?.id ?? ''
                   }
                 />
-                <div className='mt-4 text-sm capitalize text-gray-medium'>
+                {/* <div className='mt-4 text-sm capitalize text-gray-medium'>
                   <p>-&nbsp;&nbsp;&nbsp;&nbsp;{t('deliveryText')}</p>
                   <p className='mt-1'>
                     -&nbsp;&nbsp;&nbsp;&nbsp;{t('returnText')}
                   </p>
-                </div>
+                </div> */}
               </section>
               <Divider className='bg-gray-lighter' />
 

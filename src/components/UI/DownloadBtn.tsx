@@ -45,7 +45,7 @@ function DownloadBtn({
 
   return (
     <Btn
-      className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white'
+      className='gap-4 bg-red-shade-350 px-10 py-3 text-lg font-semibold text-white transition-colors duration-200 active:bg-red-shade-400'
       defaultPadding={false}
       onClick={() => {
         handleDownload(pdfUrl, name);

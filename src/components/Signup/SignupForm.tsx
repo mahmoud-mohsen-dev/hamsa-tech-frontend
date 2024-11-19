@@ -1,7 +1,6 @@
 'use client';
 import { Link, useRouter } from '@/navigation';
 import {
-  fetchGraphql,
   fetchGraphqlClient,
   fetchGraphqlClientAuthenticated
 } from '@/services/graphqlCrud';
@@ -24,6 +23,7 @@ import {
 } from '@/types/authincationResponseTypes';
 import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
 import { useUser } from '@/context/UserContext';
+import { capitalize } from '@/utils/helpers';
 const { Option } = Select;
 
 const signupQUery = ({
@@ -46,14 +46,16 @@ const signupQUery = ({
 
 const updateTheSignupUser = ({
   id,
-  fullName,
+  firstName,
+  lastName,
   phoneNumber,
   aggreeToOurTerms,
   subscribedToNewsLetterAndOffers,
   prefix
 }: {
   id: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   phoneNumber: string;
   aggreeToOurTerms: boolean;
   subscribedToNewsLetterAndOffers: boolean;
@@ -63,7 +65,8 @@ const updateTheSignupUser = ({
     updateUsersPermissionsUser(
         id: "${id}"
         data: {
-            full_name: "${fullName}"
+            first_name: "${capitalize(firstName)}"
+            last_name: "${capitalize(lastName)}"
             phone: "${phoneNumber}"
             aggree_to_our_terms: ${aggreeToOurTerms}
             subscribed_to_new_offers_and_newsletters: ${subscribedToNewsLetterAndOffers}
@@ -87,7 +90,8 @@ function SignupForm() {
   const locale = useLocale();
 
   const onFinish = (formValues: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     aggreeToTerms: boolean;
@@ -96,7 +100,8 @@ function SignupForm() {
   }) => {
     // Perform form submission logic here
     const {
-      fullName,
+      firstName,
+      lastName,
       email,
       password,
       phone: { number, prefix },
@@ -153,7 +158,8 @@ function SignupForm() {
           (await fetchGraphqlClientAuthenticated(
             updateTheSignupUser({
               id: userloggedInId,
-              fullName,
+              firstName,
+              lastName,
               phoneNumber: number,
               prefix,
               aggreeToOurTerms: aggreeToTerms,
@@ -195,41 +201,41 @@ function SignupForm() {
     console.log('Form submission failed:', errorInfo);
   };
 
-  const validateFullName = (_: any, value: string) => {
-    if (!value) {
-      return Promise.reject(
-        new Error(t('formValidationErrorMessages.fullNameRequired'))
-      );
-    }
+  // const validateFullName = (_: any, value: string) => {
+  //   if (!value) {
+  //     return Promise.reject(
+  //       new Error(t('formValidationErrorMessages.fullNameRequired'))
+  //     );
+  //   }
 
-    // Regex to allow English letters, Arabic letters, and spaces
-    const namePattern = /^[a-zA-Z\u0621-\u064A\s]+$/;
-    const names = value.trim().split(/\s+/); // Split by spaces
+  //   // Regex to allow English letters, Arabic letters, and spaces
+  //   const namePattern = /^[a-zA-Z\u0621-\u064A\s]+$/;
+  //   const names = value.trim().split(/\s+/); // Split by spaces
 
-    // Check for minimum and maximum number of names
-    const minNames = 2; // Minimum number of names
-    const maxNames = 4; // Maximum number of names
+  //   // Check for minimum and maximum number of names
+  //   const minNames = 2; // Minimum number of names
+  //   const maxNames = 4; // Maximum number of names
 
-    if (names.length < minNames || names.length > maxNames) {
-      return Promise.reject(
-        new Error(
-          t('formValidationErrorMessages.fullNameLengthError')
-        )
-      );
-    }
+  //   if (names.length < minNames || names.length > maxNames) {
+  //     return Promise.reject(
+  //       new Error(
+  //         t('formValidationErrorMessages.fullNameLengthError')
+  //       )
+  //     );
+  //   }
 
-    for (const name of names) {
-      if (!namePattern.test(name)) {
-        return Promise.reject(
-          new Error(
-            t('formValidationErrorMessages.fullNameCharacterError')
-          )
-        );
-      }
-    }
+  //   for (const name of names) {
+  //     if (!namePattern.test(name)) {
+  //       return Promise.reject(
+  //         new Error(
+  //           t('formValidationErrorMessages.fullNameCharacterError')
+  //         )
+  //       );
+  //     }
+  //   }
 
-    return Promise.resolve();
-  };
+  //   return Promise.resolve();
+  // };
 
   const validatePassword = (_: any, value: string) => {
     const minLength = 8;
@@ -349,12 +355,69 @@ function SignupForm() {
         }}
       >
         {contextHolder}
-        <Form.Item
-          name='fullName'
-          rules={[{ validator: validateFullName }]}
-        >
-          <Input placeholder={t('fullNamePlaceholder')} />
-        </Form.Item>
+        <div className='flex items-center gap-3'>
+          <Form.Item
+            name='firstName'
+            rules={[
+              {
+                required: true,
+                message: t(
+                  'formValidationErrorMessages.firstNameIsRequired'
+                )
+              },
+              {
+                max: 16,
+                message: t(
+                  'formValidationErrorMessages.firstNameMaxLengthError'
+                )
+              },
+              {
+                pattern: /^[a-zA-Z\u0621-\u064A]+$/,
+                message: t(
+                  'formValidationErrorMessages.firstNameOnlyLetters'
+                )
+              }
+            ]}
+            className='basis-1/2'
+          >
+            <Input
+              placeholder={t(
+                'formValidationErrorMessages.firstNamePlaceholder'
+              )}
+            />
+          </Form.Item>
+          <Form.Item
+            name='lastName'
+            rules={[
+              {
+                required: true,
+                message: t(
+                  'formValidationErrorMessages.lastNameIsRequired'
+                )
+              },
+              {
+                max: 16,
+                message: t(
+                  'formValidationErrorMessages.lastNameMaxLengthError'
+                )
+              },
+              {
+                pattern: /^[a-zA-Z\u0621-\u064A]+$/,
+                message: t(
+                  'formValidationErrorMessages.lastNameOnlyLetters'
+                )
+              }
+            ]}
+            className='basis-1/2'
+          >
+            <Input
+              placeholder={t(
+                'formValidationErrorMessages.lastNamePlaceholder'
+              )}
+            />
+          </Form.Item>
+        </div>
+
         <Form.Item
           name='email'
           rules={[

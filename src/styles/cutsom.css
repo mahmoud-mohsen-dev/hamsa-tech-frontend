@@ -274,3 +274,7 @@ html:not([data-scroll='0']) .header .hamburger-menu {
 .custom-animated-arrow-down-open .arrow-after {
   transform: rotate(45deg) translateX(2.5px);
 }
+
+#Reviews-Create-A-Comment {
+  scroll-margin-top: 90px; /* Add extra space */
+}

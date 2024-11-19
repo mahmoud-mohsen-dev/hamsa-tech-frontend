@@ -360,12 +360,7 @@ async function ContentOfReviews({
           : <p className='mt-3'>{t('noReviewsText')}</p>}
         </div>
         <Divider />
-        <div>
-          <h3 className='mb-5 font-openSans text-base font-bold capitalize text-black-medium'>
-            {t('createReviewText')}
-          </h3>
-          <CreateReview />
-        </div>
+        <CreateReview />
       </div>
     </div>
   );

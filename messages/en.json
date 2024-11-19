@@ -335,6 +335,14 @@
       "privacyPolicy": "privacy policy",
       "newsLetterCheckboxLable": "Get updates and special offers!",
       "formValidationErrorMessages": {
+        "firstNamePlaceholder": "First name",
+        "lastNamePlaceholder": "Last name",
+        "firstNameIsRequired": "First name is required",
+        "lastNameIsRequired": "Last name is required",
+        "firstNameMaxLengthError": "First name must be less than 16 characters",
+        "lastNameMaxLengthError": "Last name must be less than 16 characters",
+        "firstNameOnlyLetters": "First name can only contain English letters or Arabic letters",
+        "lastNameOnlyLetters": "Last name can only contain English letters or Arabic letters",
         "fullNameRequired": "Full name is required",
         "emailRequired": "Email is required",
         "emailInvalid": "Please enter a valid email",
@@ -449,6 +457,59 @@
       }
     },
     "SettingsPage": {
+      "content": {
+        "profileSettings": "Profile Settings",
+        "changePasswordSettings": "Change Password Settings",
+        "avatar": {
+          "changePicture": "Change picture",
+          "noImage": "No Image",
+          "altText": "User {userId} avatar photo"
+        },
+        "form": {
+          "firstNameLabel": "Your first name",
+          "lastNameLabel": "Your last name",
+          "emailLabel": "Your email",
+          "phoneLabel": "Phone number",
+          "birthDateLabel": "Birth date",
+          "saveButton": "Save",
+          "oldPasswordLabel": "Old password",
+          "newPasswordLabel": "New password",
+          "confirmNewPasswordLabel": "Confirm password",
+          "forgotPasswordLabel": "I forgot my password",
+          "placeholder": {
+            "firstName": "First name",
+            "lastName": "Last name",
+            "email": "your.email@mail.com",
+            "birthDate": "Select your birth date",
+            "oldPassword": "Enter your old password",
+            "newPassword": "Enter your new password",
+            "confirmNewPassword": "Confirm your new password"
+          }
+        },
+        "deleteAccount": {
+          "title": "Delete Account",
+          "description": "No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently.",
+          "deleteButton": "Yes, Delete my account",
+          "cancelButton": "Cancel"
+        },
+        "messages": {
+          "accountDeleted": "Account was deleted successfully",
+          "profileUpdated": "Successfully changed profile settings data",
+          "passwordUpdated": "Password updated successfully",
+          "confirm": {
+            "title": "Do you want to delete your account?",
+            "description": "This action is not reversible. All information related to this account will be deleted permanently."
+          },
+          "validationErrors": {
+            "countryCode": "Select country code",
+            "emailRequired": "Please enter your email.",
+            "emailInvalid": "Please enter a valid email.",
+            "oldPasswordRequired": "Old password is required",
+            "newPasswordRequired": "New password is required",
+            "errorOccuredWhileDeletingAccount": "Something went wrong while deleting the account."
+          }
+        }
+      },
       "metaData": {
         "title": "Hamsa Tech Settings Page",
         "description": "Customize your account settings with Hamsa Tech"

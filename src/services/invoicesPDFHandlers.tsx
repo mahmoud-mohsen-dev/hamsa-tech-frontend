@@ -29,7 +29,6 @@ export const uploadInvoicePdf = async (orderData: OrderInfoType) => {
 
   const formData = new FormData();
   formData.append('files', pdfBlob, `invoice_${orderData?.id}.pdf`);
-  formData.append('files', pdfBlob, `invoice_${orderData?.id}.pdf`);
   formData.append('ref', 'api::order.order');
   formData.append('refId', orderData?.id ?? '');
   formData.append('field', 'invoice');

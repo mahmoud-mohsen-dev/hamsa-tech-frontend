@@ -1,7 +1,11 @@
 'use client';
 
 import { Link, usePathname, useRouter } from '@/navigation';
-import { getIdFromToken } from '@/utils/cookieUtils';
+import {
+  getIdFromToken,
+  removeCookie,
+  setCookie
+} from '@/utils/cookieUtils';
 import {
   Button,
   ConfigProvider,
@@ -15,7 +19,7 @@ import {
   Spin
 } from 'antd';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import UploadImage from '@/components/UI/account/settings/UploadImage';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useLocale, useTranslations } from 'next-intl';
@@ -23,32 +27,34 @@ import { useForm } from 'antd/es/form/Form';
 import type { FormProps } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import {
+  changePassword,
+  deleteUser,
+  getProfileSettignsData,
+  updateProfileSettignsData
+} from '@/services/userInfo';
+import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
+import { useMyContext } from '@/context/Store';
+import { useUser } from '@/context/UserContext';
 
 const { Option } = Select;
 const { confirm } = Modal;
 
 type FieldType = {
-  birth_date?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  birthDate?: string;
+  phone?: {
+    number: string;
+    prefix: string;
+  };
 };
 
-const showConfirm = () => {
-  confirm({
-    title: 'Do you want to delete your account?',
-    icon: <ExclamationCircleFilled style={{ color: '#d7150e' }} />,
-    content: `This action is not reversible.`,
-    okText: 'Yes',
-    onOk: async () => {
-      console.log('Ok');
-      return new Promise((resolve) => setTimeout(resolve, 3000));
-    },
-    onClose: () => {
-      console.log('close');
-    },
-    onCancel() {
-      console.log('Cancel');
-    },
-    className: 'fit-height-modal-account'
-  });
+type changePasswordType = {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 };
 
 function SettingsPage({
@@ -61,37 +67,155 @@ function SettingsPage({
   const pathname = usePathname();
   const router = useRouter();
   // const locale = useLocale();
+  const t = useTranslations('AccountLayoutPage.SettingsPage.content');
   const signUpTranslations = useTranslations('SignupPage.content');
   const [profileInfoForm] = useForm();
   const [updatePasswordForm] = useForm();
+  const { contextHolder, loadingMessage } = useHandleMessagePopup();
+  const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
+    useMyContext();
+  const { setUserId } = useUser();
 
-  const birthDateStamp = dayjs('2024-10-30T11:59:33.310Z').valueOf();
+  // const birthDateStamp = dayjs('2024-10-30T11:59:33.310Z').valueOf();
+
+  const showConfirm = useCallback(() => {
+    confirm({
+      title: t('messages.confirm.title'),
+      icon: <ExclamationCircleFilled style={{ color: '#d7150e' }} />,
+      content: t('messages.confirm.description'),
+      okText: t('deleteAccount.deleteButton'),
+      cancelText: t('deleteAccount.cancelButton'),
+      onOk: async () => {
+        return new Promise((resolve) => {
+          deleteUser()
+            .then((response) => {
+              console.log('response', response);
+              setSuccessMessage(t('messages.accountDeleted'));
+
+              removeCookie('token');
+              setUserId(null);
+              router.push('/signin');
+            })
+            .catch((error) => {
+              console.error(error);
+              console.error(error?.message ?? '');
+              setErrorMessage(
+                error?.message ||
+                  error ||
+                  t(
+                    'messages.validationErrors.errorOccuredWhileDeletingAccount'
+                  )
+              );
+            })
+            .finally(() => {
+              resolve(true);
+            });
+          // setTimeout(resolve, 3000);
+        });
+      },
+      // onClose: () => {
+      //   console.log('close');
+      // },
+      // onCancel() {
+      //   console.log('Cancel');
+      // },
+      className: 'fit-height-modal-account'
+    });
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const userId = getIdFromToken();
       if (userId) {
+        getProfileSettignsData().then((profileSettings) => {
+          profileInfoForm.setFieldsValue({
+            firstName: profileSettings?.first_name ?? '',
+            lastName: profileSettings?.last_name ?? '',
+            email: profileSettings?.email ?? '',
+            phone: {
+              number: profileSettings?.phone ?? ''
+            },
+            birthDate:
+              profileSettings?.birth_date ?
+                dayjs(profileSettings.birth_date).valueOf()
+              : ''
+          });
+        });
         setIsloading(false);
       }
-      //   getOrdersAuthenticated(Number(pageParams) ?? 1, userId ?? '')
-      //     .then((data) => {
-      //       setOrders(data);
-      //     })
-      //     .finally(() => {
-      //       setIsloading(false);
-      //     });
     }
   }, [searchParams, pathname, router]);
 
   const handleProfileInfoFormSubmit: FormProps<FieldType>['onFinish'] =
     (values) => {
-      console.log('Form values:', values);
-      // Perform your submission logic here
+      setLoadingMessage(true);
+      updateProfileSettignsData({
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        phone: values?.phone?.number ?? '',
+        birthDate:
+          (
+            Number(values.birthDate) > 0 &&
+            !isNaN(Number(values.birthDate)) &&
+            dayjs(Number(values.birthDate)).isValid()
+          ) ?
+            dayjs(Number(values.birthDate)).format('YYYY-MM-DD')
+          : null
+      })
+        .then((updatedData) => {
+          // console.log(updatedData);
+          // Update the form with the new values
+          profileInfoForm.setFieldsValue({
+            firstName: updatedData?.first_name ?? '',
+            lastName: updatedData?.last_name ?? '',
+            email: updatedData?.email ?? '',
+            phone: {
+              number: updatedData?.phone ?? ''
+            },
+            birthDate:
+              updatedData?.birth_date ?
+                dayjs(updatedData.birth_date).valueOf()
+              : ''
+          });
+          setSuccessMessage(t('messages.profileUpdated'));
+        })
+        .catch((err) => {
+          console.error(err);
+          setErrorMessage(err?.message || err);
+        })
+        .finally(() => {
+          setLoadingMessage(false);
+        });
     };
-  const handleUpdatePasswordFormSubmit: FormProps<FieldType>['onFinish'] =
+
+  const handleUpdatePasswordFormSubmit: FormProps<changePasswordType>['onFinish'] =
     (values) => {
       console.log('Form values:', values);
-      // Perform your submission logic here
+
+      // setIsloading(true);
+      setLoadingMessage(true);
+      changePassword({
+        currentPassword: values.oldPassword,
+        newPassword: values.newPassword,
+        confirmNewPassword: values.confirmNewPassword
+      })
+        .then((responseData) => {
+          console.log(responseData);
+          if (responseData?.jwt && responseData?.id) {
+            setCookie('token', responseData.jwt);
+            setUserId(responseData.id);
+            setSuccessMessage(t('messages.passwordUpdated'));
+            updatePasswordForm.resetFields();
+          }
+        })
+        .catch((error) => {
+          console.error(error?.message ?? '');
+          setErrorMessage(error?.message ?? '');
+        })
+        .finally(() => {
+          setLoadingMessage(false);
+        });
     };
 
   const validatePhone = (_: any, value: string) => {
@@ -116,7 +240,7 @@ function SettingsPage({
     }
 
     const prefix = profileInfoForm.getFieldValue(['phone', 'prefix']); // Use form instance to get prefix
-    console.log(prefix);
+    // console.log(prefix);
     const isValidLength =
       prefix === 'Egypt_20' &&
       (value.length === 10 || value.length === 11); // Example for Egypt
@@ -138,12 +262,7 @@ function SettingsPage({
 
     if (!value) {
       return Promise.reject(
-        new Error(
-          // signUpTranslations(
-          //   'formValidationErrorMessages.passwordRequired'
-          // )
-          'New password is required'
-        )
+        new Error(t('messages.validationErrors.newPasswordRequired'))
       );
     }
 
@@ -206,7 +325,7 @@ function SettingsPage({
     return Promise.resolve();
   };
 
-  return loading ?
+  return loading || loadingMessage ?
       <Spin
         className='grid min-h-full w-full place-content-center'
         size='large'
@@ -266,11 +385,12 @@ function SettingsPage({
           }
         }}
       >
+        {contextHolder}
         <section className='min-h-screen w-full font-inter'>
           <div className='w-full pb-8 lg:max-w-lg'>
             <div>
               <h2 className='text-xl font-semibold text-[#1e3a8a]'>
-                Profile Settings
+                {t('profileSettings')}
               </h2>
 
               <div className='mt-8'>
@@ -283,60 +403,87 @@ function SettingsPage({
                     requiredMark={false}
                     onFinish={handleProfileInfoFormSubmit}
                     initialValues={{
-                      phone: { prefix: 'Egypt_20' },
-                      birth_date: birthDateStamp
+                      phone: { prefix: 'Egypt_20' }
+                      // birth_date: birthDateStamp
                     }}
                   >
                     <div style={{ display: 'flex', gap: '16px' }}>
                       <Form.Item
-                        label='Your first name'
-                        name='first_name'
-                        initialValue='Jane'
+                        label={t('form.firstNameLabel')}
+                        name='firstName'
                         rules={[
                           {
-                            required: true,
-                            message: 'Please enter your first name'
+                            max: 16,
+                            message: signUpTranslations(
+                              'formValidationErrorMessages.firstNameMaxLengthError'
+                            )
+                          },
+                          {
+                            pattern: /^[a-zA-Z\u0621-\u064A]+$/,
+                            message: signUpTranslations(
+                              'formValidationErrorMessages.firstNameOnlyLetters'
+                            )
                           }
                         ]}
                         style={{ flex: 1 }}
                       >
-                        <Input placeholder='Your first name' />
+                        <Input
+                          placeholder={t(
+                            'form.placeholder.firstName'
+                          )}
+                        />
                       </Form.Item>
 
                       <Form.Item
-                        label='Your last name'
-                        name='last_name'
-                        initialValue='Ferguson'
+                        label={t('form.lastNameLabel')}
+                        name='lastName'
                         rules={[
                           {
-                            required: true,
-                            message: 'Please enter your last name'
+                            max: 16,
+                            message: signUpTranslations(
+                              'formValidationErrorMessages.lastNameMaxLengthError'
+                            )
+                          },
+                          {
+                            pattern: /^[a-zA-Z\u0621-\u064A]+$/,
+                            message: signUpTranslations(
+                              'formValidationErrorMessages.lastNameOnlyLetters'
+                            )
                           }
                         ]}
                         style={{ flex: 1 }}
                       >
-                        <Input placeholder='Your last name' />
+                        <Input
+                          placeholder={t('form.placeholder.lastName')}
+                        />
                       </Form.Item>
                     </div>
 
                     <Form.Item
-                      label='Your email'
+                      label={t('form.emailLabel')}
                       name='email'
                       rules={[
                         {
                           type: 'email',
-                          message: 'Please enter a valid email'
+                          message: t(
+                            'messages.validationErrors.emailInvalid'
+                          )
                         },
                         {
                           required: true,
-                          message: 'Please enter your email'
+                          message: t(
+                            'messages.validationErrors.emailRequired'
+                          )
                         }
                       ]}
                     >
-                      <Input placeholder='your.email@mail.com' />
+                      <Input
+                        placeholder={t('form.placeholder.email')}
+                        disabled={true}
+                      />
                     </Form.Item>
 
-                    <Form.Item label='Phone number'>
+                    <Form.Item label={t('form.phoneLabel')}>
                       <Space.Compact block>
                         <Form.Item
                           name={['phone', 'prefix']}
@@ -344,7 +491,9 @@ function SettingsPage({
                           rules={[
                             {
                               required: true,
-                              message: 'Select country code'
+                              message: t(
+                                'messages.validationErrors.countryCode'
+                              )
                             }
                           ]}
                         >
@@ -377,17 +526,21 @@ function SettingsPage({
                     </Form.Item>
 
                     <Form.Item<FieldType>
-                      label='Birth date'
-                      name='birth_date'
-                      rules={[{ required: true }]}
+                      label={t('form.birthDateLabel')}
+                      name='birthDate'
+                      // rules={[{ required: true }]}
                       getValueProps={(value) => ({
                         value: value && dayjs(Number(value))
                       })}
                       normalize={(value) =>
                         value && `${dayjs(value).valueOf()}`
                       }
+                      style={{ width: '50%' }}
                     >
-                      <DatePicker />
+                      <DatePicker
+                        placeholder={t('form.placeholder.birthDate')}
+                        style={{ width: '100%', minWidth: '225px' }}
+                      />
                     </Form.Item>
 
                     <Form.Item
@@ -398,7 +551,7 @@ function SettingsPage({
                       }}
                     >
                       <Button type='primary' htmlType='submit'>
-                        Save
+                        {t('form.saveButton')}
                       </Button>
                     </Form.Item>
                   </Form>
@@ -408,7 +561,7 @@ function SettingsPage({
             <Divider />
             <div>
               <h2 className='text-xl font-semibold text-[#1e3a8a]'>
-                Profile Settings
+                {t('changePasswordSettings')}
               </h2>
               <div className='mt-8'>
                 <Form
@@ -419,33 +572,39 @@ function SettingsPage({
                   onFinish={handleUpdatePasswordFormSubmit}
                 >
                   <Form.Item
-                    label='Old password'
-                    name='old_password'
+                    label={t('form.oldPasswordLabel')}
+                    name='oldPassword'
                     rules={[
                       {
                         required: true,
-                        message: 'Old password is required'
+                        message: t(
+                          'messages.validationErrors.oldPasswordRequired'
+                        )
                       }
                     ]}
                     // hasFeedback
                   >
-                    <Input.Password placeholder={'Old Password'} />
+                    <Input.Password
+                      placeholder={t('form.placeholder.oldPassword')}
+                    />
                   </Form.Item>
 
                   <Form.Item
-                    label='New password'
-                    name='new_password'
+                    label={t('form.newPasswordLabel')}
+                    name='newPassword'
                     rules={[{ validator: validatePassword }]}
                     hasFeedback
                   >
-                    <Input.Password placeholder={'New password'} />
+                    <Input.Password
+                      placeholder={t('form.placeholder.newPassword')}
+                    />
                   </Form.Item>
 
                   {/* Field */}
                   <Form.Item
-                    label='Confirm password'
-                    name='password2'
-                    dependencies={['password']}
+                    label={t('form.confirmNewPasswordLabel')}
+                    name='confirmNewPassword'
+                    dependencies={['newPassword']}
                     rules={[
                       {
                         required: true,
@@ -457,7 +616,7 @@ function SettingsPage({
                         validator(_, value) {
                           if (
                             !value ||
-                            getFieldValue('password') === value
+                            getFieldValue('newPassword') === value
                           ) {
                             return Promise.resolve();
                           }
@@ -472,8 +631,13 @@ function SettingsPage({
                       })
                     ]}
                   >
-                    <Input.Password placeholder='Confirm Password' />
+                    <Input.Password
+                      placeholder={t(
+                        'form.placeholder.confirmNewPassword'
+                      )}
+                    />
                   </Form.Item>
+
                   <Form.Item
                     style={{
                       display: 'flex',
@@ -486,10 +650,10 @@ function SettingsPage({
                         href='/forget-password'
                         className='text-blue-light hover:text-blue-light-dark hover:underline'
                       >
-                        I forgot my password
+                        {t('form.forgotPasswordLabel')}
                       </Link>
                       <Button type='primary' htmlType='submit'>
-                        Save
+                        {t('form.saveButton')}
                       </Button>
                     </div>
                   </Form.Item>
@@ -498,13 +662,10 @@ function SettingsPage({
               <Divider />
               <div>
                 <h2 className='text-xl font-semibold text-blue-darker'>
-                  Delete Account
+                  {t('deleteAccount.title')}
                 </h2>
                 <p className='mt-4 text-sm font-normal leading-6'>
-                  No longer want to use our service? You can delete
-                  your account here. This action is not reversible.
-                  All information related to this account will be
-                  deleted permanently.
+                  {t('deleteAccount.description')}
                 </p>
                 <div className='mt-4 flex justify-end'>
                   <Button
@@ -513,7 +674,7 @@ function SettingsPage({
                     color='danger'
                     variant='solid'
                   >
-                    Yes, Delete my account
+                    {t('deleteAccount.deleteButton')}
                   </Button>
                 </div>
               </div>
