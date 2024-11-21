@@ -44,11 +44,11 @@ function FeaturedProductCard({
           }}
           className='mb-10 mt-2.5 object-contain transition-["scale"] duration-1000 ease-linear hover:scale-110'
         />
-        <div className='h-[90px] lg:h-[80px] 2xl:h-[100px]'>
+        <div className='h-[110px] lg:h-[90px] 2xl:h-[110px]'>
           <h4 className='mb-[12px] font-openSans text-base font-semibold text-black-light xl:text-xs 2xl:text-base'>
             {title}
           </h4>
-          <h3 className='mb-2.5 max-h-[44px] overflow-hidden font-openSans text-sm font-normal leading-[22px] text-gray-medium'>
+          <h3 className='mb-3 max-h-[44px] overflow-hidden font-openSans text-sm font-normal leading-[22px] text-gray-medium'>
             {description}
           </h3>
         </div>

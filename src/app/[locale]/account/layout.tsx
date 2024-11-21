@@ -43,7 +43,7 @@ async function InvoiceLayout({
       <div
         className={`grid min-h-full justify-center lg:grid-cols-[1fr_3fr] lg:gap-14`}
       >
-        <ul className='mx-auto flex h-fit w-full flex-col justify-center border-r border-r-[#0505050f]'>
+        <ul className='mx-auto mb-10 flex h-fit w-full flex-col justify-center border-r border-r-[#0505050f] lg:mb-0'>
           <li className='border-b border-b-[#0505050f] px-4 py-4 text-xl font-semibold text-black-light'>
             {t('siderbarAccountTitle')}
           </li>

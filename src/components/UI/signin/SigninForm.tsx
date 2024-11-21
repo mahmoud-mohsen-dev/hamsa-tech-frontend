@@ -2,8 +2,13 @@
 import { useUser } from '@/context/UserContext';
 import { Link, useRouter } from '@/navigation';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
+import { getUserAddressesAuthenticated } from '@/services/shippingAddress';
 import { SigninResponseType } from '@/types/authincationResponseTypes';
-import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
+import {
+  getIdFromToken,
+  removeCookie,
+  setCookie
+} from '@/utils/cookieUtils';
 import { Checkbox, ConfigProvider, Form, Input, message } from 'antd';
 import { useTranslations } from 'next-intl';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
@@ -24,7 +29,7 @@ const signinQUery = ({
 
 function LoginForm() {
   const router = useRouter();
-  const { setUserId } = useUser();
+  const { setUserId, setAddressesData } = useUser();
   const [messageApi, contextHolder] = message.useMessage();
   const t = useTranslations('SigninPage.content');
   const e = useTranslations('CheckoutPage.content');
@@ -75,6 +80,25 @@ function LoginForm() {
           return;
         }
         setUserId(userId);
+
+        const { addressesData, addressesError } =
+          await getUserAddressesAuthenticated();
+        if (addressesError || !addressesData) {
+          console.error(
+            'Error while fetching user address:',
+            addressesError
+          );
+          messageApi.error(
+            t('formValidationErrorMessages.invalidCredentials')
+          );
+          removeCookie('token');
+          setUserId(null);
+          setAddressesData(null);
+          return;
+        }
+        // console.log(addressesData);
+        setAddressesData(addressesData);
+
         messageApi.success(
           t('formValidationErrorMessages.signinSuccessMessage')
         );

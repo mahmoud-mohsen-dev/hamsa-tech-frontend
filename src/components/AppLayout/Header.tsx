@@ -38,6 +38,7 @@ import {
   WishlistResponseType,
   WishlistsDataType
 } from '@/types/wishlistReponseTypes';
+import { getUserAddressesAuthenticated } from '@/services/shippingAddress';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -130,20 +131,6 @@ const getCreateGuestUserQuery = () => {
     }
   }`;
 };
-
-// const getCreateShippingAddressQuery = () => {
-//   return `mutation CreateAddress {
-//     createAddress(
-//         data: {
-//             publishedAt: "${new Date().toISOString()}"
-//         }
-//     ) {
-//         data {
-//             id
-//         }
-//     }
-//   }`;
-// };
 
 const getCreateWishlistQuery = (
   guestUserId: string | null,
@@ -301,7 +288,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     setIsWishlistLoading
   } = useMyContext();
   const [linkHovered, setLinkHovered] = useState('');
-  const { userId } = useUser();
+  const { userId, setAddressesData } = useUser();
 
   const locale = useLocale();
   const defaultValue = locale;
@@ -549,6 +536,19 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     };
 
     handleRequests();
+
+    const getAddressData = async () => {
+      const { addressesData, addressesError } =
+        await getUserAddressesAuthenticated();
+      if (addressesError || !addressesData) {
+        console.error(addressesError);
+        return;
+      }
+      console.log(addressesData);
+      setAddressesData(addressesData);
+    };
+
+    getAddressData();
   }, []);
 
   return (

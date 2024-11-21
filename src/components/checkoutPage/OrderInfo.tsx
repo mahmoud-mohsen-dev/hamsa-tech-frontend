@@ -5,7 +5,7 @@ import AddressFormItems from './AddressFormItems';
 import BillingAddress from './BillingAddress';
 import PaymentMethods from './PaymentMethods';
 import Contact from './Contact';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import ShippingCost from './ShippingCost';
 import { useForm } from 'antd/es/form/Form';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
@@ -328,6 +328,7 @@ function OrderInfo({
   } = useMyContext();
   // const [messageApi, contextHolder] = message.useMessage();
   const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations('CheckoutPage.content');
   // const [loading, setLoading] = useState(false);
 
@@ -457,9 +458,9 @@ function OrderInfo({
         city: capitalize(shippingDetailsCity ?? ''),
         shippingCostId: shippingCostId,
         zipCode: shippingDetailsPostalCode,
-        deliveryPhone: shippingDetailsPhone ?? '',
-        userId: getIdFromToken(),
-        guestUserId: getCookie('guestUserId')
+        deliveryPhone: shippingDetailsPhone ?? ''
+        // userId: getIdFromToken(),
+        // guestUserId: getCookie('guestUserId')
       });
 
       if (deliveryAddressError || !deliveryAddressId) {
@@ -498,9 +499,9 @@ function OrderInfo({
           city: capitalize(formValues?.billingDetailsCity ?? ''),
           shippingCostId: shippingCostId,
           zipCode: formValues?.billingDetailsPostalCode ?? '',
-          deliveryPhone: formValues?.billingDetailsPhone ?? '',
-          userId: getIdFromToken(),
-          guestUserId: getCookie('guestUserId')
+          deliveryPhone: formValues?.billingDetailsPhone ?? ''
+          // userId: getIdFromToken(),
+          // guestUserId: getCookie('guestUserId')
         });
 
         if (billingAddressError || !billingAddressResponseId) {
@@ -695,10 +696,18 @@ function OrderInfo({
           form={form}
           shippingCostData={shippingCostData}
         />
+        <p className='text-lg font-bold text-red-shade-500'>
+          {locale === 'ar' ?
+            `الموقع قيد التطوير، ستتمكن من الشراء من الموقع قريبًا جدًا 😊`
+          : `The Site is under development you will able to buy from the
+          site very soon 😊`
+          }
+        </p>
         <Button
           type='primary'
           htmlType='submit'
           className='mt-3 w-full capitalize'
+          disabled={true}
           style={{
             paddingBlock: '20px',
             fontSize: '16px',

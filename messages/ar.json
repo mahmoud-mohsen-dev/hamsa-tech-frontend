@@ -452,6 +452,27 @@
       }
     },
     "AddressPage": {
+      "content": {
+        "title": "العناوين",
+        "addNewAddressButton": "إضافة عنوان جديد",
+        "modal": {
+          "title": "إنشاء عنوان جديد",
+          "ok": "موافق",
+          "cancel": "إلغاء"
+        },
+        "form": {
+  "setAsDefaultLabel": "تعيين كافتراضي",
+  "placeholder": {
+    "addressName": "اسم العنوان (مثل 'العمل'، 'المنزل'، إلخ...)"
+  }
+},
+"messages": {
+  "formValidationErrors": {
+    "addressNameRequired": "يرجى إدخال اسم العنوان"
+  }
+}
+        
+      },
       "metaData": {
         "title": "صفحة العناوين من همسة تك",
         "description": "إدارة العناوين المحفوظة على همسة تك"

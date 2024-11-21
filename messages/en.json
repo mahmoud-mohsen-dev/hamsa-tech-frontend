@@ -451,6 +451,26 @@
       }
     },
     "AddressPage": {
+      "content": {
+        "title": "Addresses",
+        "addNewAddressButton": "Add new address",
+        "modal": {
+          "title": "Create new address",
+          "ok": "Ok",
+          "cancel": "Cancel"
+        },
+        "form": {
+          "setAsDefaultLabel": "Set as default",
+          "placeholder": {
+            "addressName": "Address Name (e.g. 'Office', 'Home', etc...)"
+          }
+        },
+        "messages": {
+          "formValidationErrors": {
+            "addressNameRequired": "Please enter an address name"
+          }
+        }
+      },
       "metaData": {
         "title": "Hamsa Tech Addresses Page",
         "description": "Manage your saved addresses on Hamsa Tech"

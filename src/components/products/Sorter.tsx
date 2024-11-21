@@ -39,8 +39,7 @@ function Sorter() {
     { value: 40, label: <span>{t('showBy.1')}</span> },
     { value: 30, label: <span>{t('showBy.2')}</span> },
     { value: 20, label: <span>{t('showBy.3')}</span> },
-    { value: 10, label: <span>{t('showBy.4')}</span> },
-    { value: 1, label: <span>Show: 1</span> }
+    { value: 10, label: <span>{t('showBy.4')}</span> }
   ];
 
   //"name:desc", "final_product_price:desc", "average_reviews:desc

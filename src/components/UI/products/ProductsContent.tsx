@@ -64,6 +64,8 @@ function ProductsContent() {
   const priceMaxParams = params.get('price-max');
   const ratesParams = params.get('rates');
 
+  console.log(completeProductsApiData);
+
   const getProducts = async () => {
     try {
       // setLoading(true);
@@ -273,7 +275,13 @@ function ProductsContent() {
         <h4 className='text-sm font-medium text-black-medium'>
           {/* {data?.children?.length ?? 0}{' '} */}
           <span className='text-gray-normal'>
-            {t(`foundItems`, { count: productsData.length ?? 0 })}
+            {t(`foundItems`, {
+              count:
+                completeProductsApiData?.meta?.pagination?.total ?
+                  completeProductsApiData?.meta?.pagination?.total
+                : productsData.length > 0 ? productsData.length
+                : 0
+            })}
           </span>
         </h4>
         <Sorter />
@@ -370,8 +378,8 @@ function ProductsContent() {
                 })()
             }
             total={
-              completeProductsApiData?.meta?.pagination?.pageCount ?
-                completeProductsApiData.meta.pagination.pageCount
+              completeProductsApiData?.meta?.pagination?.total ?
+                completeProductsApiData.meta.pagination.total
               : 1
             }
             pageSize={Number(pageSize) > 0 ? Number(pageSize) : 20}

@@ -6,10 +6,15 @@ import {
   useState
 } from 'react';
 import { getIdFromToken } from '@/utils/cookieUtils';
+import { AdressesType } from '@/types/addressResponseTypes';
 
 const UserContext = createContext<null | {
   userId: string | null;
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
+  addressesData: AdressesType[] | null;
+  setAddressesData: React.Dispatch<
+    React.SetStateAction<AdressesType[] | null>
+  >;
 }>(null);
 
 export const UserProvider = ({
@@ -18,6 +23,9 @@ export const UserProvider = ({
   children: React.ReactNode;
 }) => {
   const [userId, setUserId] = useState<null | string>(null);
+  const [addressesData, setAddressesData] = useState<
+    null | AdressesType[]
+  >(null);
 
   useEffect(() => {
     const id = getIdFromToken();
@@ -25,7 +33,9 @@ export const UserProvider = ({
   }, []);
 
   return (
-    <UserContext.Provider value={{ userId, setUserId }}>
+    <UserContext.Provider
+      value={{ userId, setUserId, addressesData, setAddressesData }}
+    >
       {children}
     </UserContext.Provider>
   );

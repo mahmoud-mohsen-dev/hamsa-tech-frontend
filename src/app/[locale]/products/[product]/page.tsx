@@ -359,7 +359,7 @@ export default async function Product({
                 productData?.user_manual?.data?.attributes?.url
               ) ?
                 'gap-10 2xl:grid-cols-2 2xl:gap-5'
-              : 'justify-center'
+              : 'justify-center gap-10'
             }`}
           >
             {/* Download Center Section */}
@@ -436,7 +436,14 @@ export default async function Product({
                 {t('aboutThisProductSectionTitle')}
               </h2>
               <ul
-                className={`${locale === 'ar' ? 'mr-5' : 'ml-5'} mt-5 list-disc 2xl:mt-10`}
+                className={`${locale === 'ar' ? 'mr-5' : 'ml-5'} list-disc ${
+                  (
+                    productData?.datasheet?.data?.attributes?.url ||
+                    productData?.user_manual?.data?.attributes?.url
+                  ) ?
+                    'mt-5 2xl:mt-10'
+                  : 'mt-5'
+                }`}
               >
                 {productData?.features.map((item, i) => (
                   <li
