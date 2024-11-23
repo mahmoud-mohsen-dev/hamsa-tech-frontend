@@ -544,7 +544,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
         console.error(addressesError);
         return;
       }
-      console.log(addressesData);
+      // console.log(addressesData);
       setAddressesData(addressesData);
     };
 

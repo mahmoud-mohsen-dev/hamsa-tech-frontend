@@ -1,10 +1,5 @@
-// import NotFound from '@/app/not-found';
-// import ProductBreadcrumb from '@/components/UI/products/product/ProductBreadcrumb';
 import { fetchGraphql } from '@/services/graphqlCrud';
-import {
-  NextProductResponseType,
-  ProductResponseType
-} from '@/types/getProduct';
+import { ProductResponseType } from '@/types/getProduct';
 import {
   getTranslations,
   unstable_setRequestLocale
@@ -13,7 +8,6 @@ import {
   FaAddressBook,
   FaBook,
   FaFacebookF,
-  FaInstagram,
   FaSitemap,
   FaWhatsapp
 } from 'react-icons/fa6';
@@ -28,12 +22,10 @@ import OrderProduct from '@/components/productPage/OrderProduct';
 import Info from '@/components/productPage/Info';
 import { Link } from '@/navigation';
 import { RiTwitterXLine } from 'react-icons/ri';
-import Btn from '@/components/UI/Btn';
 import ProductCard from '@/components/products/ProductCard';
 import { v4 } from 'uuid';
 import { getBadge } from '@/utils/getBadge';
 import TabsSection from '@/components/productPage/TabsSection';
-import { pdf } from '@react-pdf/renderer';
 import DownloadBtn from '@/components/UI/DownloadBtn';
 import { getQueryProductPage } from '@/services/getProduct';
 import { TbMail } from 'react-icons/tb';
@@ -144,6 +136,25 @@ export default async function Product({
 
   const productUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/${locale}/products/${product}`;
 
+  const getCurrentAndNextProductId = () => {
+    let enId = 'not-found';
+    let arId = 'not-found';
+
+    if (productResData?.product?.data?.attributes?.locale === 'ar') {
+      arId = productResData?.product?.data?.id ?? 'not-found';
+      enId =
+        productResData?.product?.data?.attributes?.localizations
+          ?.data[0]?.id ?? 'not-found';
+    } else {
+      arId =
+        productResData?.product?.data?.attributes?.localizations
+          ?.data[0]?.id ?? 'not-found';
+      enId = productResData?.product?.data?.id ?? 'not-found';
+    }
+
+    return { enId, arId };
+  };
+
   return (
     <>
       <div id='product-page'>
@@ -166,8 +177,8 @@ export default async function Product({
           >
             <ProductSlider
               productData={productData}
-              currentId={productResData?.product?.data?.id ?? 0}
-              nextId={productData?.localizations?.data[0]?.id ?? 0}
+              enId={getCurrentAndNextProductId().enId}
+              arId={getCurrentAndNextProductId().arId}
             />
             <div className='mt-5 2xl:mt-0'>
               {/* Basic Data */}

@@ -64,7 +64,7 @@ function ProductsContent() {
   const priceMaxParams = params.get('price-max');
   const ratesParams = params.get('rates');
 
-  console.log(completeProductsApiData);
+  // console.log(completeProductsApiData);
 
   const getProducts = async () => {
     try {

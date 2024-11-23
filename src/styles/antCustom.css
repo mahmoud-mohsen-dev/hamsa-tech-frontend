@@ -388,17 +388,21 @@
 
 /* Postal code Input */
 /* For Chrome, Safari, Edge, and Opera */
-input[type='number']#order-info_shippingDetailsApartment::-webkit-outer-spin-button,
-input[type='number']#order-info_shippingDetailsApartment::-webkit-inner-spin-button,
-input[type='number']#order-info_shippingDetailsPostalCode::-webkit-outer-spin-button,
-input[type='number']#order-info_shippingDetailsPostalCode::-webkit-inner-spin-button {
+.address-form-apartment
+  input[type='number']::-webkit-outer-spin-button,
+.address-form-apartment
+  input[type='number']::-webkit-inner-spin-button,
+.address-form-postal-code
+  input[type='number']::-webkit-outer-spin-button,
+.address-form-postal-code
+  input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
 }
 
 /* For Firefox */
-input[type='number']#order-info_shippingDetailsPostalCode {
+.address-form-postal-code input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
 }

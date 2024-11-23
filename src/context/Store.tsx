@@ -30,10 +30,10 @@ const MyContext = createContext<{
   setProductsData: React.Dispatch<
     React.SetStateAction<[] | ProductType[]>
   >;
-  currentProductId: string;
-  setCurrentProductId: React.Dispatch<React.SetStateAction<string>>;
-  nextProductId: string;
-  setNextProductId: React.Dispatch<React.SetStateAction<string>>;
+  enProductId: string;
+  setEnProductId: React.Dispatch<React.SetStateAction<string>>;
+  arProductId: string;
+  setArProductId: React.Dispatch<React.SetStateAction<string>>;
   openDrawer: boolean;
   setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
   drawerIsLoading: boolean;
@@ -123,8 +123,8 @@ export const StoreContextProvider = ({
   >(initialProductsData);
   const [completeProductsApiData, setCompleteProductsApiData] =
     useState<ProductsResponseDataType | null>(null);
-  const [currentProductId, setCurrentProductId] = useState('0');
-  const [nextProductId, setNextProductId] = useState('0');
+  const [enProductId, setEnProductId] = useState('not-found');
+  const [arProductId, setArProductId] = useState('not-found');
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [drawerIsLoading, setDrawerIsLoading] =
     useState<boolean>(false);
@@ -137,9 +137,8 @@ export const StoreContextProvider = ({
   >([]);
   const [selectedGovernorate, setSelectedGovernorate] =
     useState<ShippingCostDataType | null>(null);
-  const [freeShippingAt, setFreeShippingAt] = useState<
-    null | FreeShippingAttributesType
-  >(null);
+  const [freeShippingAt, setFreeShippingAt] =
+    useState<null | FreeShippingAttributesType>(null);
   const [couponData, setCouponData] = useState<CouponDataType | null>(
     null
   );
@@ -378,10 +377,10 @@ export const StoreContextProvider = ({
       value={{
         productsData,
         setProductsData,
-        currentProductId,
-        setCurrentProductId,
-        nextProductId,
-        setNextProductId,
+        enProductId,
+        setEnProductId,
+        arProductId,
+        setArProductId,
         openDrawer,
         setOpenDrawer,
         drawerIsLoading,

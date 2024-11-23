@@ -64,28 +64,17 @@ function SettingsPage({
   params: { locale: string };
 }) {
   const [isLoading, setIsloading] = useState(true);
-  // const { setUserId } = useUser();
-  //   const [orders, setOrders] = useState<{
-  //     data: OrderDataType[];
-  //     meta: {
-  //       pagination: PaginationMeta;
-  //     };
-  //   } | null>(null);
   const t = useTranslations('AccountLayoutPage.AddressPage.content');
   const checkoutTranslation = useTranslations('CheckoutPage.content');
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
-  const {
-    governoratesData,
-    setLoadingMessage,
-    setErrorMessage,
-    setSuccessMessage
-  } = useMyContext();
+  const { governoratesData, setErrorMessage, setSuccessMessage } =
+    useMyContext();
   const { addressesData, setAddressesData } = useUser();
 
-  const { contextHolder, loadingMessage } = useHandleMessagePopup();
+  const { contextHolder } = useHandleMessagePopup();
 
   const [open, setOpen] = useState<boolean>(false);
   const [formAddress] = useForm<AddressFormValuesType>();
@@ -96,11 +85,15 @@ function SettingsPage({
   const [defaultActiveAddress, setDefaultActiveAddress] = useState<
     string | null
   >(null);
-  const [modalLoading, setModalLoading] = useState<boolean>(true);
+  const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [editAddressId, setEditAddressId] = useState<null | string>(
     null
   );
   const { didMount: isFirstRender } = useIsMount();
+
+  console.log('defaultActiveAddress', defaultActiveAddress);
+  console.log('editAddressId', editAddressId);
+  console.log('modalLoading', modalLoading);
 
   const showModal = () => {
     setOpen(true);
@@ -121,7 +114,7 @@ function SettingsPage({
               address?.attributes?.default ? address.id : null
             )
             .filter((address) => address)
-            .at(-1) ?? null
+            .at(-1) ?? addressesData[0].id
         );
       });
     }
@@ -153,19 +146,6 @@ function SettingsPage({
     };
 
     getShippingCostData();
-
-    // const getAddressData = async () => {
-    //   const { addressesData, addressesError } =
-    //     await getUserAddressesAuthenticated();
-    //   if (addressesError || !addressesData) {
-    //     console.error(addressesError);
-    //     return;
-    //   }
-    //   console.log(addressesData);
-    //   setAddressesData(addressesData);
-    // };
-
-    // getAddressData();
   }, []);
 
   useEffect(() => {
@@ -228,8 +208,6 @@ function SettingsPage({
         shippingDetailsPostalCode
       } = formValues;
 
-      setLoadingMessage(true);
-
       const shippingCostId =
         governoratesData.find(
           (item) =>
@@ -264,7 +242,6 @@ function SettingsPage({
         console.error('Failed to create delivery address');
         console.error(deliveryAddressError);
         console.error(deliveryAddressId);
-        setLoadingMessage(false);
         setErrorMessage('Failed to create delivery address');
         return null;
       }
@@ -274,11 +251,8 @@ function SettingsPage({
       return deliveryAddressId;
     } catch (err) {
       console.error('Error occured while creating new address:', err);
-      // setLoadingMessage(false);
       setErrorMessage('Error occured while creating new address');
       return null;
-    } finally {
-      setLoadingMessage(false);
     }
   };
 
@@ -303,7 +277,7 @@ function SettingsPage({
         shippingDetailsPostalCode
       } = formValues;
 
-      setLoadingMessage(true);
+      setModalLoading(true);
 
       const shippingCostId =
         governoratesData.find(
@@ -346,7 +320,6 @@ function SettingsPage({
         console.error('Failed to edit delivery address');
         console.error(deliveryAddressError);
         console.error(deliveryAddressId);
-        setLoadingMessage(false);
         setErrorMessage('Failed to edit delivery address');
         return null;
       }
@@ -356,16 +329,16 @@ function SettingsPage({
       return deliveryAddressId;
     } catch (err) {
       console.error('Error occured while editing address:', err);
-      // setLoadingMessage(false);
       setErrorMessage('Error occured while editing address');
       return null;
     } finally {
-      setLoadingMessage(false);
+      setModalLoading(false);
     }
   };
 
   // Function to handle form submission failure (validation errors)
   const onFinishFailed = (errorInfo: any) => {
+    setModalLoading(false);
     setErrorMessage(
       errorInfo?.errorFields[0]?.errors[0] ??
         'Failed to apply your changes'
@@ -391,9 +364,7 @@ function SettingsPage({
         await formAddress.validateFields();
 
       console.log('fields', fields);
-
-      const fieldsValue = formAddress.getFieldsValue();
-      console.log('fieldsValue', fieldsValue);
+      setModalLoading(true);
 
       const createdAddressId = await onFinish(fields);
       console.log('createdAddressId', createdAddressId);
@@ -435,17 +406,17 @@ function SettingsPage({
     } catch (err) {
       console.error('Failed to validate fields:', err);
       onFinishFailed(err);
+    } finally {
+      setModalLoading(false);
     }
   };
 
   const handleEdit = async () => {
     try {
-      setModalLoading(true);
       const fields = await formAddress.validateFields();
       console.log('fields', fields);
 
-      // const formValues = formAddress.getFieldsValue();
-      // console.log('formValues', formValues);
+      setModalLoading(true);
 
       const updatedAddressId = await onEditFinish(
         fields,
@@ -461,13 +432,14 @@ function SettingsPage({
       await getAddressesData();
       setSuccessMessage(checkoutTranslation('form.successMessage'));
 
+      setOpen(false);
+      setEditAddressId(null);
       formAddress.resetFields();
     } catch (err) {
       console.error('Failed to validate fields:', err);
       onFinishFailed(err);
     } finally {
       setModalLoading(false);
-      setOpen(false);
     }
   };
 
@@ -548,9 +520,6 @@ function SettingsPage({
           setModalLoading(false);
         });
     });
-    // setTimeout(() => {
-    //   setModalLoading(false);
-    // }, 2000);
   };
 
   const onChange = (e: RadioChangeEvent) => {
@@ -559,9 +528,6 @@ function SettingsPage({
   };
 
   const confirmDelete = async (addressId: string | null) => {
-    // console.error(e);
-    // setSuccessMessage('Click on Yes');
-
     const { deletedAddressId, deletedAddressError } =
       await deleteAddress(addressId);
 
@@ -653,114 +619,132 @@ function SettingsPage({
               >
                 {addressesData &&
                   addressesData.length > 0 &&
-                  addressesData.map((address, i) => (
-                    <div
-                      className={`${defaultActiveAddress === address.id ? 'border-blue-light shadow-featuredHovered' : 'border-gray-light shadow-featured'} rounded-md border p-4`}
-                      key={i}
-                    >
-                      <Radio
-                        value={address.id}
-                        style={{ width: '100%' }}
+                  addressesData.map((address, i) => {
+                    const comma = locale === 'ar' ? '،' : ',';
+                    return (
+                      <div
+                        className={`${defaultActiveAddress === address.id ? 'border-blue-light shadow-featuredHovered' : 'border-gray-light shadow-featured'} rounded-md border p-4`}
+                        key={i}
                       >
-                        <div className='flex h-full w-full flex-col justify-between'>
-                          <div className='flex flex-col flex-wrap gap-1 pl-2 font-inter'>
-                            <h3 className='font-semibold'>
-                              {address?.attributes?.address_name ??
-                                ''}
-                            </h3>
-                            <p>
-                              <span>
-                                {address?.attributes?.first_name ??
+                        <Radio
+                          value={address.id}
+                          style={{ width: '100%' }}
+                        >
+                          <div className='flex h-full w-full flex-col justify-between'>
+                            <div className='flex flex-col flex-wrap gap-1 pl-2 font-inter'>
+                              <h3 className='font-semibold'>
+                                {address?.attributes?.address_name ??
                                   ''}
-                              </span>{' '}
-                              <span>
-                                {address?.attributes?.last_name ?? ''}
-                              </span>
-                            </p>
-                            <p>
-                              <span>
-                                {address?.attributes?.address_1 ?? ''}
-                                ,{' '}
-                              </span>
-                              <span>
-                                {address?.attributes?.address_2 ?? ''}
-                                ,
-                              </span>
-                            </p>
-                            <p>
-                              <span>
-                                building{' '}
-                                {address?.attributes?.building ?? ''},{' '}
-                              </span>
-                              <span>
-                                floor{' '}
-                                {address?.attributes?.floor ?? ''},{' '}
-                              </span>
-                              <span>
-                                apartment{' '}
-                                {address?.attributes?.apartment ?? ''}
-                                ,{' '}
-                              </span>
-                            </p>
-                            <p>
-                              <span>
-                                {address?.attributes?.city ?? ''},{' '}
-                              </span>
-                              <span>
-                                {locale === 'ar' ? 'مصر,' : 'Egypt, '}
-                              </span>
-                              <span>
-                                {address?.attributes?.zip_code ?? ''}{' '}
-                                postal code,
-                              </span>
-                            </p>
-                            <p>
-                              {address?.attributes?.delivery_phone ??
-                                ''}
-                            </p>
-                          </div>
-                          <div className='space-y-1'>
-                            {defaultActiveAddress === address.id ?
-                              <div className='my-4 w-fit rounded bg-green-dark px-4 py-2 text-white'>
-                                Default address
-                              </div>
-                            : <div className='my-4 w-fit rounded font-medium text-green-dark'>
-                                Set as Default
-                              </div>
-                            }
-                            <div className='flex gap-2'>
-                              <Button
-                                type='link'
-                                variant='filled'
-                                className='filled-button'
-                                onClick={() =>
-                                  editAddressHandler(address.id)
-                                }
-                              >
-                                Edit
-                              </Button>
-                              <Popconfirm
-                                title='Delete this address'
-                                description='Are you sure to delete this Address?'
-                                onConfirm={() =>
-                                  confirmDelete(address.id)
-                                }
-                                okText='Yes'
-                                cancelText='No'
-                              >
+                              </h3>
+                              <p>
+                                <span>
+                                  {address?.attributes?.first_name ??
+                                    ''}
+                                </span>{' '}
+                                <span>
+                                  {address?.attributes?.last_name ??
+                                    ''}
+                                </span>
+                              </p>
+                              <p>
+                                <span>
+                                  {address?.attributes?.address_1 ??
+                                    ''}
+                                  {comma}{' '}
+                                </span>
+                                {address?.attributes?.address_2 && (
+                                  <span>
+                                    {address?.attributes?.address_2}{' '}
+                                    {comma}
+                                  </span>
+                                )}
+                              </p>
+                              <p>
+                                <span>
+                                  {t('card.building')}{' '}
+                                  {address?.attributes?.building ??
+                                    ''}
+                                  {comma}{' '}
+                                </span>
+                                <span>
+                                  {t('card.floor')}{' '}
+                                  {address?.attributes?.floor ?? ''}
+                                  {comma}{' '}
+                                </span>
+                                <span>
+                                  {t('card.apartment')}{' '}
+                                  {address?.attributes?.apartment ??
+                                    ''}
+                                  {comma}{' '}
+                                </span>
+                              </p>
+                              <p>
+                                <span>
+                                  {address?.attributes?.city ?? ''}
+                                  {comma}{' '}
+                                </span>
+                                <span>
+                                  {locale === 'ar' ?
+                                    'مصر' + comma + ' '
+                                  : 'Egypt' + comma + ' '}
+                                </span>
+                                <span>
+                                  {t('card.postalCode')}{' '}
+                                  {address?.attributes?.zip_code ??
+                                    ''}{' '}
+                                  {comma}
+                                </span>
+                              </p>
+                              <p>
+                                {address?.attributes
+                                  ?.delivery_phone ?? ''}
+                              </p>
+                            </div>
+                            <div className='space-y-1'>
+                              {defaultActiveAddress === address.id ?
+                                <div className='my-4 w-fit rounded bg-green-dark px-4 py-2 text-white'>
+                                  {t('card.defaultAddress')}
+                                </div>
+                              : <div className='my-4 w-fit rounded font-medium text-green-dark'>
+                                  {t('card.setAsDefault')}
+                                </div>
+                              }
+                              <div className='flex gap-2'>
                                 <Button
-                                  color='danger'
+                                  type='link'
                                   variant='filled'
+                                  className='filled-button'
+                                  onClick={() =>
+                                    editAddressHandler(address.id)
+                                  }
                                 >
-                                  Delete
+                                  {t('card.edit')}
                                 </Button>
-                              </Popconfirm>
+                                <Popconfirm
+                                  title={t('confirm.title')}
+                                  description={t(
+                                    'confirm.description'
+                                  )}
+                                  onConfirm={() =>
+                                    confirmDelete(address.id)
+                                  }
+                                  okText={t('confirm.ok')}
+                                  cancelText={t('confirm.cancel')}
+                                >
+                                  <Button
+                                    color='danger'
+                                    variant='filled'
+                                  >
+                                    {t('card.delete')}
+                                  </Button>
+                                </Popconfirm>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Radio>
-                    </div>
-                  ))}
+                        </Radio>
+                      </div>
+                    );
+                  })}
               </Radio.Group>
             </div>
           </div>
@@ -769,9 +753,7 @@ function SettingsPage({
             title={
               <p>
                 {editAddressId ?
-                  locale === 'ar' ?
-                    'تعديل العنوان'
-                  : 'Edit address'
+                  t('modal.editTitle')
                 : t('modal.title')}
               </p>
             }
@@ -823,7 +805,7 @@ function SettingsPage({
                 // onFinish={onFinish}
                 colon={false}
                 form={formAddress}
-                // onFinishFailed={onFinishFailed}
+                onFinishFailed={onFinishFailed}
                 initialValues={{
                   isDefault: false,
                   shippingDetailsCountry: 'egypt'

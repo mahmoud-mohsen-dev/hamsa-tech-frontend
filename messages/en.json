@@ -454,8 +454,26 @@
       "content": {
         "title": "Addresses",
         "addNewAddressButton": "Add new address",
+        "card": {
+          "building": "building",
+          "floor": "floor",
+          "apartment": "apartment",
+          "city": "city",
+          "postalCode": "postal code",
+          "setAsDefault": "Set as default",
+          "defaultAddress": "Default address",
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "confirm": {
+          "title": "Delete this address",
+          "description": "Are you sure to delete this Address?",
+          "ok": "Yes",
+          "cancel": "No"
+        },
         "modal": {
           "title": "Create new address",
+          "editTitle": "Edit address",
           "ok": "Ok",
           "cancel": "Cancel"
         },

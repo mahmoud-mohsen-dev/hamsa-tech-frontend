@@ -9,7 +9,7 @@ function ArrowDownAnimatedIcon({
   iconIsActive,
   handleIconIsActive
 }: ArrowDownAnimatedIconProps) {
-  console.log(iconIsActive);
+  // console.log(iconIsActive);
   return (
     <button
       className={`custom-animated-arrow-down ${iconIsActive ? 'custom-animated-arrow-down-open' : ''}`}

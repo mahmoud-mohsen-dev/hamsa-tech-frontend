@@ -1,4 +1,5 @@
 import {
+  AdressesType,
   CreateAddressResponseType,
   GetAddressesResponseType,
   GetAddressResponseType,
@@ -9,6 +10,7 @@ import {
 import { fetchGraphqlClientAuthenticated } from './graphqlCrud';
 import { capitalize } from '@/utils/helpers';
 import { getIdFromToken } from '@/utils/cookieUtils';
+import dayjs from 'dayjs';
 
 export const getShippingQuery = (locale: string) => {
   return `{
@@ -526,6 +528,26 @@ const updateDefaultAddressQuery = ({
   }`;
 };
 
+function sortAndValidateData(data: AdressesType[]) {
+  if (!Array.isArray(data)) {
+    throw new Error('The input data must be an array.');
+  }
+
+  return data
+    .map((item) => {
+      const dateValue = item['attributes']['updatedAt'];
+      if (!dayjs(dateValue).isValid()) {
+        throw new Error(`Invalid ISO date string: ${dateValue}`);
+      }
+      return item;
+    })
+    .sort(
+      (a, b) =>
+        dayjs(b['attributes']['updatedAt']).valueOf() -
+        dayjs(a['attributes']['updatedAt']).valueOf()
+    );
+}
+
 export const updateDefaultAddress = async ({
   addresses,
   defaultAddressId
@@ -590,6 +612,8 @@ export const updateDefaultAddress = async ({
     }
 
     console.log(updatedAddresses);
+    // const orderedAddresses = sortAndValidateData(updatedAddresses);
+    // console.log('orderedAddresses', orderedAddresses);
 
     return { addressesData: updatedAddresses, addressesError: null };
   } catch (error) {

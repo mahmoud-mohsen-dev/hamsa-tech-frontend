@@ -9,14 +9,14 @@ import { v4 } from 'uuid';
 
 function ProductSlider({
   productData,
-  currentId,
-  nextId
+  enId,
+  arId
 }: {
   productData: ProductDataType;
-  currentId: string;
-  nextId: string;
+  enId: string;
+  arId: string;
 }) {
-  const { setCurrentProductId, setNextProductId } = useMyContext();
+  const { setEnProductId, setArProductId } = useMyContext();
   const images = productData?.images.data ?? [];
   const [activeImg, setActiveImg] = useState({
     imgSrc: images[0].attributes?.url ?? '',
@@ -28,9 +28,9 @@ function ProductSlider({
   // console.log(activeImg);
 
   useEffect(() => {
-    setCurrentProductId(String(currentId));
-    setNextProductId(String(nextId));
-  }, [currentId, nextId]);
+    setEnProductId(String(enId));
+    setArProductId(String(arId));
+  }, [enId, arId]);
 
   return (
     <div className='flex max-h-fit flex-col-reverse items-center justify-center 2xl:sticky 2xl:top-[64px] 3xl:flex-row'>

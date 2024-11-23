@@ -53,8 +53,8 @@ export const getOrdersAuthenticated = async (
     const { data, error } = (await fetchGraphqlServerWebAuthenticated(
       getOrdersQuery({ page, userId })
     )) as GetOrdersAuthenticatedResponse;
-    console.log('getOrdersAuthenticated error', error);
-    console.log('getOrdersAuthenticated data', data);
+    // console.log('getOrdersAuthenticated error', error);
+    // console.log('getOrdersAuthenticated data', data);
 
     if (!error && data?.orders?.data && data.orders.data.length > 0) {
       return data.orders;

@@ -455,23 +455,40 @@
       "content": {
         "title": "العناوين",
         "addNewAddressButton": "إضافة عنوان جديد",
+        "card": {
+          "building": "المبنى",
+          "floor": "الطابق",
+          "apartment": "الشقة",
+          "city": "المدينة",
+          "postalCode": "الرمز البريدي",
+          "setAsDefault": "تعيين كافتراضي",
+          "defaultAddress": "العنوان الإفتراضي",
+          "edit": "تعديل",
+          "delete": "حذف"
+        },
         "modal": {
           "title": "إنشاء عنوان جديد",
+          "editTitle": "تعديل العنوان",
           "ok": "موافق",
           "cancel": "إلغاء"
         },
+        "confirm": {
+          "title": "حذف هذا العنوان",
+          "description": "هل أنت متأكد من حذف هذا العنوان؟",
+          "ok": "نعم",
+          "cancel": "لا"
+        },
         "form": {
-  "setAsDefaultLabel": "تعيين كافتراضي",
-  "placeholder": {
-    "addressName": "اسم العنوان (مثل 'العمل'، 'المنزل'، إلخ...)"
-  }
-},
-"messages": {
-  "formValidationErrors": {
-    "addressNameRequired": "يرجى إدخال اسم العنوان"
-  }
-}
-        
+          "setAsDefaultLabel": "تعيين كافتراضي",
+          "placeholder": {
+            "addressName": "اسم العنوان (مثل 'العمل'، 'المنزل'، إلخ...)"
+          }
+        },
+        "messages": {
+          "formValidationErrors": {
+            "addressNameRequired": "يرجى إدخال اسم العنوان"
+          }
+        }
       },
       "metaData": {
         "title": "صفحة العناوين من همسة تك",

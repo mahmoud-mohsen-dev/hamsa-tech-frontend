@@ -131,12 +131,12 @@ function MenuSidebar({
       : undefined;
   }, [searchParams]);
 
-  console.log(getQueryString());
-  console.log(
-    params.get('category') ?
-      [params.get('category') ?? '']
-    : undefined
-  );
+  // console.log(getQueryString());
+  // console.log(
+  //   params.get('category') ?
+  //     [params.get('category') ?? '']
+  //   : undefined
+  // );
 
   // Handle open submenu change to allow only one open submenu at a time
   const onOpenChange = (keys: string[]) => {

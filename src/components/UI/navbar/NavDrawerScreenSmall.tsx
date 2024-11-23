@@ -26,6 +26,7 @@ import Image from 'next/image';
 import SearchInputField from './SearchInputField';
 import { useParams } from 'next/navigation';
 import { removeCookie } from '@/utils/cookieUtils';
+import { useSelectLanguage } from '@/hooks/useSelectLanguage';
 
 const { SubMenu } = Menu;
 
@@ -67,12 +68,11 @@ function NavDrawerScreenSmall({
     ]
   ); // State for open keys
   const { userId, setUserId } = useUser();
-  // const {  } = useMyContext();
-  const [isPending, startTransition] = useTransition();
-  const params = useParams();
   const locale = useLocale();
   const t = useTranslations('NavbarDrawer');
   const languageTranslation = useTranslations('LocaleSwitcher');
+
+  const { onLanguageSelectChange, isPending } = useSelectLanguage();
 
   const dataValues =
     (
@@ -100,7 +100,7 @@ function NavDrawerScreenSmall({
 
   // Handle open menu change to allow only one open submenu at a time
   const onOpenChange = (keys: string[]) => {
-    console.log('onOpenChange keys:', keys);
+    // console.log('onOpenChange keys:', keys);
     const latestOpenKey = keys.find(
       (key) => openKeys.indexOf(key) === -1
     );
@@ -260,15 +260,7 @@ function NavDrawerScreenSmall({
             disabled={isPending}
             onClick={() => {
               onClose();
-              startTransition(() => {
-                router.replace(
-                  // @ts-expect-error -- TypeScript will validate that only known `params`
-                  // are used in combination with a given `pathname`. Since the two will
-                  // always match for the current route, we can skip runtime checks.
-                  { pathname, params },
-                  { locale: 'en' }
-                );
-              });
+              onLanguageSelectChange('en');
             }}
             className='flex w-full items-center gap-[10px] px-6 py-3 text-black-light disabled:cursor-not-allowed'
           >
@@ -297,15 +289,7 @@ function NavDrawerScreenSmall({
             disabled={isPending}
             onClick={() => {
               onClose();
-              startTransition(() => {
-                router.replace(
-                  // @ts-expect-error -- TypeScript will validate that only known `params`
-                  // are used in combination with a given `pathname`. Since the two will
-                  // always match for the current route, we can skip runtime checks.
-                  { pathname, params },
-                  { locale: 'ar' }
-                );
-              });
+              onLanguageSelectChange('ar');
             }}
             className='flex w-full items-center gap-[10px] px-6 py-3 text-black-light disabled:cursor-not-allowed'
           >

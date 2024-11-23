@@ -1,5 +1,6 @@
 'use client';
 import { useMyContext } from '@/context/Store';
+import { useSelectLanguage } from '@/hooks/useSelectLanguage';
 import { usePathname, useRouter } from '@/navigation';
 import { Select } from 'antd';
 import Image from 'next/image';
@@ -18,46 +19,13 @@ function SelectLanguage({
   styleWidth?: number | string;
   styleIconColor?: { color: string };
 }) {
-  const { nextProductId } = useMyContext();
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const pathname = usePathname();
-  const params = useParams();
+  const { onLanguageSelectChange, isPending } = useSelectLanguage();
 
-  function onSelectChange(event: string) {
-    const nextLocale = event;
-    let query = {};
-
-    // Ensure we're on the client side before accessing window
-    if (typeof window !== 'undefined') {
-      const searchParams = new URLSearchParams(
-        window.location.search
-      );
-      query = Object.fromEntries(searchParams.entries());
-    }
-
-    startTransition(() => {
-      if (params.product && typeof params.product === 'string') {
-        router.replace(
-          { pathname: `/products/${String(nextProductId)}` },
-          { locale: nextLocale }
-        );
-      } else {
-        router.replace(
-          {
-            pathname,
-            query
-          },
-          { locale: nextLocale }
-        );
-      }
-    });
-  }
   return (
     <Select
       defaultValue={defaultValue}
       disabled={isPending}
-      onChange={onSelectChange}
+      onChange={onLanguageSelectChange}
       style={{ width: styleWidth, marginLeft: '.5rem' }}
       className={className}
       options={[

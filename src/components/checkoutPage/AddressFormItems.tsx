@@ -156,7 +156,7 @@ function AddressFormItems({
             }
           ]}
           style={{ marginBottom: '20px' }}
-          className='basis-1/3'
+          className='address-form-apartment basis-1/3'
         >
           <Input
             type='number'
@@ -217,7 +217,7 @@ function AddressFormItems({
         <Form.Item
           name={`${name}PostalCode`}
           style={{ marginBottom: '20px' }}
-          className='basis-1/3'
+          className='address-form-postal-code basis-1/3'
           rules={[
             {
               pattern: /^[0-9]{5}$/, // The pattern for postal code format (e.g., 5 digits)
