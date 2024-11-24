@@ -9,7 +9,9 @@ function Btn({
   outlined = false,
   dir = undefined,
   type = 'button',
-  disabled = false
+  disabled = false,
+  hover = false,
+  setHover = () => {}
 }: {
   children: React.ReactNode;
   href?: string | null;
@@ -23,6 +25,8 @@ function Btn({
   outlined?: boolean;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
+  hover?: boolean;
+  setHover?: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   const btnStyles =
     'focus:outline-none active:outline-none disabled:cursor-not-allowed transition-colors duration-300 flex justify-center items-center gap-2 rounded shadow-sm';
@@ -44,6 +48,12 @@ function Btn({
     <button
       className={`${btnStyles} ${outlined ? 'border-2 border-white text-white' : ''} ${defaultPadding ? 'px-[1rem] py-[.55rem]' : ''} ${className}`}
       onClick={onClick as React.MouseEventHandler<HTMLButtonElement>}
+      onMouseMove={() => {
+        setHover(true);
+      }}
+      onMouseLeave={() => {
+        setHover(false);
+      }}
       type={type}
       dir={dir}
       disabled={disabled}

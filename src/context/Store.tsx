@@ -58,6 +58,7 @@ const MyContext = createContext<{
   calculateSubTotalCartCost: () => number;
   calculateTotalCartItems: () => number;
   addToCartIsLoading: string;
+  setAddToCartIsLoading: React.Dispatch<React.SetStateAction<string>>;
   governoratesData: ShippingCostDataType[];
   updateGovernoratesData: (
     newShippingCostData: ShippingCostDataType[]
@@ -395,6 +396,7 @@ export const StoreContextProvider = ({
         calculateSubTotalCartCost,
         calculateTotalCartItems,
         addToCartIsLoading,
+        setAddToCartIsLoading,
         governoratesData,
         updateGovernoratesData,
         selectedGovernorate,

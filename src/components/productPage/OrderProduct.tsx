@@ -16,6 +16,9 @@ import {
   WishlistsDataType
 } from '@/types/wishlistReponseTypes';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
+import AppProgress from '../UI/cart/Progress';
+import CartInputNumber from '../UI/cart/CartInputNumber';
+import AddToCartQuantityChanger from './AddToCartQuantityChanger';
 
 interface PropsType {
   productId: string;
@@ -298,13 +301,17 @@ function OrderProduct({
     updateCartItemQuantity,
     findProductInCart,
     addToCartIsLoading,
+    // setAddToCartIsLoading,
     wishlistsData,
     setWishlistsData,
     findProductInWishlist,
     isWishlistLoading,
-    setIsWishlistLoading
+    setIsWishlistLoading,
+    calculateSubTotalCartCost,
+    freeShippingAt
   } = useMyContext();
   const [quantity, setQuantity] = useState(minQuantity);
+  const [isHovered, setIsHovered] = useState(false);
 
   // const [isAddToCartActive, setIsAddToCartActive] = useState(false);
   // const [isWishlistActive, setIsWishlistActive] = useState(false);
@@ -316,12 +323,12 @@ function OrderProduct({
   const isAddedToCartActive = findProductInCart(productId);
   const isLoading = addToCartIsLoading === productId;
 
-  const onChange: InputNumberProps['onChange'] = (value) => {
-    console.log('changed', value);
-    if (typeof value === 'number') {
-      setQuantity(value);
-    }
-  };
+  // const onChange: InputNumberProps['onChange'] = (value) => {
+  //   console.log('changed', value);
+  //   if (typeof value === 'number') {
+  //     setQuantity(value);
+  //   }
+  // };
   const handleAddToCart = () => {
     console.log('Add to cart clicked');
     // setIsAddToCartActive(!isAddToCartActive);
@@ -350,58 +357,98 @@ function OrderProduct({
   };
 
   return (
-    <div className='mt-4 flex flex-wrap items-center gap-2.5'>
-      <InputNumber
-        size='large'
-        min={0}
-        max={maxQuantity}
-        defaultValue={quantity}
-        value={quantity}
-        onChange={onChange}
-        style={{ borderRadius: '6px' }}
-      />
-      <Btn
-        className={`w-full rounded-md bg-green-dark px-[16px] text-base text-white md:w-fit`}
-        onClick={handleAddToCart}
-        disabled={quantity === 0}
-      >
-        {isLoading ?
-          <Spin
-            className='white'
-            style={{ marginInline: '40px', marginBlock: '2px' }}
+    <>
+      {freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals &&
+        freeShippingAt.enable && (
+          <AppProgress
+            totalCartCosts={calculateSubTotalCartCost()}
+            freeShippingAt={freeShippingAt}
           />
-        : isAddedToCartActive ?
-          <>
-            <HiShoppingCart className='text-xl' />
-            <span>{t('addedToCartButtonText')}</span>
-          </>
-        : <>
-            <HiOutlineShoppingCart className='text-xl' />
-            <span>{t('addToCartButtonText')}</span>
-          </>
-        }
-      </Btn>
-      <Btn
-        className={`w-full rounded-md bg-red-shade-350 px-[16px] text-base text-white md:w-fit`}
-        onClick={handleAddToWishList}
-      >
-        {isWishlistLoading ?
-          <Spin
-            className='white'
-            style={{ marginInline: '40px', marginBlock: '2px' }}
+        )}
+
+      <div className='mt-4 flex flex-wrap items-center gap-2.5'>
+        {/* <InputNumber
+          size='large'
+          min={0}
+          max={maxQuantity}
+          defaultValue={quantity}
+          value={quantity}
+          onChange={onChange}
+          style={{ borderRadius: '6px' }}
+        /> */}
+        <div className='flex w-full items-center gap-4'>
+          {/* <CartInputNumber
+            productId={productId}
+            // setIsDataLoading={() => setAddToCartIsLoading(productId)}
+            setIsDataLoading={undefined}
+            // salePrice={
+            //   productData?.product?.data?.attributes?.sale_price
+            // }
+            // price={productData?.product?.data?.attributes?.price}
+            // productQuantity={quantity}
+            minValue={minQuantity}
+            // className='w-[200px]'
+            maxValue={maxQuantity}
+          /> */}
+          <AddToCartQuantityChanger
+            minValue={minQuantity}
+            maxValue={maxQuantity}
+            isLoading={isLoading}
+            inputQuantity={quantity}
+            setInputQuantity={setQuantity}
           />
-        : isAddedToWishlistActive ?
-          <>
-            <HiHeart size={20} />
-            <span>{t('AddedToWhishListText')}</span>
-          </>
-        : <>
-            <HiOutlineHeart size={20} />
-            <span>{t('AddToWhishListText')}</span>
-          </>
-        }
-      </Btn>
-    </div>
+          <Btn
+            className={`w-full rounded-md border border-transparent bg-green-dark px-[16px] text-base text-white duration-200 hover:border-green-dark hover:bg-white hover:text-green-dark active:border-transparent active:bg-green-dark active:text-white md:grow`}
+            onClick={handleAddToCart}
+            disabled={quantity === 0}
+            hover={isHovered}
+            setHover={setIsHovered}
+          >
+            {isLoading ?
+              <Spin
+                className='white'
+                style={{ marginInline: '40px', marginBlock: '2px' }}
+              />
+            : isAddedToCartActive ?
+              <>
+                <HiShoppingCart className='text-xl' />
+
+                <span>
+                  {isHovered ?
+                    t('deleteFromCartButtonText')
+                  : t('addedToCartButtonText')}
+                </span>
+              </>
+            : <>
+                <HiOutlineShoppingCart className='text-xl' />
+                <span>{t('addToCartButtonText')}</span>
+              </>
+            }
+          </Btn>
+        </div>
+        <Btn
+          // className={`w-full rounded-md border border-transparent bg-red-shade-350 px-[16px] text-base text-white duration-200 hover:border-red-shade-350 hover:bg-white hover:text-red-shade-350 active:border-transparent active:bg-red-shade-350 active:text-white md:w-fit`}
+          className={`w-fit px-1 text-base text-red-shade-350 !shadow-none !duration-0 hover:text-red-shade-250 active:text-red-shade-350`}
+          onClick={handleAddToWishList}
+        >
+          {isWishlistLoading ?
+            <Spin
+              className='white'
+              style={{ marginInline: '40px', marginBlock: '2px' }}
+            />
+          : isAddedToWishlistActive ?
+            <>
+              <HiHeart size={20} />
+              <span>{t('AddedToWhishListText')}</span>
+            </>
+          : <>
+              <HiOutlineHeart size={20} />
+              <span>{t('AddToWhishListText')}</span>
+            </>
+          }
+        </Btn>
+      </div>
+    </>
   );
 }
 

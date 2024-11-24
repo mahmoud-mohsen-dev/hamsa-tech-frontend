@@ -313,6 +313,17 @@ function ProductsContent() {
                 return (
                   <ProductCard
                     id={product.id}
+                    localeParentName={
+                      product?.attributes?.locale ?? ''
+                    }
+                    localeChildName={
+                      product?.attributes?.localizations?.data[0]
+                        ?.attributes?.locale ?? ''
+                    }
+                    localeChildId={
+                      product?.attributes?.localizations?.data[0]
+                        ?.id ?? ''
+                    }
                     title={product?.attributes?.name ?? ''}
                     alt={
                       product?.attributes?.image_thumbnail?.data
@@ -322,9 +333,9 @@ function ProductsContent() {
                       product?.attributes?.image_thumbnail?.data
                         ?.attributes?.url ?? ''
                     }
-                    avgRate={
-                      product?.attributes?.average_reviews ?? 0
-                    }
+                    // avgRate={
+                    //   product?.attributes?.average_reviews ?? 0
+                    // }
                     category={
                       product?.attributes?.sub_category?.data
                         ?.attributes?.name ?? ''
@@ -348,9 +359,9 @@ function ProductsContent() {
                       product?.attributes?.sale_price ?? 0
                     }
                     linkSrc={`/products/${product.id}`}
-                    totalRates={
-                      product?.attributes?.total_reviews ?? 0
-                    }
+                    // totalRates={
+                    //   product?.attributes?.total_reviews ?? 0
+                    // }
                     stock={product?.attributes?.stock ?? 0}
                     key={v4()}
                   />

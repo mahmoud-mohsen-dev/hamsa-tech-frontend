@@ -1,8 +1,11 @@
-import { Rate } from 'antd';
+'use client';
 import Image from 'next/image';
 import { Link } from '@/navigation';
-import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import AddToCartButton from './AddToCartButton';
+import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
+import { useMyContext } from '@/context/Store';
+import { updateWishtlistHandler } from '../productPage/OrderProduct';
 
 function ProductCard({
   id,
@@ -12,13 +15,16 @@ function ProductCard({
   title,
   category,
   brand,
-  avgRate,
-  totalRates,
+  // avgRate,
+  // totalRates,
   priceBeforeDeduction,
   badge,
   currentPrice,
   stock,
-  modalName
+  modalName,
+  localeParentName,
+  localeChildName,
+  localeChildId
 }: {
   id: string;
   linkSrc: string;
@@ -28,18 +34,51 @@ function ProductCard({
   category: string;
   brand: string;
   badge: string;
-  avgRate: number;
-  totalRates: number;
+  // avgRate: number;
+  // totalRates: number;
   priceBeforeDeduction: number;
   currentPrice: number;
   stock: number;
   modalName: string;
+  localeParentName: string;
+  localeChildName: string;
+  localeChildId: string;
 }) {
-  const t = useTranslations('ProductsPage.content');
+  // const t = useTranslations('ProductsPage.content');
+  const locale = useLocale();
+  const {
+    isWishlistLoading,
+    findProductInWishlist,
+    setIsWishlistLoading,
+    setWishlistsData,
+    wishlistsData
+  } = useMyContext();
   // const handleClick = (event: React.SyntheticEvent) => {
   //   event.stopPropagation();
   //   event.preventDefault();
   // };
+  const isAddedToWishlistActive = findProductInWishlist(id);
+
+  const handleAddToWishList = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const productIds = {
+      [localeParentName]: id,
+      [localeChildName]: localeChildId
+    };
+    console.log(productIds);
+    updateWishtlistHandler({
+      locale,
+      productIds,
+      setIsWishlistLoading,
+      setWishlistsData,
+      wishlistsData
+    });
+
+    console.log('Add to Wish Lists clicked');
+    // setIsWishlistActive(!isWishlistActive);
+  };
 
   return (
     <Link href={linkSrc} className='relative min-w-[260px]'>
@@ -50,6 +89,27 @@ function ProductCard({
         >
           {badge}
         </p>
+
+        <button
+          onClick={handleAddToWishList}
+          className={`absolute right-6 top-4 z-20 transition-colors duration-300 ${isAddedToWishlistActive ? 'text-red-dark' : 'text-black-light'}`}
+        >
+          {isAddedToWishlistActive ?
+            <HiHeart size={20} />
+          : <HiOutlineHeart size={20} />}
+
+          {/* {isWishlistLoading ?
+            <Spin
+              // className='white'
+              // style={{ marginInline: '40px', marginBlock: '2px' }}
+              style={{ marginRight: '5px', marginBottom: '5px', marginLeft: '0px', marginTop: '0px' }}
+              size='small'
+            />
+          : isAddedToWishlistActive ?
+            <HiHeart size={20} />
+          : <HiOutlineHeart size={20} />} */}
+        </button>
+
         <Image
           src={imgSrc}
           alt={alt}
@@ -99,7 +159,8 @@ function ProductCard({
               </p>
             }
             {currentPrice > 1 && (
-              <p className='text-base font-medium text-black-light'>
+              // <p className='text-base font-medium text-black-light'>
+              <p className='text-base font-medium text-blue-darker'>
                 EGP {currentPrice}
               </p>
             )}

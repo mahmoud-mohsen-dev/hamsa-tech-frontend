@@ -167,6 +167,10 @@ export interface RelatedProduct {
     };
     average_reviews: number;
     total_reviews: number;
+    localizations: {
+      data: { id: string; attributes: { locale: string } }[];
+    };
+    locale: string;
   };
 }
 

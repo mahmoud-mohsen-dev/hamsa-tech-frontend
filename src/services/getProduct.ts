@@ -154,6 +154,15 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    localizations {
+                        data {
+                            id
+                            attributes {
+                                locale
+                            }
+                        }
+                    }
+                    locale
                 }
             }
         }
@@ -192,6 +201,15 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    localizations {
+                        data {
+                            id
+                            attributes {
+                                locale
+                            }
+                        }
+                    }
+                    locale
                 }
             }
         }
@@ -230,6 +248,15 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    localizations {
+                        data {
+                            id
+                            attributes {
+                                locale
+                            }
+                        }
+                    }
+                    locale
                 }
             }
         }
@@ -268,6 +295,15 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    localizations {
+                        data {
+                            id
+                            attributes {
+                                locale
+                            }
+                        }
+                    }
+                    locale
                 }
             }
         }

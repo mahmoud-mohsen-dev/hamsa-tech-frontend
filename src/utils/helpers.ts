@@ -82,3 +82,17 @@ export const filterTruthyValues = (obj: unknown): AnyObject => {
     Object.entries(obj).filter(([key, value]) => Boolean(value))
   );
 };
+
+export function appendAutoplayParameter(link: string) {
+  if (!link) return '';
+
+  try {
+    const url = new URL(link);
+    // Check if autoplay exists, if so, modify it; otherwise, add it
+    url.searchParams.set('autoplay', '0');
+    return url.toString();
+  } catch (error) {
+    console.error('Invalid URL:', error);
+    return link; // Return original link if URL parsing fails
+  }
+}

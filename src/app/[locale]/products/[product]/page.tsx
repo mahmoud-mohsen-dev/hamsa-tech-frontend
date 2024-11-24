@@ -29,6 +29,8 @@ import TabsSection from '@/components/productPage/TabsSection';
 import DownloadBtn from '@/components/UI/DownloadBtn';
 import { getQueryProductPage } from '@/services/getProduct';
 import { TbMail } from 'react-icons/tb';
+import { appendAutoplayParameter } from '@/utils/helpers';
+import AppProgress from '@/components/UI/cart/Progress';
 
 const getItems = (
   allProductsText: string,
@@ -173,7 +175,7 @@ export default async function Product({
             )}
           />
           <section
-            className={`mx-2 mt-5 grid items-start 2xl:grid-cols-2 2xl:gap-2`}
+            className={`mx-2 grid items-start md:mt-5 2xl:grid-cols-2 2xl:gap-2`}
           >
             <ProductSlider
               productData={productData}
@@ -183,16 +185,37 @@ export default async function Product({
             <div className='mt-5 2xl:mt-0'>
               {/* Basic Data */}
               <section>
-                <h4 className='capitalize text-blue-dark'>
-                  {productData?.sub_category?.data?.attributes
-                    ?.name ?? ''}
-                </h4>
-                <h2 className='mt-3 text-3xl font-semibold capitalize text-black-medium'>
+                <div className='flex items-center gap-4'>
+                  <h4 className='capitalize text-blue-dark'>
+                    {productData?.sub_category?.data?.attributes
+                      ?.name ?? ''}
+                  </h4>
+                  <div
+                    className='availability rounded border border-green-500 px-2.5 py-1 font-inter text-sm capitalize text-green-500'
+                    data-original={
+                      productData?.stock > 0 ?
+                        t('inStockText')
+                      : t('outOfStockText')
+                    }
+                    data-class={
+                      productData?.stock > 0 ?
+                        'in-stock'
+                      : 'out-of-stock'
+                    }
+                  >
+                    <span className='availability-text'>
+                      {productData?.stock > 0 ?
+                        t('inStockText')
+                      : t('outOfStockText')}
+                    </span>
+                  </div>
+                </div>
+                <h1 className='mt-3 text-3xl font-semibold capitalize text-black-medium'>
                   {productData?.name}
-                </h2>
-                <h4 className='mt-5 text-sm font-normal text-gray-500 sm:text-base md:text-xl'>
+                </h1>
+                <h2 className='mt-5 text-sm font-normal text-gray-500 sm:text-base md:text-xl'>
                   {productData?.description}
-                </h4>
+                </h2>
                 <div className='mt-5 flex items-center gap-2'>
                   <Rate
                     defaultValue={productData?.average_reviews ?? 0}
@@ -204,30 +227,33 @@ export default async function Product({
                   </h6>
                 </div>
 
-                <div className='mt-3 flex items-center gap-2'>
+                <div className='mt-3 flex items-center gap-3 font-inter'>
                   {productData?.sale_price > 0 && (
-                    <span className='text-base font-medium text-black-light'>
+                    <span className='text-xl font-medium text-blue-light'>
                       EGP {productData?.sale_price ?? 0}
                     </span>
                   )}
+
                   <span
-                    className={`font-medium ${productData?.sale_price > 0 ? 'text-sm text-gray-500 line-through' : 'text-base text-black-light'}`}
+                    className={`font-medium ${productData?.sale_price > 0 ? 'text-lg text-orange-500 line-through' : 'text-xl text-blue-light'}`}
                   >
                     EGP {productData?.price ?? 0}
                   </span>
+
                   {productData?.sale_price > 0 && offPercent > 10 ?
-                    <span className='text-sm text-red-shade-300'>
+                    <span className='rounded border border-red-shade-350 px-3 py-1 font-sans text-base font-medium text-red-shade-300'>
                       {offPercent.toFixed(2)}% {t('offText')}
                     </span>
                   : null}
                 </div>
-                <h4 className='my-2 flex items-center gap-2 text-sm font-normal'>
+
+                <h4 className='my-2 flex items-center gap-2 text-base font-normal'>
                   {productData?.stock > 0 ?
                     <>
                       <span className='text-blue-gray-medium'>
                         {t('availabilityText')}:
                       </span>
-                      <span className='text-green-medium'>
+                      <span className='font-semibold text-green-dark'>
                         {productData?.stock}
                       </span>
                       <span className='text-blue-gray-medium'>
@@ -239,6 +265,7 @@ export default async function Product({
                     </span>
                   }
                 </h4>
+
                 <OrderProduct
                   productId={product}
                   maxQuantity={productData?.stock ?? 0}
@@ -383,11 +410,15 @@ export default async function Product({
                       height='250'
                       className='aspect-video h-fit max-w-full md:max-w-[400px]'
                       src={
-                        productData?.youtube_video?.link_source ?? ''
+                        productData?.youtube_video?.link_source ?
+                          appendAutoplayParameter(
+                            productData.youtube_video.link_source
+                          )
+                        : ''
                       }
                       title={productData?.youtube_video?.title ?? ''}
                       frameBorder='0'
-                      allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                      allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                       referrerPolicy='strict-origin-when-cross-origin'
                       allowFullScreen
                     />
@@ -493,6 +524,16 @@ export default async function Product({
                   <ProductCard
                     key={product?.id ?? v4()}
                     id={product?.id ?? ''}
+                    localeParentName={
+                      product?.attributes?.locale ?? ''
+                    }
+                    localeChildName={
+                      product?.attributes?.localizations?.data[0]
+                        ?.attributes?.locale ??''
+                    }
+                    localeChildId={
+                      product?.attributes?.localizations?.data[0]?.id ?? ''
+                    }
                     title={product?.attributes?.name ?? ''}
                     imgSrc={
                       product?.attributes?.image_thumbnail?.data
@@ -502,9 +543,9 @@ export default async function Product({
                       product?.attributes?.image_thumbnail?.data
                         ?.attributes?.alternativeText ?? ''
                     }
-                    avgRate={
-                      product?.attributes?.average_reviews ?? 0
-                    }
+                    // avgRate={
+                    //   product?.attributes?.average_reviews ?? 0
+                    // }
                     category={
                       product?.attributes?.sub_category?.data
                         ?.attributes?.name ?? ''
@@ -533,9 +574,9 @@ export default async function Product({
                       : '/products'
                     }
                     stock={product?.attributes?.stock ?? 0}
-                    totalRates={
-                      product?.attributes?.total_reviews ?? 0
-                    }
+                    // totalRates={
+                    //   product?.attributes?.total_reviews ?? 0
+                    // }
                   />
                 );
               })}

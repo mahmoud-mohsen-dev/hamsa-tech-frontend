@@ -40,7 +40,7 @@ function ProductSlider({
           images.map((imgSlide, i) => {
             return (
               <div
-                className={`h-[90px] w-[90px] border-2 p-[5px] ${activeImg.index === i ? 'border-yellow-medium' : 'border-transparent'}`}
+                className={`h-[90px] w-[90px] border-2 md:p-[5px] ${activeImg.index === i ? 'border-yellow-medium' : 'border-transparent'}`}
                 // key={productData?.images?.data[0].id}
                 key={v4()}
                 // onMouseEnter={() => {
@@ -77,7 +77,7 @@ function ProductSlider({
             );
           })}
       </div>
-      <div className='m-8'>
+      <div className='m-2 md:m-8'>
         <ImageZoom imgSrc={activeImg.imgSrc} alt={activeImg.alt} />
       </div>
     </div>
