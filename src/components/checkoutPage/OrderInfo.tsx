@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ConfigProvider, Form, message, Spin } from 'antd';
+import { Button, ConfigProvider, Form } from 'antd';
 import AddressFormItems from './AddressFormItems';
 import BillingAddress from './BillingAddress';
 import PaymentMethods from './PaymentMethods';
@@ -9,8 +9,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import ShippingCost from './ShippingCost';
 import { useForm } from 'antd/es/form/Form';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
-import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
-import { useEffect, useState } from 'react';
+// import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
+// import { useEffect, useState } from 'react';
 import { useMyContext } from '@/context/Store';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
@@ -20,19 +20,19 @@ import {
   getIdFromToken
 } from '@/utils/cookieUtils';
 import { UpdateGuestUserResponseType } from '@/types/guestUserReponses';
-import {
-  CreateAddressResponseType,
-  updateAddressResponseType
-} from '@/types/addressResponseTypes';
+// import {
+//   CreateAddressResponseType,
+//   updateAddressResponseType
+// } from '@/types/addressResponseTypes';
 import { CreateOrderResponseType } from '@/types/orderResponseTypes';
 import { CartDataType } from '@/types/cartResponseTypes';
 import { uploadInvoicePdf } from '@/services/invoicesPDFHandlers';
 import { capitalize } from '@/utils/helpers';
 import { useRouter } from '@/navigation';
 import {
-  CustomerPaymentDetailsType,
-  PaymentDataType,
-  PaymentRequest
+  // CustomerPaymentDetailsType,
+  PaymentDataType
+  // PaymentRequest
 } from '@/types/paymentResonseType';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { createAddress } from '@/services/shippingAddress';

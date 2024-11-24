@@ -30,7 +30,6 @@ import DownloadBtn from '@/components/UI/DownloadBtn';
 import { getQueryProductPage } from '@/services/getProduct';
 import { TbMail } from 'react-icons/tb';
 import { appendAutoplayParameter } from '@/utils/helpers';
-import AppProgress from '@/components/UI/cart/Progress';
 
 const getItems = (
   allProductsText: string,
@@ -529,10 +528,11 @@ export default async function Product({
                     }
                     localeChildName={
                       product?.attributes?.localizations?.data[0]
-                        ?.attributes?.locale ??''
+                        ?.attributes?.locale ?? ''
                     }
                     localeChildId={
-                      product?.attributes?.localizations?.data[0]?.id ?? ''
+                      product?.attributes?.localizations?.data[0]
+                        ?.id ?? ''
                     }
                     title={product?.attributes?.name ?? ''}
                     imgSrc={

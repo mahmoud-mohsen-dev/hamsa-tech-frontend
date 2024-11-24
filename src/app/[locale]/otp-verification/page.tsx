@@ -1,7 +1,6 @@
 'use client';
 
-import { Form, Input, Button, message, ConfigProvider } from 'antd';
-import { useState } from 'react';
+import { Form, Input, Button, ConfigProvider } from 'antd';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/navigation';
 import type { GetProps } from 'antd';

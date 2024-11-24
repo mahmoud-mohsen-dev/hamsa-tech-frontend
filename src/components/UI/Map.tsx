@@ -3,7 +3,7 @@
 import { mapOptions } from '@/lib/MapProvider';
 import MarkerWithInfoWindow from '@/components/UI/map/MarkerWithInfoWindow';
 //Map component Component from library
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { GoogleMap } from '@react-google-maps/api';
 import ChangeMapStyle from './map/ChangeMapStyle';
 import { useEffect, useRef, useState } from 'react';
 import OpenMapInNewWindow from './map/OpenMapInNewWindow';

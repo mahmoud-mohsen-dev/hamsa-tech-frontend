@@ -1,6 +1,6 @@
 import {
-  getTranslations,
-  unstable_setRequestLocale
+  getTranslations
+  // unstable_setRequestLocale
 } from 'next-intl/server';
 import React from 'react';
 

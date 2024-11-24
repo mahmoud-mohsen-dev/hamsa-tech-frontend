@@ -4,7 +4,7 @@ import ProductCard from '@/components/products/ProductCard';
 import Sorter from '@/components/products/Sorter';
 import { useMyContext } from '@/context/Store';
 import { useUser } from '@/context/UserContext';
-import { useIsMount } from '@/hooks/useIsMount';
+// import { useIsMount } from '@/hooks/useIsMount';
 import { usePathname, useRouter } from '@/navigation';
 import { fetchProducts } from '@/services/products';
 import { getIdFromToken, setCookie } from '@/utils/cookieUtils';

@@ -11,11 +11,11 @@ import { BrandData } from '@/types/getBrandsFilter';
 import { capitalize } from '@/utils/helpers';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/navigation';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useMyContext } from '@/context/Store';
 import { fetchProducts } from '@/services/products';
 import { useIsMount } from '@/hooks/useIsMount';
-import { clear } from 'console';
+// import { clear } from 'console';
 
 const CheckboxGroup = Checkbox.Group;
 

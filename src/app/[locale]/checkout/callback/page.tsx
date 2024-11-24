@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
   CallCallbackResponseType,
   GetOrderSummaryByIdType,
@@ -18,12 +17,7 @@ import {
 import DownloadButton from '@/components/invoice/DownloadButton';
 import Btn from '@/components/UI/Btn';
 import { IoStorefrontSharp } from 'react-icons/io5';
-import {
-  getCookie,
-  getIdFromToken,
-  removeCookie,
-  setCartId
-} from '@/utils/cookieUtils';
+import { getCookie, getIdFromToken } from '@/utils/cookieUtils';
 import { capitalize } from '@/utils/helpers';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { emptyCart } from '@/services/cart';

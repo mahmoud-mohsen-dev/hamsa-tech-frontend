@@ -1,6 +1,6 @@
 import { CartDataType } from '@/types/cartResponseTypes';
 import { ProductType } from '@/types/getProducts';
-import { formatForGraphQL } from './helpers';
+// import { formatForGraphQL } from './helpers';
 
 export const updateCartInTheBackend = (
   cartId: string,

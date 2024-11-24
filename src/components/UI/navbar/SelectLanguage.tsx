@@ -1,11 +1,11 @@
 'use client';
-import { useMyContext } from '@/context/Store';
+// import { useMyContext } from '@/context/Store';
 import { useSelectLanguage } from '@/hooks/useSelectLanguage';
-import { usePathname, useRouter } from '@/navigation';
+// import { usePathname, useRouter } from '@/navigation';
 import { Select } from 'antd';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { useTransition } from 'react';
+// import { useParams } from 'next/navigation';
+// import { useTransition } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 
 function SelectLanguage({

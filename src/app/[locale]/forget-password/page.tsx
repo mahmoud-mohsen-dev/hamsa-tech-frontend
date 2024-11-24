@@ -1,9 +1,9 @@
-import LoginForm from '@/components/UI/signin/SigninForm';
+// import LoginForm from '@/components/UI/signin/SigninForm';
 import {
   getTranslations,
   unstable_setRequestLocale
 } from 'next-intl/server';
-import SignWIthGoogleAndFacebook from '../../../components/UI/signin/SignWIthGoogleAndFacebook';
+// import SignWIthGoogleAndFacebook from '../../../components/UI/signin/SignWIthGoogleAndFacebook';
 import ForgetPasswordForm from '@/components/UI/signin/ForgetPasswordForm';
 
 interface PropsType {

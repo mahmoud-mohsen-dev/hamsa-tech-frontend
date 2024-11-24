@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 // import PageLayout from '@/components-old/PageLayout';
 import { Link } from '@/navigation';
-import useAddColoredNavClass from '@/hooks/useAddColoredNavClass';
+// import useAddColoredNavClass from '@/hooks/useAddColoredNavClass';
 
 // Note that `app/[locale]/[...rest]/page.tsx`
 // is necessary for this page to render.

@@ -1,8 +1,5 @@
 import { fetchGraphql } from '@/services/graphqlCrud';
-import {
-  ArticlesIdsType,
-  ArticlesResponseType
-} from '@/types/articlesResponseTypes';
+import { ArticlesIdsType } from '@/types/articlesResponseTypes';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 

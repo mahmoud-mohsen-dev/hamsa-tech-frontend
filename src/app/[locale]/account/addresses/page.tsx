@@ -6,7 +6,7 @@ import {
   Button,
   Checkbox,
   ConfigProvider,
-  Divider,
+  // Divider,
   Form,
   Input,
   Modal,
@@ -37,7 +37,7 @@ import {
   GetShippingCostResponseType,
   ShippingCostDataType
 } from '@/types/shippingCostResponseTypes';
-import type { PopconfirmProps, RadioChangeEvent } from 'antd';
+import type { RadioChangeEvent } from 'antd';
 import { useUser } from '@/context/UserContext';
 import { useIsMount } from '@/hooks/useIsMount';
 
@@ -146,7 +146,7 @@ function SettingsPage({
     };
 
     getShippingCostData();
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (
@@ -186,7 +186,13 @@ function SettingsPage({
     };
 
     updateDefaultAddressHandler();
-  }, [defaultActiveAddress]);
+  }, [
+    defaultActiveAddress,
+    addressesData,
+    isFirstRender,
+    setAddressesData,
+    setErrorMessage
+  ]);
 
   // Function to handle form submission
   const onFinish = async (formValues: AddressFormValuesType) => {

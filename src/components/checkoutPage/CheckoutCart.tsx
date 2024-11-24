@@ -12,12 +12,10 @@ import {
   message
 } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
-// import { IoIosPricetag } from 'react-icons/io';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import { GetCouponResponseType } from '@/types/getCouponResponseType';
 import { generateISODateForGraphQL } from '@/utils/dateHelpers';
 import { useState } from 'react';
-import { FaTags } from 'react-icons/fa';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { FaDeleteLeft, FaTag } from 'react-icons/fa6';
 

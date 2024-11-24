@@ -1,7 +1,4 @@
-import {
-  PaymentDataType,
-  PaymentRequest
-} from '@/types/paymentResonseType';
+import { PaymentDataType } from '@/types/paymentResonseType';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {

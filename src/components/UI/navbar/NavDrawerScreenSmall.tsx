@@ -1,6 +1,6 @@
 'use client';
 import MenuSidebar from '@/components/products/MenuSidebar';
-import { Link, usePathname, useRouter } from '@/navigation';
+import { usePathname, useRouter } from '@/navigation';
 import { NavbarLink } from '@/types/getIndexLayout';
 import { CategoryType } from '@/types/getNavbarProductsCategories';
 import {
@@ -8,23 +8,23 @@ import {
   CollapseProps,
   Divider,
   Drawer,
-  Menu,
-  MenuProps
+  Menu
+  // MenuProps
 } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
-import { TiShoppingCart } from 'react-icons/ti';
-import { HiOutlineHeart } from 'react-icons/hi';
+import { useEffect, useState } from 'react';
+// import { TiShoppingCart } from 'react-icons/ti';
+// import { HiOutlineHeart } from 'react-icons/hi';
 import { v4 } from 'uuid';
 import { useUser } from '@/context/UserContext';
-import { useMyContext } from '@/context/Store';
-import ProfileDropdownMenu from './ProfileDropdownMenu';
-import ModalSearchInput from './ModalSearchInput';
-import SelectLanguage from './SelectLanguage';
+// import { useMyContext } from '@/context/Store';
+// import ProfileDropdownMenu from './ProfileDropdownMenu';
+// import ModalSearchInput from './ModalSearchInput';
+// import SelectLanguage from './SelectLanguage';
 import ArrowDownAnimatedIcon from '../ArrowDownAnimatedIcon';
 import Image from 'next/image';
 import SearchInputField from './SearchInputField';
-import { useParams } from 'next/navigation';
+// import { useParams } from 'next/navigation';
 import { removeCookie } from '@/utils/cookieUtils';
 import { useSelectLanguage } from '@/hooks/useSelectLanguage';
 

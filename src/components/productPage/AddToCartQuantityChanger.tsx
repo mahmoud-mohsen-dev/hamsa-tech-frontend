@@ -1,5 +1,5 @@
-import { useMyContext } from '@/context/Store';
-import { useState } from 'react';
+// import { useMyContext } from '@/context/Store';
+// import { useState } from 'react';
 import InputChangeQuantity from '../UI/cart/InputChangeQuantity';
 
 function AddToCartQuantityChanger({

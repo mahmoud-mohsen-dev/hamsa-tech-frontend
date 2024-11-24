@@ -4,7 +4,7 @@ import { getLocale } from 'next-intl/server';
 import BrandFilter from '../UI/products/sidebar/BrandFilter';
 import MenuSidebar from './MenuSidebar';
 import {
-  CategoriesData,
+  // CategoriesData,
   CategorySidebarType
 } from '@/types/getCategoriesFilter';
 // import { useMyContext } from '@/context/Store';

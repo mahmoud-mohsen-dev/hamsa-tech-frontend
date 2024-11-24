@@ -1,5 +1,5 @@
 'use client';
-import { InputNumber, InputNumberProps, Spin } from 'antd';
+import { Spin } from 'antd';
 import Btn from '../UI/Btn';
 import { useState } from 'react';
 import {
@@ -17,7 +17,6 @@ import {
 } from '@/types/wishlistReponseTypes';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import AppProgress from '../UI/cart/Progress';
-import CartInputNumber from '../UI/cart/CartInputNumber';
 import AddToCartQuantityChanger from './AddToCartQuantityChanger';
 
 interface PropsType {

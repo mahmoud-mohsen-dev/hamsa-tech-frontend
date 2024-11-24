@@ -1,5 +1,4 @@
 import { Collapse, Form, Radio } from 'antd';
-import Image from 'next/image';
 import type { CollapseProps, FormInstance } from 'antd';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';

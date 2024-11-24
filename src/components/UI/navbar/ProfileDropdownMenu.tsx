@@ -3,11 +3,11 @@ import React, { useEffect } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Dropdown } from 'antd';
-import { FiLogOut } from 'react-icons/fi';
+// import { FiLogOut } from 'react-icons/fi';
 import { FaSignInAlt } from 'react-icons/fa';
 import { CgProfile } from 'react-icons/cg';
 import { Link, useRouter } from '@/navigation';
-import { getIdFromToken, removeCookie } from '@/utils/cookieUtils';
+import { removeCookie } from '@/utils/cookieUtils';
 import { useTranslations } from 'next-intl';
 import { useUser } from '@/context/UserContext';
 

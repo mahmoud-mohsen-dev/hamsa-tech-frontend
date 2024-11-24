@@ -1,21 +1,21 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import Image from 'next/image';
-import Btn from '../UI/Btn';
-import { Link, useRouter } from '@/navigation';
+// import Btn from '../UI/Btn';
+import { Link } from '@/navigation';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
 import { useLocale, useTranslations } from 'next-intl';
 import AddToCartButton from '../products/AddToCartButton';
 import { useMyContext } from '@/context/Store';
-import { fetchGraphqlClient } from '@/services/graphqlCrud';
+// import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
-  GetWishlistDataType,
-  WishlistDataType,
-  WishlistsDataType
+  // GetWishlistDataType,
+  WishlistDataType
+  // WishlistsDataType
 } from '@/types/wishlistReponseTypes';
-import { getCookie } from '@/utils/cookieUtils';
+// import { getCookie } from '@/utils/cookieUtils';
 import { updateWishtlistHandler } from '../productPage/OrderProduct';
 
 // export interface WishlistTableDataType {

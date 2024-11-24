@@ -1,5 +1,5 @@
 'use client';
-import { usePathname, useRouter } from '@/navigation';
+import { useRouter } from '@/navigation';
 import { CategorySidebarType } from '@/types/getCategoriesFilter';
 import { Menu, MenuProps } from 'antd';
 import { useSearchParams } from 'next/navigation';

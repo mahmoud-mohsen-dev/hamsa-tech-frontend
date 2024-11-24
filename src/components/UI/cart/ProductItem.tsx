@@ -35,6 +35,9 @@ function ProductItem({ productData }: { productData: CartDataType }) {
           //   productData?.product?.data?.attributes?.sale_price
           // }
           // price={productData?.product?.data?.attributes?.price}
+          minValue={
+            productData?.product?.data?.attributes?.stock > 0 ? 1 : 0
+          }
           maxValue={
             productData?.product?.data?.attributes?.stock ?? 1
           }
