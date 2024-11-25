@@ -15,7 +15,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 // import { TiShoppingCart } from 'react-icons/ti';
 // import { HiOutlineHeart } from 'react-icons/hi';
-import { v4 } from 'uuid';
+// import { v4 } from 'uuid';
 import { useUser } from '@/context/UserContext';
 // import { useMyContext } from '@/context/Store';
 // import ProfileDropdownMenu from './ProfileDropdownMenu';

@@ -228,13 +228,13 @@ export default async function Product({
 
                 <div className='mt-3 flex items-center gap-3 font-inter'>
                   {productData?.sale_price > 0 && (
-                    <span className='text-xl font-medium text-blue-light'>
+                    <span className='text-xl font-semibold text-red-500'>
                       EGP {productData?.sale_price ?? 0}
                     </span>
                   )}
 
                   <span
-                    className={`font-medium ${productData?.sale_price > 0 ? 'text-lg text-orange-500 line-through' : 'text-xl text-blue-light'}`}
+                    className={`${productData?.sale_price > 0 ? 'text-lg font-medium text-blue-sky-dark line-through' : 'text-xl font-semibold text-red-500'}`}
                   >
                     EGP {productData?.price ?? 0}
                   </span>
@@ -265,19 +265,21 @@ export default async function Product({
                   }
                 </h4>
 
-                <OrderProduct
-                  productId={product}
-                  maxQuantity={productData?.stock ?? 0}
-                  minQuantity={productData?.stock > 1 ? 1 : 0}
-                  localeParentName={productData?.locale}
-                  localeChildName={
-                    productData?.localizations?.data[0]?.attributes
-                      ?.locale
-                  }
-                  localeChildId={
-                    productData?.localizations?.data[0]?.id ?? ''
-                  }
-                />
+                {productData?.stock > 0 && (
+                  <OrderProduct
+                    productId={product}
+                    maxQuantity={productData?.stock ?? 0}
+                    minQuantity={productData?.stock > 0 ? 1 : 0}
+                    localeParentName={productData?.locale}
+                    localeChildName={
+                      productData?.localizations?.data[0]?.attributes
+                        ?.locale
+                    }
+                    localeChildId={
+                      productData?.localizations?.data[0]?.id ?? ''
+                    }
+                  />
+                )}
                 {/* <div className='mt-4 text-sm capitalize text-gray-medium'>
                   <p>-&nbsp;&nbsp;&nbsp;&nbsp;{t('deliveryText')}</p>
                   <p className='mt-1'>

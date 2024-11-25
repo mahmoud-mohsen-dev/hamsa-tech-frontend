@@ -12,6 +12,7 @@ interface InputChangeQuantityType {
   classNameDecrement?: string;
   classNameInput?: string;
   classNameParent?: string;
+  customDisableDecrement?: boolean;
 }
 
 function InputChangeQuantity({
@@ -27,7 +28,8 @@ function InputChangeQuantity({
   classNameIncrement,
   classNameDecrement,
   classNameInput,
-  classNameParent
+  classNameParent,
+  customDisableDecrement = false
 }: InputChangeQuantityType) {
   return (
     <div
@@ -41,7 +43,9 @@ function InputChangeQuantity({
           onClick={handleDecrement}
           className={`inline-flex size-6 items-center justify-center gap-x-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none disabled:pointer-events-none disabled:opacity-50 ${classNameIncrement ?? ''}`}
           aria-label='Decrease'
-          disabled={isLoading || inputQuantity === 0}
+          disabled={
+            isLoading || inputQuantity === 0 || customDisableDecrement
+          }
         >
           <svg
             className='size-3.5 shrink-0'

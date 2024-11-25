@@ -82,6 +82,7 @@ function AddToCartQuantityChanger({
       handleChange={handleChange}
       handleIncrement={handleIncrement}
       handleBlur={handleBlur}
+      customDisableDecrement={minValue === inputQuantity}
     />
   );
 }

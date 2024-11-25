@@ -125,7 +125,7 @@ function ProductCard({
           }}
           className='mb-5 mt-2.5 object-contain transition-["scale"] duration-1000 ease-linear hover:scale-110'
         />
-        <div className='h-[100px]'>
+        <div className='h-[90px]'>
           <p className='mb-2.5 h-[14px] text-sm font-normal uppercase text-gray-normal'>
             {modalName}
           </p>
@@ -148,25 +148,25 @@ function ProductCard({
         </div>
 
         {/* price and add button */}
-        <div className='mt-1 flex h-[45px] items-center justify-between'>
-          <div className='flex flex-col items-start justify-center gap-1'>
-            {currentPrice > 1 ?
-              <p className='text-[15px] font-normal leading-[18px] text-gray-medium line-through'>
-                EGP {priceBeforeDeduction}
-              </p>
-            : <p className='text-base font-medium text-black-light'>
-                EGP {priceBeforeDeduction}
-              </p>
-            }
+        <div className='mb-2 mt-1 flex h-[30px] items-center justify-between'>
+          <div className='flex items-center justify-center gap-2.5 font-inter tracking-tight'>
             {currentPrice > 1 && (
               // <p className='text-base font-medium text-black-light'>
-              <p className='text-base font-medium text-blue-darker'>
+              <p className='text-lg font-semibold text-red-500'>
                 EGP {currentPrice}
               </p>
             )}
+            {currentPrice > 1 ?
+              <p className='text-base font-medium leading-[18px] text-blue-sky-dark line-through'>
+                EGP {priceBeforeDeduction}
+              </p>
+            : <p className='text-lg font-semibold text-red-500'>
+                EGP {priceBeforeDeduction}
+              </p>
+            }
           </div>
-          <AddToCartButton productId={id} stock={stock} />
         </div>
+        <AddToCartButton productId={id} stock={stock} />
       </div>
     </Link>
   );
