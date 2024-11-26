@@ -156,7 +156,7 @@ const getQueryLayoutPage = (locale: string) => `{
 }`;
 
 const getQueryNavbarCategoriesProducts = (locale: string) => `{
-  categories(locale: "${locale ?? 'en'}") {
+  categories(locale: "${locale ?? 'en'}", sort: "order:asc") {
     data {
       id
       attributes {

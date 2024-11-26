@@ -116,7 +116,7 @@ const Products = async ({
 
   const { data: categoriesData, error: categoriesError } =
     (await fetchGraphql(`{
-        categories(locale: "${locale ?? 'en'}") {
+        categories(locale: "${locale ?? 'en'}", sort: "order:asc") {
             data {
                 id
                 attributes {
@@ -138,8 +138,8 @@ const Products = async ({
   const categoriesSidebarData =
     categoriesData?.categories?.data || null;
   // console.log('++++++++++++++++++++');
-  // console.log(JSON.stringify(categoriesSidebarData));
-  // console.log(categoriesError);
+  // // console.log(JSON.stringify(categoriesSidebarData));
+  // console.log(categoriesSidebarData);
   // console.log('++++++++++++++++++++');
 
   if (categoriesSidebarData === null || categoriesError) {

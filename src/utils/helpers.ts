@@ -96,3 +96,21 @@ export function appendAutoplayParameter(link: string) {
     return link; // Return original link if URL parsing fails
   }
 }
+
+/**
+ * Extracts the first number from a given string.
+ * @param input - The string to extract the number from.
+ * @returns The extracted number or null if no number is found or input is not a string.
+ */
+export const extractNumberFromString = (
+  input: unknown
+): number | null => {
+  // Check if the input is a string
+  if (typeof input !== 'string') {
+    return null;
+  }
+
+  // Use a regular expression to find the first number in the string
+  const match = input.match(/-?\d+/); // Match integers (positive or negative)
+  return match ? parseInt(match[0], 10) : null;
+};
