@@ -27,7 +27,7 @@ export type CartDataType = {
           data: {
             id: string;
             attributes: {
-              alternativeText: string;
+              alternativeText: string | null;
               url: string;
             };
           };
@@ -36,6 +36,23 @@ export type CartDataType = {
         localizations: {
           data: {
             id: string;
+            attributes: {
+              name: string;
+              price: number;
+              sale_price: number;
+              final_product_price: number;
+              description: string;
+              image_thumbnail: {
+                data: {
+                  id: string;
+                  attributes: {
+                    alternativeText: null | string;
+                    url: string;
+                  };
+                };
+              };
+              locale: string;
+            };
           }[];
         };
         locale: string;

@@ -28,7 +28,10 @@ import {
   GetCartResponseType
 } from '@/types/cartResponseTypes';
 import { useMyContext } from '@/context/Store';
-import { aggregateCartItems } from '@/utils/cartContextUtils';
+import {
+  aggregateCartItems,
+  getCartByLocale
+} from '@/utils/cartContextUtils';
 import { CreateGuestUserResponseType } from '@/types/guestUserReponses';
 import ProfileDropdownMenu from '../UI/navbar/ProfileDropdownMenu';
 import { useUser } from '@/context/UserContext';
@@ -92,6 +95,23 @@ const getCartQuery = (cartId: number) => {
                                 localizations {
                                     data {
                                         id
+                                        attributes {
+                                          name
+                                          price
+                                          sale_price
+                                          final_product_price
+                                          description
+                                          image_thumbnail {
+                                              data {
+                                                  id
+                                                  attributes {
+                                                      alternativeText
+                                                      url
+                                                  }
+                                              }
+                                          }
+                                          locale
+                                        }
                                     }
                                 }
                                 locale
@@ -335,7 +355,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
               const updatedCartData = aggregateCartItems(
                 data.cart.data.attributes.product_details
               );
-              setCart(updatedCartData);
+
+              const localeCart = getCartByLocale(
+                locale,
+                updatedCartData
+              );
+
+              setCart(localeCart);
               setTotalCartCost(
                 data.cart.data.attributes.total_cart_cost
               );

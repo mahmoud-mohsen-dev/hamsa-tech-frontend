@@ -699,7 +699,7 @@ function OrderInfo({
         <p className='text-lg font-bold text-red-shade-500'>
           {locale === 'ar' ?
             `الموقع قيد التطوير، ستتمكن من الشراء من الموقع قريبًا جدًا 😊`
-          : `The Site is under development you will able to buy from the
+          : `The site is under development you will able to buy from the
           site very soon 😊`
           }
         </p>

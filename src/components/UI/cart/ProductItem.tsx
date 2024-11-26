@@ -6,8 +6,15 @@ import { useState } from 'react';
 // import Loading from '@/app/[locale]/loading';
 import { Button, Spin } from 'antd';
 import { useMyContext } from '@/context/Store';
+import { Link } from '@/navigation';
 
-function ProductItem({ productData }: { productData: CartDataType }) {
+function ProductItem({
+  productData,
+  onClose
+}: {
+  productData: CartDataType;
+  onClose: () => void;
+}) {
   const { updateCartItemQuantity, drawerIsLoading } = useMyContext();
   const [isDataLoading, setIsDataLoading] = useState(false);
   const { attributes } = productData?.product?.data ?? {};
@@ -15,19 +22,40 @@ function ProductItem({ productData }: { productData: CartDataType }) {
   return (
     <li className='grid grid-cols-[110px_1fr_90px] grid-rows-1 items-center gap-3'>
       {/* <div className='flex h-full items-center gap-7'> */}
-      <Image
-        src={attributes?.image_thumbnail?.data?.attributes?.url ?? ''}
-        alt={
-          attributes?.image_thumbnail?.data?.attributes
-            ?.alternativeText ?? ''
+      <Link
+        href={
+          productData?.product?.data?.id ?
+            `/products/${productData.product.data.id}`
+          : '/products'
         }
-        width={105}
-        height={125}
-        quality={100}
-        className='object-contain'
-      />
+        onClick={onClose}
+      >
+        <Image
+          src={
+            attributes?.image_thumbnail?.data?.attributes?.url ?? ''
+          }
+          alt={
+            attributes?.image_thumbnail?.data?.attributes
+              ?.alternativeText ?? ''
+          }
+          width={105}
+          height={125}
+          quality={100}
+          className='object-contain'
+        />
+      </Link>
       <div>
-        <h3 className='mb-3'>{attributes?.name ?? ''}</h3>
+        <Link
+          href={
+            productData?.product?.data?.id ?
+              `/products/${productData.product.data.id}`
+            : '/products'
+          }
+          onClick={onClose}
+          className='mb-3 block text-black-light hover:cursor-pointer hover:text-blue-sky-normal hover:underline'
+        >
+          {attributes?.name ?? ''}
+        </Link>
         <CartInputNumber
           productId={productData?.product?.data?.id ?? ''}
           setIsDataLoading={setIsDataLoading}
@@ -75,8 +103,7 @@ function ProductItem({ productData }: { productData: CartDataType }) {
               {
                 productData?.product?.data?.attributes
                   ?.final_product_price
-              }{' '}
-              EGP
+              }
             </h2>
             <h2 className='mt-1 font-inter text-base font-medium text-black-light'>
               = {productData?.total_cost}

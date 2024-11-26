@@ -33,7 +33,7 @@ function CartInputNumber({
     (item) => item.product.data.id === productId
   );
   const quantity = product?.quantity || minValue || 0;
-  console.log('quantity', quantity);
+  // console.log('quantity', quantity);
   const [inputQuantity, setInputQuantity] = useState(quantity);
   // console.log(inputQuantity);
 

@@ -58,6 +58,7 @@ function MenuSidebar({
 
   const onClick: MenuProps['onClick'] = (e) => {
     // setCurrentActiveSubCategory([e.key ?? '']);
+    // console.log(e);
     // get category slug
     let selectedSubCategory:
       | {
@@ -66,6 +67,7 @@ function MenuSidebar({
           slug: string;
         }
       | undefined;
+
     const selectedCategory = items.find((category) => {
       selectedSubCategory = category.children.find(
         (selectedSubCategory) => selectedSubCategory.key === e.key
@@ -112,8 +114,8 @@ function MenuSidebar({
       params.set(category, categoryValue);
       params.set(subCategory, subCategoryValue);
       params.set('page', '1');
-      console.log(categoryValue);
-      console.log(params.toString());
+      // console.log(categoryValue);
+      // console.log(params.toString());
       return params.toString();
     },
     [searchParams]
@@ -143,8 +145,15 @@ function MenuSidebar({
     const latestOpenKey = keys.find(
       (key) => openKeys.indexOf(key) === -1
     );
+    // console.log(latestOpenKey);
     if (latestOpenKey) {
       setOpenKeys([latestOpenKey]); // Only open the most recent key
+
+      params.set('category', latestOpenKey);
+      params.delete('sub-category');
+      const paramsStr = params.toString();
+      // console.log(paramsStr);
+      router.push('/products?' + paramsStr);
     } else {
       setOpenKeys([]); // Close all if none is selected
     }

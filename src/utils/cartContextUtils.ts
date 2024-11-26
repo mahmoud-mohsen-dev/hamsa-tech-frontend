@@ -33,7 +33,7 @@ export const updateCartInTheBackend = (
           total_cost:
             cartItem.product.data.attributes.final_product_price *
             quantity,
-          description: productId ?? ''
+          description: cartItem?.product?.data?.id ?? ''
           // description:
           //   cartItem?.product?.data?.attributes?.description ?? ''
         };
@@ -46,10 +46,14 @@ export const updateCartInTheBackend = (
         total_cost: cartItem.total_cost,
         // description:
         //   cartItem?.product?.data?.attributes?.description ?? ''
-        description: productId ?? ''
+        description: cartItem?.product?.data?.id ?? ''
       };
     })
     .filter((cartItem) => cartItem !== null); // Remove nulls (deleted products)
+
+  console.log('productDetails', productDetails);
+  console.log('productsData', productDetails);
+  console.log('updatedProductDetails', updatedProductDetails);
 
   // Step 2: If productId is not found, add it with the given quantity
   if (productsData.length > 0 && !productFound && quantity > 0) {
@@ -86,6 +90,7 @@ export const updateCartInTheBackend = (
   const aggregatedProductsDetails = aggregateProductsDetails(
     updatedProductDetails
   );
+  console.log('aggregatedProductsDetails', aggregatedProductsDetails);
 
   // Step 4: Convert updated product details to GraphQL-friendly string
   cart = `[${aggregatedProductsDetails
@@ -106,6 +111,8 @@ export const updateCartInTheBackend = (
       return false;
     })
     .join(', ')}]`;
+
+  console.log('cart', cart);
 
   // Step 4: Return the complete mutation query
   return `mutation {
@@ -137,9 +144,26 @@ export const updateCartInTheBackend = (
                   }
                   stock
                   localizations {
-                    data {
-                      id
-                    }
+                      data {
+                          id
+                          attributes {
+                            name
+                            price
+                            sale_price
+                            final_product_price
+                            description
+                            image_thumbnail {
+                                data {
+                                    id
+                                    attributes {
+                                        alternativeText
+                                        url
+                                    }
+                                }
+                            }
+                            locale
+                          }
+                      }
                   }
                   locale
                 }
@@ -223,4 +247,74 @@ export const aggregateCartItems = (
 
   // Convert the map back to an array
   return Array.from(productMap.values());
+};
+
+export const getCartByLocale = (
+  locale: string,
+  cartItems: CartDataType[]
+): CartDataType[] => {
+  const newCartItems: CartDataType[] = [];
+  // Filter the cart items based on the given locale
+  cartItems.forEach((item) => {
+    if (item?.product?.data?.attributes?.locale === locale) {
+      newCartItems.push(item);
+    } else {
+      // If the product doesn't match the given locale, check its localizations
+      item?.product?.data?.attributes?.localizations?.data.forEach(
+        (localization) => {
+          if (localization.attributes.locale === locale) {
+            // newCartItems.push();
+            console.log(item);
+            const newProductItem = {
+              id: item.id,
+              quantity: item.quantity,
+              total_cost: item.total_cost,
+              product: {
+                data: {
+                  id: localization.id,
+                  attributes: {
+                    ...localization.attributes,
+                    locale,
+                    localizations: {
+                      data: [
+                        {
+                          id: item.product.data.id,
+                          attributes: {
+                            name: item?.product?.data?.attributes
+                              .name,
+                            description:
+                              item?.product?.data?.attributes
+                                ?.description,
+                            final_product_price:
+                              item?.product?.data?.attributes
+                                .final_product_price,
+                            price:
+                              item?.product?.data?.attributes?.price,
+                            sale_price:
+                              item?.product?.data?.attributes
+                                ?.sale_price,
+                            image_thumbnail:
+                              item?.product?.data?.attributes
+                                ?.image_thumbnail,
+                            locale
+                          }
+                        }
+                      ]
+                    },
+                    stock: item?.product?.data?.attributes?.stock
+                  }
+                }
+              }
+            };
+            newCartItems.push(newProductItem);
+          }
+        }
+      );
+    }
+  });
+  console.log('cart items');
+  console.log(cartItems);
+  console.log('New cart items');
+  console.log(newCartItems);
+  return newCartItems;
 };

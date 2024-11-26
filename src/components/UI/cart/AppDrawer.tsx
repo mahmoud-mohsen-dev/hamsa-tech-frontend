@@ -57,6 +57,7 @@ function AppDrawer() {
                     <ProductItem
                       key={productItem.id}
                       productData={productItem}
+                      onClose={() => setOpenDrawer(false)}
                     />
                   );
                 })}
