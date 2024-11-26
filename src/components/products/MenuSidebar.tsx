@@ -173,7 +173,7 @@ function MenuSidebar({
       onOpenChange={onOpenChange} // Set the new handler here
       onClick={onClick}
       style={{
-        borderRightColor: 'transparent',
+        border: 'none',
         marginTop: '12px'
       }}
       items={items}
