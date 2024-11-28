@@ -405,8 +405,11 @@ function OrderProduct({
           >
             {isLoading ?
               <Spin
-                className='white'
-                style={{ marginInline: '40px', marginBlock: '2px' }}
+                className='green'
+                style={{
+                  marginInline: '40px',
+                  marginBlock: '2px'
+                }}
               />
             : isAddedToCartActive ?
               <>

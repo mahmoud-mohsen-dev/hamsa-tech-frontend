@@ -1,14 +1,13 @@
 import { Button, Divider, Progress, Rate, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
-import Image from 'next/image';
 import { FaStar } from 'react-icons/fa';
-import CreateReview from './CreateReview';
-import dayjs from 'dayjs';
+import CreateOrEditReview from './CreateOrEditReview';
 import { Link } from '@/navigation';
 import { reviewType, specificationType } from '@/types/getProduct';
 import { ContentType } from '@/types/richTextBlock';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { CreateBlockContent } from '../UI/strapi-blocks/StrapiBlocks';
+import Review from './Review';
 
 // interface DescriptionType {
 //   heading?: string | undefined;
@@ -29,6 +28,7 @@ interface TypeProps {
     specification: specificationType[];
     reviews: reviewType[];
   };
+  productIds: { enId: string | null; arId: string | null };
 }
 
 // function ContentOfDesctiption({
@@ -132,73 +132,14 @@ async function ConentOfSpecification({
   );
 }
 
-async function Review({ review }: { review: reviewType }) {
-  const locale = await getLocale();
-  return (
-    <div>
-      <div className='mt-4 flex items-start gap-4'>
-        <Image
-          src={
-            // review?.attributes?.user_detail?.data?.attributes
-            //   ?.avatar_photo?.data?.attributes?.url ??
-            '/empty-avatar-photo.png'
-          }
-          alt={
-            // review?.attributes?.user_detail?.data?.attributes
-            //   ?.avatar_photo?.data?.attributes?.alternativeText ??
-            ''
-          }
-          // 'user ahmed avatar profile picture'
-          width={40}
-          height={40}
-          quality={100}
-          className='min-h-[40px] min-w-[40px] rounded-full object-cover'
-        />
-        <div>
-          <div>
-            {/* <h4 className='text-base capitalize text-black-medium'>
-              {review?.attributes?.user_detail?.data?.attributes
-                ?.first_name ?? ''}
-            </h4> */}
-            <h4
-              className={`text-gray-normal ${locale === 'ar' ? 'text-end' : 'text-start'}`}
-              dir='ltr'
-            >
-              {dayjs(review?.attributes.updatedAt ?? '').format(
-                'DD, MMMM YYYY'
-              )}
-            </h4>
-          </div>
-
-          <div>
-            <div className='mt-2 flex flex-col gap-4 2xl:flex-row 2xl:items-center'>
-              <Rate
-                disabled
-                defaultValue={review?.attributes?.rating ?? 0}
-                allowHalf
-                style={{ fontSize: 16 }}
-              />
-              <h4 className='text-base font-semibold capitalize text-black-light'>
-                {/* Need to recheck the weight at delivery point */}
-                {review?.attributes?.headline ?? ''}
-              </h4>
-            </div>
-            <p className='mt-1 text-sm font-normal text-black-light'>
-              {review?.attributes?.comment ?? ''}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 async function ContentOfReviews({
-  reviews
+  reviews,
+  productIds
 }: {
   reviews: reviewType[];
+  productIds: { arId: string | null; enId: string | null };
 }) {
-  const locale = await getLocale();
+  // const locale = await getLocale();
   const t = await getTranslations('ProductPage.reviewsTabSection');
   const avgRatings =
     reviews.reduce(
@@ -255,11 +196,14 @@ async function ContentOfReviews({
           {t('customerReviewsTitle')}
         </h3>
         <div className='mt-4 flex flex-col flex-wrap gap-3 lg:flex-row'>
+          {/* <div dir='ltr' className={'w-fit'}> */}
           <Rate
             disabled
             defaultValue={Number(avgRatings.toFixed(1)) ?? 0}
             allowHalf={true}
           />
+          {/* </div> */}
+
           {/* <div className='ml-3 inline-flex items-center gap-1'> */}
           <div className={`flex flex-wrap items-center gap-1`}>
             <span
@@ -349,24 +293,36 @@ async function ContentOfReviews({
         </div>
       </div>
       <div>
-        <h3 className='font-openSans text-base font-bold text-black-medium'>
+        <h3 className='font-openSans text-base font-bold capitalize text-black-medium'>
           {t('reviewsText')}
         </h3>
         <div>
           {reviews.length > 0 ?
-            reviews.map((review) => {
-              return <Review review={review} key={review.id} />;
+            reviews.map((review, i, arr) => {
+              return (
+                <div key={review.id} className='mt-3'>
+                  <Review review={review} productIds={productIds} />
+                  {i !== arr.length - 1 && (
+                    <Divider
+                      style={{
+                        marginTop: '14px',
+                        marginBottom: '14px'
+                      }}
+                    />
+                  )}
+                </div>
+              );
             })
           : <p className='mt-3'>{t('noReviewsText')}</p>}
         </div>
         <Divider />
-        <CreateReview />
+        <CreateOrEditReview productIds={productIds} />
       </div>
     </div>
   );
 }
 
-async function TabsSection({ moreDetails }: TypeProps) {
+async function TabsSection({ moreDetails, productIds }: TypeProps) {
   //   const onChange = (key: string) => {
   //     console.log(key);
   //   };
@@ -416,7 +372,12 @@ async function TabsSection({ moreDetails }: TypeProps) {
           {t('reviewsSectionTitle')}
         </h3>
       ),
-      children: <ContentOfReviews reviews={moreDetails.reviews} />
+      children: (
+        <ContentOfReviews
+          reviews={moreDetails.reviews}
+          productIds={productIds}
+        />
+      )
     }
   ];
 

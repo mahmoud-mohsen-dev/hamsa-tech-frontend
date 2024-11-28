@@ -157,7 +157,18 @@
       "submitButtonText": "Submit Review",
       "overallRatingRequiredMessage": "Overall rating is required",
       "headlineRequiredMessage": "Headline is required",
-      "commentRequiredMessage": "Comment is required"
+      "commentRequiredMessage": "Comment is required",
+      "singinIsRequired": "Sign in to write a review.",
+      "signinText": "Sign in",
+      "formValidationErrors": {
+        "failedToApplyChanges": "Failed to apply your changes"
+      },
+      "deleteConfirm": {
+        "title": "Delete Review",
+        "description": "Are you sure to delete this review?",
+        "okText": "Yes",
+        "cancelText": "No"
+      }
     }
   },
   "OffersPage": {
@@ -503,7 +514,7 @@
         "avatar": {
           "changePicture": "Change picture",
           "noImage": "No Image",
-          "altText": "User {userId} avatar photo"
+          "altText": "{firstName} {lastName} avatar photo"
         },
         "form": {
           "firstNameLabel": "Your first name",

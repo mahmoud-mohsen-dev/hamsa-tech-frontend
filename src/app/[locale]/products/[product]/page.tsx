@@ -30,6 +30,7 @@ import DownloadBtn from '@/components/UI/DownloadBtn';
 import { getQueryProductPage } from '@/services/getProduct';
 import { TbMail } from 'react-icons/tb';
 import { appendAutoplayParameter } from '@/utils/helpers';
+import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 
 const getItems = (
   allProductsText: string,
@@ -109,7 +110,7 @@ export default async function Product({
   //   const { data: productData, error } =
   //     await serverGetProduct(product);
 
-  const response = (await fetchGraphql(
+  const response = (await fetchGraphqlServerWebAuthenticated(
     getQueryProductPage(product)
   )) as ProductResponseType;
   // console.log(JSON.stringify(response));
@@ -488,9 +489,9 @@ export default async function Product({
                   : 'mt-5'
                 }`}
               >
-                {productData?.features.map((item, i) => (
+                {productData?.features.map((item) => (
                   <li
-                    key={item?.id ?? i}
+                    key={item?.id ?? v4()}
                     className='mt-3 text-base text-blue-gray-light'
                   >
                     {item?.feature ?? ''}
@@ -508,6 +509,22 @@ export default async function Product({
                 specification: productData?.sepcification ?? [],
                 reviews: productData?.reviews?.data ?? []
               }}
+              productIds={{
+                enId:
+                  (
+                    getCurrentAndNextProductId().enId &&
+                    getCurrentAndNextProductId().enId !== 'not-found'
+                  ) ?
+                    getCurrentAndNextProductId().enId
+                  : null,
+                arId:
+                  (
+                    getCurrentAndNextProductId().arId &&
+                    getCurrentAndNextProductId().arId !== 'not-found'
+                  ) ?
+                    getCurrentAndNextProductId().arId
+                  : null
+              }}
             />
           </div>
         </section>
@@ -523,7 +540,7 @@ export default async function Product({
               {relatedProducts.map((product) => {
                 return (
                   <ProductCard
-                    key={product?.id ?? v4()}
+                    key={v4()}
                     id={product?.id ?? ''}
                     localeParentName={
                       product?.attributes?.locale ?? ''

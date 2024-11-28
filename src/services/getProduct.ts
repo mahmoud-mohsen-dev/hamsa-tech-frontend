@@ -115,7 +115,24 @@ export const getQueryProductPage = (id: string) => `{
                     rating
                     headline
                     comment
-                    
+                    users_permissions_user {
+                        data {
+                            id
+                            attributes {
+                                first_name
+                                last_name
+                                avatar_photo {
+                                    data {
+                                        id
+                                        attributes {
+                                            url
+                                            alternativeText
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

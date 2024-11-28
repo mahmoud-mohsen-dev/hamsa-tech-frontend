@@ -6,7 +6,10 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useUser } from '@/context/UserContext';
 import { getCookie } from '@/utils/cookieUtils';
 import { fetchGraphqlClientAuthenticated } from '@/services/graphqlCrud';
-import { getUserAvatarPhotoResponse } from '@/types/userResponseTypes';
+import {
+  getUserAvatarPhotoResponse,
+  getUserProfileFullNameResponse
+} from '@/types/userResponseTypes';
 
 const getAvatarUserQuery = (userID: string) => {
   return `query usersPermissionsUser {
@@ -127,24 +130,57 @@ const UploadImage: React.FC = () => {
 
   // Define the upload function
   const customRequest = async ({ file, onSuccess, onError }: any) => {
-    const newFileData = {
-      alternativeText: t('altText', {
-        userId: userId || ''
-      })
-    };
-
-    const formData = new FormData();
-    formData.append('path', 'avatar-of-users');
-    formData.append('fileInfo', JSON.stringify(newFileData));
-
-    formData.append('files', file);
-    formData.append('ref', 'plugin::users-permissions.user');
-    formData.append('refId', userId ?? '');
-    formData.append('field', 'avatar_photo');
-
-    const token = getCookie('token');
-
     try {
+      const { data: userData, error: userError } =
+        (await fetchGraphqlClientAuthenticated(
+          `query usersPermissionsUser {
+        usersPermissionsUser(id: "${userId}") {
+            data {
+                attributes {
+                    first_name
+                    last_name
+                }
+            }
+        }
+      }`
+        )) as getUserProfileFullNameResponse;
+
+      let newFileData = null;
+      if (
+        (userData?.usersPermissionsUser?.data?.attributes
+          ?.first_name ||
+          userData?.usersPermissionsUser?.data?.attributes
+            ?.last_name) &&
+        !userError
+      ) {
+        newFileData = {
+          alternativeText: t('altText', {
+            firstName:
+              userData?.usersPermissionsUser?.data?.attributes
+                ?.first_name ?? '',
+            lastName:
+              userData?.usersPermissionsUser?.data?.attributes
+                ?.last_name ?? ''
+          })
+        };
+
+        console.log(newFileData);
+      }
+
+      const formData = new FormData();
+      formData.append('path', 'avatar-of-users');
+
+      if (newFileData) {
+        formData.append('fileInfo', JSON.stringify(newFileData));
+      }
+
+      formData.append('files', file);
+      formData.append('ref', 'plugin::users-permissions.user');
+      formData.append('refId', userId ?? '');
+      formData.append('field', 'avatar_photo');
+
+      const token = getCookie('token');
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/upload`,
         {

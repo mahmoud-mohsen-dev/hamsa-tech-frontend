@@ -65,3 +65,18 @@ export type ChangePasswordResponse = {
   } | null;
   error?: null | string;
 };
+
+
+export type getUserProfileFullNameResponse = {
+  data: {
+    usersPermissionsUser: {
+      data: {
+        attributes: {
+          first_name: null | string;
+          last_name: null | string;
+        };
+      } | null;
+    };
+  } | null;
+  error?: null | string;
+}

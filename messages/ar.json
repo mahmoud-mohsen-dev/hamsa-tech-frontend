@@ -157,7 +157,18 @@
       "submitButtonText": "إرسال المراجعة",
       "overallRatingRequiredMessage": "التقييم العام مطلوب",
       "headlineRequiredMessage": "العنوان مطلوب",
-      "commentRequiredMessage": "التعليق مطلوب"
+      "commentRequiredMessage": "التعليق مطلوب",
+      "singinIsRequired": "سجل دخولك لتستطيع أن تكتب مراجعة.",
+      "signinText": "تسجيل الدخول",
+      "formValidationErrors": {
+        "failedToApplyChanges": "فشل في تطبيق التغييرات الخاصة بك"
+      },
+      "deleteConfirm": {
+        "title": "حذف المراجعة",
+        "description": "هل أنت متأكد من حذف هذه المراجعة؟",
+        "okText": "نعم",
+        "cancelText": "لا"
+      }
     }
   },
   "OffersPage": {
@@ -504,7 +515,7 @@
         "avatar": {
           "changePicture": "تغيير الصورة",
           "noImage": "لا توجد صورة",
-          "altText": "صورة رمزية للمستخدم {userId}"
+          "altText": "صورة رمزية للمستخدم {firstName} {lastName}"
         },
         "form": {
           "firstNameLabel": "الاسم الأول",
