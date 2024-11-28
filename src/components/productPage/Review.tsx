@@ -1,21 +1,22 @@
 'use client';
 
 import { reviewType } from '@/types/getProduct';
-import { Popconfirm, Rate, message } from 'antd';
+import { Popconfirm, Rate } from 'antd';
 import dayjs from 'dayjs';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Btn from '../UI/Btn';
 import { AiOutlineLike } from 'react-icons/ai';
 import { GrFlag } from 'react-icons/gr';
-import { BiSave } from 'react-icons/bi';
-import { RiCloseFill } from 'react-icons/ri';
 import { getIdFromToken } from '@/utils/cookieUtils';
 import { useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { HiOutlineTrash } from 'react-icons/hi';
 import type { PopconfirmProps } from 'antd';
 import CreateOrEditReview from './CreateOrEditReview';
+import { deleteReview } from '@/services/review';
+import { useMyContext } from '@/context/Store';
+import revalidateProductLayoutPage from '@/app/action';
 
 function Review({
   review,
@@ -34,6 +35,12 @@ function Review({
   const isAuthor =
     `${review?.attributes?.users_permissions_user?.data?.id}` ===
     `${userId}`;
+  const {
+    setErrorMessage,
+    setSuccessMessage,
+    setLoadingMessage,
+    loadingMessage
+  } = useMyContext();
 
   const isLikedByUser = true;
 
@@ -45,22 +52,20 @@ function Review({
     setEdit(false);
   };
 
-  const handleSave = () => {
-    setEdit(false);
-  };
+  const confirmDelete: PopconfirmProps['onConfirm'] = async () => {
+    const id = await deleteReview({
+      reviewId: review?.id,
+      errorMessage: t('responseMessages.successDeleteMessage'),
+      successMessage: t('responseMessages.successDeleteMessage'),
+      setSuccessMessage,
+      setErrorMessage,
+      setLoadingMessage
+    });
 
-  const handleDelete = () => {
-    // TODO: Delete review
-  };
-
-  const confirmDelete: PopconfirmProps['onConfirm'] = (e) => {
-    console.log(e);
-    message.success('Click on Yes');
-  };
-
-  const cancelDelete: PopconfirmProps['onCancel'] = (e) => {
-    console.log(e);
-    message.error('Click on No');
+    if (!id) {
+      console.error('deleted review id was not found', id);
+    }
+    await revalidateProductLayoutPage({ products: productIds });
   };
 
   return (
@@ -137,23 +142,25 @@ function Review({
                   {review?.attributes?.comment ?? ''}
                 </p>
 
-                <div className='mt-3 flex items-center gap-5'>
-                  <Btn
-                    className={`${isLikedByUser ? 'text-green-medium' : 'text-gray-normal'} text-sm !shadow-none hover:text-blue-sky-dark`}
-                    defaultPadding={false}
-                  >
-                    <AiOutlineLike size={16} />
-                    <span>Helpful</span>
-                    <span>(4)</span>
-                  </Btn>
-                  <Btn
-                    className='py-1.5 text-sm text-gray-normal !shadow-none hover:text-red-600'
-                    defaultPadding={false}
-                  >
-                    <GrFlag size={14} />
-                    <span>Report Abuse</span>
-                  </Btn>
-                </div>
+                {userId && (
+                  <div className='mt-3 flex items-center gap-5'>
+                    <Btn
+                      className={`${isLikedByUser ? 'text-green-medium' : 'text-gray-normal'} text-sm !shadow-none hover:text-blue-sky-dark`}
+                      defaultPadding={false}
+                    >
+                      <AiOutlineLike size={16} />
+                      <span>Helpful</span>
+                      <span>(4)</span>
+                    </Btn>
+                    <Btn
+                      className='py-1.5 text-sm text-gray-normal !shadow-none hover:text-red-600'
+                      defaultPadding={false}
+                    >
+                      <GrFlag size={14} />
+                      <span>Report Abuse</span>
+                    </Btn>
+                  </div>
+                )}
               </>
             }
           </div>
@@ -161,24 +168,6 @@ function Review({
 
         {isAuthor && !edit && (
           <div className='flex items-start gap-3'>
-            {/* <Btn
-                  className='text-sm leading-6 text-gray-normal !shadow-none hover:text-green-700'
-                  defaultPadding={false}
-                  onClick={handleSave}
-                >
-                  <BiSave size={18} />
-                  <span>Save</span>
-                </Btn> */}
-            {/* <Btn
-                  className='!gap-1 text-sm leading-6 text-gray-normal !shadow-none hover:text-black-medium'
-                  defaultPadding={false}
-                  onClick={handleCancel}
-                >
-                  <RiCloseFill size={20} />
-                  <span>Cancel</span>
-                </Btn>
-              </> */}
-
             <Btn
               className='text-sm leading-6 text-gray-normal !shadow-none hover:text-blue-sky-dark'
               defaultPadding={false}
@@ -190,19 +179,15 @@ function Review({
             <Popconfirm
               title={t('deleteConfirm.title')}
               description={t('deleteConfirm.description')}
+              okButtonProps={{ loading: loadingMessage }}
               onConfirm={confirmDelete}
-              onCancel={cancelDelete}
               okText={t('deleteConfirm.okText')}
               cancelText={t('deleteConfirm.cancelText')}
             >
-              <Btn
-                className='!gap-1 text-sm leading-6 text-gray-normal !shadow-none hover:text-red-600'
-                defaultPadding={false}
-                onClick={handleDelete}
-              >
+              <button className='flex items-center justify-center rounded text-sm leading-6 text-gray-normal transition-colors duration-300 hover:text-red-600 focus:outline-none active:outline-none disabled:cursor-not-allowed'>
                 <HiOutlineTrash size={20} />
                 <span>Delete</span>
-              </Btn>
+              </button>
             </Popconfirm>
           </div>
         )}

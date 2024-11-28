@@ -156,12 +156,20 @@
       "addWrittenReviewPlaceholderText": "ما الذي أعجبك أو لم يعجبك؟ ما هو استخدامك لهذا المنتج؟",
       "submitButtonText": "إرسال المراجعة",
       "overallRatingRequiredMessage": "التقييم العام مطلوب",
+      "overallRatingMinMessage": "يجب أن يكون التقييم على الأقل مساويًا لـ 1",
       "headlineRequiredMessage": "العنوان مطلوب",
       "commentRequiredMessage": "التعليق مطلوب",
       "singinIsRequired": "سجل دخولك لتستطيع أن تكتب مراجعة.",
       "signinText": "تسجيل الدخول",
       "formValidationErrors": {
         "failedToApplyChanges": "فشل في تطبيق التغييرات الخاصة بك"
+      },
+      "responseMessages": {
+        "successUpdateMessage": "تم تحديث المراجعة بنجاح",
+        "errorUpdateMessage": "فشل في تحديث المراجعة",
+        "reviewNotFoundMessage": "المراجعة غير موجودة",
+        "successDeleteMessage": "تم حذف المراجعة بنجاح",
+        "errorDeleteMessage": "فشل في حذف المراجعة"
       },
       "deleteConfirm": {
         "title": "حذف المراجعة",

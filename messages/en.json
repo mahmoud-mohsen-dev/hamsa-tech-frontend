@@ -156,12 +156,20 @@
       "addWrittenReviewPlaceholderText": "What did you like or dislike? What did you use this product for?",
       "submitButtonText": "Submit Review",
       "overallRatingRequiredMessage": "Overall rating is required",
+      "overallRatingMinMessage": "Rating must be at least equal to 1",
       "headlineRequiredMessage": "Headline is required",
       "commentRequiredMessage": "Comment is required",
       "singinIsRequired": "Sign in to write a review.",
       "signinText": "Sign in",
       "formValidationErrors": {
         "failedToApplyChanges": "Failed to apply your changes"
+      },
+      "responseMessages": {
+        "successUpdateMessage": "Review was successfully updated",
+        "errorUpdateMessage": "Failed to update review",
+        "reviewNotFoundMessage": "Review not found",
+        "successDeleteMessage": "Review was successfully deleted",
+        "errorDeleteMessage": "Failed to delete review"
       },
       "deleteConfirm": {
         "title": "Delete Review",

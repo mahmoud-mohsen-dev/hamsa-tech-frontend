@@ -8,9 +8,9 @@ import { useUser } from '@/context/UserContext';
 import { Link } from '@/navigation';
 import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
 import { useMyContext } from '@/context/Store';
-import { createReview } from '@/services/review';
+import { createReview, updateReview } from '@/services/review';
 import { reviewType } from '@/types/getProduct';
-import { RiCloseFill } from 'react-icons/ri';
+import revalidateProductLayoutPage from '@/app/action';
 
 function CreateOrEditReview({
   productIds,
@@ -37,13 +37,41 @@ function CreateOrEditReview({
     headline: string;
     overallRating: number;
   }) => {
-    console.log(values);
+    // console.log(values);
 
     if (editReview) {
+      const id: string | null = await updateReview({
+        setSuccessMessage,
+        setErrorMessage,
+        setLoadingMessage,
+        reviewFormdata: {
+          rating: values.overallRating,
+          headline: values.headline,
+          comment: values.comment
+        },
+        reviewId: reviewOnEditData?.id ?? null,
+        errorMessage: t('responseMessages.errorUpdateMessage'),
+        errorNotFoundMessage: t(
+          'responseMessages.reviewNotFoundMessage'
+        ),
+        successMessage: t('responseMessages.successUpdateMessage')
+      });
+
+      if (!id) {
+        console.error('updated review id was not found', id);
+      }
+
+      form.resetFields();
+
+      if (handleCancel) {
+        handleCancel();
+      }
+
+      await revalidateProductLayoutPage({ products: productIds });
+
       return;
     }
 
-    setLoadingMessage(true);
     const response: string | null = await createReview(
       setSuccessMessage,
       setErrorMessage,
@@ -115,7 +143,7 @@ function CreateOrEditReview({
                       reviewOnEditData?.attributes?.comment ?? ''
                   }
                 : {
-                    overallRating: 0
+                    overallRating: undefined
                   }
               }
               onFinish={onFinish}
@@ -130,6 +158,16 @@ function CreateOrEditReview({
                   {
                     required: true,
                     message: t('overallRatingRequiredMessage')
+                  },
+                  {
+                    validator: (_, value) => {
+                      if (value >= 1) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(t('overallRatingMinMessage'))
+                      );
+                    }
                   }
                 ]}
               >
