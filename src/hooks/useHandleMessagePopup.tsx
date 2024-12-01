@@ -3,7 +3,11 @@ import { message } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
-function useHandleMessagePopup() {
+function useHandleMessagePopup(
+  options = {
+    scrollTop: true
+  }
+) {
   const {
     loadingMessage,
     errorMessage,
@@ -22,7 +26,8 @@ function useHandleMessagePopup() {
         type: 'loading',
         content: t('form.loading')
       });
-      window.scrollTo(0, 0);
+
+      if (options?.scrollTop) window.scrollTo(0, 0);
     } else {
       messageApi.destroy();
       setLoadingMessage(false);

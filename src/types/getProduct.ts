@@ -8,7 +8,8 @@ export interface specificationType {
 export interface reviewType {
   id: string;
   attributes: {
-    updatedAt: string;
+    createdAt: string;
+    publishedAt: string;
     rating: number;
     headline: string;
     comment: string;
@@ -30,6 +31,27 @@ export interface reviewType {
         };
       };
     };
+    likes: {
+      data:
+        | {
+            id: string;
+          }[]
+        | null;
+    };
+    report_abuse:
+      | {
+          user: {
+            data: {
+              id: string;
+            };
+          };
+          issue_type:
+            | 'off-topic'
+            | 'inappropriate'
+            | 'fake'
+            | 'other';
+        }[]
+      | null;
   };
 }
 export interface ProductDataType {

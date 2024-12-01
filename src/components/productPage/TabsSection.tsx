@@ -285,7 +285,7 @@ async function ContentOfReviews({
           <h3 className='mt-2 font-openSans text-sm font-semibold text-black-light'>
             {t('shareThoughtTitle')}
           </h3>
-          <Link href={'#Reviews-Create-A-Comment'}>
+          <Link href={'#create-A-review'}>
             <Button className='mt-5 w-full capitalize' type='default'>
               {t('writeAReviewText')}
             </Button>

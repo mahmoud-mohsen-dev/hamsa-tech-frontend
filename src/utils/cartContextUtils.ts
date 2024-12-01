@@ -312,9 +312,9 @@ export const getCartByLocale = (
       );
     }
   });
-  console.log('cart items');
-  console.log(cartItems);
-  console.log('New cart items');
-  console.log(newCartItems);
+  // console.log('cart items');
+  // console.log(cartItems);
+  // console.log('New cart items');
+  // console.log(newCartItems);
   return newCartItems;
 };

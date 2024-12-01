@@ -161,15 +161,51 @@
       "commentRequiredMessage": "Comment is required",
       "singinIsRequired": "Sign in to write a review.",
       "signinText": "Sign in",
+      "reviewHelpfulText": "Helpful",
+      "reviewReportAbuseText": "Report Abuse",
+      "cancelReportAbuseText": "Cancel Report",
+      "reviewEditButtonText": "Edit",
+      "reviewDeleteButtonText": "Delete",
       "formValidationErrors": {
         "failedToApplyChanges": "Failed to apply your changes"
       },
       "responseMessages": {
+        "successCreateMessage": "Review was successfully created",
+        "errorCreateMessage": "Failed to create a review",
         "successUpdateMessage": "Review was successfully updated",
         "errorUpdateMessage": "Failed to update review",
-        "reviewNotFoundMessage": "Review not found",
         "successDeleteMessage": "Review was successfully deleted",
-        "errorDeleteMessage": "Failed to delete review"
+        "errorDeleteMessage": "Failed to delete review",
+        "errorFailedToReportMessage": "Failed to report this review",
+        "successReportMessage": "The abuse report has been successfully submitted",
+        "errorCancelReportMessage": "Failed to cancel the report. Please try again",
+        "successCancelReportMessage": "The report has been successfully canceled",
+        "reviewNotFoundMessage": "Review not found",
+        "userNotFoundMessage": "You have to sign in first"
+      },
+      "reportReview": {
+        "title": "Report this review",
+        "question": "Why are you reporting this?",
+        "offTopic": {
+          "label": "Off topic",
+          "description": "Not about the product"
+        },
+        "inappropriate": {
+          "label": "Inappropriate",
+          "description": "Disrespectful, hateful, obscene"
+        },
+        "fake": {
+          "label": "Fake",
+          "description": "Paid for, inauthentic"
+        },
+        "other": {
+          "label": "Other",
+          "description": "Something else"
+        },
+        "formValidation": "Please choose one option that best describes how this review is abusive",
+        "successMessage": "We’ll take a closer look at this review. If it fits the reason you selected, we’ll remove it.",
+        "submitButton": "Submit",
+        "cancelButton": "Cancel"
       },
       "deleteConfirm": {
         "title": "Delete Review",

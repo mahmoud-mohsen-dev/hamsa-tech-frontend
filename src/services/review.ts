@@ -1,16 +1,13 @@
 import { getIdFromToken } from '@/utils/cookieUtils';
-import {
-  fetchGraphqlClientAuthenticated,
-} from './graphqlCrud';
+import { fetchGraphqlClientAuthenticated } from './graphqlCrud';
 import { fetchGraphqlServerWebAuthenticated } from './graphqlCrudServerOnly';
-import revalidateProductLayoutPage from '@/app/action';
 import {
   DeleteReviewType,
   GetUserReviewsType,
-  GetUserReviewType,
   RemoveReviewFromUserType,
   updateReviewType
 } from '@/types/reviewsResponses';
+import { reviewType } from '@/types/getProduct';
 
 interface ReviewFormdataType {
   rating: number;
@@ -35,7 +32,7 @@ const createReviewQuery = ({
                 rating: ${rating}
                 headline: "${headline}"
                 comment: "${comment}"
-                publishedAt: "${new Date().toISOString()}"
+                publishedAt: "${new Date(new Date().getTime() + 2000).toISOString()}"
             }
         ) {
             data {
@@ -68,7 +65,9 @@ export const createReview = async (
   >,
   setLoadingMessage: React.Dispatch<React.SetStateAction<boolean>>,
   reviewFormdata: ReviewFormdataType,
-  productIds: { arId: string | null; enId: string | null }
+  productIds: { arId: string | null; enId: string | null },
+  successMessage: string,
+  errorMessage: string
 ) => {
   try {
     setLoadingMessage(true);
@@ -76,12 +75,9 @@ export const createReview = async (
       createReviewQuery(reviewFormdata)
     );
 
-    console.log(data);
-    console.log(error);
-
     if (!data?.createReview?.data?.id || error) {
-      console.error('Failed to create a review:', error);
-      setErrorMessage('Failed to create a review');
+      console.error(errorMessage, error);
+      setErrorMessage(errorMessage);
       return null;
     }
 
@@ -102,25 +98,20 @@ export const createReview = async (
         })
       );
 
-    console.log(updatedReviewData);
-    console.log(updatedReviewError);
     if (
       !updatedReviewData?.updateReview?.data?.id ||
       updatedReviewError
     ) {
       console.error('Failed to update a review:', updatedReviewError);
-      setErrorMessage('Failed to create a review');
+      setErrorMessage(errorMessage);
       return null;
     }
 
-    revalidateProductLayoutPage({ products: productIds });
-
-    setSuccessMessage('Review was successfully created');
-    // return data.createReview.data.id;
+    setSuccessMessage(successMessage);
     return updatedReviewData.updateReview.data.id as string;
   } catch (e) {
-    console.error('Failed to create a review:', e);
-    setErrorMessage('Failed to create a review');
+    console.error(errorMessage, e);
+    setErrorMessage(errorMessage);
     return null;
   } finally {
     setLoadingMessage(false);
@@ -275,38 +266,88 @@ export async function deleteReview({
   }
 }
 
-const getUserReviewIdQuery = ({
-  userId,
-  reviewId
-}: {
-  userId: string | null;
-  reviewId: string | null;
-}) => {
-  return `query UsersPermissionsUser {
-    usersPermissionsUser(id: ${userId ? `"${userId}"` : null}) {
-        data {
-            attributes {
-                reviews(filters: { id: { eq: ${reviewId ? `"${reviewId}"` : null} } }) {
-                    data {
-                        id
-                    }
-                }
-            }
-        }
-    }
-  }`;
-};
-
 const updateReviewQuery = ({
   reviewId,
   rating,
   headline,
-  comment
-}: ReviewFormdataType & { reviewId: string | null }) => {
+  comment,
+  likes,
+  reportAbuses,
+  updateLikes,
+  updateReportAbuse
+}: Partial<ReviewFormdataType> & {
+  reviewId: string | null;
+  likes?:
+    | {
+        id: string;
+      }[]
+    | null;
+  reportAbuses?:
+    | {
+        user: {
+          data: {
+            id: string;
+          };
+        };
+        issue_type: 'off-topic' | 'inappropriate' | 'fake' | 'other';
+      }[]
+    | null;
+  updateLikes?: boolean;
+  updateReportAbuse?: boolean;
+}) => {
+  let dataInput = '';
+  const dataStr =
+    rating && headline && comment ?
+      `rating: ${rating}, headline: "${headline}", comment: "${comment}", publishedAt: "${new Date().toISOString()}"`
+    : null;
+
+  if (dataStr) {
+    dataInput += dataStr;
+  }
+
+  const likesStr =
+    likes && likes.length > 0 ?
+      `likes: [${likes
+        .map((like) => like?.id ?? null)
+        .filter((likeExist) => likeExist)
+        .join(', ')}]`
+    : null;
+
+  if (updateLikes) {
+    if (likesStr) {
+      dataInput += likesStr;
+    } else {
+      dataInput += `likes: null`;
+    }
+  }
+
+  const reportAbuseStr =
+    reportAbuses && reportAbuses.length > 0 ?
+      `[${reportAbuses
+        .map((report) =>
+          report?.user?.data?.id && report?.issue_type ?
+            `{
+              user: "${report.user.data.id}",
+              issue_type: ${report.issue_type}
+            }`
+          : null
+        )
+        .filter((reportExist) => reportExist)
+        .join(', ')}]`
+    : null;
+
+  if (updateReportAbuse) {
+    if (reportAbuseStr) {
+      dataInput += `report_abuse: ${reportAbuseStr}`;
+    } else {
+      dataInput += `report_abuse: []`;
+    }
+  }
+
   return `mutation UpdateReview {
     updateReview(
         id: ${reviewId ? `"${reviewId}"` : null}
-        data: { rating: ${rating}, headline: "${headline ?? ''}", comment: "${comment ?? ''}" }
+        data: { ${dataInput} }
     ) {
         data {
             id
@@ -322,48 +363,59 @@ export const updateReview = async ({
   reviewFormdata,
   reviewId,
   errorMessage,
-  errorNotFoundMessage,
-  successMessage
+  userNotFoundMessage,
+  successMessage,
+  likes,
+  reportAbuses,
+  updateLikes = false,
+  updateReportAbuse = false
 }: {
-  setSuccessMessage: React.Dispatch<
+  setSuccessMessage?: React.Dispatch<
     React.SetStateAction<string | null>
   >;
-  setErrorMessage: React.Dispatch<
+  setErrorMessage?: React.Dispatch<
     React.SetStateAction<string | null>
   >;
-  setLoadingMessage: React.Dispatch<React.SetStateAction<boolean>>;
-  reviewFormdata: ReviewFormdataType;
+  setLoadingMessage?: React.Dispatch<React.SetStateAction<boolean>>;
+  reviewFormdata?: ReviewFormdataType;
   reviewId: string | null;
-  errorMessage: string;
-  errorNotFoundMessage: string;
-  successMessage: string;
+  errorMessage?: string;
+  userNotFoundMessage?: string;
+  successMessage?: string;
+  likes?:
+    | {
+        id: string;
+      }[]
+    | null;
+  reportAbuses?:
+    | {
+        user: {
+          data: {
+            id: string;
+          };
+        };
+        issue_type: 'off-topic' | 'inappropriate' | 'fake' | 'other';
+      }[]
+    | null;
+  updateLikes?: boolean;
+  updateReportAbuse?: boolean;
 }) => {
   try {
-    setLoadingMessage(true);
+    if (setLoadingMessage) setLoadingMessage(true);
 
     const userId = getIdFromToken();
-    const { data: userReviewData, error: userReviewError } =
-      (await fetchGraphqlClientAuthenticated(
-        getUserReviewIdQuery({ reviewId, userId })
-      )) as GetUserReviewType;
-
-    if (
-      !Array.isArray(
-        userReviewData?.usersPermissionsUser?.data?.attributes
-          ?.reviews?.data
-      ) ||
-      !userReviewData?.usersPermissionsUser?.data?.attributes?.reviews
-        ?.data[0]?.id ||
-      userReviewError
-    ) {
-      console.error('Failed to get user review:', userReviewError);
-      setErrorMessage(errorNotFoundMessage);
-      return null;
-    }
+    if (!userId) throw new Error(userNotFoundMessage);
 
     const { data: updatedReviewData, error: updatedReviewError } =
       (await fetchGraphqlServerWebAuthenticated(
-        updateReviewQuery({ ...reviewFormdata, reviewId })
+        updateReviewQuery({
+          ...reviewFormdata,
+          reviewId,
+          likes,
+          updateLikes,
+          reportAbuses,
+          updateReportAbuse
+        })
       )) as updateReviewType;
 
     if (
@@ -371,17 +423,20 @@ export const updateReview = async ({
       updatedReviewError
     ) {
       console.error(errorMessage, updatedReviewError);
-      setErrorMessage(errorMessage);
+      if (setErrorMessage && errorMessage)
+        setErrorMessage(errorMessage);
       return null;
     }
 
-    setSuccessMessage(successMessage);
+    if (setSuccessMessage && successMessage)
+      setSuccessMessage(successMessage);
     return updatedReviewData.updateReview.data.id;
-  } catch (e) {
+  } catch (e: any) {
     console.error(errorMessage, e);
-    setErrorMessage(errorMessage);
+    if (setErrorMessage && errorMessage)
+      setErrorMessage(e?.message || e || errorMessage);
     return null;
   } finally {
-    setLoadingMessage(false);
+    if (setLoadingMessage) setLoadingMessage(false);
   }
 };

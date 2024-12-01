@@ -59,6 +59,28 @@ export interface GetUserReviewType {
   error?: string | null;
 }
 
+export interface GetUserReviewDataType {
+  data: {
+    usersPermissionsUser: {
+      data: {
+        attributes: {
+          reviews: {
+            data:
+              | {
+                  attributes: {
+                    likes: null;
+                  };
+                }[]
+              | null
+              | [];
+          };
+        };
+      } | null;
+    };
+  } | null;
+  error?: string | null;
+}
+
 export interface updateReviewType {
   data: {
     updateReview: {

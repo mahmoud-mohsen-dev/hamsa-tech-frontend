@@ -161,15 +161,51 @@
       "commentRequiredMessage": "التعليق مطلوب",
       "singinIsRequired": "سجل دخولك لتستطيع أن تكتب مراجعة.",
       "signinText": "تسجيل الدخول",
+      "reviewHelpfulText": "مفيد",
+      "reviewReportAbuseText": "الإبلاغ عن إساءة",
+      "cancelReportAbuseText": "إلغي البلاغ",
+      "reviewEditButtonText": "تعديل",
+      "reviewDeleteButtonText": "حذف",
       "formValidationErrors": {
         "failedToApplyChanges": "فشل في تطبيق التغييرات الخاصة بك"
       },
       "responseMessages": {
+        "successCreateMessage": "تم إنشاء المراجعة بنجاح",
+        "errorCreateMessage": "فشل في إنشاء المراجعة",
         "successUpdateMessage": "تم تحديث المراجعة بنجاح",
         "errorUpdateMessage": "فشل في تحديث المراجعة",
-        "reviewNotFoundMessage": "المراجعة غير موجودة",
+        "errorDeleteMessage": "فشل في حذف المراجعة",
         "successDeleteMessage": "تم حذف المراجعة بنجاح",
-        "errorDeleteMessage": "فشل في حذف المراجعة"
+        "errorFailedToReportMessage": "فشل في الإبلاغ عن هذه المراجعة",
+        "successReportMessage": "تم إرسال بلاغ الإساءة بنجاح",
+        "errorCancelReportMessage": "فشل في إلغاء البلاغ. الرجاء المحاولة مرة أخرى",
+        "successCancelReportMessage": "تم إلغاء البلاغ بنجاح",
+        "reviewNotFoundMessage": "المراجعة غير موجودة",
+        "userNotFoundMessage": "يجب عليك تسجيل الدخول أولاً"
+      },
+      "reportReview": {
+        "title": "الإبلاغ عن هذه المراجعة",
+        "question": "لماذا تقوم بالإبلاغ عن هذه المراجعة؟",
+        "offTopic": {
+          "label": "خارج الموضوع",
+          "description": "ليس عن المنتج"
+        },
+        "inappropriate": {
+          "label": "غير لائق",
+          "description": "غير محترم، كراهية، فاحش"
+        },
+        "fake": {
+          "label": "مزيف",
+          "description": "مدفوع، غير حقيقي"
+        },
+        "other": {
+          "label": "آخر",
+          "description": "شيء آخر"
+        },
+        "formValidation": "يرجى اختيار خيار يصف أفضل كيفية إساءة المراجعة",
+        "successMessage": "سنقوم بفحص هذه المراجعة عن كثب. إذا كانت تتناسب مع السبب الذي اخترته، سنقوم بإزالتها.",
+        "submitButton": "إرسال",
+        "cancelButton": "إلغاء"
       },
       "deleteConfirm": {
         "title": "حذف المراجعة",

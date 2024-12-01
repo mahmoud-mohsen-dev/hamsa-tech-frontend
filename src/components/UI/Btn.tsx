@@ -11,7 +11,7 @@ function Btn({
   dir = undefined,
   type = 'button',
   disabled = false,
-  hover = false,
+  // hover = false,
   setHover = () => {}
 }: {
   children: React.ReactNode;
@@ -26,7 +26,7 @@ function Btn({
   outlined?: boolean;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
-  hover?: boolean;
+  // hover?: boolean;
   setHover?: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   const btnStyles =

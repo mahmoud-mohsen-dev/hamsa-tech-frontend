@@ -23,22 +23,24 @@ function CreateOrEditReview({
   reviewOnEditData?: reviewType;
   handleCancel?: () => void;
 }) {
-  const [form] = useForm();
-  // const locale = useLocale();
+  const [form] = useForm<{
+    overallRating: number;
+    headline: string;
+    comment: string;
+  }>();
   const t = useTranslations('ProductPage.reviewsTabSection');
   const { userId } = useUser();
-  const { contextHolder } = useHandleMessagePopup();
+  const { contextHolder } = useHandleMessagePopup({
+    scrollTop: false
+  });
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
-  // const router = useRouter();
 
   const onFinish = async (values: {
     comment: string;
     headline: string;
     overallRating: number;
   }) => {
-    // console.log(values);
-
     if (editReview) {
       const id: string | null = await updateReview({
         setSuccessMessage,
@@ -50,9 +52,11 @@ function CreateOrEditReview({
           comment: values.comment
         },
         reviewId: reviewOnEditData?.id ?? null,
-        errorMessage: t('responseMessages.errorUpdateMessage'),
-        errorNotFoundMessage: t(
-          'responseMessages.reviewNotFoundMessage'
+        errorMessage: t(
+          'responseMessages.errorFailedToReportMessage'
+        ),
+        userNotFoundMessage: t(
+          'responseMessages.userNotFoundMessage'
         ),
         successMessage: t('responseMessages.successUpdateMessage')
       });
@@ -68,7 +72,6 @@ function CreateOrEditReview({
       }
 
       await revalidateProductLayoutPage({ products: productIds });
-
       return;
     }
 
@@ -81,12 +84,21 @@ function CreateOrEditReview({
         headline: values.headline,
         comment: values.comment
       },
-      productIds
+      productIds,
+      t('responseMessages.successCreateMessage'),
+      t('responseMessages.errorCreateMessage')
     );
 
     if (typeof response === 'string') {
       form.resetFields();
-      // router.refresh();
+      await revalidateProductLayoutPage({ products: productIds });
+      // const scrollBy = JSON.parse(
+      //   sessionStorage.getItem('scroll') ?? '0'
+      // );
+      // if (scrollBy) {
+      //   window.scrollTo(0, scrollBy);
+      // }
+      // sessionStorage.removeItem('scroll');
     }
   };
 
@@ -101,7 +113,7 @@ function CreateOrEditReview({
 
   return (
     <div
-      id={editReview ? '' : 'Reviews-Create-A-Comment'}
+      id={editReview ? '' : 'create-A-review'}
       className={editReview ? 'pb-3' : ''}
     >
       {userId ?
@@ -171,12 +183,7 @@ function CreateOrEditReview({
                   }
                 ]}
               >
-                {/* <div
-                dir='ltr'
-                className={locale === 'ar' ? 'ml-auto w-fit' : ''}
-              > */}
                 <Rate />
-                {/* </div> */}
               </Form.Item>
               <Form.Item
                 label={t('addHeadlineText')}
@@ -216,7 +223,6 @@ function CreateOrEditReview({
                 {editReview && (
                   <Btn
                     className='rounded-md border border-gray-light font-inter text-sm text-black-light !shadow-none hover:border-gray-medium hover:text-black-accent'
-                    // defaultPadding={false}
                     onClick={() =>
                       handleCancel ? handleCancel() : (
                         console.log(

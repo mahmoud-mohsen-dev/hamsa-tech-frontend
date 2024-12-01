@@ -400,7 +400,7 @@ function OrderProduct({
             className={`w-full rounded-md border border-transparent bg-green-dark px-[16px] text-base text-white duration-200 hover:border-green-dark hover:bg-white hover:text-green-dark active:border-transparent active:bg-green-dark active:text-white md:grow`}
             onClick={handleAddToCart}
             disabled={quantity === 0}
-            hover={isHovered}
+            // hover={isHovered}
             setHover={setIsHovered}
           >
             {isLoading ?

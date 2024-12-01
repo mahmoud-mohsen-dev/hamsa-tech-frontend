@@ -107,11 +107,12 @@ export const getQueryProductPage = (id: string) => `{
                 value
             }
         }
-        reviews {
+        reviews(sort: "createdAt:asc", pagination: { pageSize: 1000 }) {
             data {
                 id 
                 attributes {
-                    updatedAt
+                    createdAt
+                    publishedAt
                     rating
                     headline
                     comment
@@ -132,6 +133,19 @@ export const getQueryProductPage = (id: string) => `{
                                 }
                             }
                         }
+                    }
+                    likes(pagination: { pageSize: 10000 }) {
+                        data {
+                            id
+                        }
+                    }
+                    report_abuse(pagination: { pageSize: 100 }) {
+                        user {
+                            data {
+                                id
+                            }
+                        }
+                        issue_type
                     }
                 }
             }
