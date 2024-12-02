@@ -366,29 +366,7 @@ function OrderProduct({
         )}
 
       <div className='mt-4 flex flex-wrap items-center gap-2.5'>
-        {/* <InputNumber
-          size='large'
-          min={0}
-          max={maxQuantity}
-          defaultValue={quantity}
-          value={quantity}
-          onChange={onChange}
-          style={{ borderRadius: '6px' }}
-        /> */}
         <div className='flex w-full items-center gap-4'>
-          {/* <CartInputNumber
-            productId={productId}
-            // setIsDataLoading={() => setAddToCartIsLoading(productId)}
-            setIsDataLoading={undefined}
-            // salePrice={
-            //   productData?.product?.data?.attributes?.sale_price
-            // }
-            // price={productData?.product?.data?.attributes?.price}
-            // productQuantity={quantity}
-            minValue={minQuantity}
-            // className='w-[200px]'
-            maxValue={maxQuantity}
-          /> */}
           <AddToCartQuantityChanger
             minValue={minQuantity}
             maxValue={maxQuantity}
@@ -429,7 +407,6 @@ function OrderProduct({
           </Btn>
         </div>
         <Btn
-          // className={`w-full rounded-md border border-transparent bg-red-shade-350 px-[16px] text-base text-white duration-200 hover:border-red-shade-350 hover:bg-white hover:text-red-shade-350 active:border-transparent active:bg-red-shade-350 active:text-white md:w-fit`}
           className={`w-fit px-1 text-base text-red-shade-350 !shadow-none !duration-0 hover:text-red-shade-250 active:text-red-shade-350`}
           onClick={handleAddToWishList}
         >

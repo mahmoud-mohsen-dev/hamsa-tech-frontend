@@ -52,6 +52,7 @@ export interface reviewType {
             | 'other';
         }[]
       | null;
+    hidden: boolean;
   };
 }
 export interface ProductDataType {

@@ -107,7 +107,8 @@
     "breadcrumb": {
       "all": "جميع المنتجات"
     },
-    "reviewsText": "المراجعات",
+    "reviewsText": "مراجعات",
+    "reviewText": "مراجعة",
     "offText": "خصم",
     "availabilityText": "التوفر",
     "stockText": "منتجات متوفرة",
@@ -141,7 +142,7 @@
     "moreDetailsTitle": "مزيد من التفاصيل",
     "reviewsTabSection": {
       "customerReviewsTitle": "مراجعات العملاء",
-      "reviewsText": "المراجعات",
+      "reviewsText": "مراجعات",
       "reviewText": "مراجعة",
       "outOfText": "من",
       "reviewThiProductTitle": "قم بمراجعة هذا المنتج",

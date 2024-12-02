@@ -108,6 +108,7 @@
       "all": "All Products"
     },
     "reviewsText": "reviews",
+    "reviewText": "reviews",
     "offText": "Off",
     "availabilityText": "Availability",
     "stockText": "items in stock",

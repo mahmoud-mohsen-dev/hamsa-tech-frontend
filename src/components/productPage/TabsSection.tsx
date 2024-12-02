@@ -27,6 +27,8 @@ interface TypeProps {
     description: ContentType[];
     specification: specificationType[];
     reviews: reviewType[];
+    averageReviews: number;
+    totalReviews: number;
   };
   productIds: { enId: string | null; arId: string | null };
 }
@@ -134,20 +136,24 @@ async function ConentOfSpecification({
 
 async function ContentOfReviews({
   reviews,
-  productIds
+  productIds,
+  totalRatings,
+  averageRatings
 }: {
   reviews: reviewType[];
   productIds: { arId: string | null; enId: string | null };
+  totalRatings: number;
+  averageRatings: number;
 }) {
-  // const locale = await getLocale();
   const t = await getTranslations('ProductPage.reviewsTabSection');
-  const avgRatings =
-    reviews.reduce(
-      (acc, cur) => (acc += cur?.attributes?.rating ?? 0),
-      0
-    ) / reviews.length;
 
-  const ratings = reviews.map((review) => review?.attributes?.rating);
+  const ratings = reviews
+    .filter(
+      (review) =>
+        !review?.attributes?.hidden && review?.attributes?.rating >= 0
+    )
+    .map((review) => review.attributes.rating);
+
   let oneRatingCount = 0,
     twoRatingCount = 0,
     threeRatingCount = 0,
@@ -176,16 +182,20 @@ async function ContentOfReviews({
     }
   });
 
-  const totalNumberOfRates =
-    oneRatingCount +
-    twoRatingCount +
-    threeRatingCount +
-    fourRatingCount +
-    fiveRatingCount;
-  // console.log(totalNumberOfRates);
+  // const totalNumberOfRates =
+  //   oneRatingCount +
+  //   twoRatingCount +
+  //   threeRatingCount +
+  //   fourRatingCount +
+  //   fiveRatingCount;
+  // // console.log(totalNumberOfRates);
 
   const getPercentage = (rate: number) => {
-    return Number(((rate / totalNumberOfRates) * 100).toFixed(1));
+    return (
+        isNaN(parseFloat(((rate / totalRatings) * 100).toFixed(2)))
+      ) ?
+        0
+      : Number(((rate / totalRatings) * 100).toFixed(2));
   };
   // console.log(avgRatings);
 
@@ -199,7 +209,7 @@ async function ContentOfReviews({
           {/* <div dir='ltr' className={'w-fit'}> */}
           <Rate
             disabled
-            defaultValue={Number(avgRatings.toFixed(1)) ?? 0}
+            defaultValue={averageRatings}
             allowHalf={true}
           />
           {/* </div> */}
@@ -209,9 +219,7 @@ async function ContentOfReviews({
             <span
               className={`text-xs font-bold text-blue-gray-medium`}
             >
-              {isNaN(Number(avgRatings.toFixed(1))) ?
-                0
-              : (Number(avgRatings.toFixed(1)) ?? 0)}
+              {averageRatings}
             </span>
             <span className='text-xs font-bold text-blue-gray-medium'>
               {t('outOfText')}
@@ -222,9 +230,9 @@ async function ContentOfReviews({
             <span
               className={`flex items-center gap-1 text-xs font-semibold text-blue-gray-light`}
             >
-              <span>({totalNumberOfRates ?? 0}</span>
+              <span>({totalRatings}</span>
               <span>
-                {totalNumberOfRates > 1 ?
+                {totalRatings > 1 ?
                   t('reviewsText')
                 : t('reviewText')}
                 )
@@ -298,21 +306,25 @@ async function ContentOfReviews({
         </h3>
         <div>
           {reviews.length > 0 ?
-            reviews.map((review, i, arr) => {
-              return (
-                <div key={review.id} className='mt-3'>
-                  <Review review={review} productIds={productIds} />
-                  {i !== arr.length - 1 && (
-                    <Divider
-                      style={{
-                        marginTop: '14px',
-                        marginBottom: '14px'
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })
+            reviews
+              .filter((review) =>
+                review?.attributes?.hidden ? false : true
+              )
+              .map((review, i, arr) => {
+                return (
+                  <div key={review.id} className='mt-3'>
+                    <Review review={review} productIds={productIds} />
+                    {i !== arr.length - 1 && (
+                      <Divider
+                        style={{
+                          marginTop: '14px',
+                          marginBottom: '14px'
+                        }}
+                      />
+                    )}
+                  </div>
+                );
+              })
           : <p className='mt-3'>{t('noReviewsText')}</p>}
         </div>
         <Divider />
@@ -375,6 +387,8 @@ async function TabsSection({ moreDetails, productIds }: TypeProps) {
       children: (
         <ContentOfReviews
           reviews={moreDetails.reviews}
+          totalRatings={moreDetails.totalReviews}
+          averageRatings={moreDetails.averageReviews}
           productIds={productIds}
         />
       )

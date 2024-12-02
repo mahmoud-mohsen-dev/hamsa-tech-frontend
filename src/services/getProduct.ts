@@ -147,6 +147,7 @@ export const getQueryProductPage = (id: string) => `{
                         }
                         issue_type
                     }
+                    hidden
                 }
             }
         }
