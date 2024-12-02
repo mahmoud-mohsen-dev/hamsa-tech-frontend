@@ -396,6 +396,7 @@ function ProductsContent() {
             pageSize={Number(pageSize) > 0 ? Number(pageSize) : 20}
             onChange={onPaginationChange}
             style={{ marginTop: 40 }}
+            showSizeChanger={false}
           />
         </>
       }

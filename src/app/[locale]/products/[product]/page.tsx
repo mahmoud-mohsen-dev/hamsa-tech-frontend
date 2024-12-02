@@ -219,6 +219,7 @@ export default async function Product({
                 <div className='mt-5 flex items-center gap-2'>
                   <Rate
                     defaultValue={productData?.average_reviews ?? 0}
+                    value={productData?.average_reviews ?? 0}
                     allowHalf
                     disabled
                   />
@@ -512,8 +513,8 @@ export default async function Product({
                 description: productData?.long_description ?? [],
                 specification: productData?.sepcification ?? [],
                 reviews: productData?.reviews?.data ?? [],
-                averageReviews: productData?.average_reviews??0,
-               totalReviews: productData?.total_reviews??0
+                averageReviews: productData?.average_reviews ?? 0,
+                totalReviews: productData?.total_reviews ?? 0
               }}
               productIds={{
                 enId:

@@ -199,6 +199,10 @@ async function ContentOfReviews({
   };
   // console.log(avgRatings);
 
+  const filteredReviews = reviews.filter((review) =>
+    review?.attributes?.hidden ? false : true
+  );
+
   return (
     <div className='grid gap-20 md:grid-cols-[250px_1fr] xl:grid-cols-[350px_1fr]'>
       <div>
@@ -210,6 +214,7 @@ async function ContentOfReviews({
           <Rate
             disabled
             defaultValue={averageRatings}
+            value={averageRatings}
             allowHalf={true}
           />
           {/* </div> */}
@@ -305,26 +310,22 @@ async function ContentOfReviews({
           {t('reviewsText')}
         </h3>
         <div>
-          {reviews.length > 0 ?
-            reviews
-              .filter((review) =>
-                review?.attributes?.hidden ? false : true
-              )
-              .map((review, i, arr) => {
-                return (
-                  <div key={review.id} className='mt-3'>
-                    <Review review={review} productIds={productIds} />
-                    {i !== arr.length - 1 && (
-                      <Divider
-                        style={{
-                          marginTop: '14px',
-                          marginBottom: '14px'
-                        }}
-                      />
-                    )}
-                  </div>
-                );
-              })
+          {filteredReviews.length > 0 ?
+            filteredReviews.map((review, i, arr) => {
+              return (
+                <div key={review.id} className='mt-3'>
+                  <Review review={review} productIds={productIds} />
+                  {i !== arr.length - 1 && (
+                    <Divider
+                      style={{
+                        marginTop: '14px',
+                        marginBottom: '14px'
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })
           : <p className='mt-3'>{t('noReviewsText')}</p>}
         </div>
         <Divider />
