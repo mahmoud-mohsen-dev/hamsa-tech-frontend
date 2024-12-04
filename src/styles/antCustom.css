@@ -1,9 +1,18 @@
-.ant-modal .ant-modal-content {
-  min-height: 400px;
+.modal-search .ant-modal-content {
+  min-height: fit-content;
 }
-.ant-modal .ant-modal-content .ant-select-selector {
+.modal-search .ant-modal-content .ant-modal-close {
+  top: 16px;
+  /* transform: translateY(-50%); */
+  inset-inline-end: 14px;
+}
+/* .modal-search .ant-modal-content .ant-modal-footer {
+  margin-top: 0;
+} */
+
+/* .ant-modal .ant-modal-content .ant-select-selector {
   width: 85%;
-}
+} */
 /* ======= Search Input In Navbar ========= */
 .search-input-navbar .ant-input-group > .ant-input:first-child {
   background: transparent;

@@ -58,7 +58,7 @@
     "profileLabel": "Profile",
     "signinLabel": "Sign in",
     "signoutLabel": "Sign out",
-    "searchPlaceholder": "Search for products..."
+    "searchPlaceholder": "Search..."
   },
   "ProductsPage": {
     "breadcrumb": {
@@ -108,7 +108,7 @@
       "all": "All Products"
     },
     "reviewsText": "reviews",
-    "reviewText": "reviews",
+    "reviewText": "review",
     "offText": "Off",
     "availabilityText": "Availability",
     "stockText": "items in stock",

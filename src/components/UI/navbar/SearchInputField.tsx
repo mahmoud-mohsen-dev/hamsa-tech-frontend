@@ -56,6 +56,7 @@ const SearchInputField: React.FC<{ style?: React.CSSProperties }> = ({
   const onSelect = (value: string) => {
     console.log('onSelect', value);
   };
+
   const defaultStyles: React.CSSProperties = {
     width: '100%',
     height: 'fit-content',
@@ -69,7 +70,7 @@ const SearchInputField: React.FC<{ style?: React.CSSProperties }> = ({
   return (
     <AutoComplete
       // popupMatchSelectWidth={'100%'}
-      style={style ? { ...defaultStyles, ...style } : defaultStyles}
+      // style={style ? { ...defaultStyles, ...style } : defaultStyles}
       options={options}
       onSelect={onSelect}
       onSearch={handleSearch}
@@ -79,7 +80,7 @@ const SearchInputField: React.FC<{ style?: React.CSSProperties }> = ({
         // size='large'
         placeholder={t('searchPlaceholder')}
         enterButton
-        className={`search-input-navbar ${locale === 'ar' ? 'is-arabic' : ''} transition-all duration-300`}
+        // className={`search-input-navbar ${locale === 'ar' ? 'is-arabic' : ''} transition-all duration-300`}
       />
     </AutoComplete>
   );

@@ -23,6 +23,7 @@ import {
   updateCartInTheBackend
 } from '@/utils/cartContextUtils';
 import { getCartId } from '@/utils/cookieUtils';
+import { MultiSearchResponse } from 'meilisearch';
 import { createContext, useContext, useState } from 'react';
 
 const MyContext = createContext<{
@@ -110,6 +111,12 @@ const MyContext = createContext<{
   setSuccessMessage: React.Dispatch<
     React.SetStateAction<string | null>
   >;
+  searchData: MultiSearchResponse<Record<string, any>> | null;
+  setSearchData: React.Dispatch<
+    React.SetStateAction<MultiSearchResponse<
+      Record<string, any>
+    > | null>
+  >;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -156,6 +163,9 @@ export const StoreContextProvider = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(
     null
   );
+  const [searchData, setSearchData] = useState<MultiSearchResponse<
+    Record<string, any>
+  > | null>(null);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -426,7 +436,9 @@ export const StoreContextProvider = ({
         errorMessage,
         setErrorMessage,
         successMessage,
-        setSuccessMessage
+        setSuccessMessage,
+        searchData,
+        setSearchData
       }}
     >
       {children}
