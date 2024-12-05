@@ -1,3 +1,11 @@
+body:has(.ant-modal-mask) {
+  width: 100vw;
+}
+
+.modal-search .ant-modal {
+  top: 64px;
+}
+
 .modal-search .ant-modal-content {
   min-height: fit-content;
 }
@@ -359,6 +367,12 @@
   .ant-collapse-header {
   border: 0px;
   border-top: 1px solid #dedede;
+}
+.nav-drawer-screen-small
+  .ant-collapse
+  > .ant-collapse-item:first-child:not(.ant-collapse-item-active)
+  .ant-collapse-header {
+  border: 0px;
 }
 .nav-drawer-screen-small
   .ant-collapse

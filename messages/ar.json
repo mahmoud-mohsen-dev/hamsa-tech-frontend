@@ -58,7 +58,14 @@
     "profileLabel": "الملف الشخصي",
     "signinLabel": "تسجيل الدخول",
     "signoutLabel": "تسجيل خروج",
-    "searchPlaceholder": "ابحث..."
+    "searchModal": {
+      "searchPlaceholder": "إبحث...",
+      "clearText": "إمسح",
+      "readMoreText": "إقرأ المزيد",
+      "searchResultsText": "تم العثور على {count} عناصر",
+      "noResultsText": "لم يتم العثور على نتائج.",
+      "productsText": "المنتجات"
+    }
   },
   "ProductsPage": {
     "breadcrumb": {

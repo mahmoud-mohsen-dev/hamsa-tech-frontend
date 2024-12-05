@@ -6,6 +6,7 @@ import AddToCartButton from './AddToCartButton';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import { useMyContext } from '@/context/Store';
 import { updateWishtlistHandler } from '../productPage/OrderProduct';
+import { trimText } from '@/utils/helpers';
 
 function ProductCard({
   id,
@@ -133,7 +134,7 @@ function ProductCard({
             {brand} - {category}
           </h3>
           <h4 className='mb-1 h-[40px] font-openSans text-sm font-semibold capitalize leading-[20px] text-black-light'>
-            {title}
+            {trimText(title ?? '')}
           </h4>
           {/* <div className='mb-2.5 flex h-[20px] items-center gap-2'>
             <Rate defaultValue={avgRate} allowHalf disabled />

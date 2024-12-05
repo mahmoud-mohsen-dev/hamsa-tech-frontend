@@ -117,6 +117,8 @@ const MyContext = createContext<{
       Record<string, any>
     > | null>
   >;
+  searchTerm: string | null;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string | null>>;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -166,6 +168,7 @@ export const StoreContextProvider = ({
   const [searchData, setSearchData] = useState<MultiSearchResponse<
     Record<string, any>
   > | null>(null);
+  const [searchTerm, setSearchTerm] = useState<null | string>(null);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -438,7 +441,9 @@ export const StoreContextProvider = ({
         successMessage,
         setSuccessMessage,
         searchData,
-        setSearchData
+        setSearchData,
+        searchTerm,
+        setSearchTerm
       }}
     >
       {children}

@@ -31,6 +31,7 @@ import { getQueryProductPage } from '@/services/getProduct';
 import { TbMail } from 'react-icons/tb';
 import { appendAutoplayParameter } from '@/utils/helpers';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
+import { trimText } from '@/utils/helpers';
 
 const getItems = (
   allProductsText: string,
@@ -211,10 +212,10 @@ export default async function Product({
                   </div>
                 </div>
                 <h1 className='mt-3 text-3xl font-semibold capitalize text-black-medium'>
-                  {productData?.name}
+                  {trimText(productData?.name ?? '')}
                 </h1>
                 <h2 className='mt-5 text-sm font-normal text-gray-500 sm:text-base md:text-xl'>
-                  {productData?.description}
+                  {trimText(productData?.description ?? '')}
                 </h2>
                 <div className='mt-5 flex items-center gap-2'>
                   <Rate

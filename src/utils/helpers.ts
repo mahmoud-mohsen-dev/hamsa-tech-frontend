@@ -21,7 +21,7 @@ export const capitalize = (value: any) => {
   const containsArabic = /[\u0600-\u06FF]/;
 
   return value
-    .split(/[\s_]+/) // Split by any whitespace or underscore
+    .split(/[\s_-]+/) // Split by any whitespace or underscore
     .map((word) => {
       // Check if the word contains any Arabic characters
       if (containsArabic.test(word)) {
@@ -113,4 +113,13 @@ export const extractNumberFromString = (
   // Use a regular expression to find the first number in the string
   const match = input.match(/-?\d+/); // Match integers (positive or negative)
   return match ? parseInt(match[0], 10) : null;
+};
+
+export const trimText = (input: any) => {
+  if (typeof input !== 'string') return '';
+  // Remove spaces or invisible characters from the start and end of the string
+  return input.replace(
+    /^[\s\u200C-\u200F\u202A-\u202E]+|[\s\u200C-\u200F\u202A-\u202E]+$/g,
+    ''
+  );
 };

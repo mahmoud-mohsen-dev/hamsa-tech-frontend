@@ -117,6 +117,8 @@ function NavDrawerScreenSmall({
     });
   };
 
+  // console.log(openKeys);
+
   const finalItems: CollapseProps['items'] = [];
   const collapseItems: CollapseProps['items'] =
     dataValues.map((item) => {
@@ -140,9 +142,9 @@ function NavDrawerScreenSmall({
             ),
             extra: (
               <ArrowDownAnimatedIcon
-                iconIsActive={item.id === openKeys[0]}
+                iconIsActive={item.slug === openKeys[0]}
                 handleIconIsActive={() =>
-                  handleiconIsActive(item?.id ?? null)
+                  handleiconIsActive(item?.slug ?? null)
                 }
               />
             )
@@ -369,11 +371,11 @@ function NavDrawerScreenSmall({
       }}
       // style={{ backgroundColor: 'transparent' }}
     >
-      <div className=''>
+      <div>
         <div>
-          <div className='w-full bg-white px-4 py-3'>
+          {/* <div className='w-full bg-white px-4 py-3'>
             <SearchInputField style={{ marginTop: 0 }} />
-          </div>
+          </div> */}
           <Collapse
             items={finalItems}
             // defaultActiveKey={['1']}

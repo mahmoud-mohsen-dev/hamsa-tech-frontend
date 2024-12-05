@@ -78,7 +78,7 @@ const SearchInputField: React.FC<{ style?: React.CSSProperties }> = ({
     >
       <Input.Search
         // size='large'
-        placeholder={t('searchPlaceholder')}
+        placeholder={t('searchModal.searchPlaceholder')}
         enterButton
         // className={`search-input-navbar ${locale === 'ar' ? 'is-arabic' : ''} transition-all duration-300`}
       />

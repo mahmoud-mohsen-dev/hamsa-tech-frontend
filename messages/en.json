@@ -58,7 +58,14 @@
     "profileLabel": "Profile",
     "signinLabel": "Sign in",
     "signoutLabel": "Sign out",
-    "searchPlaceholder": "Search..."
+    "searchModal": {
+      "searchPlaceholder": "Search...",
+      "clearText": "Clear",
+      "readMoreText": "Read More",
+      "searchResultsText": "Found {count} items",
+      "noResultsText": "No results found.",
+      "productsText": "Products"
+    }
   },
   "ProductsPage": {
     "breadcrumb": {

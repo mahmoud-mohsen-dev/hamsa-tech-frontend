@@ -97,6 +97,24 @@ html:not([data-scroll='0']) .header .hamburger-menu {
   color: #333333;
   border-color: #333333;
 }
+html[data-scroll='0']
+  .header:not(.colored-navbar)
+  .seach-btn.ant-btn-variant-link:not(:disabled):not(
+    .ant-btn-disabled
+  ):hover {
+  color: white;
+}
+
+.seach-btn.ant-btn-variant-link:not(:disabled):not(
+    .ant-btn-disabled
+  ):hover {
+  color: #333333;
+}
+
+.link-search-item:hover .name,
+.link-search-item:hover .brand {
+  text-decoration: underline;
+}
 
 /* =============== End of Navbar Background and Color Changes =============== 
 /* Category Card */
