@@ -441,12 +441,13 @@
       "emailLabel": "بريدك الإلكتروني",
       "emailPlaceholder": "name@company.com",
       "resetPasswordButton": "إعادة تعيين كلمة المرور",
-      "formValidationErrorMessages": {
+      "formValidationMessages": {
         "emailRequired": "البريد الإلكتروني مطلوب!",
         "errorDuringFormSubmission": "حدث خطأ أثناء إرسال النموذج",
         "emailNotFound": "لم يتم العثور على حساب بهذا البريد الإلكتروني.",
-        "resetPasswordSuccessMessage": "تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني.",
-        "resetPasswordFailedMessage": "فشل في إرسال رمز إعادة التعيين. يرجى المحاولة لاحقًا."
+        "invalidEmailAddress": "عنوان البريد الإلكتروني غير صالح.",
+        "codeSentSuccessfullyMessage": "تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني.",
+        "FailedToSendCodeMessage": "فشل في إرسال رمز إعادة التعيين. يرجى المحاولة لاحقًا."
       }
     },
     "metaData": {
@@ -456,13 +457,19 @@
   },
   "OtpVerificationPage": {
     "content": {
-      "headerTitle": "تأكيد عنوان البريد الإلكتروني",
-      "instruction": "أدخل رمز التحقق المكون من 4 أرقام الذي تم إرساله إلى بريدك الإلكتروني.",
-      "verifyButton": "تأكيد الحساب",
-      "resendText": "لم تتلق الرمز؟",
+      "headerTitle": "تحقق من بريدك الإلكتروني",
+      "instruction": "أدخل رمز التحقق المكون من 6 أرقام الذي تم إرساله إلى بريدك الإلكتروني. إذا لم تتلقَ بريدًا إلكترونيًا خلال 5 دقائق، تحقق من الرسائل الغير مرغوب فيها، أو ",
+      "resendText": "أعد الإرسال",
+      "instructionBetweenText": "، أو جرب",
+      "differentEmailText": " بريدًا إلكترونيًا آخر.",
+      "verifyButton": "تأكيد الرمز",
+      "didNotRecieveCodeText": "لم تتلق الرمز؟",
       "resendLink": "إعادة الإرسال",
+      "otpRequired": "يرجى إدخال الرمز التحقق المكون من 6 أرقام الذي تم إرساله لك.",
       "verificationSuccess": "تم التحقق من رمز OTP بنجاح!",
-      "invalidOtp": "يرجى إدخال رمز مكون من 4 أرقام صالح."
+      "verificationError": "حدث خطأ أثناء التحقق من رمز التحقق!",
+      "invalidOtp": "انتهت صلاحية رمز التحقق أو أنه غير صالح.",
+      "errorOccured": "حدث خطأ أثناء التحقق من الرمز."
     },
     "metaData": {
       "title": "صفحة تأكيد OTP من همسة تك",

@@ -440,12 +440,13 @@
       "emailLabel": "Your email",
       "emailPlaceholder": "name@company.com",
       "resetPasswordButton": "Reset password",
-      "formValidationErrorMessages": {
+      "formValidationMessages": {
         "emailRequired": "Email is required!",
         "errorDuringFormSubmission": "Error during form submission",
         "emailNotFound": "No account found with this email.",
-        "resetPasswordSuccessMessage": "A reset code has been sent to your email.",
-        "resetPasswordFailedMessage": "Failed to send reset code. Please try again later."
+        "invalidEmailAddress": "Invalid email address.",
+        "codeSentSuccessfullyMessage": "A reset code has been sent to your email.",
+        "FailedToSendCodeMessage": "Failed to send reset code. Please try again later."
       }
     },
     "metaData": {
@@ -455,13 +456,19 @@
   },
   "OtpVerificationPage": {
     "content": {
-      "headerTitle": "Email Address Verification",
-      "instruction": "Enter the 4-digit verification code sent to your email.",
-      "verifyButton": "Verify Account",
-      "resendText": "Didn't receive the code?",
+      "headerTitle": "Check your email",
+      "instruction": "Enter the 6-digit verification code sent to your email. If you haven't received an email in 5 minutes, check your spam or try ",
+      "resendText": "resend",
+      "instructionBetweenText": ", or try ",
+      "differentEmailText": "a different email.",
+      "verifyButton": "Verify Code",
+      "didNotRecieveCodeText": "Didn't receive the code?",
       "resendLink": "Resend",
+      "otpRequired": "Please enter the 6-digit verification code that was sent to you.",
       "verificationSuccess": "OTP verified successfully!",
-      "invalidOtp": "Please enter a valid 4-digit code."
+      "verificationError": "Error occurred during OTP verification!",
+      "invalidOtp": "The OTP has timed out or is invalid.",
+      "errorOccured": "Error occurred during code verification."
     },
     "metaData": {
       "title": "Hamsa Tech OTP Verification Page",

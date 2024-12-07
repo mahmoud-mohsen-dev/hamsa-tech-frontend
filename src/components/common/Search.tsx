@@ -18,7 +18,6 @@ const Search = () => {
   const { searchData, setSearchData, searchTerm, setSearchTerm } =
     useMyContext();
   const t = useTranslations('NavbarDrawer.searchModal');
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const onSearchSubmit = async () => {

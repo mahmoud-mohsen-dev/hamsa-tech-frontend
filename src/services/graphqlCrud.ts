@@ -123,3 +123,31 @@ export async function fetchGraphqlByArgsToken(
     error: data?.errors ? data?.errors[0].message || null : null
   };
 }
+
+export async function postRestAPI({
+  pathname,
+  body
+}: {
+  pathname: string;
+  body: { [key: string]: any };
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/${pathname}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  );
+
+  const data = await response.json();
+  return {
+    data: data?.data || null,
+    error:
+      data?.errors && data?.errors.length > 0 ?
+        data?.errors[0]?.message
+      : (data?.error?.message ?? null)
+  };
+}

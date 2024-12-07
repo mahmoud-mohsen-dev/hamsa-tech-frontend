@@ -1,69 +1,62 @@
 'use client';
+import { useMyContext } from '@/context/Store';
+import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
 import { useRouter } from '@/navigation';
-import { fetchGraphqlClient } from '@/services/graphqlCrud';
-import { message, ConfigProvider, Form, Input } from 'antd';
+import { sendResetCode } from '@/services/handleForgetPassword';
+import { getCookie, removeCookie } from '@/utils/cookieUtils';
+import { ConfigProvider, Form, Input } from 'antd';
 import { useTranslations } from 'next-intl';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
-
-const forgetPasswordQuery = (email: string) => {
-  return `mutation {
-    forgotPassword(email: "${email}") {
-      success
-      message
-    }
-  }`;
-};
+import { useEffect } from 'react';
 
 function ForgetPasswordForm() {
   const router = useRouter();
-  const [messageApi, contextHolder] = message.useMessage();
+  const { contextHolder } = useHandleMessagePopup();
+  const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
+    useMyContext();
   const t = useTranslations('ForgetPasswordPage.content');
 
   const onFinish = ({ email }: { email: string }) => {
-    const sendResetCode = async () => {
-      try {
-        // messageApi.open({
-        //   type: 'loading',
-        //   content: t('formValidationErrorMessages.loading'),
-        //   duration: 0
-        // });
-
-        const { data, error } = await fetchGraphqlClient(
-          forgetPasswordQuery(email)
-        );
-
-        if (error || !data?.forgotPassword?.success) {
-          messageApi.error(
-            t('formValidationErrorMessages.emailNotFound')
-          );
-          return;
-        }
-
-        messageApi.success(
-          t('formValidationErrorMessages.resetPasswordSuccessMessage')
-        );
-        setTimeout(() => {
-          router.push('/reset-password');
-        }, 1000);
-      } catch (err) {
-        console.error('Error during form submission:', err);
-        messageApi.error(
-          t('formValidationErrorMessages.errorDuringFormSubmission')
-        );
-      } finally {
-        setTimeout(messageApi.destroy, 900);
+    sendResetCode({
+      setLoadingMessage,
+      setErrorMessage,
+      setSuccessMessage,
+      email,
+      invalidEmailAddressText: t(
+        'formValidationMessages.invalidEmailAddress'
+      ),
+      codeSentSuccessfullyMessageText: t(
+        'formValidationMessages.codeSentSuccessfullyMessage'
+      ),
+      errorDuringFormSubmissionText: t(
+        'formValidationMessages.errorDuringFormSubmission'
+      ),
+      routerPushToOtpPage: () => {
+        router.push('/otp-verification');
       }
-    };
-
-    sendResetCode();
+    });
   };
 
   const onFinishFailed = (errorInfo: ValidateErrorEntity) => {
-    messageApi.error(
+    setErrorMessage(
       errorInfo?.errorFields[0]?.errors[0] ??
-        t('formValidationErrorMessages.errorDuringFormSubmission')
+        t('formValidationMessages.errorDuringFormSubmission')
     );
   };
+
+  useEffect(() => {
+    const emailResetPassword = getCookie('emailResetPassword');
+    console.log(emailResetPassword);
+    if (!emailResetPassword) {
+      removeCookie('emailResetPassword');
+      // Replace the current page (otp-verification) with the previous one
+      // This will prevent going forward to the otp-verification page
+      router.replace('/forget-password'); // Use the path of the page you want to redirect to
+    }
+
+    // Ensure the user cannot navigate forward to `/otp-verification`
+    window.history.pushState(null, '', '/forget-password'); // Clear forward navigation stack
+  }, [router]);
 
   return (
     <ConfigProvider
@@ -98,7 +91,7 @@ function ForgetPasswordForm() {
             { type: 'email' },
             {
               required: true,
-              message: t('formValidationErrorMessages.emailRequired')
+              message: t('formValidationMessages.emailRequired')
             }
           ]}
         >

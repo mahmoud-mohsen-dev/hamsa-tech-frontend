@@ -112,6 +112,7 @@ function ModalSearchInput({
   const { searchData, setSearchData, setSearchTerm } = useMyContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useTranslations('NavbarDrawer.searchModal');
+  const locale = useLocale();
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -176,7 +177,9 @@ function ModalSearchInput({
 
   return (
     // <div className='modal-search-input ml-5 hidden text-inherit 2xl:block'>
-    <div className='modal-search-input ml-5 text-inherit'>
+    <div
+      className={`modal-search-input ${locale === 'ar' ? 'ml-5' : 'mr-5'} text-inherit`}
+    >
       <Button
         type='link'
         onClick={showModal}

@@ -1,45 +1,102 @@
 'use client';
-import { useState } from 'react';
-import { message, Form, Input, Button, ConfigProvider } from 'antd';
+import { useEffect } from 'react';
+import { Form, Input, Button, ConfigProvider } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/navigation';
-// import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
+import { useMyContext } from '@/context/Store';
+import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
+import { fetchGraphqlClient } from '@/services/graphqlCrud';
 
 interface PropsType {
   params: { locale: string };
 }
 
+const changePasswordQuery = ({
+  password,
+  passwordConfirmation,
+  code
+}: {
+  password: string;
+  passwordConfirmation: string;
+  code: string;
+}) => {
+  return `mutation ResetPassword {
+    resetPassword(
+        password: "${password}"
+        passwordConfirmation: "${passwordConfirmation}"
+        code: "${code}"
+    ) {
+        jwt
+    }
+  }`;
+};
+
 const ChangePasswordPage = ({ params: { locale } }: PropsType) => {
   const [form] = Form.useForm();
-  const [messageApi, contextHolder] = message.useMessage();
+  // const [messageApi, contextHolder] = message.useMessage();
+  const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
+    useMyContext();
+  const { contextHolder } = useHandleMessagePopup();
   const t = useTranslations('ChangePasswordPage.content');
   const signupTranslation = useTranslations('SignupPage.content');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // console.log('searchParams', searchParams);
+  const code = searchParams.get('code');
+  // console.log('code', code);
 
   const onFinish = async (values: {
     password: string;
     confirmPassword: string;
   }) => {
     if (values.password !== values.confirmPassword) {
-      messageApi.error(t('passwordMismatchError'));
+      console.error('Password Mismatch Error');
+      setErrorMessage(t('passwordMismatchError'));
+      return;
+    }
+    if (!code) {
+      console.error('no code was found');
+      setErrorMessage(t('passwordChangeError'));
       return;
     }
 
     // TODO: Implement password change logic here
     try {
-      // Simulate API call for password change
-      messageApi.success(t('passwordChangeSuccess'));
+      setLoadingMessage(true);
+      const { data, error } = await fetchGraphqlClient(
+        changePasswordQuery({
+          password: values.password,
+          passwordConfirmation: values.confirmPassword,
+          code
+        })
+      );
+
+      console.log(error);
+      console.log(data);
+      if (error || !data?.resetPassword?.jwt) {
+        console.error('Change password error:', error);
+        // throw new Error(`Change password error: ${error}`);
+        return;
+      }
+
+      setSuccessMessage(t('passwordChangeSuccess'));
       // Redirect after successful password change
       setTimeout(() => {
-        router.push('/login');
+        router.replace('/signin');
       }, 1500); // Delay by 1.5 second
     } catch (error) {
-      messageApi.error(t('passwordChangeError'));
+      console.error('Change password error', error);
+      setErrorMessage(t('passwordChangeError'));
+      router.replace('/forget-password');
+    } finally {
+      setLoadingMessage(false);
     }
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    messageApi.error(t('formSubmissionFailed'));
+    console.error('Form failed:', errorInfo);
+    setErrorMessage(t('formSubmissionFailed'));
   };
 
   const validatePassword = (_: any, value: string) => {
@@ -114,6 +171,12 @@ const ChangePasswordPage = ({ params: { locale } }: PropsType) => {
 
     return Promise.resolve();
   };
+
+  useEffect(() => {
+    if (!code) {
+      router.replace('/forget-password');
+    }
+  }, [searchParams, router, code]);
 
   return (
     <ConfigProvider

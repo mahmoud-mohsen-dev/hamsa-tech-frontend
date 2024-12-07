@@ -15,6 +15,10 @@ const UserContext = createContext<null | {
   setAddressesData: React.Dispatch<
     React.SetStateAction<AdressesType[] | null>
   >;
+  otpVerification: string | null;
+  setOtpVerification: React.Dispatch<
+    React.SetStateAction<string | null>
+  >;
 }>(null);
 
 export const UserProvider = ({
@@ -26,6 +30,12 @@ export const UserProvider = ({
   const [addressesData, setAddressesData] = useState<
     null | AdressesType[]
   >(null);
+  const [otpVerification, setOtpVerification] = useState<
+    null | string
+  >(null);
+  // const [emailResetPassword, setEmailResetPassword] = useState<
+  //   null | string
+  // >(null);
 
   useEffect(() => {
     const id = getIdFromToken();
@@ -34,7 +44,14 @@ export const UserProvider = ({
 
   return (
     <UserContext.Provider
-      value={{ userId, setUserId, addressesData, setAddressesData }}
+      value={{
+        userId,
+        setUserId,
+        addressesData,
+        setAddressesData,
+        otpVerification,
+        setOtpVerification,
+      }}
     >
       {children}
     </UserContext.Provider>
