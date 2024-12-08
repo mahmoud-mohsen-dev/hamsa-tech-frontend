@@ -178,7 +178,7 @@ function ModalSearchInput({
   return (
     // <div className='modal-search-input ml-5 hidden text-inherit 2xl:block'>
     <div
-      className={`modal-search-input ${locale === 'ar' ? 'ml-5' : 'mr-5'} text-inherit`}
+      className={`modal-search-input ${locale === 'ar' ? 'ml-5 2xl:ml-2' : 'mr-5 2xl:ml-5 2xl:mr-0'} text-inherit`}
     >
       <Button
         type='link'

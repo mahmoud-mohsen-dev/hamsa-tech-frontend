@@ -7,8 +7,8 @@ import {
   Collapse,
   CollapseProps,
   Divider,
-  Drawer,
-  Menu
+  Drawer
+  // Menu
   // MenuProps
 } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
@@ -23,12 +23,12 @@ import { useUser } from '@/context/UserContext';
 // import SelectLanguage from './SelectLanguage';
 import ArrowDownAnimatedIcon from '../ArrowDownAnimatedIcon';
 import Image from 'next/image';
-import SearchInputField from './SearchInputField';
+// import SearchInputField from './SearchInputField';
 // import { useParams } from 'next/navigation';
 import { removeCookie } from '@/utils/cookieUtils';
 import { useSelectLanguage } from '@/hooks/useSelectLanguage';
 
-const { SubMenu } = Menu;
+// const { SubMenu } = Menu;
 
 interface PropsType {
   onClose: () => void;

@@ -1,44 +1,73 @@
 import { useMyContext } from '@/context/Store';
-import { usePathname, useRouter } from '@/navigation';
+import { usePathname } from '@/navigation';
 import { useParams } from 'next/navigation';
 import { useTransition } from 'react';
 
 export const useSelectLanguage = () => {
   const { enProductId, arProductId } = useMyContext();
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
   const params = useParams();
-
+  // const router = useRouter();
+  
   function onLanguageSelectChange(event: string) {
     const nextLocale = event;
-    let query = {};
+    // let query = {};
 
-    // Ensure we're on the client side before accessing window
-    if (typeof window !== 'undefined') {
-      const searchParams = new URLSearchParams(
-        window.location.search
-      );
-      query = Object.fromEntries(searchParams.entries());
-    }
+    // // Ensure we're on the client side before accessing window
+    // if (typeof window !== 'undefined') {
+    //   const searchParams = new URLSearchParams(
+    //     window.location.search
+    //   );
+    //   query = Object.fromEntries(searchParams.entries());
+    // }
+
+    // startTransition(() => {
+    //   if (params.product && typeof params.product === 'string') {
+    //     router.replace(
+    //       {
+    //         pathname: `/products/${String(nextLocale === 'ar' ? arProductId : enProductId)}`
+    //       },
+    //       { locale: nextLocale }
+    //     );
+    //   } else {
+    //     router.replace(
+    //       {
+    //         pathname,
+    //         query
+    //       },
+    //       { locale: nextLocale }
+    //     );
+    //   }
+    // });
 
     startTransition(() => {
+      let newPathname;
+
+      // Determine the new path based on the selected locale
       if (params.product && typeof params.product === 'string') {
-        router.replace(
-          {
-            pathname: `/products/${String(nextLocale === 'ar' ? arProductId : enProductId)}`
-          },
-          { locale: nextLocale }
-        );
+        newPathname = `/products/${String(nextLocale === 'ar' ? arProductId : enProductId)}`;
       } else {
-        router.replace(
-          {
-            pathname,
-            query
-          },
-          { locale: nextLocale }
-        );
+        newPathname = pathname;
       }
+
+      // Retrieve query parameters from the current URL
+      let query = '';
+      if (typeof window !== 'undefined') {
+        const searchParams = new URLSearchParams(
+          window.location.search
+        );
+        query =
+          searchParams.toString() ?
+            `?${searchParams.toString()}`
+          : '';
+      }
+
+      // Build the new URL with the locale
+      const newUrl = `/${nextLocale}${newPathname}${query}`;
+
+      // Set the new URL to reload the page
+      window.location.href = newUrl;
     });
   }
 

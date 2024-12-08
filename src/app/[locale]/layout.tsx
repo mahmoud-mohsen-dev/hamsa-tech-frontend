@@ -26,6 +26,8 @@ import { getProductsQuery } from '@/services/products';
 import { ProductsResponseType } from '@/types/getProducts';
 import { UserProvider } from '@/context/UserContext';
 import Script from 'next/script';
+import ChatwootWidget from '@/components/UI/ChatwootWidget';
+// import ChatwootWidget from '@/components/UI/ChatwootWidget';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -323,6 +325,39 @@ export default async function LocaleLayout({
           </StoreContextProvider>
         </NextIntlClientProvider>
       </body>
+
+      {/* Chatwoot Script */}
+      {/* <script>
+        {(function (d, t) {
+          var BASE_URL = 'https://chatwoot.hamsatech-eg.com';
+          var g = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+          g.src = BASE_URL + '/packs/js/sdk.js';
+          g.defer = true;
+          g.async = true;
+          s.parentNode.insertBefore(g, s);
+          g.onload = function () {
+            window.chatwootSDK.run({
+              websiteToken: 'njojmxPMnLGeqh8L1ycKz1Av',
+              baseUrl: BASE_URL
+            });
+          };
+        })(document, 'script')}
+      </script> */}
+
+      {/* Chatwoot Script */}
+      {/* <Script
+        src='https://chatwoot.hamsatech-eg.com/packs/js/sdk.js'
+        strategy='lazyOnload'
+        defer
+        onLoad={() => {
+          window?.chatwootSDK?.run({
+            websiteToken: 'njojmxPMnLGeqh8L1ycKz1Av',
+            baseUrl: 'https://chatwoot.hamsatech-eg.com'
+          });
+        }}
+      /> */}
+      <ChatwootWidget />
 
       {process.env.UMAMI_URL && process.env.UMAMI_WEBSITE_ID && (
         <Script
