@@ -14,7 +14,7 @@ type PropsType = {
   params: { locale: string; blogId: string };
 };
 
-export const getQueryBlogPage = (blogId: string): string => `
+const getQueryBlogPage = (blogId: string): string => `
     {blog(id: ${blogId ? `"${blogId}"` : null}) {
         data {
             id
