@@ -10,7 +10,6 @@ import {
   Rate,
   Spin
 } from 'antd';
-import dayjs from 'dayjs';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Btn from '../UI/Btn';
@@ -24,10 +23,11 @@ import type { PopconfirmProps } from 'antd';
 import CreateOrEditReview from './CreateOrEditReview';
 import { deleteReview, updateReview } from '@/services/review';
 import { useMyContext } from '@/context/Store';
-import revalidateProductLayoutPage from '@/app/action';
+import { revalidateProductLayoutPage } from '@/app/actions';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useForm } from 'antd/es/form/Form';
 import { useUser } from '@/context/UserContext';
+import Time from '../blog/blog-page/comments-components/Time';
 
 function Review({
   review,
@@ -397,33 +397,15 @@ function Review({
                 handleCancel={handleCancel}
               />
             : <>
-                <h4
-                  className={`text-sm text-gray-normal ${locale === 'ar' ? 'text-end' : 'text-start'}`}
-                  dir='ltr'
-                >
-                  {(() => {
-                    const createdAt = dayjs(
-                      review?.attributes.createdAt ?? ''
-                    );
-                    const publishedAt = dayjs(
-                      review?.attributes.publishedAt ?? ''
-                    );
-
-                    // Check if publishedAt is at least 5 seconds after createdAt
-                    const differenceInSeconds = publishedAt.diff(
-                      createdAt,
-                      'second'
-                    );
-
-                    return `${
-                      // updatedAt.isAfter(createdAt) ?
-                      differenceInSeconds >= 5 ?
-                        locale === 'ar' ?
-                          ' { تم التعديل } '
-                        : ' { Edited } '
-                      : ''
-                    } ${createdAt.format('DD MMMM YYYY ( hh:mm A )')}`;
-                  })()}
+                <h4 className={`text-sm text-gray-normal`}>
+                  <Time
+                    createdAtInput={
+                      review?.attributes?.createdAt ?? null
+                    }
+                    publishedAtInput={
+                      review?.attributes?.publishedAt ?? null
+                    }
+                  />
                 </h4>
                 <div className='mt-2 flex flex-col gap-4 2xl:flex-row 2xl:items-center'>
                   {/* <div dir='ltr' className={'w-fit'}> */}

@@ -10,7 +10,7 @@ import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
 import { useMyContext } from '@/context/Store';
 import { createReview, updateReview } from '@/services/review';
 import { reviewType } from '@/types/getProduct';
-import revalidateProductLayoutPage from '@/app/action';
+import { revalidateProductLayoutPage } from '@/app/actions';
 
 function CreateOrEditReview({
   productIds,
@@ -30,9 +30,9 @@ function CreateOrEditReview({
   }>();
   const t = useTranslations('ProductPage.reviewsTabSection');
   const { userId } = useUser();
-  const { contextHolder } = useHandleMessagePopup({
-    scrollTop: false
-  });
+  // const { contextHolder } = useHandleMessagePopup({
+  //   scrollTop: false
+  // });
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
 
@@ -123,7 +123,7 @@ function CreateOrEditReview({
               {t('createReviewText')}
             </h3>
           )}
-          {contextHolder}
+          {/* {contextHolder} */}
           <ConfigProvider
             theme={{
               token: {

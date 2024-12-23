@@ -25,7 +25,7 @@ function Footer({ data }: PropsType) {
       // data-aos-duration='300'
       // data-aos-easing='linear'
       // data-aos-once='true'
-      className='mx-auto w-full max-w-[1900px] bg-blue-gray-medium py-8'
+      className='mx-auto w-full max-w-[1900px] bg-blue-gray-medium py-12'
     >
       <div className='container grid grid-cols-1 gap-8 text-white md:grid-cols-2 xl:grid-cols-footer xl:gap-5'>
         <div>

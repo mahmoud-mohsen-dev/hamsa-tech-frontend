@@ -7,6 +7,7 @@ export const sendResetCode = async ({
   setSuccessMessage,
   email,
   invalidEmailAddressText,
+  invalidEmailAddressRegisteredByGoogleOrFacebookText,
   codeSentSuccessfullyMessageText,
   errorDuringFormSubmissionText,
   routerPushToOtpPage
@@ -20,6 +21,7 @@ export const sendResetCode = async ({
   >;
   email: string;
   invalidEmailAddressText: string;
+  invalidEmailAddressRegisteredByGoogleOrFacebookText?: string;
   codeSentSuccessfullyMessageText: string;
   errorDuringFormSubmissionText: string;
   routerPushToOtpPage: () => void;
@@ -30,6 +32,19 @@ export const sendResetCode = async ({
       pathname: 'auth/forgot-password-otp',
       body: { email }
     });
+
+    if (
+      error ===
+      'This email address was registered using Facebook or Google login and cannot be used to change the password.'
+    ) {
+      console.error(error);
+      if (invalidEmailAddressRegisteredByGoogleOrFacebookText) {
+        setErrorMessage(
+          invalidEmailAddressRegisteredByGoogleOrFacebookText
+        );
+        return;
+      }
+    }
 
     if (error || !data?.ok) {
       console.error(error);

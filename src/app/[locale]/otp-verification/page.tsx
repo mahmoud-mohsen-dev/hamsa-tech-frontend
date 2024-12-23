@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/navigation';
 import type { GetProps } from 'antd';
 import { useMyContext } from '@/context/Store';
-import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
+// import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
 import { postRestAPI } from '@/services/graphqlCrud';
 import { useEffect, useRef, useState } from 'react';
 import { getCookie, removeCookie } from '@/utils/cookieUtils';
@@ -16,7 +16,7 @@ type OTPProps = GetProps<typeof Input.OTP>;
 export default function OtpVerificationPage() {
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
-  const { contextHolder } = useHandleMessagePopup();
+  // const { contextHolder } = useHandleMessagePopup();
   const t = useTranslations('OtpVerificationPage.content');
   const f = useTranslations('ForgetPasswordPage.content');
   const router = useRouter();
@@ -107,6 +107,9 @@ export default function OtpVerificationPage() {
       errorDuringFormSubmissionText: f(
         'formValidationMessages.errorDuringFormSubmission'
       ),
+      invalidEmailAddressRegisteredByGoogleOrFacebookText: f(
+        'formValidationMessages.invalidEmailAddressRegisteredByGoogleOrFacebook'
+      ),
       routerPushToOtpPage: () => {
         router.push('/otp-verification');
       }
@@ -161,7 +164,7 @@ export default function OtpVerificationPage() {
         }
       }}
     >
-      {contextHolder}
+      {/* {contextHolder} */}
       <section className='mx-auto flex flex-col items-center justify-center font-inter md:min-h-[calc(100vh-160px)]'>
         <div className='w-full rounded-lg border border-solid border-gray-light border-opacity-60 bg-white shadow sm:max-w-md md:mt-0 xl:p-0'>
           <div className='space-y-4 p-6 sm:p-8 md:space-y-5'>

@@ -55,7 +55,7 @@ function CheckoutCart() {
     calculateCouponDeductionValue,
     calculateTotalOrderCost
   } = useMyContext();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   const [couponLoading, setCouponLoading] = useState(false);
 
   const t = useTranslations('CheckoutPage.content');
@@ -122,7 +122,7 @@ function CheckoutCart() {
         }
       }}
     >
-      {contextHolder}
+      {/* {contextHolder} */}
       <div className='px-2 py-5 2xl:px-10'>
         <ul className='flex flex-col gap-3'>
           {cart.map((item) => {

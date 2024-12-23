@@ -509,11 +509,15 @@ export function ImgageBlock({ obj }: { obj: ImageType }) {
   return '';
 }
 
-export function CreateBlockContent({ arr }: { arr: ContentType[] }) {
+export function CreateBlockContent({
+  content
+}: {
+  content: ContentType[];
+}) {
   return (
     <div className='flex flex-col gap-3'>
-      {arr.length > 0 &&
-        arr.map((item) => {
+      {content.length > 0 &&
+        content.map((item) => {
           switch (item.type) {
             case 'paragraph':
               return <ParagraphBlock obj={item} key={uuid()} />;

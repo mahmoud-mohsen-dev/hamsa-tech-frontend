@@ -1,4 +1,5 @@
 'use client';
+import { useMyContext } from '@/context/Store';
 import { useUser } from '@/context/UserContext';
 import { Link, useRouter } from '@/navigation';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
@@ -12,6 +13,7 @@ import {
 import { Checkbox, ConfigProvider, Form, Input, message } from 'antd';
 import { useTranslations } from 'next-intl';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
+import { useEffect } from 'react';
 
 const signinQUery = ({
   email,
@@ -29,8 +31,9 @@ const signinQUery = ({
 
 function LoginForm() {
   const router = useRouter();
+  const { setWishlistsData } = useMyContext();
   const { setUserId, setAddressesData } = useUser();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   const t = useTranslations('SigninPage.content');
   const e = useTranslations('CheckoutPage.content');
   const x = useTranslations('SignupPage.content');
@@ -103,7 +106,7 @@ function LoginForm() {
           t('formValidationErrorMessages.signinSuccessMessage')
         );
         setTimeout(() => {
-          router.push('/products');
+          router.replace('/products');
         }, 1000); // Delay by 1 second
       } catch (err) {
         console.error('Error during form submission:', err);
@@ -125,6 +128,16 @@ function LoginForm() {
     );
     console.log('Form submission failed:', errorInfo);
   };
+
+  useEffect(() => {
+    const userId = getIdFromToken();
+    if (userId) {
+      setUserId(null);
+      removeCookie('token');
+      setAddressesData(null);
+      setWishlistsData([]);
+    }
+  }, []);
 
   return (
     <ConfigProvider
@@ -153,7 +166,7 @@ function LoginForm() {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
-        {contextHolder}
+        {/* {contextHolder} */}
         <Form.Item
           name='email'
           rules={[

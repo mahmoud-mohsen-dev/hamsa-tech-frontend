@@ -445,6 +445,7 @@
         "errorDuringFormSubmission": "Error during form submission",
         "emailNotFound": "No account found with this email.",
         "invalidEmailAddress": "Invalid email address.",
+        "invalidEmailAddressRegisteredByGoogleOrFacebook": "This email address was registered using Facebook or Google login and cannot be used to change the password.",
         "codeSentSuccessfullyMessage": "A reset code has been sent to your email.",
         "FailedToSendCodeMessage": "Failed to send reset code. Please try again later."
       }
@@ -654,6 +655,91 @@
     }
   },
   "BlogPage": {
+    "child": {
+      "content": {
+        "relatedArticles": "Related articles",
+        "publishedIn": "Published in",
+        "discussion": "Discussion",
+        "forms": {
+          "labels": {
+            "yourComment": "Your comment"
+          },
+          "placeholders": {
+            "comment": "Write a comment...",
+            "save": "Save",
+            "postComment": "Post comment",
+            "cancel": "Cancel"
+          }
+        },
+        "responses": {
+          "successMessages": {
+            "createComment": "Comment was successfully created",
+            "editComment": "Comment was successfully edited",
+            "deleteComment": "Comment deleted successfully",
+            "report": "The comment was reported successfully"
+          },
+          "errorMessages": {
+            "createComment": "Failed to create comment, please try again later!",
+            "editComment": "`Failed to Edit comment, please try again later!",
+            "deleteComment": "Failed to delete comment please try again later!",
+            "report": "Failed to report the comment"
+          }
+        },
+        "dropdown": {
+          "commentSettings": "Comment settings",
+          "edit": "Edit",
+          "remove": "Remove",
+          "report": "Report"
+        },
+        "modals": {
+          "reportComment": {
+            "title": "Report this comment",
+            "question": "What is the reason for reporting this comment?",
+            "options": {
+              "offTopic": {
+                "description": "Not about the blog"
+              }
+            },
+            "formValidation": "Please choose one option that best describes how this comment is abusive",
+            "submitMessage": "We’ll take a closer look at this comment. If it fits the reason you selected, we’ll remove it."
+          },
+          "deleteConfirm": {
+            "title": "Are you sure you want to delete this comment?",
+            "description": "This action cannot be undone.",
+            "okText": "Delete",
+            "cancelText": "Cancel"
+          }
+        },
+        "likesAndReply": {
+          "like": "Like",
+          "likes": "{count} Likes",
+          "reply": "Reply",
+          "signInPrompt": "You must sign in first",
+          "failedToLike": "Failed to like"
+        },
+        "relatedArticle": {
+          "readInMinute": "Read in {minute} minute",
+          "readInMinutes": "Read in {minutes} minutes",
+          "imageAltFallback": "Image not available"
+        },
+        "signupToNewsLetter": {
+          "title": "Sign up for our newsletter",
+          "description": "Stay up to date with the roadmap progress, announcements and exclusive discounts feel free to sign up with your email.",
+          "clientComponent": {
+            "emailLabel":"Email address",
+            "emailPlaceholder": "Enter your email",
+            "weCareText": "We care about the protection of your data. Read our",
+            "privacyPolicyText":"Privacy Policy",
+            "submitButton": {
+              "default": "Subscribe",
+              "loading": "Subscribing..."
+            },
+            "successMessage": "You signed up to the newsletter successfully",
+            "errorMessage": "Some error occurred, please try again."
+          }
+        }
+      }
+    },
     "content": {
       "title": "Our Blog",
       "subtitle": "Discover latest articles on technology and security systems."

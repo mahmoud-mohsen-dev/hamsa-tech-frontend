@@ -39,7 +39,7 @@ const createSupportQuery = ({
 function SupportForm() {
   const locale = useLocale();
   const t = useTranslations('SupportPage.content');
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm<FormType>();
 
@@ -114,7 +114,7 @@ function SupportForm() {
         }
       }}
     >
-      {contextHolder}
+      {/* {contextHolder} */}
       <Form
         name='support-form'
         layout='vertical'

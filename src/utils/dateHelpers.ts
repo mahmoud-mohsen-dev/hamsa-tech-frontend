@@ -13,28 +13,63 @@ export const convertIsoStringToDateFormat = (isoString: string) => {
   return dayjs(isoString).format('DD/MM/YYYY');
 };
 
+export const convertIsoStringToDateFormatBySlash = (
+  isoString: any
+) => {
+  if (!isoString) return '';
+  return dayjs(isoString).format('DD-MM-YYYY');
+};
+
 // Example usage
 // const isoDateString = '2024-10-14T10:00:00Z'; // ISO string format
 // console.log(convertIsoStringToDateFormat(isoDateString)); // Output: "14/10/2024"
 
+export const convertToMinutes = (time: any): string => {
+  if (typeof time !== 'string') return '-';
+
+  const [hours, minutes, seconds] = time.split(':').map(Number);
+  const minutesBySeconds = hours * 60 + minutes;
+  return minutesBySeconds.toString(); // Convert hours to minutes and add minutes
+};
+// const strapiTime = "00:45:00.000"; // Strapi output
+// const minutes = convertToMinutes(strapiTime);
+// console.log(minutes); // Output: "45"
+
 export const formatDateByLocale = (
   isoString: string | undefined | null,
-  locale: string = 'en'
+  locale: string = 'en',
+  withTime: boolean = false,
+  withSeconds: boolean = false
 ): string => {
   if (typeof isoString !== 'string') {
-    return '-';
+    return '';
   }
 
   // Check if the input is a valid ISO string
   const date = new Date(isoString);
   if (isNaN(date.getTime())) {
-    return '-';
+    return '';
   }
 
   const day = date.getDate();
   const month = date.toLocaleString(locale, { month: 'long' });
   const year = date.getFullYear();
 
+  const tempHours = date.getHours();
+  const hours = tempHours > 12 ? tempHours - 12 : tempHours;
+
+  const tempMinutes = date.getMinutes();
+  const minutes = tempMinutes > 9 ? tempMinutes : `0${tempMinutes}`;
+  const tempSeconds = date.getSeconds();
+  const seconds = tempSeconds > 9 ? tempSeconds : `0${tempSeconds}`;
+  const amOrPm = tempHours > 12 ? `PM` : `AM`;
+
+  if (withTime) {
+    if (withSeconds) {
+      return `${day} ${month} ${year} - ${hours > 9 ? hours : `0${hours}`}:${minutes}:${seconds} ${amOrPm}`;
+    }
+    return `${day} ${month} ${year} - ${hours > 9 ? hours : `0${hours}`}:${minutes} ${amOrPm}`;
+  }
   return `${day} ${month} ${year}`;
 };
 
@@ -49,7 +84,7 @@ export function addDaysToIsoDate(
   days: number | null | undefined
 ): string {
   if (typeof isoString !== 'string' || typeof days !== 'number') {
-    return '-';
+    return '';
   }
   const date = new Date(isoString);
 

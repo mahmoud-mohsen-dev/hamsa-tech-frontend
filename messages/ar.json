@@ -21,7 +21,7 @@
   },
   "HomePage": {
     "Header": {
-      "logoPart1": "همسه",
+      "logoPart1": "همسة",
       "logoPart2": "تك",
       "accountLabel": "الحساب",
       "profileLabel": "الملف الشخصي",
@@ -446,6 +446,7 @@
         "errorDuringFormSubmission": "حدث خطأ أثناء إرسال النموذج",
         "emailNotFound": "لم يتم العثور على حساب بهذا البريد الإلكتروني.",
         "invalidEmailAddress": "عنوان البريد الإلكتروني غير صالح.",
+        "invalidEmailAddressRegisteredByGoogleOrFacebook": "عنوان البريد الإلكتروني هذا مرتبط بتسجيل الدخول عبر فيسبوك أو جوجل، لذا لا يمكن استخدامه لتغيير كلمة المرور.",
         "codeSentSuccessfullyMessage": "تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني.",
         "FailedToSendCodeMessage": "فشل في إرسال رمز إعادة التعيين. يرجى المحاولة لاحقًا."
       }
@@ -655,6 +656,91 @@
     }
   },
   "BlogPage": {
+    "child": {
+      "content": {
+        "relatedArticles": "المقالات ذات الصلة",
+        "publishedIn": "تم النشر في",
+        "discussion": "النقاش",
+        "forms": {
+          "labels": {
+            "yourComment": "تعليقك"
+          },
+          "placeholders": {
+            "comment": "اكتب تعليقًا...",
+            "save": "حفظ",
+            "postComment": "نشر التعليق",
+            "cancel": "إلغاء"
+          }
+        },
+        "responses": {
+          "successMessages": {
+            "createComment": "تم إنشاء التعليق بنجاح",
+            "editComment": "تم تعديل التعليق بنجاح",
+            "deleteComment": "تم حذف التعليق بنجاح",
+            "report": "تم الإبلاغ عن التعليق بنجاح"
+          },
+          "errorMessages": {
+            "createComment": "فشل إنشاء التعليق، يرجى المحاولة لاحقًا!",
+            "editComment": "فشل تعديل التعليق، يرجى المحاولة لاحقًا!",
+            "deleteComment": "فشل حذف التعليق، يرجى المحاولة لاحقًا!",
+            "report": "فشل في الإبلاغ عن التعليق"
+          }
+        },
+        "dropdown": {
+          "commentSettings": "إعدادات التعليق",
+          "edit": "تعديل",
+          "remove": "إزالة",
+          "report": "الإبلاغ"
+        },
+        "modals": {
+          "reportComment": {
+            "title": "الإبلاغ عن هذا التعليق",
+            "question": "ما هو سبب الإبلاغ عن هذا التعليق؟",
+            "options": {
+              "offTopic": {
+                "description": "ليس متعلقًا بالمدونة"
+              }
+            },
+            "formValidation": "يرجى اختيار خيار واحد يصف كيف أن هذا التعليق مسيء",
+            "submitMessage": "سنقوم بمراجعة هذا التعليق عن كثب. إذا كان يتناسب مع السبب الذي اخترته، سنقوم بإزالته."
+          },
+          "deleteConfirm": {
+            "title": "هل أنت متأكد أنك تريد حذف هذا التعليق؟",
+            "description": "لا يمكن التراجع عن هذا الإجراء.",
+            "okText": "حذف",
+            "cancelText": "إلغاء"
+          }
+        },
+        "likesAndReply": {
+          "like": "أعجبني",
+          "likes": "{count} إعجابات",
+          "reply": "رد",
+          "signInPrompt": "يجب عليك تسجيل الدخول أولاً",
+          "failedToLike": "فشل في الإعجاب"
+        },
+        "relatedArticle": {
+          "readInMinute": "اقرأ في {minute} دقيقة",
+          "readInMinutes": "اقرأ في {minutes} دقائق",
+          "imageAltFallback": "الصورة غير متوفرة"
+        },
+        "signupToNewsLetter": {
+          "title": "اشترك في نشرتنا الإخبارية",
+          "description": "ابق على اطلاع بتقدم خطة الطريق والإعلانات والخصومات الحصرية، لا تتردد في الاشتراك باستخدام بريدك الإلكتروني.",
+          "clientComponent": {
+            "emailLabel": "عنوان البريد الإلكتروني",
+            "emailPlaceholder": "أدخل بريدك الإلكتروني",
+            "weCareText": "نحن نهتم بحماية بياناتك. اقرأ",
+            "privacyPolicyText": "سياسة الخصوصية",
+            "submitButton": {
+              "default": "اشترك",
+              "loading": "جارٍ الاشتراك..."
+            },
+            "successMessage": "تم الاشتراك في النشرة الإخبارية بنجاح",
+            "errorMessage": "حدث خطأ، يرجى المحاولة مرة أخرى."
+          }
+        }
+      }
+    },
     "content": {
       "title": "مدونتنا",
       "subtitle": "اكتشف أحدث المقالات حول التكنولوجيا وأنظمة الأمان."

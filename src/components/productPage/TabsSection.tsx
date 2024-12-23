@@ -359,7 +359,7 @@ async function TabsSection({ moreDetails, productIds }: TypeProps) {
           ))} */}
           {
             <CreateBlockContent
-              arr={moreDetails?.description ?? []}
+              content={moreDetails?.description ?? []}
             />
           }
         </div>

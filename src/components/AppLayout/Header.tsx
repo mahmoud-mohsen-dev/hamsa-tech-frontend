@@ -137,11 +137,13 @@ const checkGuestUserIdExistQuery = (userId: string) => {
     }`;
 };
 
-const getCreateGuestUserQuery = () => {
+const createGuestUserQuery = (
+  agreedToSignUpForNewsletter: boolean = false
+) => {
   return `mutation CreateGuestUser {
     createGuestUser(
         data: {
-            subscribed_to_news_and_offers: ${false}
+            subscribed_to_news_and_offers: ${agreedToSignUpForNewsletter}
             publishedAt: "${new Date().toISOString()}"
         }
     ) {
@@ -377,7 +379,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
       try {
         const { data: guestUserData, error: guestUserError } =
           (await fetchGraphqlClient(
-            getCreateGuestUserQuery()
+            createGuestUserQuery()
           )) as CreateGuestUserResponseType;
 
         if (

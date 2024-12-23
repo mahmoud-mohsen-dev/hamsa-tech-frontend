@@ -12,11 +12,11 @@ function CheckoutWrapper({
 }: {
   shippingCostData: ShippingCostDataType[] | [];
 }) {
-  const { contextHolder, loadingMessage } = useHandleMessagePopup();
+  const { loadingMessage } = useHandleMessagePopup();
 
   return (
     <>
-      {contextHolder}
+      {/* {contextHolder} */}
       {loadingMessage ?
         <div className='container grid min-h-[calc(100vh-48px-20px)] place-content-center'>
           <Spin size='large' />

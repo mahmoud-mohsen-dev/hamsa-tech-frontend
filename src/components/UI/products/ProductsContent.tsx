@@ -19,7 +19,7 @@ import { FaFilter } from 'react-icons/fa6';
 import Btn from '../Btn';
 
 function ProductsContent() {
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   // const { didMount } = useIsMount();
 
   const {
@@ -270,7 +270,7 @@ function ProductsContent() {
 
   return (
     <div>
-      {contextHolder}
+      {/* {contextHolder} */}
       <div className='flex flex-wrap items-center justify-between gap-4'>
         <h4 className='text-sm font-medium text-black-medium'>
           {/* {data?.children?.length ?? 0}{' '} */}

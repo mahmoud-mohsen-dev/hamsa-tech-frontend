@@ -354,7 +354,7 @@ function SignupForm() {
           phone: { prefix: 'Egypt_20' }
         }}
       >
-        {contextHolder}
+        {/* {contextHolder} */}
         <div className='flex items-center gap-3'>
           <Form.Item
             name='firstName'

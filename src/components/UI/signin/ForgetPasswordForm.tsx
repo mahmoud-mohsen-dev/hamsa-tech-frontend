@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 
 function ForgetPasswordForm() {
   const router = useRouter();
-  const { contextHolder } = useHandleMessagePopup();
+  // const { contextHolder } = useHandleMessagePopup();
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
   const t = useTranslations('ForgetPasswordPage.content');
@@ -24,6 +24,9 @@ function ForgetPasswordForm() {
       email,
       invalidEmailAddressText: t(
         'formValidationMessages.invalidEmailAddress'
+      ),
+      invalidEmailAddressRegisteredByGoogleOrFacebookText: t(
+        'formValidationMessages.invalidEmailAddressRegisteredByGoogleOrFacebook'
       ),
       codeSentSuccessfullyMessageText: t(
         'formValidationMessages.codeSentSuccessfullyMessage'
@@ -83,7 +86,7 @@ function ForgetPasswordForm() {
         colon={false}
         requiredMark={false}
       >
-        {contextHolder}
+        {/* {contextHolder} */}
         <Form.Item
           name='email'
           label={t('emailLabel')}

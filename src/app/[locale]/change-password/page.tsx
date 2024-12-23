@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/navigation';
 import { useSearchParams } from 'next/navigation';
 import { useMyContext } from '@/context/Store';
-import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
+// import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 
 interface PropsType {
@@ -37,7 +37,7 @@ const ChangePasswordPage = ({ params: { locale } }: PropsType) => {
   // const [messageApi, contextHolder] = message.useMessage();
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
-  const { contextHolder } = useHandleMessagePopup();
+  // const { contextHolder } = useHandleMessagePopup();
   const t = useTranslations('ChangePasswordPage.content');
   const signupTranslation = useTranslations('SignupPage.content');
   const router = useRouter();
@@ -207,7 +207,7 @@ const ChangePasswordPage = ({ params: { locale } }: PropsType) => {
               {t('headerTitle')}
             </h1>
 
-            {contextHolder}
+            {/* {contextHolder} */}
             <Form
               form={form}
               onFinish={onFinish}

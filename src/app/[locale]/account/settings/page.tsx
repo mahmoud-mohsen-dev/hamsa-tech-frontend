@@ -22,7 +22,7 @@ import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import UploadImage from '@/components/UI/account/settings/UploadImage';
 import { IoIosArrowDown } from 'react-icons/io';
-import {  useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'antd/es/form/Form';
 import type { FormProps } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -71,7 +71,7 @@ function SettingsPage({
   const signUpTranslations = useTranslations('SignupPage.content');
   const [profileInfoForm] = useForm();
   const [updatePasswordForm] = useForm();
-  const { contextHolder, loadingMessage } = useHandleMessagePopup();
+  const { loadingMessage } = useHandleMessagePopup();
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
   const { setUserId } = useUser();
@@ -385,7 +385,7 @@ function SettingsPage({
           }
         }}
       >
-        {contextHolder}
+        {/* {contextHolder} */}
         <section className='min-h-screen w-full font-inter'>
           <div className='w-full pb-8 lg:max-w-lg'>
             <div>

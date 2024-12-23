@@ -241,6 +241,7 @@ html[data-scroll='0']
 
 /* Firefox */
 .no-arrows {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -298,4 +299,9 @@ html[data-scroll='0']
 
 #create-A-review {
   scroll-margin-top: 90px; /* Add extra space */
+}
+
+main div:has(.blog-page) {
+  margin-top: 0;
+  margin-bottom: 0;
 }

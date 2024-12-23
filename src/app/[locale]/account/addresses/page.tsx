@@ -74,7 +74,7 @@ function SettingsPage({
     useMyContext();
   const { addressesData, setAddressesData } = useUser();
 
-  const { contextHolder } = useHandleMessagePopup();
+  // const { contextHolder } = useHandleMessagePopup();
 
   const [open, setOpen] = useState<boolean>(false);
   const [formAddress] = useForm<AddressFormValuesType>();
@@ -592,7 +592,7 @@ function SettingsPage({
           }
         }}
       >
-        {contextHolder}
+        {/* {contextHolder} */}
         <section className='addresses-page min-h-screen w-full font-inter'>
           <div className='w-full pb-8'>
             <div className='flex flex-wrap items-center justify-between gap-4'>

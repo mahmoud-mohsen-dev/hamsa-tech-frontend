@@ -27,6 +27,8 @@ import { ProductsResponseType } from '@/types/getProducts';
 import { UserProvider } from '@/context/UserContext';
 import Script from 'next/script';
 import ChatwootWidget from '@/components/UI/ChatwootWidget';
+import { BlogContextProvider } from '@/context/BlogContext';
+import MessageContextComponent from '@/components/UI/MessageContextComponent';
 // import ChatwootWidget from '@/components/UI/ChatwootWidget';
 
 const openSans = Open_Sans({
@@ -283,45 +285,48 @@ export default async function LocaleLayout({
               : []
             }
           >
-            <UserProvider>
-              <CustomSWRConfig>
-                <AntdRegistry>
-                  <ConfigAntThemes>
-                    <div
-                      className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
-                    >
-                      {(layoutData.error ||
-                        layoutData.data === null) && (
-                        <ErrorComponent
-                          error={
-                            layoutData.error ||
-                            ('Error fetching nav items' as any)
-                          }
-                        />
-                      )}
-                      {layoutAttributes.navbar && (
-                        <>
-                          <ScrollNavbarListener />
-                          <Header
-                            navLinks={layoutAttributes.navbar}
-                            productsSubNav={
-                              navbarProductsCategoriesData
+            <BlogContextProvider>
+              <UserProvider>
+                <CustomSWRConfig>
+                  <AntdRegistry>
+                    <ConfigAntThemes>
+                      <div
+                        className={`content grid min-h-screen grid-cols-1 grid-rows-[1fr_auto] bg-white text-gray-normal`}
+                      >
+                        {(layoutData.error ||
+                          layoutData.data === null) && (
+                          <ErrorComponent
+                            error={
+                              layoutData.error ||
+                              ('Error fetching nav items' as any)
                             }
                           />
-                          <AppDrawer />
-                        </>
-                      )}
-                      <Suspense fallback={<Loading />}>
-                        <Main>{children}</Main>
-                      </Suspense>
-                      {layoutAttributes.footer && (
-                        <Footer data={layoutAttributes.footer} />
-                      )}
-                    </div>
-                  </ConfigAntThemes>
-                </AntdRegistry>
-              </CustomSWRConfig>
-            </UserProvider>
+                        )}
+                        {layoutAttributes.navbar && (
+                          <>
+                            <ScrollNavbarListener />
+                            <Header
+                              navLinks={layoutAttributes.navbar}
+                              productsSubNav={
+                                navbarProductsCategoriesData
+                              }
+                            />
+                            <AppDrawer />
+                            <MessageContextComponent />
+                          </>
+                        )}
+                        <Suspense fallback={<Loading />}>
+                          <Main>{children}</Main>
+                        </Suspense>
+                        {layoutAttributes.footer && (
+                          <Footer data={layoutAttributes.footer} />
+                        )}
+                      </div>
+                    </ConfigAntThemes>
+                  </AntdRegistry>
+                </CustomSWRConfig>
+              </UserProvider>
+            </BlogContextProvider>
           </StoreContextProvider>
         </NextIntlClientProvider>
       </body>
