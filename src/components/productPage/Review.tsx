@@ -422,10 +422,20 @@ function Review({
                     {review?.attributes?.headline ?? ''}
                   </h5>
                 </div>
-                <p className='mt-1 text-base font-normal text-black-light'>
+                {/* <p className='mt-1 text-base font-normal text-black-light'>
                   {review?.attributes?.comment ?? ''}
-                </p>
-
+                </p> */}
+                {review?.attributes?.comment &&
+                  typeof review?.attributes?.comment === 'string' && (
+                    <div className='mt-1 text-base font-normal text-black-light'>
+                      {review?.attributes?.comment
+                        .trim()
+                        .split('\n')
+                        .map((line, index) => (
+                          <p key={index}>{line}</p>
+                        ))}
+                    </div>
+                  )}
                 {userId && (
                   <div className='mt-3 flex items-center gap-5'>
                     <Btn

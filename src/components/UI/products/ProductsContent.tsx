@@ -4,12 +4,11 @@ import ProductCard from '@/components/products/ProductCard';
 import Sorter from '@/components/products/Sorter';
 import { useMyContext } from '@/context/Store';
 import { useUser } from '@/context/UserContext';
-// import { useIsMount } from '@/hooks/useIsMount';
 import { usePathname, useRouter } from '@/navigation';
 import { fetchProducts } from '@/services/products';
 import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
 import { getBadge } from '@/utils/getBadge';
-import { Empty, message, Pagination, Spin } from 'antd';
+import { Empty, Pagination, Spin } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -19,7 +18,6 @@ import { FaFilter } from 'react-icons/fa6';
 import Btn from '../Btn';
 
 function ProductsContent() {
-  const [messageApi] = message.useMessage();
   // const { didMount } = useIsMount();
 
   const {
@@ -29,7 +27,8 @@ function ProductsContent() {
     setCompleteProductsApiData,
     globaLoading,
     setGlobalLoading,
-    setToggleFilters
+    setToggleFilters,
+    setErrorMessage
   } = useMyContext();
 
   const { setUserId } = useUser();
@@ -147,7 +146,7 @@ function ProductsContent() {
       } else {
         console.error('Failed to fetch JWT:', data?.error?.message);
 
-        messageApi.error(
+        setErrorMessage(
           data?.error?.message === 'Email is already taken.' ?
             signinTranslation(
               'formValidationErrorMessages.emailTakenMessage'
@@ -160,7 +159,7 @@ function ProductsContent() {
       }
     } catch (error: any) {
       console.error(error?.message ?? 'server error');
-      messageApi.error(
+      setErrorMessage(
         error?.message === 'Email is already taken.' ?
           signinTranslation(
             'formValidationErrorMessages.emailTakenMessage'
@@ -195,7 +194,7 @@ function ProductsContent() {
       } else {
         console.error('Failed to fetch JWT:', data?.error?.message);
 
-        messageApi.error(
+        setErrorMessage(
           data?.error?.message === 'Email is already taken.' ?
             signinTranslation(
               'formValidationErrorMessages.emailTakenMessage'
@@ -208,7 +207,7 @@ function ProductsContent() {
       }
     } catch (error: any) {
       console.error(error?.message ?? 'server error');
-      messageApi.error(
+      setErrorMessage(
         error?.message === 'Email is already taken.' ?
           signinTranslation(
             'formValidationErrorMessages.emailTakenMessage'

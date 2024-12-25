@@ -124,7 +124,7 @@ const createBlogCommentQuery = ({
 }) => {
   const createdAtTime = new Date().toISOString();
   return `mutation CreateBlogComment {
-        createBlogComment(data: { comment: "${commentText}", blogs: ${blogIds?.arId && blogIds?.enId ? `["${blogIds?.enId}", "${blogIds?.arId}"]` : null}, publishedAt: "${createdAtTime}", likes: null, replied_to: ${replyToCommentId ? `"${replyToCommentId}"` : null} }) {
+        createBlogComment(data: { comment: """${commentText}""", blogs: ${blogIds?.arId && blogIds?.enId ? `["${blogIds?.enId}", "${blogIds?.arId}"]` : null}, publishedAt: "${createdAtTime}", likes: null, replied_to: ${replyToCommentId ? `"${replyToCommentId}"` : null} }) {
             data {
                 id
             }
@@ -559,7 +559,7 @@ const editBlogCommentQuery = ({
   const publishedAt = new Date().toISOString();
 
   return `mutation UpdateBlogComment {
-    updateBlogComment(id: ${commentId ? `"${commentId}"` : null}, data: { comment: "${commentText ?? ''}", publishedAt: "${publishedAt}" }) {
+    updateBlogComment(id: ${commentId ? `"${commentId}"` : null}, data: { comment: """${commentText ?? ''}""", publishedAt: "${publishedAt}" }) {
         data {
             id
         }

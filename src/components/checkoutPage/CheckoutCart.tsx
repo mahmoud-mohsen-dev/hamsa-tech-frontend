@@ -3,14 +3,7 @@
 import { useMyContext } from '@/context/Store';
 import Image from 'next/image';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import {
-  Button,
-  ConfigProvider,
-  Divider,
-  Form,
-  Input,
-  message
-} from 'antd';
+import { Button, ConfigProvider, Divider, Form, Input } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import { GetCouponResponseType } from '@/types/getCouponResponseType';
@@ -53,9 +46,9 @@ function CheckoutCart() {
     calculateDeliveryCost,
     isApplyFreeShippingEnabled,
     calculateCouponDeductionValue,
-    calculateTotalOrderCost
+    calculateTotalOrderCost,
+    setErrorMessage
   } = useMyContext();
-  const [messageApi] = message.useMessage();
   const [couponLoading, setCouponLoading] = useState(false);
 
   const t = useTranslations('CheckoutPage.content');
@@ -80,7 +73,7 @@ function CheckoutCart() {
       )) as GetCouponResponseType;
 
       if (error || !data) {
-        messageApi.error(t('couponCode.couponNotValid'));
+        setErrorMessage(t('couponCode.couponNotValid'));
       } else {
         const couponData = data?.offers?.data[0];
         if (
@@ -99,7 +92,7 @@ function CheckoutCart() {
         ) {
           setCouponData(couponData);
         } else {
-          messageApi.error(
+          setErrorMessage(
             t(
               'couponCode.subtotalCartCostMustBeGreaterThanCouponValue'
             )
@@ -107,7 +100,7 @@ function CheckoutCart() {
         }
       }
     } catch (e: any) {
-      messageApi.error(t('couponCode.couponNotValid'));
+      setErrorMessage(t('couponCode.couponNotValid'));
     } finally {
       setCouponLoading(false);
     }
@@ -126,20 +119,6 @@ function CheckoutCart() {
       <div className='px-2 py-5 2xl:px-10'>
         <ul className='flex flex-col gap-3'>
           {cart.map((item) => {
-            // let cost = 0;
-            // if (
-            //   item?.product?.data?.attributes?.sale_price > 0 &&
-            //   item?.quantity
-            // ) {
-            //   cost =
-            //     item?.product?.data?.attributes?.sale_price *
-            //     item?.quantity;
-            // } else {
-            //   cost =
-            //     item?.product?.data?.attributes?.price *
-            //     item?.quantity;
-            // }
-
             return (
               <li
                 key={item.id}
@@ -205,14 +184,6 @@ function CheckoutCart() {
         >
           <Form.Item
             name='coupon'
-            // rules={[
-            //   {
-            //     required: true,
-            //     message: t(
-            //       'formValidationErrorMessages.couponCodeRequired'
-            //     )
-            //   }
-            // ]}
             style={{ flexBasis: '100%', marginBottom: '0px' }}
           >
             <Input
@@ -252,34 +223,13 @@ function CheckoutCart() {
               : `${totalCartQuantities} ${t('itemsTitle')}`}
             </span>
           </div>
-          {/* <div className='flex gap-1'> */}
-          <p
-          // className={`${couponDeductionValue > 0 ? 'line-through' : ''}`}
-          >
+          <p>
             {formatCurrencyNumbers(
               subTotalCost,
               t('currency'),
               locale
             )}
           </p>
-
-          {/* {couponDeductionValue > 0 && (
-              <>
-                <Divider
-                  type='vertical'
-                  style={{ minHeight: '20px' }}
-                  className='bg-gray-400'
-                />
-                <p>
-                  {formatCurrencyNumbers(
-                    subTotalCost - couponDeductionValue,
-                    t('currency'),
-                    locale
-                  )}
-                </p>
-              </>
-            )} */}
-          {/* </div> */}
         </div>
 
         {couponDeductionValue > 0 && (

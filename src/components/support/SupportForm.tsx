@@ -1,11 +1,12 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Button, ConfigProvider, Form, Input, message } from 'antd';
+import { Button, ConfigProvider, Form, Input } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { capitalize } from '@/utils/helpers';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import { CreateSupportResponseType } from '@/types/supportResponseTypes';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
+import { useMyContext } from '@/context/Store';
 
 type CreateSupportQueryPropsType = {
   fullName: string;
@@ -39,20 +40,18 @@ const createSupportQuery = ({
 function SupportForm() {
   const locale = useLocale();
   const t = useTranslations('SupportPage.content');
-  const [messageApi] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm<FormType>();
+  const { setLoadingMessage, setErrorMessage, setSuccessMessage } =
+    useMyContext();
 
   // Effect to handle loading message
   useEffect(() => {
     if (loading) {
-      messageApi.open({
-        type: 'loading',
-        content: t('form.submission.loading')
-      });
+      setLoadingMessage(true);
     } else {
       setTimeout(() => {
-        messageApi.destroy();
+        setLoadingMessage(false);
       }, 2500);
     }
   }, [loading]);
@@ -68,17 +67,17 @@ function SupportForm() {
         throw new Error('Failed to submit form');
       }
 
-      messageApi.success(t('form.submission.successMessage'));
+      setSuccessMessage(t('form.submission.successMessage'));
       form.resetFields();
     } catch (error) {
-      messageApi.error(t('form.submission.errorMessage'));
+      setErrorMessage(t('form.submission.errorMessage'));
     } finally {
       setLoading(false);
     }
   };
 
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
-    messageApi.error(
+    setErrorMessage(
       errorInfo?.errorFields[0]?.errors[0] ??
         t('form.submission.errorMessage')
     );

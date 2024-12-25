@@ -31,7 +31,7 @@ const createReviewQuery = ({
             data: {
                 rating: ${rating}
                 headline: "${headline}"
-                comment: "${comment}"
+                comment: """${comment}"""
                 publishedAt: "${new Date(new Date().getTime() + 2000).toISOString()}"
             }
         ) {
@@ -298,7 +298,7 @@ const updateReviewQuery = ({
   let dataInput = '';
   const dataStr =
     rating && headline && comment ?
-      `rating: ${rating}, headline: "${headline}", comment: "${comment}", publishedAt: "${new Date().toISOString()}"`
+      `rating: ${rating}, headline: "${headline}", comment: """${comment}""", publishedAt: "${new Date().toISOString()}"`
     : null;
 
   if (dataStr) {

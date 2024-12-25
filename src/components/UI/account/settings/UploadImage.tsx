@@ -234,6 +234,32 @@ const UploadImage: React.FC = () => {
     setFileList(newFileList);
   };
 
+  const handleRemove = async (file: UploadFile) => {
+    try {
+      console.log(file);
+      const token = getCookie('token'); // Get the user token
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/upload/files/${file.uid}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.ok) {
+        console.log('File removed successfully');
+        setFileList([]); // Clear the file list after successful deletion
+      } else {
+        console.error('Failed to remove the file');
+      }
+    } catch (error) {
+      console.error('Error while removing the file:', error);
+    }
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -267,6 +293,7 @@ const UploadImage: React.FC = () => {
                 }
               : true
             }
+            onRemove={handleRemove}
           />
         </div>
 
@@ -283,6 +310,7 @@ const UploadImage: React.FC = () => {
               onChange={handleChange}
               multiple={false}
               maxCount={1}
+              onRemove={handleRemove}
             >
               {fileList.length >= 2 ? null : (
                 <button

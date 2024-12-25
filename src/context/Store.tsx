@@ -119,6 +119,10 @@ const MyContext = createContext<{
   >;
   searchTerm: string | null;
   setSearchTerm: React.Dispatch<React.SetStateAction<string | null>>;
+  isSearchbarLoading: boolean;
+  setIsSearchbarLoading: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -169,6 +173,7 @@ export const StoreContextProvider = ({
     Record<string, any>
   > | null>(null);
   const [searchTerm, setSearchTerm] = useState<null | string>(null);
+  const [isSearchbarLoading, setIsSearchbarLoading] = useState(false);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -443,7 +448,9 @@ export const StoreContextProvider = ({
         searchData,
         setSearchData,
         searchTerm,
-        setSearchTerm
+        setSearchTerm,
+        isSearchbarLoading,
+        setIsSearchbarLoading
       }}
     >
       {children}

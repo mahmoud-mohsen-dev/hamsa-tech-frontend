@@ -9,7 +9,6 @@ import {
   ConfigProvider,
   Form,
   Input,
-  message,
   Select,
   Space
 } from 'antd';
@@ -24,6 +23,7 @@ import {
 import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
 import { useUser } from '@/context/UserContext';
 import { capitalize } from '@/utils/helpers';
+import { useMyContext } from '@/context/Store';
 const { Option } = Select;
 
 const signupQUery = ({
@@ -85,9 +85,10 @@ function SignupForm() {
   const e = useTranslations('CheckoutPage.content');
   const router = useRouter();
   const [form] = useForm();
-  const [messageApi, contextHolder] = message.useMessage();
   const { setUserId } = useUser();
   const locale = useLocale();
+  const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
+    useMyContext();
 
   const onFinish = (formValues: {
     firstName: string;
@@ -112,11 +113,7 @@ function SignupForm() {
     const createUser = async () => {
       try {
         console.log('Received values of form:', formValues);
-        messageApi.open({
-          type: 'loading',
-          content: e('form.loading'),
-          duration: 0
-        });
+        setLoadingMessage(true);
         // Make API call to register user
         const { data: signupData, error: signupError } =
           (await fetchGraphqlClient(
@@ -134,8 +131,8 @@ function SignupForm() {
           const messageError =
             signupError === 'Email or Username are already taken' ?
               t('formValidationErrorMessages.emailTakenError')
-            : 'Error creating user';
-          messageApi.error(messageError);
+            : t('formValidationErrorMessages.errorCreatingUser');
+          setErrorMessage(messageError);
           console.error('Error creating user:', signupError);
           return;
         }
@@ -143,9 +140,11 @@ function SignupForm() {
         const userloggedInId = getIdFromToken();
 
         if (!userloggedInId) {
-          messageApi.error('error while getting user id');
+          setErrorMessage(
+            t('formValidationErrorMessages.errorCreatingUser')
+          );
           console.error(
-            'error while getting user id: ',
+            'Error while getting user id: ',
             userloggedInId
           );
           return;
@@ -173,7 +172,9 @@ function SignupForm() {
           !signupUpdateData ||
           !signupUpdateData?.updateUsersPermissionsUser?.data?.id
         ) {
-          messageApi.error('Error occured while creating user');
+          setErrorMessage(
+            t('formValidationErrorMessages.errorCreatingUser')
+          );
           console.error(
             'Error updating user permissions:',
             signupUpdateError
@@ -181,12 +182,18 @@ function SignupForm() {
           return;
         }
 
-        messageApi.success('successfully registered');
+        setSuccessMessage(
+          t(
+            'successfulRegistrationMessage'
+          )
+        );
         router.push('/products');
       } catch (error) {
         console.log(error);
       } finally {
-        setTimeout(messageApi.destroy, 2500);
+        setTimeout(() => {
+          setLoadingMessage(false);
+        }, 2500);
       }
     };
     createUser();
@@ -194,48 +201,12 @@ function SignupForm() {
 
   // Function to handle form submission failure (validation errors)
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
-    messageApi.error(
+    setErrorMessage(
       errorInfo?.errorFields[0]?.errors[0] ??
         e('form.formSubmissionFailed')
     );
     console.log('Form submission failed:', errorInfo);
   };
-
-  // const validateFullName = (_: any, value: string) => {
-  //   if (!value) {
-  //     return Promise.reject(
-  //       new Error(t('formValidationErrorMessages.fullNameRequired'))
-  //     );
-  //   }
-
-  //   // Regex to allow English letters, Arabic letters, and spaces
-  //   const namePattern = /^[a-zA-Z\u0621-\u064A\s]+$/;
-  //   const names = value.trim().split(/\s+/); // Split by spaces
-
-  //   // Check for minimum and maximum number of names
-  //   const minNames = 2; // Minimum number of names
-  //   const maxNames = 4; // Maximum number of names
-
-  //   if (names.length < minNames || names.length > maxNames) {
-  //     return Promise.reject(
-  //       new Error(
-  //         t('formValidationErrorMessages.fullNameLengthError')
-  //       )
-  //     );
-  //   }
-
-  //   for (const name of names) {
-  //     if (!namePattern.test(name)) {
-  //       return Promise.reject(
-  //         new Error(
-  //           t('formValidationErrorMessages.fullNameCharacterError')
-  //         )
-  //       );
-  //     }
-  //   }
-
-  //   return Promise.resolve();
-  // };
 
   const validatePassword = (_: any, value: string) => {
     const minLength = 8;
@@ -445,7 +416,12 @@ function SignupForm() {
               name={['phone', 'prefix']}
               noStyle
               rules={[
-                { required: true, message: 'Select country code' }
+                {
+                  required: true,
+                  message: t(
+                    'selectCountryCode'
+                  )
+                }
               ]}
             >
               <Select

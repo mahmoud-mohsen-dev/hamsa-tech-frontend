@@ -622,7 +622,6 @@ function OrderInfo({
       setErrorMessage(t('form.orderError'));
     } finally {
       setLoadingMessage(false);
-      // messageApi.destroy();
     }
   };
 

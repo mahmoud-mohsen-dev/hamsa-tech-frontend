@@ -10,7 +10,7 @@ import {
   removeCookie,
   setCookie
 } from '@/utils/cookieUtils';
-import { Checkbox, ConfigProvider, Form, Input, message } from 'antd';
+import { Checkbox, ConfigProvider, Form, Input } from 'antd';
 import { useTranslations } from 'next-intl';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
 import { useEffect } from 'react';
@@ -31,9 +31,13 @@ const signinQUery = ({
 
 function LoginForm() {
   const router = useRouter();
-  const { setWishlistsData } = useMyContext();
+  const {
+    setWishlistsData,
+    setErrorMessage,
+    setSuccessMessage,
+    setLoadingMessage
+  } = useMyContext();
   const { setUserId, setAddressesData } = useUser();
-  const [messageApi] = message.useMessage();
   const t = useTranslations('SigninPage.content');
   const e = useTranslations('CheckoutPage.content');
   const x = useTranslations('SignupPage.content');
@@ -47,11 +51,7 @@ function LoginForm() {
     const logIn = async () => {
       try {
         console.log('Received values of form:', values);
-        messageApi.open({
-          type: 'loading',
-          content: e('form.loading'),
-          duration: 0
-        });
+        setLoadingMessage(true);
 
         const { data: loginData, error: loginError } =
           (await fetchGraphqlClient(
@@ -63,7 +63,7 @@ function LoginForm() {
 
         if (loginError || !loginData?.login?.jwt) {
           console.error('Login error', loginError);
-          messageApi.error(
+          setErrorMessage(
             t('formValidationErrorMessages.invalidCredentials')
           );
           return;
@@ -77,7 +77,7 @@ function LoginForm() {
 
         const userId = getIdFromToken();
         if (!userId) {
-          messageApi.error(
+          setErrorMessage(
             t('formValidationErrorMessages.invalidCredentials')
           );
           return;
@@ -91,7 +91,7 @@ function LoginForm() {
             'Error while fetching user address:',
             addressesError
           );
-          messageApi.error(
+          setErrorMessage(
             t('formValidationErrorMessages.invalidCredentials')
           );
           removeCookie('token');
@@ -102,7 +102,7 @@ function LoginForm() {
         // console.log(addressesData);
         setAddressesData(addressesData);
 
-        messageApi.success(
+        setSuccessMessage(
           t('formValidationErrorMessages.signinSuccessMessage')
         );
         setTimeout(() => {
@@ -110,11 +110,12 @@ function LoginForm() {
         }, 1000); // Delay by 1 second
       } catch (err) {
         console.error('Error during form submission:', err);
-        messageApi.error(
+        setErrorMessage(
           t('formValidationErrorMessages.errorDuringFormSubmission')
         );
       } finally {
-        setTimeout(messageApi.destroy, 900);
+        // setTimeout(messageApi.destroy, 900);
+        setTimeout(() => setLoadingMessage(false), 900);
       }
     };
 
@@ -122,7 +123,7 @@ function LoginForm() {
   };
 
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
-    messageApi.error(
+    setErrorMessage(
       errorInfo?.errorFields[0]?.errors[0] ??
         e('form.formSubmissionFailed')
     );

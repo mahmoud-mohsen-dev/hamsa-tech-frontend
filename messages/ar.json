@@ -60,10 +60,11 @@
     "signoutLabel": "تسجيل خروج",
     "searchModal": {
       "searchPlaceholder": "إبحث...",
+      "searchingText": "جاري البحث...",
       "clearText": "إمسح",
       "readMoreText": "إقرأ المزيد",
       "searchResultsText": "تم العثور على {count} عناصر",
-      "noResultsText": "لم يتم العثور على نتائج.",
+      "noResultsText": "لا توجد نتائج بحث...",
       "productsText": "المنتجات"
     }
   },
@@ -400,6 +401,8 @@
       "termsOfUse": "شروط الاستخدام",
       "privacyPolicy": "سياسة الخصوصية",
       "newsLetterCheckboxLable": "الحصول على التحديثات والعروض الخاصة!",
+      "successfulRegistrationMessage": "تم التسجيل بنجاح ونحن نسجل دخولك الآن!",
+      "selectCountryCode": "اختر رمز الدولة",
       "formValidationErrorMessages": {
         "firstNamePlaceholder": "الاسم الأول",
         "lastNamePlaceholder": "الاسم الأخير",
@@ -426,7 +429,8 @@
         "passwordInvalidCharacters": "يمكن أن تحتوي كلمة المرور على أحرف إنجليزية وأرقام ورموز خاصة فقط",
         "emailTakenError": "البريد الإلكتروني مستخدم بالفعل. برجاء استخدام بريد آخر.",
         "confirmPassowrdRequired": "يرجى تأكيد كلمة المرور",
-        "passwordMismatch": "كلمة المرور الجديدة التي أدخلتها لا تتطابق"
+        "passwordMismatch": "كلمة المرور الجديدة التي أدخلتها لا تتطابق",
+        "errorCreatingUser": "حدث خطأ أثناء إنشاء المستخدم"
       }
     },
     "metaData": {

@@ -46,6 +46,8 @@ function CommentAndReplyAndOnEdit({
     setCommentIdOnEditMode(null);
   };
 
+  console.log(comment);
+
   return (
     <>
       {isComponentLoading ?
@@ -69,7 +71,18 @@ function CommentAndReplyAndOnEdit({
             block={true}
           />
         </div>
-      : !isOnEditMode && <p className='mt-4'>{comment}</p>}
+      : !isOnEditMode &&
+        comment.trim() && (
+          <div className='mt-4'>
+            {comment
+              .trim()
+              .split('\n')
+              .map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+          </div>
+        )
+      }
       {isSignedIn && isOnEditMode && blogData?.id && (
         <div className='mt-6 border-t border-gray-200 pt-6'>
           <PostAComment

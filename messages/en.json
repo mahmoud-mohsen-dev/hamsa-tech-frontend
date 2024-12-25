@@ -60,10 +60,11 @@
     "signoutLabel": "Sign out",
     "searchModal": {
       "searchPlaceholder": "Search...",
+      "searchingText": "Searching...",
       "clearText": "Clear",
       "readMoreText": "Read More",
       "searchResultsText": "Found {count} items",
-      "noResultsText": "No results found.",
+      "noResultsText": "No search results...",
       "productsText": "Products"
     }
   },
@@ -399,6 +400,8 @@
       "andLabel": "and",
       "privacyPolicy": "privacy policy",
       "newsLetterCheckboxLable": "Get updates and special offers!",
+      "successfulRegistrationMessage": "Successfully registered and we are signing you in!",
+      "selectCountryCode": "Select country code",
       "formValidationErrorMessages": {
         "firstNamePlaceholder": "First name",
         "lastNamePlaceholder": "Last name",
@@ -425,7 +428,8 @@
         "passwordInvalidCharacters": "Password can only contain English letters, numbers, and special characters",
         "emailTakenError": "This email is already in use. Try another one.",
         "confirmPassowrdRequired": "Please confirm your password",
-        "passwordMismatch": "The new password that you entered do not match"
+        "passwordMismatch": "The new password that you entered do not match",
+        "errorCreatingUser": "Error occured while creating user"
       }
     },
     "metaData": {
@@ -726,10 +730,10 @@
           "title": "Sign up for our newsletter",
           "description": "Stay up to date with the roadmap progress, announcements and exclusive discounts feel free to sign up with your email.",
           "clientComponent": {
-            "emailLabel":"Email address",
+            "emailLabel": "Email address",
             "emailPlaceholder": "Enter your email",
             "weCareText": "We care about the protection of your data. Read our",
-            "privacyPolicyText":"Privacy Policy",
+            "privacyPolicyText": "Privacy Policy",
             "submitButton": {
               "default": "Subscribe",
               "loading": "Subscribing..."

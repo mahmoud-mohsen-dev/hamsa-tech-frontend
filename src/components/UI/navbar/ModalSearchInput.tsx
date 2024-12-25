@@ -2,10 +2,8 @@
 import { Button, Divider, Modal } from 'antd';
 import { useState } from 'react';
 import { FaMagnifyingGlass, FaShare } from 'react-icons/fa6';
-import SearchInputField from './SearchInputField';
 import Search from '@/components/common/Search';
 import Image from 'next/image';
-import AddToCartButton from '@/components/products/AddToCartButton';
 import { useMyContext } from '@/context/Store';
 import { v4 } from 'uuid';
 import { Link, useRouter } from '@/navigation';
@@ -52,12 +50,17 @@ const ProductSearchItem = ({
     handleOk();
   };
   return (
-    <div className='flex w-full flex-col items-center justify-start gap-5 xs:flex-row'>
+    // <div className='flex w-full flex-col items-center justify-start gap-5 xs:flex-row'>
+    <div className='grid w-full grid-cols-1 justify-items-center gap-6 xs:grid-cols-[70px_1fr_130px]'>
       <Image
-        width={70}
-        height={70}
-        src={productData?.imageThumbnail?.src ?? ''}
+        src={
+          productData?.imageThumbnail?.src ?? '/image-not-found.png'
+        }
         alt={productData?.imageThumbnail?.alt ?? ''}
+        width={120}
+        height={120}
+        quality={100}
+        className='block h-[120px] w-[120px] object-contain xs:h-[70px] xs:w-[70px]'
       />
       <Link
         className='link-search-item w-full grow text-black-light'
@@ -88,7 +91,7 @@ const ProductSearchItem = ({
           )}
         </span>
       </Link>
-      <div className='w-full xs:w-[235px]'>
+      <div className='w-full'>
         <button
           className={`before:ease relative h-10 w-full overflow-hidden rounded-md border border-green-500 bg-green-500 text-sm text-white shadow-[0_5px_25px_-10px_rgb(0,0,0,.1),0_6px_10px_-6px_rgb(0,0,0,.1)] transition-all before:absolute before:-right-[36px] before:top-0 before:h-10 before:w-6 before:bg-white before:opacity-10 before:duration-700 hover:shadow-green-500 hover:before:right-[calc(100%+36px)] hover:before:-translate-x-full disabled:cursor-not-allowed`}
           onClick={handleClick}
@@ -109,7 +112,13 @@ function ModalSearchInput({
 }: {
   styleColor?: undefined | string;
 }) {
-  const { searchData, setSearchData, setSearchTerm } = useMyContext();
+  const {
+    searchData,
+    setSearchData,
+    setSearchTerm,
+    searchTerm,
+    isSearchbarLoading
+  } = useMyContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useTranslations('NavbarDrawer.searchModal');
   const locale = useLocale();
@@ -130,13 +139,18 @@ function ModalSearchInput({
     setSearchTerm(null);
   };
 
-  const products = searchData?.results
-    .map((searchData) =>
-      searchData.indexUid === 'products' ?
-        searchData.hits.map((product) => product)
-      : null
-    )
-    .filter((product) => product);
+  // console.log(searchData?.results);
+
+  const products =
+    searchData?.results ?
+      searchData?.results
+        .map((searchData) =>
+          searchData.indexUid === 'products' ?
+            searchData.hits.map((product) => product)
+          : null
+        )
+        .filter((product) => product)
+    : null;
   // console.log(products);
 
   const filteredProducts: ProductItemType[] | null =
@@ -176,7 +190,6 @@ function ModalSearchInput({
   // console.log(filteredProducts);
 
   return (
-    // <div className='modal-search-input ml-5 hidden text-inherit 2xl:block'>
     <div
       className={`modal-search-input ${locale === 'ar' ? 'ml-5 2xl:ml-2' : 'mr-5 2xl:ml-5 2xl:mr-0'} text-inherit`}
     >
@@ -210,7 +223,11 @@ function ModalSearchInput({
         width={640}
         // className='modal-search'
       >
-        {filteredProducts && filteredProducts?.length > 0 && (
+        {isSearchbarLoading ?
+          <p className={`mt-2 ${locale === 'ar' ? 'mr-1' : 'ml-1'}`}>
+            {t('searchingText')}
+          </p>
+        : filteredProducts && filteredProducts?.length > 0 ?
           <>
             <Divider
               style={{ marginBottom: '20px', marginTop: '12px' }}
@@ -227,21 +244,27 @@ function ModalSearchInput({
                 {t('productsText')}
               </h2>
               <div className='flex w-full flex-col gap-6 px-2.5 py-2 md:gap-4'>
-                {filteredProducts && filteredProducts?.length > 0 ?
-                  filteredProducts.map((productData) => (
-                    <ProductSearchItem
-                      key={v4()}
-                      productData={productData}
-                      handleOk={handleOk}
-                    />
-                  ))
-                : <p>{t('noResultsText')}</p>}
+                {filteredProducts.map((productData) => (
+                  <ProductSearchItem
+                    key={v4()}
+                    productData={productData}
+                    handleOk={handleOk}
+                  />
+                ))}
               </div>
               {/* <h2 className='py-2'>Articles</h2>
           <p>No data for articles</p> */}
             </div>
           </>
-        )}
+        : searchTerm &&
+          searchTerm.length > 0 && (
+            <p
+              className={`mt-2 ${locale === 'ar' ? 'mr-1' : 'ml-1'}`}
+            >
+              {t('noResultsText')}
+            </p>
+          )
+        }
       </Modal>
     </div>
   );
