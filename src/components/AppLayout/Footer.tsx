@@ -169,7 +169,7 @@ function Footer({ data }: PropsType) {
                   href='/return-policy'
                   className='hover:text-gray-300'
                 >
-                  {t('shippingPolicyText')}
+                  {t('returnPolicyText')}
                 </Link>
               </li>
               <li>
