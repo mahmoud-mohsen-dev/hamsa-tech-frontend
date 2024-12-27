@@ -208,7 +208,7 @@ function ModalSearchInput({
 
       {/* Search Modal */}
       <Modal
-        title={<Search />}
+        title={<Search isSearchbarModalOpen={isModalOpen} />}
         // centered
         open={isModalOpen}
         onOk={handleOk}
@@ -221,7 +221,7 @@ function ModalSearchInput({
           content: '!py-3 !px-5 font-inter'
         }}
         width={640}
-        // className='modal-search'
+        destroyOnClose
       >
         {isSearchbarLoading ?
           <p className={`mt-2 ${locale === 'ar' ? 'mr-1' : 'ml-1'}`}>

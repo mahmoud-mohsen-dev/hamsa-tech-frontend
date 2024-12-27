@@ -16,7 +16,11 @@ const client = new MeiliSearch({
   apiKey: process.env.NEXT_PUBLIC_MEILISEARCH_KEY
 });
 
-const Search = () => {
+const Search = ({
+  isSearchbarModalOpen
+}: {
+  isSearchbarModalOpen: boolean;
+}) => {
   const {
     setSearchData,
     searchTerm,
@@ -126,10 +130,14 @@ const Search = () => {
 
   useEffect(() => {
     // Auto-focus the input field on mount
-    if (inputRef.current) {
+    if (
+      inputRef.current &&
+      searchTerm === null &&
+      isSearchbarModalOpen
+    ) {
       inputRef.current.focus();
     }
-  }, []);
+  }, [searchTerm, isSearchbarModalOpen]);
 
   return (
     <form

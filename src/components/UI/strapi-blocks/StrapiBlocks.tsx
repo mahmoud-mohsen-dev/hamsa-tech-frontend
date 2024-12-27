@@ -83,7 +83,11 @@ export function LinkBlock({
       });
     }
     return (
-      <Link href={obj.url} target='_blank'>
+      <Link
+        href={obj.url}
+        target='_blank'
+        className='text-blue-sky-medium hover:text-blue-sky-accent hover:underline'
+      >
         {obj.children.map((el) => {
           return <TextBlock obj={el} key={uuid()} />;
         })}
@@ -159,7 +163,7 @@ export function ChildBlock({
 export function ParagraphBlock({ obj }: { obj: ParagraphType }) {
   if (obj.type === 'paragraph') {
     return (
-      <p className='text-[.88rem] font-normal leading-[1.5rem]'>
+      <p className='text-[1rem] font-light leading-[1.5rem]'>
         {obj.children.map((el) => (
           <ChildBlock obj={el} key={uuid()} />
         ))}
@@ -247,7 +251,7 @@ export function CodeBlock({ obj }: { obj: CodeType }) {
 function ListItemBlock({ obj }: { obj: ListItemType }) {
   if (obj.type === 'list-item') {
     return (
-      <li>
+      <li className='text-[1rem] font-light leading-[1.75rem]'>
         {obj.children.map((el) => (
           <ChildBlock obj={el} key={uuid()} />
         ))}
@@ -458,7 +462,7 @@ export function HeadingBlock({ obj }: { obj: HeadingType }) {
         );
       case 6:
         return (
-          <h6 className='text-[1rem] leading-[1.25rem]'>
+          <h6 className='text-[.88rem] leading-[1.25rem]'>
             {obj.children.map((el) => (
               <ChildBlock obj={el} key={uuid()} />
             ))}

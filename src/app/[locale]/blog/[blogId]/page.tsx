@@ -11,15 +11,10 @@ import {
   getTranslations,
   unstable_setRequestLocale
 } from 'next-intl/server';
-import Image from 'next/image';
-// import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { GetBlogResponseType } from '@/types/getBlogPageResponse';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { v4 } from 'uuid';
-import MessageContextComponent from '@/components/UI/MessageContextComponent';
-
-// prettier-ignore
 
 type Props = {
   params: { blogId: string; locale: string };
@@ -116,11 +111,11 @@ export async function generateStaticParams() {
 
   // Create the params for static generation
   const enParams = blogsEn.map((article) => ({
-    id: article.id,
+    blogId: article.id,
     locale: 'en'
   }));
   const arParams = blogsAr.map((article) => ({
-    id: article.id,
+    blogId: article.id,
     locale: 'ar'
   }));
 

@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { getSocialMediaIcon } from '@/utils/getSocialMediaIcon';
 import Image from 'next/image';
 import Anchor from '../UI/Anchor';
+import { FaRegHeart } from 'react-icons/fa';
 
 interface PropsType {
   data: FooterSectionType;
@@ -25,9 +26,9 @@ function Footer({ data }: PropsType) {
       // data-aos-duration='300'
       // data-aos-easing='linear'
       // data-aos-once='true'
-      className='mx-auto w-full max-w-[1900px] bg-blue-gray-medium py-12'
+      className='mx-auto w-full max-w-[1900px] bg-blue-gray-medium shadow'
     >
-      <div className='container grid grid-cols-1 gap-8 text-white md:grid-cols-2 xl:grid-cols-footer xl:gap-5'>
+      <section className='container grid grid-cols-1 gap-8 py-10 shadow md:grid-cols-2 xl:grid-cols-footer xl:gap-5'>
         <div>
           <div className='mb-5 flex items-center gap-5 xl:mb-7'>
             <Image
@@ -38,12 +39,14 @@ function Footer({ data }: PropsType) {
               quality={100}
               className='h-full max-w-10'
             />
-            <h2 className='text-2xl font-bold'>{t('companyName')}</h2>
+            <h2 className='text-2xl font-bold text-white'>
+              {t('companyName')}
+            </h2>
           </div>
-          <h4 className='mb-5 max-w-[320px] text-pretty text-lg font-light opacity-80 xl:mb-7'>
+          <h4 className='mb-5 max-w-[320px] text-pretty text-lg font-normal text-gray-400 xl:mb-7'>
             {data?.description}
           </h4>
-          <div className='= flex items-center gap-4'>
+          <div className='= flex items-center gap-4 text-white'>
             {data?.social_links.map((link) => {
               return (
                 <Anchor
@@ -60,7 +63,7 @@ function Footer({ data }: PropsType) {
           </div>
         </div>
         <div>
-          <h2 className='mb-5 text-2xl font-bold xl:mb-7'>
+          <h2 className='mb-5 text-2xl font-bold text-white xl:mb-7'>
             {t('quickLinksTitle')}
           </h2>
           <ul className='flex flex-col gap-1.5'>
@@ -69,7 +72,7 @@ function Footer({ data }: PropsType) {
                 <li key={link.id}>
                   <Link
                     href={link?.slug ?? '/'}
-                    className='quick-links flex items-center gap-2 text-base font-light capitalize opacity-80 hover:opacity-100'
+                    className='quick-links flex items-center gap-2 text-base font-normal capitalize text-gray-400 hover:text-gray-300'
                   >
                     {locale === 'ar' ?
                       <MdDoubleArrow className='icon flip text-blue-300' />
@@ -83,26 +86,26 @@ function Footer({ data }: PropsType) {
           </ul>
         </div>
         <div>
-          <h2 className='mb-5 text-2xl font-bold xl:mb-7'>
+          <h2 className='mb-5 text-2xl font-bold text-white xl:mb-7'>
             {t('newsletterTitle')}
           </h2>
-          <h4 className='mb-5 opacity-80'>
+          <h4 className='mb-5 text-gray-400'>
             {t('newsLetterDescription')}
           </h4>
           <SubcribeInput />
         </div>
         <div>
-          <h2 className='mb-5 text-2xl font-bold xl:mb-7'>
+          <h2 className='mb-5 text-2xl font-bold text-white xl:mb-7'>
             {t('contactTitle')}
           </h2>
           <div>
             <div className='flex items-center gap-5'>
               <FaPhoneVolume className='text-blue-300' size={40} />
               <div>
-                <h4 className='text-xl font-medium opacity-90'>
+                <h4 className='text-xl font-medium text-gray-300'>
                   {t('contactPhoneTitle')}
                 </h4>
-                <h4 dir='ltr' className='text-lg opacity-80'>
+                <h4 dir='ltr' className='text-lg text-gray-400'>
                   {data?.contact_us_phone ?? ''}
                 </h4>
               </div>
@@ -110,17 +113,130 @@ function Footer({ data }: PropsType) {
             <div className='mt-5 flex items-center gap-5'>
               <IoMdMail className='text-blue-300' size={40} />
               <div>
-                <h4 className='text-xl font-medium opacity-90'>
+                <h4 className='text-xl font-medium text-gray-300'>
                   {t('contactMailTitle')}
                 </h4>
-                <h4 className='text-lg opacity-80'>
+                <h4 className='text-lg text-gray-400'>
                   {data?.contact_us_email ?? ''}
                 </h4>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* <hr className='border-gray-700' /> */}
+      <section className='bg-[#252d46]'>
+        {/* <section className='bg-blue-gray-medium'> */}
+        <div className='container w-full py-6'>
+          <div className='sm:flex sm:items-center sm:justify-between'>
+            <ul className='mb-6 flex flex-wrap items-center gap-3 text-sm font-medium text-gray-400 sm:mb-0'>
+              <li>
+                <Link
+                  href='/privacy-policy'
+                  className='hover:text-gray-300'
+                >
+                  {t('privacyPolicyText')}
+                </Link>
+              </li>
+              <li>
+                <span>|</span>
+              </li>
+              <li>
+                <Link
+                  href='/terms-of-service'
+                  className='hover:text-gray-300'
+                >
+                  {t('termsOfServiceText')}
+                </Link>
+              </li>
+              <li>
+                <span>|</span>
+              </li>
+              <li>
+                <Link
+                  href='/shipping-policy'
+                  className='hover:text-gray-300'
+                >
+                  {t('shippingPolicyText')}
+                </Link>
+              </li>
+              <li>
+                <span>|</span>
+              </li>
+              <li>
+                <Link
+                  href='/return-policy'
+                  className='hover:text-gray-300'
+                >
+                  {t('shippingPolicyText')}
+                </Link>
+              </li>
+              <li>
+                <span>|</span>
+              </li>
+              <li>
+                <Link
+                  href='/waranty-terms'
+                  className='hover:text-gray-300'
+                >
+                  {t('warrantyTermsText')}
+                </Link>
+              </li>
+            </ul>
+
+            <div className='flex flex-wrap items-center gap-5'>
+              <Image
+                src='/payment-methods/mastercard.svg'
+                alt='mastercard logo'
+                width={50}
+                height={30}
+              />
+              <Image
+                src='/payment-methods/visa.svg'
+                alt='visa logo'
+                width={50}
+                height={30}
+              />
+              {/* <Image
+            src='/payment-methods/valu.svg'
+            alt='valu logo'
+            width={38}
+            height={24}
+          /> */}
+              <Image
+                src='/payment-methods/meeza.svg'
+                alt='meeza logo'
+                width={50}
+                height={30}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* <hr className='border-gray-700' /> */}
+      <section className='bg-[#21283e] py-6'>
+        <div className='container'>
+          <div className='flex w-full items-center justify-center gap-2 text-sm text-gray-400'>
+            {t('madeWithText')} <FaRegHeart />
+            {t('byText')}
+            <Link
+              href='https://mahmoud-mohsen.vercel.app'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-gray-300 hover:text-white'
+            >
+              {t('developerName')}
+            </Link>
+            | {t('allRightsReservedText')} ©{' '}
+            {new Date().getFullYear().toString()}
+            <a href='/' className='text-gray-300 hover:text-white'>
+              {t('siteName')}
+            </a>
+          </div>
+        </div>
+      </section>
     </footer>
   );
 }

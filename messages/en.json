@@ -43,7 +43,17 @@
       "newsletterInputPlaceholder": "Subscribe Now",
       "contactTitle": "Contact Us",
       "contactPhoneTitle": "Phone Us",
-      "contactMailTitle": "Mail Us"
+      "contactMailTitle": "Mail Us",
+      "privacyPolicyText": "Privacy Policy",
+      "termsOfServiceText": "Terms of Service",
+      "shippingPolicyText": "Shipping Policy",
+      "returnPolicyText": "Return Policy",
+      "warrantyTermsText": "Warranty Terms",
+      "madeWithText": "Made with",
+      "byText": "by",
+      "allRightsReservedText": "All Rights Reserved. Copyright",
+      "siteName": "Hamsa Tech.",
+      "developerName": "Mahmoud Mohsen"
     },
     "metaData": {
       "title": "Hamsa Tech Store – Online Shopping In Egypt",
@@ -811,6 +821,24 @@
     "metaData": {
       "title": "Hamsa Tech About Us Page",
       "description": "Hamsa tech offers top-quality security systems and surveillance cameras. Contact us at any of our branch locations for expert support and solutions."
+    }
+  },
+  "PrivacyPolicyPage": {
+    "content": {
+      "lastUpdated": "Last updated"
+    },
+    "metaData": {
+      "title": "Privacy Policy - Hamsa Tech",
+      "description": "Learn how we collect, use, and protect your personal information."
+    }
+  },
+  "TermsOfServicePage": {
+    "content": {
+      "lastUpdated": "Last updated"
+    },
+    "metaData": {
+      "title": "Terms of Service - Hamsa Tech",
+      "description": "Learn the guidelines for using Hamsa Tech, including account rules, orders, and intellectual property."
     }
   }
 }

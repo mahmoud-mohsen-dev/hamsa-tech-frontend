@@ -43,7 +43,17 @@
       "newsletterInputPlaceholder": "اشترك الآن",
       "contactTitle": "تواصل معنا",
       "contactPhoneTitle": "عبر الهاتف",
-      "contactMailTitle": "راسلنا بالبريد الإلكتروني"
+      "contactMailTitle": "راسلنا بالبريد الإلكتروني",
+      "privacyPolicyText": "سياسة الخصوصية",
+      "termsOfServiceText": "شروط الخدمة",
+      "shippingPolicyText": "سياسة الشحن",
+      "returnPolicyText": "سياسة الإرجاع",
+      "warrantyTermsText": "شروط الضمان",
+      "madeWithText": "صُنع بـ",
+      "byText": "بواسطة",
+      "allRightsReservedText": "جميع الحقوق محفوظة. حقوق الطبع والنشر",
+      "siteName": "همسة تك.",
+      "developerName": "محمود محسن"
     },
     "metaData": {
       "title": "متجر همسة تك – تسوق أونلاين في مصر",
@@ -811,6 +821,24 @@
     "metaData": {
       "title": "صفحة من نحن - حمسة تك",
       "description": "تقدم حمسة تك أنظمة أمان عالية الجودة وكاميرات مراقبة. تواصل معنا في أي من فروعنا للحصول على الدعم والخدمات المتخصصة."
+    }
+  },
+  "PrivacyPolicyPage": {
+    "content": {
+      "lastUpdated": "آخر تحديث:"
+    },
+    "metaData": {
+      "title": "سياسة الخصوصية - همسة تك",
+      "description": "تعرف على كيفية جمعنا واستخدامنا وحمايتنا لمعلوماتك الشخصية."
+    }
+  },
+  "TermsOfServicePage": {
+    "content": {
+      "lastUpdated": "آخر تحديث:"
+    },
+    "metaData": {
+      "title": "شروط الخدمة - همسة تك",
+      "description": "تعرّف على إرشادات استخدام همسة تك، بما في ذلك قواعد الحساب، الطلبات، وحقوق الملكية الفكرية."
     }
   }
 }

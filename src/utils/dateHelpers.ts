@@ -9,7 +9,8 @@ export function generateISODateForGraphQL() {
 }
 // console.log(generateISODateForGraphQL()); // e.g., "2024-10-03"
 
-export const convertIsoStringToDateFormat = (isoString: string) => {
+export const convertIsoStringToDateFormat = (isoString: any) => {
+  if (typeof isoString !== 'string') return '--/--/--';
   return dayjs(isoString).format('DD/MM/YYYY');
 };
 

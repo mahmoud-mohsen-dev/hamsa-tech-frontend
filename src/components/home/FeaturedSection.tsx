@@ -9,7 +9,7 @@ interface PropsType {
 
 function Featured({ data }: PropsType) {
   return (
-    <section className='mx-auto max-w-[1900px] bg-white-light pb-[50px] pt-[30px]'>
+    <section className='mx-auto max-w-[1900px] bg-white pb-20 pt-14'>
       <div className='container'>
         {/* <div
           data-aos='fade-down'

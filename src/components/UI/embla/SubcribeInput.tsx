@@ -7,7 +7,7 @@ function SubcribeInput() {
   const t = useTranslations('HomePage.footer');
   const locale = useLocale();
   return (
-    <div className='relative w-full max-w-80'>
+    <div className='relative w-full max-w-80 text-white'>
       <input
         defaultValue=''
         placeholder={t('newsletterInputPlaceholder')}

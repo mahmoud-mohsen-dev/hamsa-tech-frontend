@@ -37,32 +37,32 @@ function PaymentMethods({ form }: { form: FormInstance<any> }) {
     //   //     paymentValue === 'card' ? '#f2f7ff' : '#fafafa'
     //   // },
     //   extra: (
-    //     <div className='flex flex-wrap items-center gap-1'>
-    //       <Image
-    //         src='/payment-methods/mastercard.svg'
-    //         alt='mastercard logo'
-    //         width={38}
-    //         height={24}
-    //       />
-    //       <Image
-    //         src='/payment-methods/visa.svg'
-    //         alt='visa logo'
-    //         width={38}
-    //         height={24}
-    //       />
-    //       {/* <Image
-    //         src='/payment-methods/valu.svg'
-    //         alt='valu logo'
-    //         width={38}
-    //         height={24}
-    //       /> */}
-    //       <Image
-    //         src='/payment-methods/meeza.svg'
-    //         alt='meeza logo'
-    //         width={38}
-    //         height={24}
-    //       />
-    //     </div>
+    // <div className='flex flex-wrap items-center gap-1'>
+    //   <Image
+    //     src='/payment-methods/mastercard.svg'
+    //     alt='mastercard logo'
+    //     width={38}
+    //     height={24}
+    //   />
+    //   <Image
+    //     src='/payment-methods/visa.svg'
+    //     alt='visa logo'
+    //     width={38}
+    //     height={24}
+    //   />
+    //   {/* <Image
+    //     src='/payment-methods/valu.svg'
+    //     alt='valu logo'
+    //     width={38}
+    //     height={24}
+    //   /> */}
+    //   <Image
+    //     src='/payment-methods/meeza.svg'
+    //     alt='meeza logo'
+    //     width={38}
+    //     height={24}
+    //   />
+    // </div>
     //   ),
     //   showArrow: false,
     //   children: (

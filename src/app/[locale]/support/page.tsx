@@ -53,7 +53,7 @@ async function SupportPage({ params: { locale } }: PropsType) {
         <div className='flex items-center gap-5 rounded-md border border-gray-light px-8 py-5'>
           <TbDeviceLandlinePhone size={48} />
           <div>
-            <h2 className='text-xl font-medium'>
+            <h2 className='text-xl font-medium' dir='ltr'>
               {contactInfo?.telephone ?? ''}
             </h2>
             <p className='text-base'>{t('contactInfo.telephone')}</p>
@@ -62,7 +62,7 @@ async function SupportPage({ params: { locale } }: PropsType) {
         <div className='flex items-center gap-5 rounded-md border border-gray-light px-8 py-5'>
           <FaWhatsapp size={48} />
           <div>
-            <h2 className='text-xl font-medium'>
+            <h2 className='text-xl font-medium' dir='ltr'>
               {contactInfo?.whatsapp ?? ''}
             </h2>
             <p className='text-base'>{t('contactInfo.whatsapp')}</p>

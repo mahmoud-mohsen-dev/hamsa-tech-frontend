@@ -8,6 +8,7 @@ import Partners from '@/components/home/Partners';
 import AboutUs from '@/components/home/AboutUs';
 import Articles from '@/components/home/Articles';
 import ContactUs from '@/components/home/ContactUs';
+import SignupToNewsLetter from '@/components/blog/blog-page/SignupToNewsLetter';
 
 interface PropsType {
   params: { locale: string };
@@ -196,14 +197,14 @@ export default async function IndexPage({
       {homepageData?.attributes?.heroSection && (
         <HeroSection data={homepageData.attributes.heroSection} />
       )}
-      {homepageData?.attributes['products_spotlight'] && (
-        <Featured
-          data={homepageData?.attributes['products_spotlight']}
-        />
-      )}
       {homepageData?.attributes?.categories && (
         <CategoriesSection
           data={homepageData.attributes.categories}
+        />
+      )}
+      {homepageData?.attributes['products_spotlight'] && (
+        <Featured
+          data={homepageData?.attributes['products_spotlight']}
         />
       )}
       {homepageData?.attributes?.brands && (
@@ -218,6 +219,7 @@ export default async function IndexPage({
       {homepageData?.attributes?.contact_us && (
         <ContactUs data={homepageData.attributes.contact_us} />
       )}
+      {/* <SignupToNewsLetter className='relative bg-white py-20' /> */}
     </>
   );
 }

@@ -136,7 +136,7 @@ async function AboutUsPage({
                               {phone.phone_number}
                               {i === arr.length - 1 || i % 2 !== 0 ?
                                 ' '
-                              : ' - '}
+                              : ' | '}
                             </span>
                           ))}
                         </p>

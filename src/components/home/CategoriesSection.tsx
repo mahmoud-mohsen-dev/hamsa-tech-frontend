@@ -28,7 +28,7 @@ function CategoriesSection({ data }: PropsType) {
   });
 
   return (
-    <section className='mx-auto max-w-[1900px] bg-white py-20'>
+    <section className='mx-auto max-w-[1900px] bg-white-light py-20'>
       <div className='categories'>
         <div
           data-aos='fade-down'

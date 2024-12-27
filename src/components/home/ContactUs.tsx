@@ -18,7 +18,7 @@ function ContactUs({ data }: PropsType) {
         data-aos-duration='300'
         data-aos-easing='linear'
         data-aos-once='true'
-        className='bg-black-accent py-[30px]'
+        className='bg-[#252d46] py-[30px]'
       >
         <section className='container'>
           <div className='flex flex-wrap items-center justify-between gap-4'>
@@ -27,7 +27,7 @@ function ContactUs({ data }: PropsType) {
             </h3>
             <Link
               href={data?.button_url ?? '/'}
-              className='flex items-center gap-3 rounded bg-red-shade-300 px-7 py-4 text-sm uppercase text-white transition-all duration-300 hover:bg-yellow-medium hover:text-white focus:outline-none'
+              className='flex items-center gap-3 rounded bg-[#27ab57] px-7 py-4 text-sm uppercase text-white transition-all duration-300 hover:bg-green-dark hover:text-white focus:outline-none'
             >
               <span className='font-semibold'>
                 {data?.button_text}
