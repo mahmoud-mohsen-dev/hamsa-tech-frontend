@@ -1,5 +1,5 @@
 import { fetchGraphql } from '@/services/graphqlCrud';
-import { GetTermsOfServiceResponseMetaDataType } from '@/types/singlePageReponseType';
+import { GetReturnAndRefundPolicyResponseMetaDataType } from '@/types/singlePageReponseType';
 import {
   getTranslations,
   unstable_setRequestLocale
@@ -13,7 +13,7 @@ interface PropsType {
 }
 
 const getPageByLocaleQuery = (locale: string) => `{
-  termsOfService(locale: ${locale === 'ar' || 'en' ? `"${locale}"` : '"en"'}) {
+  returnAndRefundPolicy(locale: ${locale === 'ar' || 'en' ? `"${locale}"` : '"en"'}) {
     data {
       id
       attributes {
@@ -41,14 +41,16 @@ export async function generateMetadata({
   params: { locale }
 }: PropsType) {
   unstable_setRequestLocale(locale);
-  const t = await getTranslations('TermsOfServicePage.metaData');
+  const t = await getTranslations(
+    'ReturnAndRefundPolicyPage.metaData'
+  );
   const { data: responseData, error: responseError } =
     (await fetchGraphql(
       getPageByLocaleQuery(locale)
-    )) as GetTermsOfServiceResponseMetaDataType;
+    )) as GetReturnAndRefundPolicyResponseMetaDataType;
 
   const pageData =
-    responseData?.termsOfService.data?.attributes ?? null;
+    responseData?.returnAndRefundPolicy.data?.attributes ?? null;
   const seo = pageData?.seo;
   const seoImage = pageData?.seo_meta_image?.data?.attributes ?? null;
 
@@ -61,21 +63,21 @@ export async function generateMetadata({
   }
 
   const siteUrl = process.env.BASE_URL || 'https://hamsatech-eg.com'; // Base URL of your site
-  const pageUrl = `${siteUrl}/${locale}/terms-of-service`;
+  const pageUrl = `${siteUrl}/${locale}/return-and-refund-policy`;
 
   const title = seo?.metaTitle || pageData?.title || t('title');
   const description = seo?.metaDescription || t('description');
   const metaImageUrl =
     seoImage?.url || `${siteUrl}/image-not-found.png`;
   const metaImageAlt =
-    seoImage?.alternativeText || 'Terms of Service Image';
+    seoImage?.alternativeText || 'Return and Refund Policy Image';
 
   return {
     title,
     description,
     keywords:
       seo?.keywords ||
-      `${title}, terms of service, Hamsa Tech, account rules, order policies, intellectual property`,
+      `${title}, return policy, refund policy, product returns, Hamsa Tech, refund methods, customer service, return instructions, shipping costs, defective items, return conditions`,
     openGraph: {
       title,
       description,
@@ -103,12 +105,12 @@ export async function generateMetadata({
       languages:
         locale === 'ar' ?
           {
-            'en-US': `${siteUrl}/en/terms-of-service`,
-            'ar-EG': `${siteUrl}/ar/terms-of-service`
+            'en-US': `${siteUrl}/en/return-and-refund-policy`,
+            'ar-EG': `${siteUrl}/ar/return-and-refund-policy`
           }
         : {
-            'en-US': `${siteUrl}/en/terms-of-service`,
-            'ar-EG': `${siteUrl}/ar/terms-of-service`
+            'en-US': `${siteUrl}/en/return-and-refund-policy`,
+            'ar-EG': `${siteUrl}/ar/return-and-refund-policy`
           }
     }
   };

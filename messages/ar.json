@@ -47,7 +47,7 @@
       "privacyPolicyText": "سياسة الخصوصية",
       "termsOfServiceText": "شروط الخدمة",
       "shippingPolicyText": "سياسة الشحن",
-      "returnPolicyText": "سياسة الإرجاع",
+      "returnAndRefundPolicyText": "سياسة الإرجاع والاسترداد",
       "warrantyTermsText": "شروط الضمان",
       "madeWithText": "صُنع بـ",
       "byText": "بواسطة",
@@ -839,6 +839,24 @@
     "metaData": {
       "title": "شروط الخدمة - همسة تك",
       "description": "تعرّف على إرشادات استخدام همسة تك، بما في ذلك قواعد الحساب، الطلبات، وحقوق الملكية الفكرية."
+    }
+  },
+  "ShippingPolicyPage": {
+    "content": {
+      "lastUpdated": "آخر تحديث:"
+    },
+    "metaData": {
+      "title": "سياسة الشحن - همسة تك",
+      "description": "استكشف سياسة الشحن الخاصة بهمسة تك، بما في ذلك أوقات التسليم، تكاليف الشحن، تتبع الطلبات، وتغطية الخدمة في جميع محافظات مصر الـ27."
+    }
+  },
+  "ReturnAndRefundPolicyPage": {
+    "content": {
+      "lastUpdated": "آخر تحديث:"
+    },
+    "metaData": {
+      "title": "سياسة الإرجاع والاسترداد | همسة تك",
+      "description": "تعرف على سياسة الإرجاع والاسترداد الخاصة بهمسة تك، بما في ذلك كيفية إرجاع المنتجات، طرق الاسترداد، وشروط الأهلية."
     }
   }
 }

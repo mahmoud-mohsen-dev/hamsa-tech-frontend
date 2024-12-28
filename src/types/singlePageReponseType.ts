@@ -111,3 +111,81 @@ export type GetTermsOfServiceResponseMetaDataType = {
   data: TermsOfServiceMetaTagsData | null;
   error: string | null;
 };
+
+// ShippingPolicy
+
+type ShippingPolicy = {
+  shippingPolicy: {
+    data: {
+      id: string;
+      attributes: {
+        title: string | null;
+        content: ContentType[] | null;
+        updatedAt: string;
+        publishedAt: string;
+      };
+    } | null;
+  };
+};
+
+type ShippingPolicyMetaTagsData = {
+  shippingPolicy: {
+    data: {
+      id: string;
+      attributes: {
+        title: string | null;
+        seo: Seo | null;
+        seo_meta_image: SeoMetaImage | null;
+      };
+    } | null;
+  };
+};
+
+export type GetShippingPolicyResponseDataType = {
+  data: ShippingPolicy | null;
+  error: string | null;
+};
+
+export type GetShippingPolicyResponseMetaDataType = {
+  data: ShippingPolicyMetaTagsData | null;
+  error: string | null;
+};
+
+// Return And Refund Policy
+
+type ReturnAndRefundPolicy = {
+  returnAndRefundPolicy: {
+    data: {
+      id: string;
+      attributes: {
+        title: string | null;
+        content: ContentType[] | null;
+        updatedAt: string;
+        publishedAt: string;
+      };
+    } | null;
+  };
+};
+
+type ReturnAndRefundPolicyMetaTagsData = {
+  returnAndRefundPolicy: {
+    data: {
+      id: string;
+      attributes: {
+        title: string | null;
+        seo: Seo | null;
+        seo_meta_image: SeoMetaImage | null;
+      };
+    } | null;
+  };
+};
+
+export type GetReturnAndRefundPolicyResponseDataType = {
+  data: ReturnAndRefundPolicy | null;
+  error: string | null;
+};
+
+export type GetReturnAndRefundPolicyResponseMetaDataType = {
+  data: ReturnAndRefundPolicyMetaTagsData | null;
+  error: string | null;
+};

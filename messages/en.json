@@ -47,7 +47,7 @@
       "privacyPolicyText": "Privacy Policy",
       "termsOfServiceText": "Terms of Service",
       "shippingPolicyText": "Shipping Policy",
-      "returnPolicyText": "Return Policy",
+      "returnAndRefundPolicyText": "Return and Refund Policy",
       "warrantyTermsText": "Warranty Terms",
       "madeWithText": "Made with",
       "byText": "by",
@@ -839,6 +839,24 @@
     "metaData": {
       "title": "Terms of Service - Hamsa Tech",
       "description": "Learn the guidelines for using Hamsa Tech, including account rules, orders, and intellectual property."
+    }
+  },
+  "ShippingPolicyPage": {
+    "content": {
+      "lastUpdated": "Last updated"
+    },
+    "metaData": {
+      "title": "Shipping Policy - Hamsa Tech",
+      "description": "Explore Hamsa Tech's shipping policy, including delivery times, shipping rates, order tracking, and service coverage across all 27 Egyptian provinces."
+    }
+  },
+  "ReturnAndRefundPolicyPage": {
+    "content": {
+      "lastUpdated": "Last updated"
+    },
+    "metaData": {
+      "title": "Return and Refund Policy | Hamsa Tech",
+      "description": "Learn about Hamsa Tech's return and refund policy, including how to return items, refund methods, and eligibility conditions."
     }
   }
 }
