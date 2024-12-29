@@ -18,6 +18,7 @@ const getPageByLocaleQuery = (locale: string) => `{
             id
             attributes {
                 title
+                hidden
                 content
                 updatedAt
                 publishedAt
@@ -42,8 +43,11 @@ export default async function page({
     responseData?.termsOfService.data?.attributes ?? null;
   const pageContent =
     responseData?.termsOfService.data?.attributes?.content ?? null;
-  if (responseError || !pageID || !pageContent) {
-    console.error(responseError);
+  if (responseError || !pageID || !pageContent || pageData?.hidden) {
+    console.error('responseError:', responseError);
+    console.error('pageID', pageID);
+    console.error('pageContent', pageContent);
+    console.error('hidden', pageData?.hidden ?? null);
     return notFound(); // 404 if no data
   }
 

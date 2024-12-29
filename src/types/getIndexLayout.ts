@@ -16,12 +16,19 @@ interface QuickLink {
   slug: string;
 }
 
+interface TermLink {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export interface FooterSectionType {
   description: string;
   contact_us_phone: string;
   contact_us_email: string;
   social_links: SocialLink[];
   quick_links: QuickLink[];
+  terms: TermLink[] | null;
 }
 
 interface PageAttributes {

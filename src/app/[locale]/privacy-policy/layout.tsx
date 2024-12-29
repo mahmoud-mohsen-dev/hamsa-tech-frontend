@@ -18,6 +18,7 @@ const getPageByLocaleQuery = (locale: string) => `{
       id
       attributes {
         title
+        hidden
         seo {
           metaTitle
           metaDescription
@@ -52,8 +53,10 @@ export async function generateMetadata({
   const seo = pageData?.seo;
   const seoImage = pageData?.seo_meta_image?.data?.attributes ?? null;
 
-  if (responseError || !pageData) {
-    console.error(responseError);
+  if (responseError || !pageData || pageData?.hidden) {
+    console.error('Meta tags - responseError:', responseError);
+    console.error('Meta tags - pageData:', pageData);
+    console.error('Meta tags - hidden:', pageData?.hidden ?? null);
     return {
       title: t('title'),
       description: t('description')

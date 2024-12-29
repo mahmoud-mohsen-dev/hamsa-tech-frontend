@@ -42,6 +42,7 @@ type PrivacyPolicy = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         content: ContentType[] | null;
         updatedAt: string;
         publishedAt: string;
@@ -61,6 +62,7 @@ type PrivacyPolicyMetaTagsData = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         seo: Seo | null;
         seo_meta_image: SeoMetaImage | null;
       };
@@ -81,6 +83,7 @@ type TermsOfService = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         content: ContentType[] | null;
         updatedAt: string;
         publishedAt: string;
@@ -100,6 +103,7 @@ type TermsOfServiceMetaTagsData = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         seo: Seo | null;
         seo_meta_image: SeoMetaImage | null;
       };
@@ -120,6 +124,7 @@ type ShippingPolicy = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         content: ContentType[] | null;
         updatedAt: string;
         publishedAt: string;
@@ -134,6 +139,7 @@ type ShippingPolicyMetaTagsData = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         seo: Seo | null;
         seo_meta_image: SeoMetaImage | null;
       };
@@ -159,6 +165,7 @@ type ReturnAndRefundPolicy = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         content: ContentType[] | null;
         updatedAt: string;
         publishedAt: string;
@@ -173,6 +180,7 @@ type ReturnAndRefundPolicyMetaTagsData = {
       id: string;
       attributes: {
         title: string | null;
+        hidden: boolean | null;
         seo: Seo | null;
         seo_meta_image: SeoMetaImage | null;
       };
@@ -187,5 +195,46 @@ export type GetReturnAndRefundPolicyResponseDataType = {
 
 export type GetReturnAndRefundPolicyResponseMetaDataType = {
   data: ReturnAndRefundPolicyMetaTagsData | null;
+  error: string | null;
+};
+
+// Warranty Terms
+
+type WarrantyTermsPolicy = {
+  warrantyTerm: {
+    data: {
+      id: string;
+      attributes: {
+        title: string | null;
+        content: ContentType[] | null;
+        updatedAt: string;
+        publishedAt: string;
+        hidden: boolean | null;
+      };
+    } | null;
+  };
+};
+
+type WarrantyTermsMetaTagsData = {
+  warrantyTerm: {
+    data: {
+      id: string;
+      attributes: {
+        title: string | null;
+        seo: Seo | null;
+        seo_meta_image: SeoMetaImage | null;
+        hidden: boolean | null;
+      };
+    } | null;
+  };
+};
+
+export type GetWarrantyTermsResponseDataType = {
+  data: WarrantyTermsPolicy | null;
+  error: string | null;
+};
+
+export type GetWarrantyTermsResponseMetaDataType = {
+  data: WarrantyTermsMetaTagsData | null;
   error: string | null;
 };

@@ -855,8 +855,17 @@
       "lastUpdated": "Last updated"
     },
     "metaData": {
-      "title": "Return and Refund Policy | Hamsa Tech",
+      "title": "Return and Refund Policy - Hamsa Tech",
       "description": "Learn about Hamsa Tech's return and refund policy, including how to return items, refund methods, and eligibility conditions."
+    }
+  },
+  "WarrantyTermsPage": {
+    "content": {
+      "lastUpdated": "Last updated"
+    },
+    "metaData": {
+      "title": "Warranty Terms - Hamsa Tech",
+      "description": "Learn about Hamsa Tech’s warranty terms, including duration, exclusions, and repair/replacement policy to ensure product quality and your satisfaction."
     }
   }
 }

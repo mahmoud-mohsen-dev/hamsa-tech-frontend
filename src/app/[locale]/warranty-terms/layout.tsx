@@ -1,5 +1,5 @@
 import { fetchGraphql } from '@/services/graphqlCrud';
-import { GetShippingPolicyResponseMetaDataType } from '@/types/singlePageReponseType';
+import { GetWarrantyTermsResponseMetaDataType } from '@/types/singlePageReponseType';
 import {
   getTranslations,
   unstable_setRequestLocale
@@ -13,7 +13,7 @@ interface PropsType {
 }
 
 const getPageByLocaleQuery = (locale: string) => `{
-  shippingPolicy(locale: ${locale === 'ar' || 'en' ? `"${locale}"` : '"en"'}) {
+  warrantyTerm(locale: ${locale === 'ar' || 'en' ? `"${locale}"` : '"en"'}) {
     data {
       id
       attributes {
@@ -42,14 +42,15 @@ export async function generateMetadata({
   params: { locale }
 }: PropsType) {
   unstable_setRequestLocale(locale);
-  const t = await getTranslations('ShippingPolicyPage.metaData');
+  const t = await getTranslations('WarrantyTermsPage.metaData');
   const { data: responseData, error: responseError } =
     (await fetchGraphql(
       getPageByLocaleQuery(locale)
-    )) as GetShippingPolicyResponseMetaDataType;
+    )) as GetWarrantyTermsResponseMetaDataType;
+  // console.log(JSON.stringify(responseData));
 
   const pageData =
-    responseData?.shippingPolicy.data?.attributes ?? null;
+    responseData?.warrantyTerm?.data?.attributes ?? null;
   const seo = pageData?.seo;
   const seoImage = pageData?.seo_meta_image?.data?.attributes ?? null;
 
@@ -65,21 +66,21 @@ export async function generateMetadata({
   }
 
   const siteUrl = process.env.BASE_URL || 'https://hamsatech-eg.com'; // Base URL of your site
-  const pageUrl = `${siteUrl}/${locale}/shipping-policy`;
+  const pageUrl = `${siteUrl}/${locale}/warranty-terms`;
 
   const title = seo?.metaTitle || pageData?.title || t('title');
   const description = seo?.metaDescription || t('description');
   const metaImageUrl =
     seoImage?.url || `${siteUrl}/image-not-found.png`;
   const metaImageAlt =
-    seoImage?.alternativeText || 'Shipping Policy Image';
+    seoImage?.alternativeText || 'Warranty Terms Image';
 
   return {
     title,
     description,
     keywords:
       seo?.keywords ||
-      `${title}, Hamsa Tech, Egypt provinces, delivery times, shipping rates, order tracking, shipping coverage`,
+      `${title}, Warranty Terms, Hamsa Tech, Warranty Policy, Product Repair, Product Replacement, Quality Guarantee, Warranty Duration, Manufacturing Defects, Electrical Issues, Technical Support`,
     openGraph: {
       title,
       description,
@@ -107,12 +108,12 @@ export async function generateMetadata({
       languages:
         locale === 'ar' ?
           {
-            'en-US': `${siteUrl}/en/shipping-policy`,
-            'ar-EG': `${siteUrl}/ar/shipping-policy`
+            'en-US': `${siteUrl}/en/warranty-terms`,
+            'ar-EG': `${siteUrl}/ar/warranty-terms`
           }
         : {
-            'en-US': `${siteUrl}/en/shipping-policy`,
-            'ar-EG': `${siteUrl}/ar/shipping-policy`
+            'en-US': `${siteUrl}/en/warranty-terms`,
+            'ar-EG': `${siteUrl}/ar/warranty-terms`
           }
     }
   };

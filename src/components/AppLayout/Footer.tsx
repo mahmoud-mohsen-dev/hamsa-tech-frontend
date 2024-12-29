@@ -10,6 +10,8 @@ import { getSocialMediaIcon } from '@/utils/getSocialMediaIcon';
 import Image from 'next/image';
 import Anchor from '../UI/Anchor';
 import { FaRegHeart } from 'react-icons/fa';
+import { v4 } from 'uuid';
+import React from 'react';
 
 interface PropsType {
   data: FooterSectionType;
@@ -131,7 +133,28 @@ function Footer({ data }: PropsType) {
         <div className='container w-full py-6'>
           <div className='sm:flex sm:items-center sm:justify-between'>
             <ul className='mb-6 flex flex-wrap items-center gap-3 text-sm font-medium text-gray-400 sm:mb-0'>
-              <li>
+              {data?.terms &&
+                data?.terms.length > 0 &&
+                data.terms.map((term, index, arr) => {
+                  return (
+                    <React.Fragment key={term.id}>
+                      <li>
+                        <Link
+                          href={term.slug ?? '/'}
+                          className='hover:text-gray-300'
+                        >
+                          {term.name}
+                        </Link>
+                      </li>
+                      {index !== arr.length - 1 && (
+                        <li>
+                          <span>|</span>
+                        </li>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              {/* <li>
                 <Link
                   href='/privacy-policy'
                   className='hover:text-gray-300'
@@ -182,7 +205,7 @@ function Footer({ data }: PropsType) {
                 >
                   {t('warrantyTermsText')}
                 </Link>
-              </li>
+              </li> */}
             </ul>
 
             <div className='flex flex-wrap items-center gap-5'>

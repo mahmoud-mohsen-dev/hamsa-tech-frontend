@@ -153,6 +153,11 @@ const getQueryLayoutPage = (locale: string) => `{
             name
             slug
           }
+          terms {
+              id
+              name
+              slug
+          }
         }
       }
     }

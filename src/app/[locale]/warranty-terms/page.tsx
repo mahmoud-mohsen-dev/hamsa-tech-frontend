@@ -4,7 +4,7 @@ import {
   unstable_setRequestLocale
 } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { GetPrivacyPolicyResponseDataType } from '@/types/singlePageReponseType';
+import { GetWarrantyTermsResponseDataType } from '@/types/singlePageReponseType';
 import { CreateBlockContent } from '@/components/UI/strapi-blocks/StrapiBlocks';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
 
@@ -13,13 +13,13 @@ interface PropsType {
 }
 
 const getPageByLocaleQuery = (locale: string) => `{
-    privacyPolicy(locale: ${locale === 'ar' || 'en' ? `"${locale}"` : '"en"'}) {
+    warrantyTerm(locale: ${locale === 'ar' || 'en' ? `"${locale}"` : '"en"'}) {
         data {
             id
             attributes {
                 title
-                hidden
                 content
+                hidden
                 updatedAt
                 publishedAt
             }
@@ -31,18 +31,18 @@ export default async function page({
   params: { locale }
 }: PropsType) {
   unstable_setRequestLocale(locale);
-  const t = await getTranslations('PrivacyPolicyPage.content');
+  const t = await getTranslations('WarrantyTermsPage.content');
   const { data: responseData, error: responseError } =
     (await fetchGraphql(
       getPageByLocaleQuery(locale)
-    )) as GetPrivacyPolicyResponseDataType;
-  //   console.log(JSON.stringify(responseData));
+    )) as GetWarrantyTermsResponseDataType;
+  // console.log(JSON.stringify(responseData));
 
-  const pageID = responseData?.privacyPolicy.data?.id ?? null;
+  const pageID = responseData?.warrantyTerm?.data?.id ?? null;
   const pageData =
-    responseData?.privacyPolicy.data?.attributes ?? null;
+    responseData?.warrantyTerm?.data?.attributes ?? null;
   const pageContent =
-    responseData?.privacyPolicy.data?.attributes?.content ?? null;
+    responseData?.warrantyTerm?.data?.attributes?.content ?? null;
   if (responseError || !pageID || !pageContent || pageData?.hidden) {
     console.error('responseError:', responseError);
     console.error('pageID', pageID);
