@@ -172,10 +172,7 @@ const Products = async ({
         className={`mt-3 grid ${locale === 'ar' ? 'lg:grid-cols-[250px_1fr] 2xl:ml-8' : 'lg:grid-cols-[240px_1fr] 2xl:mr-8'} gap-5`}
       >
         <FilterSidebar categoriesData={categoriesData} />
-        <ProductsWrapper
-        // productsData={productsData?.products?.data ?? null}
-        />
-        {/* )} */}
+        <ProductsWrapper />
       </div>
     </section>
     // </ConfigAntThemes>

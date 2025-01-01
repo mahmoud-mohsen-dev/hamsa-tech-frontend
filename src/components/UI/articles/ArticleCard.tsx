@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fa';
 import { Link } from '@/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import { formatDateByLocale } from '@/utils/dateHelpers';
 
 function TagLink({
   linkUrl,
@@ -65,7 +66,7 @@ function ArticleCard({
                   <TagLink
                     className='mx-1'
                     key={v4()}
-                    linkUrl={`/blog/${tag.linkUrl}`}
+                    linkUrl={`/blog/tags/${tag.linkUrl}`}
                     linkText={tag.linkText}
                   />
                 </span>
@@ -74,7 +75,7 @@ function ArticleCard({
             return (
               <span key={uuidv4()}>
                 <TagLink
-                  key={`/blog/${tag.linkUrl}`}
+                  key={`/blog/tags/${tag.linkUrl}`}
                   linkUrl={tag.linkUrl}
                   linkText={tag.linkText}
                 />
@@ -93,7 +94,7 @@ function ArticleCard({
       </div>
       <div className='relative grid grid-cols-[1fr_2px_1fr] border-t border-solid border-t-gray-ultralight pb-[5px] text-gray-medium'>
         <p className='h-full w-full text-center text-sm font-semibold leading-[61px]'>
-          {dayjs(content.publishDate).format('MMMM D, YYYY')}
+          {formatDateByLocale(content?.publishDate ?? null, locale)}
         </p>
         <div className='h-full w-[1px] bg-gray-ultralight'></div>
         <p className='text-center text-sm font-semibold capitalize leading-[61px]'>

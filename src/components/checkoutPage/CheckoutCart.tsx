@@ -3,7 +3,14 @@
 import { useMyContext } from '@/context/Store';
 import Image from 'next/image';
 import { formatCurrencyNumbers } from '@/utils/numbersFormating';
-import { Button, ConfigProvider, Divider, Form, Input } from 'antd';
+import {
+  Button,
+  ConfigProvider,
+  Divider,
+  Form,
+  Input,
+  Skeleton
+} from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import { GetCouponResponseType } from '@/types/getCouponResponseType';
@@ -11,6 +18,7 @@ import { generateISODateForGraphQL } from '@/utils/dateHelpers';
 import { useState } from 'react';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { FaDeleteLeft, FaTag } from 'react-icons/fa6';
+import { v4 } from 'uuid';
 
 const getCouponQuery = (name: string): string => {
   return `{
@@ -39,6 +47,7 @@ const getCouponQuery = (name: string): string => {
 function CheckoutCart() {
   const {
     cart,
+    isCartCheckoutLoading,
     calculateTotalCartItems,
     calculateSubTotalCartCost,
     couponData,
@@ -118,118 +127,164 @@ function CheckoutCart() {
       {/* {contextHolder} */}
       <div className='px-2 py-5 2xl:px-10'>
         <ul className='flex flex-col gap-3'>
-          {cart.map((item) => {
-            return (
-              <li
-                key={item.id}
-                className='flex flex-wrap items-center justify-between gap-2 xs:flex-nowrap'
-              >
-                <div className='grid w-full grid-cols-[54px_1fr] items-center gap-2'>
-                  <div className='overflow-hidden rounded border border-solid border-gray-light'>
-                    <Image
-                      src={
-                        item?.product?.data?.attributes
-                          ?.image_thumbnail?.data?.attributes?.url ??
-                        ''
-                      }
-                      alt={
-                        item?.product?.data?.attributes
-                          ?.image_thumbnail?.data?.attributes
-                          ?.alternativeText ?? ''
-                      }
-                      width={54}
-                      height={54}
-                      quality={100}
-                      className='min-h-[54px] min-w-[54px] object-contain'
-                    />
+          {isCartCheckoutLoading ?
+            [1, 2, 3].map(() => (
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '100%', height: '56px' }}
+              />
+            ))
+          : cart &&
+            cart.length > 0 &&
+            cart.map((item) => {
+              return (
+                <li
+                  key={item.id}
+                  className='flex flex-wrap items-center justify-between gap-2 xs:flex-nowrap'
+                >
+                  <div className='grid w-full grid-cols-[54px_1fr] items-center gap-2'>
+                    <div className='overflow-hidden rounded border border-solid border-gray-light'>
+                      <Image
+                        src={
+                          item?.product?.data?.attributes
+                            ?.image_thumbnail?.data?.attributes
+                            ?.url ?? ''
+                        }
+                        alt={
+                          item?.product?.data?.attributes
+                            ?.image_thumbnail?.data?.attributes
+                            ?.alternativeText ?? ''
+                        }
+                        width={54}
+                        height={54}
+                        quality={100}
+                        className='min-h-[54px] min-w-[54px] object-contain'
+                      />
+                    </div>
+                    <h4 className={`mx-1.5 font-sans text-sm`}>
+                      {item?.product?.data?.attributes?.name ?? ''}
+                    </h4>
                   </div>
-                  <h4 className={`mx-1.5 font-sans text-sm`}>
-                    {item?.product?.data?.attributes?.name ?? ''}
-                  </h4>
-                </div>
-                <div className='grid w-full grid-cols-3 grid-rows-1 justify-end gap-2 xs:grid-cols-[75px_20px_85px]'>
-                  <p className='font-sans text-sm' dir='ltr'>
-                    {formatCurrencyNumbers(
-                      item?.product.data.attributes
-                        .final_product_price,
-                      t('currency'),
-                      locale
-                    )}
-                  </p>
-                  <p className='font-sans text-sm'>
-                    {item?.quantity}
-                  </p>
-                  <p className='font-sans text-sm'>
-                    {formatCurrencyNumbers(
-                      item?.total_cost,
-                      t('currency'),
-                      locale
-                    )}
-                  </p>
-                </div>
-              </li>
-            );
-          })}
+                  <div className='grid w-full grid-cols-3 grid-rows-1 justify-end gap-2 xs:grid-cols-[75px_20px_85px]'>
+                    <p className='font-sans text-sm' dir='ltr'>
+                      {formatCurrencyNumbers(
+                        item?.product.data.attributes
+                          .final_product_price,
+                        t('currency'),
+                        locale
+                      )}
+                    </p>
+                    <p className='font-sans text-sm'>
+                      {item?.quantity}
+                    </p>
+                    <p className='font-sans text-sm'>
+                      {formatCurrencyNumbers(
+                        item?.total_cost,
+                        t('currency'),
+                        locale
+                      )}
+                    </p>
+                  </div>
+                </li>
+              );
+            })
+          }
         </ul>
 
-        <Form
-          name='couponForm'
-          onFinish={onFormFinished}
-          style={{
-            marginTop: '16px',
-            display: 'flex',
-            gap: '10px',
-            justifyContent: 'center'
-          }}
-        >
-          <Form.Item
-            name='coupon'
-            style={{ flexBasis: '100%', marginBottom: '0px' }}
-          >
-            <Input
-              type='text'
-              placeholder={t('couponPlaceholder')}
-              style={{
-                // borderRadius: '5px',
-                paddingBlock: '11px',
-                paddingInline: '13px',
-                fontSize: '14px'
-              }}
+        {isCartCheckoutLoading ?
+          <div className='mt-4 flex w-full items-center gap-2.5'>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{ width: '100%', height: '46px' }}
+              rootClassName='loading-node !basis-full'
             />
-          </Form.Item>
-          <Button
-            type='default'
-            htmlType='submit'
-            loading={couponLoading}
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '110px',
+                height: '46px'
+              }}
+              rootClassName='loading-node !basis-[fit-content]'
+            />
+          </div>
+        : <Form
+            name='couponForm'
+            onFinish={onFormFinished}
             style={{
-              // borderRadius: '5px',
-              fontSize: '14px',
-              width: '110px',
-              height: '46px'
+              marginTop: '16px',
+              display: 'flex',
+              gap: '10px',
+              justifyContent: 'center'
             }}
           >
-            {t('applyButtonText')}
-          </Button>
-        </Form>
+            <Form.Item
+              name='coupon'
+              style={{ flexBasis: '100%', marginBottom: '0px' }}
+            >
+              <Input
+                type='text'
+                placeholder={t('couponPlaceholder')}
+                style={{
+                  // borderRadius: '5px',
+                  paddingBlock: '11px',
+                  paddingInline: '13px',
+                  fontSize: '14px'
+                }}
+              />
+            </Form.Item>
+            <Button
+              type='default'
+              htmlType='submit'
+              loading={couponLoading}
+              style={{
+                // borderRadius: '5px',
+                fontSize: '14px',
+                width: '110px',
+                height: '46px'
+              }}
+            >
+              {t('applyButtonText')}
+            </Button>
+          </Form>
+        }
 
         <div
           className={`mt-4 flex items-center justify-between font-sans text-sm`}
         >
-          <div>
-            <span>{t('subtotalTitle')} • </span>
-            <span>
-              {totalCartQuantities === 1 ?
-                `${totalCartQuantities} ${t('itemTitle')}`
-              : `${totalCartQuantities} ${t('itemsTitle')}`}
-            </span>
-          </div>
-          <p>
-            {formatCurrencyNumbers(
-              subTotalCost,
-              t('currency'),
-              locale
-            )}
-          </p>
+          {isCartCheckoutLoading ?
+            <>
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '110px', height: '20px' }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '70px', height: '20px' }}
+              />
+            </>
+          : <>
+              <div>
+                <span>{t('subtotalTitle')} • </span>
+                <span>
+                  {totalCartQuantities === 1 ?
+                    `${totalCartQuantities} ${t('itemTitle')}`
+                  : `${totalCartQuantities} ${t('itemsTitle')}`}
+                </span>
+              </div>
+              <p>
+                {formatCurrencyNumbers(
+                  subTotalCost,
+                  t('currency'),
+                  locale
+                )}
+              </p>
+            </>
+          }
         </div>
 
         {couponDeductionValue > 0 && (
@@ -266,30 +321,46 @@ function CheckoutCart() {
         )}
 
         <div className='mt-1.5 flex flex-wrap items-center justify-between font-sans text-sm'>
-          <span>{t('shippingTitle')}</span>
-          <span
-            className={
-              checkIfApplyFreeShippingEnabled && deliveryCost ?
-                'line-through'
-              : ''
-            }
-          >
-            {deliveryCost ?
-              formatCurrencyNumbers(
-                deliveryCost,
-                t('currency'),
-                locale
-              )
-            : <p>{t('selectGovernorateForShippingCosts')}</p>}
-          </span>
-          {checkIfApplyFreeShippingEnabled && deliveryCost && (
-            <div className='mt-1 flex basis-full items-center justify-end gap-2'>
-              <FaTag className='-scale-x-100' size={14} />
-              <p className='text-sm font-normal'>
-                {t('freeShippingMessage')}
-              </p>
-            </div>
-          )}
+          {isCartCheckoutLoading ?
+            <>
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '85px', height: '20px' }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '280px', height: '20px' }}
+              />
+            </>
+          : <>
+              <span>{t('shippingTitle')}</span>
+              <span
+                className={
+                  checkIfApplyFreeShippingEnabled && deliveryCost ?
+                    'line-through'
+                  : ''
+                }
+              >
+                {deliveryCost ?
+                  formatCurrencyNumbers(
+                    deliveryCost,
+                    t('currency'),
+                    locale
+                  )
+                : <p>{t('selectGovernorateForShippingCosts')}</p>}
+              </span>
+              {checkIfApplyFreeShippingEnabled && deliveryCost && (
+                <div className='mt-1 flex basis-full items-center justify-end gap-2'>
+                  <FaTag className='-scale-x-100' size={14} />
+                  <p className='text-sm font-normal'>
+                    {t('freeShippingMessage')}
+                  </p>
+                </div>
+              )}
+            </>
+          }
         </div>
 
         <Divider
@@ -298,20 +369,36 @@ function CheckoutCart() {
         />
 
         <div className='mt-3 flex items-center justify-between font-sans'>
-          <span className='text-base font-semibold'>
-            {t('totalTitle')}
-          </span>
-          {deliveryCost ?
-            <span className='text-base font-semibold'>
-              {formatCurrencyNumbers(
-                totalOrderCost,
-                t('currency'),
-                locale
-              )}
-            </span>
-          : <span className='text-sm font-normal'>
-              {t('selectGovernorateForTotalOrder')}
-            </span>
+          {isCartCheckoutLoading ?
+            <>
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '45px', height: '20px' }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '250px', height: '20px' }}
+              />
+            </>
+          : <>
+              <span className='text-base font-semibold'>
+                {t('totalTitle')}
+              </span>
+              {deliveryCost ?
+                <span className='text-base font-semibold'>
+                  {formatCurrencyNumbers(
+                    totalOrderCost,
+                    t('currency'),
+                    locale
+                  )}
+                </span>
+              : <span className='text-sm font-normal'>
+                  {t('selectGovernorateForTotalOrder')}
+                </span>
+              }
+            </>
           }
         </div>
       </div>

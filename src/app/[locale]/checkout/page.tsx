@@ -1,8 +1,6 @@
 import CheckoutWrapper from '@/components/checkoutPage/CheckoutWrapper';
-import { getFreeShippingData } from '@/services/getFreeShippingData';
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { getShippingQuery } from '@/services/shippingAddress';
-import { FreeShippingResponseType } from '@/types/freeShippingResponseType';
 import { GetShippingCostResponseType } from '@/types/shippingCostResponseTypes';
 import { unstable_setRequestLocale } from 'next-intl/server';
 

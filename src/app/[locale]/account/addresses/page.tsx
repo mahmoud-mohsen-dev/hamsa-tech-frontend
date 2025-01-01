@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   ConfigProvider,
+  Empty,
   // Divider,
   Form,
   Input,
@@ -31,7 +32,7 @@ import {
 } from '@/services/shippingAddress';
 import { capitalize } from '@/utils/helpers';
 import { useTranslations } from 'next-intl';
-import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
+// import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
   GetShippingCostResponseType,
@@ -39,7 +40,7 @@ import {
 } from '@/types/shippingCostResponseTypes';
 import type { RadioChangeEvent } from 'antd';
 import { useUser } from '@/context/UserContext';
-import { useIsMount } from '@/hooks/useIsMount';
+import { AdressesType } from '@/types/addressResponseTypes';
 
 interface AddressFormValuesType {
   addressName: string;
@@ -58,6 +59,79 @@ interface AddressFormValuesType {
   shippingDetailsPostalCode?: string;
 }
 
+export function getDefaultActiveAddressId(
+  addressesData: AdressesType[] | null
+) {
+  return addressesData && addressesData.length > 0 ?
+      (addressesData
+        .map((address) =>
+          address?.attributes?.default ? address.id : null
+        )
+        .filter((address) => address !== null)
+        .at(-1) ?? null)
+    : null;
+  // (addressesData[0].id || null))null
+}
+
+export const updateDefaultAddressHandler = async ({
+  newDefaultAddressId,
+  addressesData,
+  setErrorMessage,
+  setAddressesData
+}: {
+  newDefaultAddressId: string | null;
+  addressesData: AdressesType[] | null;
+  setErrorMessage: React.Dispatch<
+    React.SetStateAction<string | null>
+  >;
+  setAddressesData: React.Dispatch<
+    React.SetStateAction<AdressesType[] | null>
+  >;
+}) => {
+  if (
+    !addressesData ||
+    addressesData?.length <= 0 ||
+    !newDefaultAddressId
+  ) {
+    console.error('addressesData', addressesData);
+    console.error('newDefaultAddressId', newDefaultAddressId);
+    setErrorMessage('Something went wrong, please try again later!');
+    return;
+  }
+
+  const newArr = addressesData.map((address) => ({
+    id: address?.id ?? null,
+    isDefault: address?.attributes?.default ?? false
+  }));
+
+  try {
+    const { addressesData: updatedAddressesData, addressesError } =
+      await updateDefaultAddress({
+        addresses: newArr,
+        defaultAddressId: newDefaultAddressId
+      });
+
+    if (addressesError || !updatedAddressesData) {
+      console.error('addressesError', addressesError);
+      console.error('updatedAddressesData', updatedAddressesData);
+      setErrorMessage(
+        typeof addressesError === 'string' ? addressesError : (
+          'Something went wrong, please try again later!'
+        )
+      );
+      return;
+    }
+
+    console.log(updatedAddressesData);
+    setAddressesData(updatedAddressesData);
+    return updatedAddressesData;
+  } catch (error) {
+    console.error('error', error);
+    setErrorMessage('Something went wrong, please try again later!');
+    return;
+  }
+};
+
 function SettingsPage({
   params: { locale }
 }: {
@@ -75,6 +149,7 @@ function SettingsPage({
   const { addressesData, setAddressesData } = useUser();
 
   // const { contextHolder } = useHandleMessagePopup();
+  console.log(addressesData);
 
   const [open, setOpen] = useState<boolean>(false);
   const [formAddress] = useForm<AddressFormValuesType>();
@@ -82,16 +157,19 @@ function SettingsPage({
   const [shippingCostData, setShippingCostData] = useState<
     null | ShippingCostDataType[]
   >(null);
-  const [defaultActiveAddress, setDefaultActiveAddress] = useState<
-    string | null
-  >(null);
+  // const [defaultActiveAddress, setDefaultActiveAddress] = useState<
+  //   string | null
+  // >(null);
   const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [editAddressId, setEditAddressId] = useState<null | string>(
     null
   );
-  const { didMount: isFirstRender } = useIsMount();
+  const defaultActiveAddressId =
+    getDefaultActiveAddressId(addressesData);
 
-  console.log('defaultActiveAddress', defaultActiveAddress);
+  // const { didMount: isFirstRender } = useIsMount();
+
+  console.log('defaultActiveAddress', defaultActiveAddressId);
   console.log('editAddressId', editAddressId);
   console.log('modalLoading', modalLoading);
 
@@ -105,20 +183,20 @@ function SettingsPage({
     formAddress.resetFields();
   };
 
-  useEffect(() => {
-    if (addressesData && addressesData.length > 0) {
-      setDefaultActiveAddress(() => {
-        return (
-          addressesData
-            .map((address) =>
-              address?.attributes?.default ? address.id : null
-            )
-            .filter((address) => address)
-            .at(-1) ?? addressesData[0].id
-        );
-      });
-    }
-  }, [addressesData]);
+  // useEffect(() => {
+  //   if (addressesData && addressesData.length > 0) {
+  //     setDefaultActiveAddress(() => {
+  //       return (
+  //         addressesData
+  //           .map((address) =>
+  //             address?.attributes?.default ? address.id : null
+  //           )
+  //           .filter((address) => address)
+  //           .at(-1) ?? addressesData[0].id
+  //       );
+  //     });
+  //   }
+  // }, [addressesData]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -150,49 +228,71 @@ function SettingsPage({
 
   useEffect(() => {
     if (
-      !addressesData ||
-      addressesData?.length <= 0 ||
-      typeof defaultActiveAddress !== 'string' ||
-      isFirstRender
+      !defaultActiveAddressId &&
+      addressesData &&
+      addressesData.length > 0 &&
+      addressesData[0]?.id
     ) {
-      return;
+      console.warn('updating default active address');
+      updateDefaultAddressHandler({
+        newDefaultAddressId: addressesData[0].id,
+        addressesData,
+        setErrorMessage,
+        setAddressesData
+      });
     }
+  }, [addressesData]);
 
-    const newArr = addressesData.map((address) => ({
-      id: address?.id ?? null,
-      isDefault: address?.attributes?.default ?? false
-    }));
+  // useEffect(
+  //   () => {
+  //     if (
+  //       !addressesData ||
+  //       addressesData?.length <= 0 ||
+  //       typeof defaultActiveAddress !== 'string' ||
+  //       isFirstRender
+  //     ) {
+  //       return;
+  //     }
 
-    const updateDefaultAddressHandler = async () => {
-      const { addressesData: updatedAddressesData, addressesError } =
-        await updateDefaultAddress({
-          addresses: newArr,
-          defaultAddressId: defaultActiveAddress
-        });
+  //     const newArr = addressesData.map((address) => ({
+  //       id: address?.id ?? null,
+  //       isDefault: address?.attributes?.default ?? false
+  //     }));
 
-      if (addressesError || !updatedAddressesData) {
-        console.error('addressesError', addressesError);
-        console.error('updatedAddressesData', updatedAddressesData);
-        setErrorMessage(
-          typeof addressesError === 'string' ? addressesError : (
-            'Some thing went wrong'
-          )
-        );
-        return;
-      }
+  //     const updateDefaultAddressHandler = async () => {
+  //       const {
+  //         addressesData: updatedAddressesData,
+  //         addressesError
+  //       } = await updateDefaultAddress({
+  //         addresses: newArr,
+  //         defaultAddressId: defaultActiveAddress
+  //       });
 
-      console.log(updatedAddressesData);
-      setAddressesData(updatedAddressesData);
-    };
+  //       if (addressesError || !updatedAddressesData) {
+  //         console.error('addressesError', addressesError);
+  //         console.error('updatedAddressesData', updatedAddressesData);
+  //         setErrorMessage(
+  //           typeof addressesError === 'string' ? addressesError : (
+  //             'Some thing went wrong'
+  //           )
+  //         );
+  //         return;
+  //       }
 
-    updateDefaultAddressHandler();
-  }, [
-    defaultActiveAddress,
-    addressesData,
-    isFirstRender,
-    setAddressesData,
-    setErrorMessage
-  ]);
+  //       console.log(updatedAddressesData);
+  //       setAddressesData(updatedAddressesData);
+  //     };
+
+  //     updateDefaultAddressHandler();
+  //   },
+  //   [
+  //     // defaultActiveAddress,
+  //     // addressesData,
+  //     // // isFirstRender,
+  //     // setAddressesData,
+  //     // setErrorMessage
+  //   ]
+  // );
 
   // Function to handle form submission
   const onFinish = async (formValues: AddressFormValuesType) => {
@@ -357,10 +457,10 @@ function SettingsPage({
       await getUserAddressesAuthenticated();
     if (addressesError || !addressesData) {
       console.error(addressesError);
-      return;
+      return null;
     }
     console.log(addressesData);
-    setAddressesData(addressesData);
+    return addressesData;
   };
 
   const handleSubmit = async () => {
@@ -396,19 +496,37 @@ function SettingsPage({
         addressesId: addressesId
       });
 
-      if (updatedAddressesData && updatedAddressesData.length > 0) {
-        setAddressesData(updatedAddressesData);
-
-        setSuccessMessage(checkoutTranslation('form.successMessage'));
-
-        formAddress.resetFields();
-        setOpen(false);
-      } else if (updatedAdderssesError) {
+      if (updatedAdderssesError || !updatedAddressesData) {
         console.error(updatedAdderssesError);
         throw new Error(
           checkoutTranslation('form.formSubmissionFailed')
         );
       }
+
+      const isDefaultChecked = fields?.isDefault ?? false;
+      console.log(isDefaultChecked);
+      if (!isDefaultChecked) {
+        setAddressesData(updatedAddressesData);
+        setSuccessMessage(checkoutTranslation('form.successMessage'));
+
+        formAddress.resetFields();
+        setOpen(false);
+        return;
+      }
+
+      const updatedAddresses = await updateDefaultAddressHandler({
+        newDefaultAddressId: `${createdAddressId}`,
+        addressesData: updatedAddressesData,
+        setAddressesData,
+        setErrorMessage
+      });
+      console.log(
+        'updatedAddresses updatedAddresses',
+        updatedAddresses
+      );
+      setSuccessMessage(checkoutTranslation('form.successMessage'));
+      formAddress.resetFields();
+      setOpen(false);
     } catch (err) {
       console.error('Failed to validate fields:', err);
       onFinishFailed(err);
@@ -435,7 +553,28 @@ function SettingsPage({
           checkoutTranslation('form.formSubmissionFailed')
         );
       }
-      await getAddressesData();
+
+      const isDefaultChecked = fields?.isDefault ?? false;
+      console.log(isDefaultChecked);
+      const newAddressesData = await getAddressesData();
+      console.log(newAddressesData);
+      if (!isDefaultChecked) {
+        setAddressesData(newAddressesData);
+        setSuccessMessage(checkoutTranslation('form.successMessage'));
+
+        setOpen(false);
+        setEditAddressId(null);
+        formAddress.resetFields();
+        return;
+      }
+
+      const updatedAddresses = await updateDefaultAddressHandler({
+        newDefaultAddressId: `${editAddressId}`,
+        addressesData: newAddressesData,
+        setAddressesData,
+        setErrorMessage
+      });
+      console.log('edit updatedAddresses', updatedAddresses);
       setSuccessMessage(checkoutTranslation('form.successMessage'));
 
       setOpen(false);
@@ -474,7 +613,7 @@ function SettingsPage({
             formAddress.setFieldsValue({
               addressName:
                 addressData?.attributes?.address_name ?? '',
-              isDefault: addressData?.attributes?.default ?? '',
+              isDefault: addressData?.attributes?.default ?? false,
               shippingDetailsFirstName:
                 addressData?.attributes?.first_name ?? '',
               shippingDetailsLastName:
@@ -519,7 +658,7 @@ function SettingsPage({
           resolve(addressData);
         })
         .catch((error) => {
-          reject(error);
+          console.error(error);
           return;
         })
         .finally(() => {
@@ -530,7 +669,14 @@ function SettingsPage({
 
   const onChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
-    setDefaultActiveAddress(e.target.value);
+    // setDefaultActiveAddress(e.target.value);
+
+    updateDefaultAddressHandler({
+      newDefaultAddressId: e.target.value,
+      addressesData,
+      setAddressesData,
+      setErrorMessage
+    });
   };
 
   const confirmDelete = async (addressId: string | null) => {
@@ -543,7 +689,8 @@ function SettingsPage({
       return;
     }
 
-    await getAddressesData();
+    const newAddresses = await getAddressesData();
+    setAddressesData(newAddresses);
     setSuccessMessage('Address was deleted successfully');
   };
 
@@ -609,27 +756,26 @@ function SettingsPage({
 
             {/* content addresses */}
             <div className='mt-8'>
-              <Radio.Group
-                style={{
-                  width: '100%',
-                  display: 'grid',
-                  gap: '20px',
-                  gridTemplateColumns:
-                    'repeat(auto-fill, minmax(315px, 1fr))'
-                }}
-                // id='shippingAddress'
-                name='defaultAddress'
-                // defaultValue={defaultActiveAddress}
-                value={defaultActiveAddress}
-                onChange={onChange}
-              >
-                {addressesData &&
-                  addressesData.length > 0 &&
-                  addressesData.map((address, i) => {
+              {addressesData && addressesData.length > 0 ?
+                <Radio.Group
+                  style={{
+                    width: '100%',
+                    display: 'grid',
+                    gap: '20px',
+                    gridTemplateColumns:
+                      'repeat(auto-fill, minmax(315px, 1fr))'
+                  }}
+                  // id='shippingAddress'
+                  name='defaultAddress'
+                  // defaultValue={defaultActiveAddress}
+                  value={defaultActiveAddressId}
+                  onChange={onChange}
+                >
+                  {addressesData.map((address, i) => {
                     const comma = locale === 'ar' ? '،' : ',';
                     return (
                       <div
-                        className={`${defaultActiveAddress === address.id ? 'border-blue-light shadow-featuredHovered' : 'border-gray-light shadow-featured'} rounded-md border p-4`}
+                        className={`${defaultActiveAddressId === address.id ? 'border-blue-light shadow-featuredHovered' : 'border-gray-light shadow-featured'} rounded-md border p-4`}
                         key={i}
                       >
                         <Radio
@@ -707,7 +853,7 @@ function SettingsPage({
                               </p>
                             </div>
                             <div className='space-y-1'>
-                              {defaultActiveAddress === address.id ?
+                              {defaultActiveAddressId === address.id ?
                                 <div className='my-4 w-fit rounded bg-green-dark px-4 py-2 text-white'>
                                   {t('card.defaultAddress')}
                                 </div>
@@ -751,7 +897,11 @@ function SettingsPage({
                       </div>
                     );
                   })}
-              </Radio.Group>
+                </Radio.Group>
+              : <div className='mt-5 grid min-h-[400px] place-content-center'>
+                  <Empty />
+                </div>
+              }
             </div>
           </div>
 

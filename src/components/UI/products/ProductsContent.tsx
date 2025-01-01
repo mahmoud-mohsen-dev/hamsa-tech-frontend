@@ -8,7 +8,7 @@ import { usePathname, useRouter } from '@/navigation';
 import { fetchProducts } from '@/services/products';
 import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
 import { getBadge } from '@/utils/getBadge';
-import { Empty, Pagination, Spin } from 'antd';
+import { Empty, Pagination, Skeleton, Spin } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -25,11 +25,12 @@ function ProductsContent() {
     productsData,
     completeProductsApiData,
     setCompleteProductsApiData,
-    globaLoading,
-    setGlobalLoading,
+    // globaLoading,
+    // setGlobalLoading,
     setToggleFilters,
     setErrorMessage
   } = useMyContext();
+  const [contentIsLoading, setContentIsLoading] = useState(true);
 
   const { setUserId } = useUser();
   const locale = useLocale();
@@ -68,7 +69,7 @@ function ProductsContent() {
   const getProducts = async () => {
     try {
       // setLoading(true);
-      setGlobalLoading(true);
+      setContentIsLoading(true);
       const { data: resData, error: resError } = await fetchProducts(
         category,
         subCategory,
@@ -99,7 +100,7 @@ function ProductsContent() {
       setProductsData([]);
     } finally {
       // setLoading(false);
-      setGlobalLoading(false);
+      setContentIsLoading(false);
     }
   };
 
@@ -271,19 +272,53 @@ function ProductsContent() {
     <div>
       {/* {contextHolder} */}
       <div className='flex flex-wrap items-center justify-between gap-4'>
-        <h4 className='text-sm font-medium text-black-medium'>
-          {/* {data?.children?.length ?? 0}{' '} */}
-          <span className='text-gray-normal'>
-            {t(`foundItems`, {
-              count:
-                completeProductsApiData?.meta?.pagination?.total ?
-                  completeProductsApiData?.meta?.pagination?.total
-                : productsData.length > 0 ? productsData.length
-                : 0
-            })}
-          </span>
-        </h4>
-        <Sorter />
+        {contentIsLoading ?
+          <>
+            <div>
+              <Skeleton.Node
+                active={true}
+                style={{
+                  width: '135px',
+                  height: '32px',
+                  borderRadius: '6px'
+                }}
+              />
+            </div>
+            <div className='flex items-center gap-5'>
+              <Skeleton.Node
+                active={true}
+                style={{
+                  width: '120px',
+                  height: '32px',
+                  borderRadius: '6px'
+                }}
+              />
+              <Skeleton.Node
+                active={true}
+                style={{
+                  width: '220px',
+                  height: '32px',
+                  borderRadius: '6px'
+                }}
+              />
+            </div>
+          </>
+        : <>
+            <h4 className='text-sm font-medium text-black-medium'>
+              {/* {data?.children?.length ?? 0}{' '} */}
+              <span className='text-gray-normal'>
+                {t(`foundItems`, {
+                  count:
+                    completeProductsApiData?.meta?.pagination?.total ?
+                      completeProductsApiData?.meta?.pagination?.total
+                    : productsData.length > 0 ? productsData.length
+                    : 0
+                })}
+              </span>
+            </h4>
+            <Sorter />
+          </>
+        }
       </div>
       <Btn
         className='mt-3 flex items-center gap-2 bg-black-medium text-sm text-white lg:hidden'
@@ -293,12 +328,63 @@ function ProductsContent() {
         <FaFilter />
       </Btn>
 
-      {globaLoading ?
-        <Spin
-          size='large'
-          className='min-h-[500px] w-full place-content-center'
-          style={{ display: 'grid' }}
-        />
+      {/* {true ? */}
+      {/* // <Spin */}
+      {/* //   size='large'
+        //   className='min-h-[500px] w-full place-content-center'
+        //   style={{ display: 'grid' }}
+        // /> */}
+      {contentIsLoading ?
+        <div className='mt-5 grid gap-4 xl:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4'>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((item) => {
+            return (
+              <div
+                key={item}
+                className='min-w-[260px] overflow-hidden rounded-lg border border-gray-200'
+              >
+                <Skeleton.Image
+                  active={true}
+                  style={{
+                    width: '100%',
+                    height: '160px',
+                    borderRadius: '0px'
+                  }}
+                  rootClassName='loading-product-image'
+                />
+                <div className='mt-2 w-full p-5'>
+                  <Skeleton.Node
+                    active={true}
+                    style={{ width: '50%', height: '12px' }}
+                    rootClassName='loading-node'
+                  />
+                  <Skeleton.Node
+                    active={true}
+                    style={{ width: '100%', height: '12px' }}
+                    rootClassName='loading-node'
+                  />
+                  <Skeleton.Node
+                    active={true}
+                    style={{ width: '100%', height: '12px' }}
+                    rootClassName='loading-node'
+                  />
+                  <Skeleton.Node
+                    active={true}
+                    style={{ width: '30%', height: '12px' }}
+                    rootClassName='loading-node'
+                  />
+                </div>
+                <div className='w-full px-5 pb-5'>
+                  <Skeleton.Button
+                    active={true}
+                    size={'large'}
+                    shape={'square'}
+                    block={true}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
       : productsData === null || productsData.length === 0 ?
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}

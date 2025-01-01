@@ -562,6 +562,9 @@ export const updateDefaultAddress = async ({
     const updatedAddresses = [];
     for (const address of addresses) {
       if (address.id === defaultAddressId) {
+        console.log(address.id === defaultAddressId);
+        console.log(address.id);
+        console.log(defaultAddressId);
         address.isDefault = true;
 
         const { data, error } =

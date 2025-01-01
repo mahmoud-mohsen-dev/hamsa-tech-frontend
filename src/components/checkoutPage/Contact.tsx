@@ -5,7 +5,7 @@ import { Checkbox, Form, Input } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-function Contact() {
+function Contact({ isPageLoading }: { isPageLoading: boolean }) {
   const t = useTranslations('CheckoutPage.content');
   const [isUserLoggedIn, setUserLoggedIn] = useState<null | string>(
     null

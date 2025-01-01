@@ -123,6 +123,14 @@ const MyContext = createContext<{
   setIsSearchbarLoading: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  isCartCheckoutLoading: boolean;
+  setIsCartCheckoutLoading: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  isAddressIsLoading: boolean;
+  setIsAddressIsLoading: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 } | null>(null);
 
 export const StoreContextProvider = ({
@@ -174,6 +182,9 @@ export const StoreContextProvider = ({
   > | null>(null);
   const [searchTerm, setSearchTerm] = useState<null | string>(null);
   const [isSearchbarLoading, setIsSearchbarLoading] = useState(false);
+  const [isCartCheckoutLoading, setIsCartCheckoutLoading] =
+    useState(true);
+  const [isAddressIsLoading, setIsAddressIsLoading] = useState(true);
 
   // Utility to find product in the cart
   const findProductInCart = (productId: string) =>
@@ -450,7 +461,11 @@ export const StoreContextProvider = ({
         searchTerm,
         setSearchTerm,
         isSearchbarLoading,
-        setIsSearchbarLoading
+        setIsSearchbarLoading,
+        isCartCheckoutLoading,
+        setIsCartCheckoutLoading,
+        isAddressIsLoading,
+        setIsAddressIsLoading
       }}
     >
       {children}

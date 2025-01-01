@@ -302,12 +302,14 @@ function Header({ navLinks, productsSubNav }: PropsType) {
   const {
     cart,
     setCart,
+    setIsCartCheckoutLoading,
     setOpenDrawer,
     setDrawerIsLoading,
     setTotalCartCost,
     setWishlistsData,
     wishlistsData,
-    setIsWishlistLoading
+    setIsWishlistLoading,
+    setIsAddressIsLoading
   } = useMyContext();
   const [linkHovered, setLinkHovered] = useState('');
   const { userId, setAddressesData } = useUser();
@@ -346,6 +348,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
         await createCart();
       } else {
         try {
+          setIsCartCheckoutLoading(true);
           const { data, error }: GetCartResponseType =
             await fetchGraphqlClient(getCartQuery(Number(cartId)));
 
@@ -371,6 +374,8 @@ function Header({ navLinks, productsSubNav }: PropsType) {
           }
         } catch (error) {
           console.error('Failed to fetch cart', error);
+        } finally {
+          setIsCartCheckoutLoading(false);
         }
       }
     };
@@ -566,14 +571,21 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     handleRequests();
 
     const getAddressData = async () => {
-      const { addressesData, addressesError } =
-        await getUserAddressesAuthenticated();
-      if (addressesError || !addressesData) {
-        console.error(addressesError);
-        return;
+      try {
+        setIsAddressIsLoading(true);
+        const { addressesData, addressesError } =
+          await getUserAddressesAuthenticated();
+        if (addressesError || !addressesData) {
+          console.error(addressesError);
+          return;
+        }
+        // console.log(addressesData);
+        setAddressesData(addressesData);
+      } catch (error) {
+        console.error('Failed to fetch addresses', error);
+      } finally {
+        setIsAddressIsLoading(false);
       }
-      // console.log(addressesData);
-      setAddressesData(addressesData);
     };
 
     getAddressData();

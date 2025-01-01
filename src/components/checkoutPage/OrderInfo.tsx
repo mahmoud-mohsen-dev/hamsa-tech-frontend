@@ -36,6 +36,11 @@ import {
 } from '@/types/paymentResonseType';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { createAddress } from '@/services/shippingAddress';
+import { useEffect, useState } from 'react';
+import { useUser } from '@/context/UserContext';
+import { AdressesType } from '@/types/addressResponseTypes';
+import { PiNutFill } from 'react-icons/pi';
+import { getDefaultActiveAddressId } from '@/app/[locale]/account/addresses/page';
 
 const updateGuestUserQuery = (
   guestUserId: string,
@@ -324,13 +329,25 @@ function OrderInfo({
     calculateTotalOrderCost,
     setLoadingMessage,
     setErrorMessage,
-    setSuccessMessage
+    setSuccessMessage,
+    isCartCheckoutLoading,
+    isAddressIsLoading
   } = useMyContext();
+  const { addressesData } = useUser();
+  // const [defaultAddress, setDefaultAddress] =
+  //   useState<null | AdressesType>(null);
+
   // const [messageApi, contextHolder] = message.useMessage();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('CheckoutPage.content');
   // const [loading, setLoading] = useState(false);
+  const defaultActiveAddressId =
+    getDefaultActiveAddressId(addressesData);
+
+  console.log('defaultActiveAddressId', defaultActiveAddressId);
+
+  const isPageLoading = isAddressIsLoading || isCartCheckoutLoading;
 
   const handlePayment = async ({
     emailOrPhone,
@@ -634,6 +651,9 @@ function OrderInfo({
     console.log('Form failed:', errorInfo);
   };
 
+  console.log('addresses', addressesData);
+  // console.log('default address', defaultAddress);
+
   return (
     <ConfigProvider
       theme={{
@@ -675,7 +695,7 @@ function OrderInfo({
         }}
       >
         {/* Deliver Section */}
-        <Contact />
+        <Contact isPageLoading={isPageLoading} />
         {/* Deliver Section */}
         <h2 className='mt-4 text-xl font-semibold'>
           {t('deliveryTitle')}

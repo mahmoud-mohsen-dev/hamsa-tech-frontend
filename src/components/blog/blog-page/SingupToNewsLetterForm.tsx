@@ -26,42 +26,46 @@ const createGuestUserQuery = (
   }`;
 };
 
-const handleCreateGuestUser = async ({
-  errorMessageHandler,
-  successMessageHandler,
-  email = null,
-  handleClear,
-  setIsLoading
-}: {
-  errorMessageHandler: () => void;
-  successMessageHandler: () => void;
-  email: string | null;
-  handleClear: () => void;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  try {
-    setIsLoading(true);
-    const { data: guestUserData, error: guestUserError } =
-      (await fetchGraphqlClient(
-        createGuestUserQuery(true, email)
-      )) as CreateGuestUserResponseType;
+export const handleCreateGuestWithSubscribeToNewsAndOffersUser =
+  async ({
+    errorMessageHandler,
+    successMessageHandler,
+    email = null,
+    handleClear,
+    setIsLoading
+  }: {
+    errorMessageHandler: () => void;
+    successMessageHandler: () => void;
+    email: string | null;
+    handleClear: () => void;
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => {
+    try {
+      setIsLoading(true);
+      const { data: guestUserData, error: guestUserError } =
+        (await fetchGraphqlClient(
+          createGuestUserQuery(true, email)
+        )) as CreateGuestUserResponseType;
 
-    if (guestUserError || !guestUserData?.createGuestUser?.data?.id) {
-      console.error('Failed to create guest user');
+      if (
+        guestUserError ||
+        !guestUserData?.createGuestUser?.data?.id
+      ) {
+        console.error('Failed to create guest user');
+        errorMessageHandler();
+        return;
+      }
+
+      console.log(guestUserData?.createGuestUser?.data?.id);
+      successMessageHandler();
+    } catch (e) {
+      console.error('Failed to create guest user', e);
       errorMessageHandler();
-      return;
+    } finally {
+      handleClear();
+      setIsLoading(false);
     }
-
-    console.log(guestUserData?.createGuestUser?.data?.id);
-    successMessageHandler();
-  } catch (e) {
-    console.error('Failed to create guest user', e);
-    errorMessageHandler();
-  } finally {
-    handleClear();
-    setIsLoading(false);
-  }
-};
+  };
 
 function SingupToNewsLetterForm() {
   const locale = useLocale();
@@ -78,7 +82,7 @@ function SingupToNewsLetterForm() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    handleCreateGuestUser({
+    handleCreateGuestWithSubscribeToNewsAndOffersUser({
       errorMessageHandler: () => {
         setErrorMessage(t('errorMessage'));
       },

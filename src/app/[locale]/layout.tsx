@@ -22,7 +22,7 @@ import ScrollNavbarListener from '@/components/UI/navbar/ScrollNavbarListener';
 import { NavbarProductsCategoriesResponseType } from '@/types/getNavbarProductsCategories';
 import AppDrawer from '@/components/UI/cart/AppDrawer';
 import CustomSWRConfig from '@/lib/CustomSWRConfig';
-import { getProductsQuery } from '@/services/products';
+// import { getProductsQuery } from '@/services/products';
 import { ProductsResponseType } from '@/types/getProducts';
 import { UserProvider } from '@/context/UserContext';
 import Script from 'next/script';
@@ -232,17 +232,17 @@ export default async function LocaleLayout({
     console.error('Failed to fetch navbar products categories data'); // Let Next.js handle the error
   }
 
-  const { data: productsData, error: productsError } =
-    (await fetchGraphql(
-      getProductsQuery(
-        `locale: "${locale ?? 'en'}" , pagination: { page: 1, pageSize: 20 }`
-      )
-    )) as ProductsResponseType;
+  // const { data: productsData, error: productsError } =
+  //   (await fetchGraphql(
+  //     getProductsQuery(
+  //       `locale: "${locale ?? 'en'}" , pagination: { page: 1, pageSize: 20 }`
+  //     )
+  //   )) as ProductsResponseType;
 
-  if (productsError || !productsData) {
-    console.log('Error fetching products');
-    console.error(productsError);
-  }
+  // if (productsError || !productsData) {
+  //   console.log('Error fetching products');
+  //   console.error(productsError);
+  // }
 
   // console.log(JSON.stringify(productsData));
 
@@ -282,12 +282,13 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <StoreContextProvider
             initialProductsData={
-              (
-                productsData?.products?.data &&
-                productsData?.products?.data.length > 0
-              ) ?
-                productsData?.products?.data
-              : []
+              // (
+              //   productsData?.products?.data &&
+              //   productsData?.products?.data.length > 0
+              // ) ?
+              //   productsData?.products?.data
+              // : []
+              []
             }
           >
             <BlogContextProvider>

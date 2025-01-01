@@ -2,7 +2,7 @@
 import { FaPhoneVolume } from 'react-icons/fa6';
 import { IoMdMail } from 'react-icons/io';
 import { MdDoubleArrow } from 'react-icons/md';
-import SubcribeInput from '../UI/embla/SubcribeInput';
+import SubscribeInput from '../UI/embla/SubscribeInput';
 import { Link } from '@/navigation';
 import { FooterSectionType } from '@/types/getIndexLayout';
 import { useLocale, useTranslations } from 'next-intl';
@@ -94,7 +94,7 @@ function Footer({ data }: PropsType) {
           <h4 className='mb-5 text-gray-400'>
             {t('newsLetterDescription')}
           </h4>
-          <SubcribeInput />
+          <SubscribeInput />
         </div>
         <div>
           <h2 className='mb-5 text-2xl font-bold text-white xl:mb-7'>

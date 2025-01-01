@@ -672,3 +672,17 @@ body:has(.ant-modal-mask) {
 .ant-otp.ant-otp-lg .ant-otp-input {
   padding-block: 14px;
 }
+
+.ant-skeleton.ant-skeleton-element.loading-product-image {
+  width: 100%;
+}
+.ant-skeleton.ant-skeleton-element.loading-product-image
+  .ant-skeleton-image
+  .ant-skeleton-image-svg {
+  width: 90px;
+  height: 90px;
+}
+
+.ant-skeleton.ant-skeleton-element.loading-node {
+  width: 100%;
+}
