@@ -75,8 +75,8 @@ function ArticleCard({
             return (
               <span key={uuidv4()}>
                 <TagLink
-                  key={`/blog/tags/${tag.linkUrl}`}
-                  linkUrl={tag.linkUrl}
+                  key={v4()}
+                  linkUrl={`/blog/tags/${tag.linkUrl}`}
                   linkText={tag.linkText}
                 />
               </span>

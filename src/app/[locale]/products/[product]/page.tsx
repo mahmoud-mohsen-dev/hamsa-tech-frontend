@@ -322,26 +322,32 @@ export default async function Product({
                   }
                 />
                 {productData?.tags?.data.length > 0 && (
-                  <div className='flex flex-wrap items-center'>
-                    <Info
-                      infoKey={`${t('tagsText')}:`}
-                      value={productData?.tags?.data.map(
-                        (tag, i, arr) => (
-                          <div key={tag?.id}>
-                            <Link
-                              href={tag?.attributes?.slug ?? '/'}
-                              className='transition-colors duration-150 ease-out hover:text-yellow-medium'
-                            >
-                              {tag?.attributes?.name ?? ''}
-                            </Link>
-                            {i < arr.length - 1 && (
-                              <span className='mr-2'>,</span>
-                            )}
-                          </div>
-                        )
-                      )}
-                    />
-                  </div>
+                  <Info
+                    infoKey={`${t('tagsText')}:`}
+                    value={
+                      <div className='flex flex-wrap items-center'>
+                        {productData?.tags?.data.map(
+                          (tag, i, arr) => (
+                            <div key={tag?.id}>
+                              <Link
+                                href={
+                                  tag?.attributes?.slug ?
+                                    `/products/tags/${tag?.attributes?.slug}`
+                                  : '/'
+                                }
+                                className='transition-colors duration-150 ease-out hover:text-yellow-medium'
+                              >
+                                {tag?.attributes?.name ?? ''}
+                              </Link>
+                              {i < arr.length - 1 && (
+                                <span className='mr-2'>,</span>
+                              )}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    }
+                  />
                 )}
                 <Info
                   infoKey={`${t('shareText')}:`}

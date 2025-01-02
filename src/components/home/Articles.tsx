@@ -59,7 +59,7 @@ function Articles({ data }: PropsType) {
                 tags: data?.blogs?.data[0]?.attributes?.tags?.data?.map(
                   (tag) => ({
                     linkUrl: tag?.attributes?.slug ?? '/',
-                    linkText: tag?.attributes?.name
+                    linkText: tag?.attributes?.name ?? ''
                   })
                 ),
                 title: data?.blogs?.data[0]?.attributes?.title ?? '',
@@ -99,7 +99,7 @@ function Articles({ data }: PropsType) {
                 tags: data?.blogs?.data[1]?.attributes?.tags?.data?.map(
                   (tag) => ({
                     linkUrl: tag?.attributes?.slug ?? '/',
-                    linkText: tag?.attributes?.name
+                    linkText: tag?.attributes?.name ?? ''
                   })
                 ),
                 title: data?.blogs?.data[1]?.attributes?.title ?? '',
@@ -137,7 +137,7 @@ function Articles({ data }: PropsType) {
                 tags: data?.blogs?.data[2]?.attributes?.tags?.data?.map(
                   (tag) => ({
                     linkUrl: tag?.attributes?.slug ?? '/',
-                    linkText: tag?.attributes?.name
+                    linkText: tag?.attributes?.name ?? ''
                   })
                 ),
                 title: data?.blogs?.data[2]?.attributes?.title ?? '',
