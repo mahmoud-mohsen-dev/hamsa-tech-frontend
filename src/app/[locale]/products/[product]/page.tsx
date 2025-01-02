@@ -584,10 +584,10 @@ export default async function Product({
                     modalName={product?.attributes?.modal_name ?? ''}
                     badge={getBadge(
                       locale ?? 'en',
-                      productData?.updatedAt,
-                      productData?.stock,
-                      productData?.price,
-                      productData?.sale_price
+                      product?.attributes?.updatedAt ?? '',
+                      product?.attributes?.stock ?? 0,
+                      product?.attributes?.price ?? 0,
+                      product?.attributes?.sale_price ?? 0
                     )}
                     priceBeforeDeduction={
                       product?.attributes?.price ?? 0
