@@ -192,7 +192,7 @@ export default async function Product({
                       ?.name ?? ''}
                   </h4>
                   <div
-                    className={`availability rounded border px-2.5 py-1 font-inter text-sm capitalize ${productData?.stock > 0 ? 'border-green-500 text-green-500' : 'border-red-500 text-red-500'}`}
+                    className={`availability rounded border px-2.5 py-1 font-inter text-sm capitalize ${productData?.stock > 0 ? 'border-green-500 text-green-500' : 'border-red-shade-350 text-red-shade-350'}`}
                     data-original={
                       productData?.stock > 0 ?
                         t('inStockText')
