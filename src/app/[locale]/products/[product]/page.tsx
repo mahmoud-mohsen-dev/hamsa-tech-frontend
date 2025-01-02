@@ -322,27 +322,26 @@ export default async function Product({
                   }
                 />
                 {productData?.tags?.data.length > 0 && (
-                  <Info
-                    infoKey={`${t('tagsText')}:`}
-                    value={productData?.tags?.data.map(
-                      (tag, i, arr) => (
-                        <div
-                          className='flex flex-wrap items-center'
-                          key={tag?.id}
-                        >
-                          <Link
-                            href={tag?.attributes?.slug ?? '/'}
-                            className='transition-colors duration-150 ease-out hover:text-yellow-medium'
-                          >
-                            {tag?.attributes?.name ?? ''}
-                          </Link>
-                          {i < arr.length - 1 && (
-                            <span className='mr-2'>,</span>
-                          )}
-                        </div>
-                      )
-                    )}
-                  />
+                  <div className='flex flex-wrap items-center'>
+                    <Info
+                      infoKey={`${t('tagsText')}:`}
+                      value={productData?.tags?.data.map(
+                        (tag, i, arr) => (
+                          <div key={tag?.id}>
+                            <Link
+                              href={tag?.attributes?.slug ?? '/'}
+                              className='transition-colors duration-150 ease-out hover:text-yellow-medium'
+                            >
+                              {tag?.attributes?.name ?? ''}
+                            </Link>
+                            {i < arr.length - 1 && (
+                              <span className='mr-2'>,</span>
+                            )}
+                          </div>
+                        )
+                      )}
+                    />
+                  </div>
                 )}
                 <Info
                   infoKey={`${t('shareText')}:`}
@@ -400,7 +399,7 @@ export default async function Product({
                 productData?.user_manual?.data?.attributes?.url
               ) ?
                 'gap-10 2xl:grid-cols-2 2xl:gap-5'
-              : 'justify-center gap-10'
+              : 'justify-center'
             }`}
           >
             {/* Download Center Section */}

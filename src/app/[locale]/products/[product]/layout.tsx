@@ -1,5 +1,6 @@
 import { getQueryProductPage } from '@/services/getProduct';
-import { fetchGraphql } from '@/services/graphqlCrud';
+// import { fetchGraphql } from '@/services/graphqlCrud';
+import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { ProductResponseType } from '@/types/getProduct';
 import {
   getTranslations,
@@ -24,14 +25,17 @@ export async function generateMetadata({
     namespace: 'HomePage.metaData'
   });
 
-  const response = (await fetchGraphql(
+  const response = (await fetchGraphqlServerWebAuthenticated(
     getQueryProductPage(product)
   )) as ProductResponseType;
   // console.log(JSON.stringify(response));
   const { data: productResData, error: productError } = response;
   const productData =
     productResData?.product?.data?.attributes || null;
+
   if (!productData || productError) {
+    console.error('productData', JSON.stringify(productData));
+    console.error('productError', JSON.stringify(productError));
     return {
       title: t('title'),
       description: t('description')
@@ -48,6 +52,7 @@ export async function generateMetadata({
     productData?.name ||
     productData?.modal_name ||
     '';
+  console.log(title);
   const description =
     productData?.seo?.metaDescription ||
     productData?.description ||

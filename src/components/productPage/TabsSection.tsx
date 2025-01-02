@@ -350,8 +350,8 @@ async function TabsSection({ moreDetails, productIds }: TypeProps) {
         </h3>
       ),
       children: (
-        <div className='w-full'>
-          <h3 className='mb-3 font-openSans text-base font-bold capitalize text-black-medium'>
+        <div className='w-full font-openSans'>
+          <h3 className='mb-3 text-base font-bold capitalize text-black-medium'>
             {t('aboutTheProductText')}
           </h3>
           {/* {moreDetails.description.map((item) => (
