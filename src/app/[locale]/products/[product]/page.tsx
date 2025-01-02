@@ -253,24 +253,19 @@ export default async function Product({
                   : null}
                 </div>
 
-                <h4 className='my-2 flex items-center gap-2 text-base font-normal'>
-                  {productData?.stock > 0 ?
-                    <>
-                      <span className='text-blue-gray-medium'>
-                        {t('availabilityText')}:
-                      </span>
-                      <span className='font-semibold text-green-dark'>
-                        {productData?.stock}
-                      </span>
-                      <span className='text-blue-gray-medium'>
-                        {t('stockText')}
-                      </span>
-                    </>
-                  : <span className='font-semibold text-red-shade-350'>
-                      {t('outOfStockText')}
+                {productData?.stock > 0 && (
+                  <h4 className='my-2 flex items-center gap-2 text-base font-normal'>
+                    <span className='text-blue-gray-medium'>
+                      {t('availabilityText')}:
                     </span>
-                  }
-                </h4>
+                    <span className='font-semibold text-green-dark'>
+                      {productData?.stock}
+                    </span>
+                    <span className='text-blue-gray-medium'>
+                      {t('stockText')}
+                    </span>
+                  </h4>
+                )}
 
                 {productData?.stock > 0 && (
                   <OrderProduct
