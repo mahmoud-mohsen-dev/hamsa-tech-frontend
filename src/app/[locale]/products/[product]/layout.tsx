@@ -62,7 +62,7 @@ export async function generateMetadata({
   function cleanString(input: string) {
     if (typeof input !== 'string') return '';
     return input
-      .replace(/,|\n|\u202B/g, '')
+      .replace(/,|\n|\u202B|،/g, '')
       .trim()
       .split(' ')
       .join(', ');
