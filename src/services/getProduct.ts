@@ -93,14 +93,14 @@ export const getQueryProductPage = (id: string) => `{
             link_source
             title
         }
-        features {
+        features (pagination: { pageSize: 1000 }) {
             ... on ComponentFeatureFeatures {
                 id
                 feature
             }
         }
         long_description
-        sepcification {
+        sepcification (pagination: { pageSize: 1000 }) {
             ... on ComponentDetailsSpecification {
                 id
                 name
