@@ -23,7 +23,7 @@ import { NavbarProductsCategoriesResponseType } from '@/types/getNavbarProductsC
 import AppDrawer from '@/components/UI/cart/AppDrawer';
 import CustomSWRConfig from '@/lib/CustomSWRConfig';
 // import { getProductsQuery } from '@/services/products';
-import { ProductsResponseType } from '@/types/getProducts';
+// import { ProductsResponseType } from '@/types/getProducts';
 import { UserProvider } from '@/context/UserContext';
 import Script from 'next/script';
 import ChatwootWidget from '@/components/UI/ChatwootWidget';

@@ -47,13 +47,15 @@ export interface CodeType {
 
 export interface ListItemType {
   type: 'list-item';
+  format: 'ordered';
   children: (TextType | LinkType)[];
 }
 
 export interface ListType {
   type: 'list';
   format: 'unordered' | 'ordered';
-  children: ListItemType[];
+  children: ListItemType[] | ListType[];
+  indentLevel: number;
 }
 
 // Image formats definition

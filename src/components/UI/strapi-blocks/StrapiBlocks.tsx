@@ -358,22 +358,51 @@ function ListItemBlock({ obj }: { obj: ListItemType }) {
 //   <li></li>
 // </ol>;
 // ==============================================================
-export function ListBlock({ obj }: { obj: ListType }) {
+export function ListBlock({
+  obj,
+  depth = 0
+}: {
+  obj: ListType;
+  depth?: number;
+}) {
   if (obj.format === 'ordered') {
     return (
-      <ol className='mx-10 list-decimal'>
-        {obj.children.map((el) => (
-          <ListItemBlock obj={el} key={uuid()} />
-        ))}
+      // <ol className='mx-10 list-decimal'>
+      <ol
+        className={`listBlock mx-10`}
+        style={{
+          listStyleType:
+            depth % 3 === 0 ? 'decimal'
+            : depth % 3 === 1 ? 'lower-alpha'
+            : 'lower-roman'
+        }}
+      >
+        {obj.children.map((el) =>
+          el.type === 'list' ?
+            <ListBlock obj={el} key={uuid()} depth={depth + 1} />
+          : <ListItemBlock obj={el} key={uuid()} />
+        )}
       </ol>
     );
   }
   if (obj.format === 'unordered') {
     return (
-      <ul className='mx-10 list-disc'>
-        {obj.children.map((el) => (
-          <ListItemBlock obj={el} key={uuid()} />
-        ))}
+      // <ul className='mx-10 list-disc'>
+      <ul
+        className='listBlock mx-10'
+        style={{
+          listStyleType:
+            depth % 3 === 0 ? 'disc'
+            : depth % 3 === 1 ? 'circle'
+            : 'square'
+        }}
+      >
+        {/* // <ListItemBlock obj={el} key={uuid()} /> */}
+        {obj.children.map((el) =>
+          el.type === 'list' ?
+            <ListBlock obj={el} key={uuid()} depth={depth + 1} />
+          : <ListItemBlock obj={el} key={uuid()} />
+        )}
       </ul>
     );
   }

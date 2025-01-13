@@ -4,6 +4,7 @@
 @import './embla.css';
 @import './infinitSlider.css';
 @import './emblaSlideToScroll.css';
+@import './richTextBlockStyles.css';
 /* @import '~antd/dist/reset.css'; */
 @tailwind base;
 @tailwind components;
