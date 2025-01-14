@@ -96,29 +96,47 @@ async function ConentOfSpecification({
     specification.length
   );
 
-  const leftSideItems = leftSide.map((item, i) => (
-    <li
-      key={item?.id}
-      className={`grid w-full grid-cols-[1fr_1.5fr] py-4 pl-7 pr-4 ${i % 2 === 0 ? 'border-y border-solid border-y-blue-accent-dark bg-gray-lighter text-gray-normal' : 'bg-white text-gray-normal'}`}
-    >
-      <span className='font-semibold capitalize'>
-        {item?.name ?? ''}:
-      </span>
-      <span className='capitalize'>{item?.value ?? ''}</span>
-    </li>
-  ));
+  const leftSideItems = leftSide.map((item, i) => {
+    const lines = item?.value ? item?.value.split('\n') : [''];
+    return (
+      <li
+        key={item?.id}
+        className={`grid w-full grid-cols-[1fr_1.5fr] py-4 pl-7 pr-4 ${i % 2 === 0 ? 'border-y border-solid border-y-blue-accent-dark bg-gray-lighter text-gray-normal' : 'bg-white text-gray-normal'}`}
+      >
+        <span className='font-semibold capitalize'>
+          {item?.name ?? ''}:
+        </span>
+        <span className='capitalize'>
+          {lines.map((line, index) => (
+            <span key={index} className='block w-full'>
+              {line}
+            </span>
+          ))}
+        </span>
+      </li>
+    );
+  });
 
-  const rightSideItems = rightSide.map((item, i) => (
-    <li
-      key={item?.id}
-      className={`grid w-full grid-cols-[1fr_1.5fr] py-4 pl-7 pr-4 ${i % 2 === 0 ? 'bg-white text-gray-normal xl:border-y xl:border-solid xl:border-y-blue-accent-dark xl:bg-gray-lighter' : 'border-y border-solid border-y-blue-accent-dark bg-gray-lighter text-gray-normal xl:border-y-0 xl:border-transparent xl:bg-white'}`}
-    >
-      <span className='font-semibold capitalize'>
-        {item?.name ?? ''}:
-      </span>
-      <span className='capitalize'>{item?.value ?? ''}</span>
-    </li>
-  ));
+  const rightSideItems = rightSide.map((item, i) => {
+    const lines = item?.value ? item?.value.split('\n') : [''];
+    return (
+      <li
+        key={item?.id}
+        className={`grid w-full grid-cols-[1fr_1.5fr] py-4 pl-7 pr-4 ${i % 2 === 0 ? 'bg-white text-gray-normal xl:border-y xl:border-solid xl:border-y-blue-accent-dark xl:bg-gray-lighter' : 'border-y border-solid border-y-blue-accent-dark bg-gray-lighter text-gray-normal xl:border-y-0 xl:border-transparent xl:bg-white'}`}
+      >
+        <span className='font-semibold capitalize'>
+          {item?.name ?? ''}:
+        </span>
+        <span className='capitalize'>
+          {lines.map((line, index) => (
+            <span key={index} className='block w-full'>
+              {line}
+            </span>
+          ))}
+        </span>
+      </li>
+    );
+  });
 
   return (
     <div>
