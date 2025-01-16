@@ -98,6 +98,7 @@ export interface ProductDataType {
   description: string;
   connectivity: string;
   modal_name: string;
+  edara_item_code: string | number | null;
   waranty: {
     data: {
       attributes: {

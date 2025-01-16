@@ -21,7 +21,7 @@ function TagLink({
   return (
     <Btn
       href={linkUrl}
-      className={`className hover:text-shadow-sm w-fit break-words bg-transparent font-openSans text-xs font-normal uppercase leading-none text-white hover:text-yellow-medium ${className} !px-0 !py-0`}
+      className={`hover:text-shadow-sm w-fit break-words bg-transparent font-openSans text-xs font-normal uppercase leading-none text-white hover:text-yellow-medium ${className} !px-0 !py-0`}
     >
       {linkText}
     </Btn>
@@ -57,8 +57,8 @@ function ArticleCard({
         />
       </div>
       <div className='px-10 py-8'>
-        <div className='flex w-fit flex-wrap items-center rounded bg-blue-dark px-4 py-[6px]'>
-          {content.tags.map((tag, i, arr) => {
+        <div className='flex w-fit flex-wrap items-center break-words rounded bg-blue-dark px-4 py-[6px] font-openSans text-xs font-normal uppercase text-white'>
+          {/* {content.tags.map((tag, i, arr) => {
             if (arr.length > 1 && i < arr.length && i > 0) {
               return (
                 <span key={uuidv4()} className='flex items-center'>
@@ -79,6 +79,21 @@ function ArticleCard({
                   linkUrl={`/blog/tags/${tag.linkUrl}`}
                   linkText={tag.linkText}
                 />
+              </span>
+            );
+          })} */}
+          {content.tags.map((tag, i, arr) => {
+            if (arr.length > 1 && i < arr.length && i > 0) {
+              return (
+                <span key={uuidv4()} className='flex items-center'>
+                  <span className='text-white-light'>, </span>
+                  <span className='mx-1'>{tag.linkText}</span>
+                </span>
+              );
+            }
+            return (
+              <span key={uuidv4()}>
+                <span>{tag.linkText}</span>
               </span>
             );
           })}

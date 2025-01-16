@@ -40,28 +40,43 @@ async function HeaderBlogPageSection({
               key={tag.slug}
               className={`${isArabic ? 'ml-2' : 'mr-2'} inline-flex items-center gap-2`}
             >
-              <Link href={`/blog/tags/${tag.slug}`}>{tag.name}</Link>
+              {/* <Link href={`/blog/tags/${tag.slug}`}>{tag.name}</Link> */}
+              <span>{tag.name}</span>
               {isArabic ? 'و' : ' and'}
             </span>
           );
         }
 
+        // return arr.length - 1 !== i && arr.length > 1 ?
+        //     <Link
+        //       key={tag.slug}
+        //       href={`/blog/tags/${tag.slug}`}
+        //       className={`${isArabic ? 'ml-2' : 'mr-2'} inline-block`}
+        //     >
+        //       {tag.name}
+        //       {isArabic ? '،' : ','}
+        //     </Link>
+        //   : <Link
+        //       key={tag.slug}
+        //       href={`/blog/tags/${tag.slug}`}
+        //       className={`${isArabic ? 'ml-2' : 'mr-2'} inline-block`}
+        //     >
+        //       {tag.name}
+        //     </Link>;
         return arr.length - 1 !== i && arr.length > 1 ?
-            <Link
+            <span
               key={tag.slug}
-              href={`/blog/tags/${tag.slug}`}
               className={`${isArabic ? 'ml-2' : 'mr-2'} inline-block`}
             >
               {tag.name}
               {isArabic ? '،' : ','}
-            </Link>
-          : <Link
+            </span>
+          : <span
               key={tag.slug}
-              href={`/blog/tags/${tag.slug}`}
               className={`${isArabic ? 'ml-2' : 'mr-2'} inline-block`}
             >
               {tag.name}
-            </Link>;
+            </span>;
       })
     : '';
 

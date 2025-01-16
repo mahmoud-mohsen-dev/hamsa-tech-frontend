@@ -302,7 +302,10 @@ export default async function Product({
                 />
                 <Info
                   infoKey={`${t('skuText')}:`}
-                  value={productResData?.product?.data?.id ?? ''}
+                  value={
+                    productResData?.product?.data?.attributes
+                      ?.edara_item_code ?? ''
+                  }
                   isCapitalized={false}
                 />
                 <Info
@@ -326,7 +329,7 @@ export default async function Product({
                     infoKey={`${t('tagsText')}:`}
                     value={
                       <div className='flex flex-wrap items-center'>
-                        {productData?.tags?.data.map(
+                        {/* {productData?.tags?.data.map(
                           (tag, i, arr) => (
                             <div key={tag?.id}>
                               <Link
@@ -339,6 +342,18 @@ export default async function Product({
                               >
                                 {tag?.attributes?.name ?? ''}
                               </Link>
+                              {i < arr.length - 1 && (
+                                <span className='mr-2'>,</span>
+                              )}
+                            </div>
+                          )
+                        )} */}
+                        {productData?.tags?.data.map(
+                          (tag, i, arr) => (
+                            <div key={tag?.id}>
+                              <span>
+                                {tag?.attributes?.name ?? ''}
+                              </span>
                               {i < arr.length - 1 && (
                                 <span className='mr-2'>,</span>
                               )}

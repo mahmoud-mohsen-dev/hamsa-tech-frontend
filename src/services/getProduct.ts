@@ -55,6 +55,7 @@ export const getQueryProductPage = (id: string) => `{
         description
         connectivity
         modal_name
+        edara_item_code
         waranty {
             data {
                 attributes {
