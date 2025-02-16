@@ -814,7 +814,7 @@
   "AboutUsPage": {
     "content": {
       "miniMapText": "الطبقات",
-      "viewLargerMapText": "عرض خريطة أكبر",
+      "viewLargerMapText": "عرض الموقع على خرائط جوجل",
       "locationText": "موقعنا",
       "callUsText": "اتصل بنا"
     },

@@ -15,12 +15,13 @@ function OpenMapInNewWindow({
   const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
 
   return (
-    <div className='absolute left-2 top-2 flex flex-col gap-1.5 rounded border border-gray-light bg-white px-5 py-3'>
-      <h4 className='text-sm font-medium'>{branchName}</h4>
+    <div className='absolute right-2 top-2 z-[9999] flex flex-col gap-1.5 rounded border border-gray-light bg-white px-5 py-3 font-inter'>
+      <h4 className='text-base font-medium'>{branchName}</h4>
       <Anchor
         href={googleMapsUrl}
         target='_blank'
         applyDefaultClasses={true}
+        className='!text-sm'
       >
         {t('viewLargerMapText')}
       </Anchor>

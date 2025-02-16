@@ -1,4 +1,6 @@
-import Map from '@/components/UI/Map';
+// import MapLeaflet from '@/components/UI/dynamicMapLeafletCall';
+import MapLeaflet from '@/components/UI/MapLeaflet';
+// import Map from '@/components/UI/Map';
 import { MapProvider } from '@/lib/MapProvider';
 import { fetchGraphql } from '@/services/graphqlCrud';
 import { getAboutUsPageResponseType } from '@/types/aboutUsPageResponse';
@@ -8,6 +10,12 @@ import {
 } from 'next-intl/server';
 import Image from 'next/image';
 import { FaLocationDot, FaPhoneVolume } from 'react-icons/fa6';
+
+// const MapLeaflet = () =>
+//   dynamic(() => import('@/components/UI/MapLeaflet'), {
+//     loading: () => <p>A map is loading</p>,
+//     ssr: false
+//   });
 
 const getAboutUsPageQuery = (locale: string) => {
   return `{
@@ -46,6 +54,8 @@ async function AboutUsPage({
   params: { locale: string };
 }) {
   unstable_setRequestLocale(locale);
+
+  const position = [51.505, -0.09];
   const t = await getTranslations('AboutUsPage.content');
 
   const { data, error } = (await fetchGraphql(
@@ -144,7 +154,37 @@ async function AboutUsPage({
                     </div>
                   </div>
                   <div className='w-full justify-self-end xl:w-[450px]'>
-                    <Map
+                    <MapLeaflet
+                      position={{
+                        lat:
+                          branchData?.location?.coordinates?.lat ??
+                          30.033333,
+                        lng:
+                          branchData?.location?.coordinates?.lng ??
+                          31.233334
+                      }}
+                      zoom={20}
+                      scrollWheelZoom={false}
+                      branchName={branchData?.name ?? ''}
+                    />
+                    {/* <MapLeaflet
+                      position={{
+                        lat:
+                          branchData?.leaflet_map?.features
+                            ?.at(0)
+                            ?.geometry?.coordinates?.at(1) ??
+                          30.033333,
+                        lng:
+                          branchData?.leaflet_map?.features
+                            ?.at(0)
+                            ?.geometry?.coordinates?.at(0) ??
+                          31.233334
+                      }}
+                      zoom={18}
+                      scrollWheelZoom={false}
+                      branchName={branchData?.name ?? ''}
+                    /> */}
+                    {/* <Map
                       lat={
                         branchData?.location?.coordinates?.lat ?? ''
                       }
@@ -152,9 +192,9 @@ async function AboutUsPage({
                         branchData?.location?.coordinates?.lng ?? ''
                       }
                       zoom={16}
-                      branchName={branchData?.name ?? ''}
+                      branchName={branchData?.name ?? ''}c
                       address={branchData?.address ?? ''}
-                    />
+                    /> */}
                   </div>
                 </div>
               );

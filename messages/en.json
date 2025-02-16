@@ -814,7 +814,7 @@
   "AboutUsPage": {
     "content": {
       "miniMapText": "Layers",
-      "viewLargerMapText": "View larger map",
+      "viewLargerMapText": "View location on Google Maps",
       "locationText": "Our Location",
       "callUsText": "Call Us"
     },
