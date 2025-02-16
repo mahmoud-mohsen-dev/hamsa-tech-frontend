@@ -1,4 +1,3 @@
-// import MapLeaflet from '@/components/UI/dynamicMapLeafletCall';
 import MapLeaflet from '@/components/UI/MapLeaflet';
 // import Map from '@/components/UI/Map';
 import { MapProvider } from '@/lib/MapProvider';
@@ -10,12 +9,6 @@ import {
 } from 'next-intl/server';
 import Image from 'next/image';
 import { FaLocationDot, FaPhoneVolume } from 'react-icons/fa6';
-
-// const MapLeaflet = () =>
-//   dynamic(() => import('@/components/UI/MapLeaflet'), {
-//     loading: () => <p>A map is loading</p>,
-//     ssr: false
-//   });
 
 const getAboutUsPageQuery = (locale: string) => {
   return `{

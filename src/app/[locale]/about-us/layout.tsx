@@ -3,7 +3,7 @@ import {
   unstable_setRequestLocale
 } from 'next-intl/server';
 
-export const revalidate = 86400; // invalidate every 60 seconds
+export const revalidate = 60; // invalidate every 60 seconds
 
 type PropsType = {
   children: React.ReactNode;
