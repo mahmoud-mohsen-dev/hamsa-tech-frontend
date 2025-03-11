@@ -303,7 +303,7 @@ export default async function DatasheetsPage({
                               .map((line, index) => (
                                 <p
                                   key={index}
-                                  className={`text-pretty uppercase ${index === 0 ? 'inline' : ''}`}
+                                  className={`text-pretty break-all uppercase ${index === 0 ? 'inline' : ''}`}
                                 >
                                   {line}
                                 </p>
