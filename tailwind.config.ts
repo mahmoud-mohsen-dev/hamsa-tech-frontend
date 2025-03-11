@@ -80,6 +80,7 @@ const config: Config = {
         'yellow-light': '#F0C808',
         'yellow-normal': '#EFB918',
         'yellow-medium': '#fcaf17',
+        'orange-medium': '#f08200',
         //======= Shades Of Green ========
         'green-normal': '#96BE24',
         'green-medium': '#65b531',
@@ -95,6 +96,7 @@ const config: Config = {
         'gray-ultralight': '#eaeaea',
         'gray-lighter': '#F5F5F5',
         'gray-light': '#dedede',
+        'gray-medium-light': '#e5e5e5',
         'gray-medium': '#9b9b9b',
         'gray-normal': '#666666',
         'gray-dark': '#6B6A75',

@@ -867,5 +867,50 @@
       "title": "Warranty Terms - Hamsa Tech",
       "description": "Learn about Hamsa Tech’s warranty terms, including duration, exclusions, and repair/replacement policy to ensure product quality and your satisfaction."
     }
+  },
+  "DownloadsPage": {
+    "content": {
+      "downloadButtonText": "Download",
+      "breadcrumb": {
+        "home": "Home"
+      },
+      "sidebar": {
+        "downloadTitle": "Download",
+        "newProductsTitle": "New Products",
+        "moreText": "More"
+      },
+
+      "children": {
+        "datasheetsPage": {
+          "content": {
+            "title": "Download Datasheets",
+            "listItem": {
+              "applicableModel": "Applicable Model"
+            }
+          },
+          "metaData": {
+            "title": "Download Datasheets - Hamsa Tech",
+            "description": "Get the latest datasheets for Hamsa Tech products."
+          }
+        },
+        "driversPage": {
+          "content": {
+            "title": "Download Drivers",
+            "listItem": {
+              "system": "System",
+              "applicableModel": "Applicable Model"
+            }
+          },
+          "metaData": {
+            "title": "Download Drivers - Hamsa Tech",
+            "description": "Get the latest drivers for Hamsa Tech products."
+          }
+        }
+      }
+    },
+    "metaData": {
+      "title": "Downloads Page - Hamsa Tech",
+      "description": "Download the latest datasheets and drivers for Hamsa Tech products in one place!"
+    }
   }
 }

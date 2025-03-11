@@ -867,5 +867,50 @@
       "title": "شروط الضمان - همسة تك",
       "description": "تعرف على شروط الضمان في همسة تك، بما في ذلك مدة الضمان، الحالات المستثناة، وسياسة الإصلاح والاستبدال لضمان راحتك وجودة المنتجات."
     }
+  },
+  "DownloadsPage": {
+    "content": {
+      "downloadButtonText": "تحميل",
+      "breadcrumb": {
+        "home": "الرئيسية"
+      },
+      "sidebar": {
+        "downloadTitle": "التنزيلات",
+        "newProductsTitle": "المنتجات الجديدة",
+        "moreText": "المزيد"
+      },
+
+      "children": {
+        "datasheetsPage": {
+          "content": {
+            "title": "تنزيل ملفات المواصفات",
+            "listItem": {
+              "applicableModel": "الطراز المتوافق"
+            }
+          },
+          "metaData": {
+            "title": "تنزيل ملفات المواصفات - همسة تك",
+            "description": "احصل على ملفات المواصفات لمنتجات همسة تك."
+          }
+        },
+        "driversPage": {
+          "content": {
+            "title": "تنزيل التعريفات",
+            "listItem": {
+              "system": "النظام",
+              "applicableModel": "الطراز المتوافق"
+            }
+          },
+          "metaData": {
+            "title": "تنزيل التعريفات - همسة تك",
+            "description": "احصل على أحدث التعريفات لمنتجات همسة تك."
+          }
+        }
+      }
+    },
+    "metaData": {
+      "title": "صفحة التنزيلات - همسة تك",
+      "description": "قم بتنزيل أحدث ملفات التعريف وكتالوجات المواصفات لمنتجات همسة تك في مكان واحد!"
+    }
   }
 }

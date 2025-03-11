@@ -3,20 +3,20 @@ import {
   unstable_setRequestLocale
 } from 'next-intl/server';
 
-// export const revalidate = 3600; // invalidate every 1 hour
-export const revalidate = 120; // invalidate every 1 minutes
+export const revalidate = 60; // invalidate every 60 seconds
 
-type PropsType = {
+interface PropsType {
   children: React.ReactNode;
   params: { locale: string };
-};
+}
 
 export async function generateMetadata({
   params: { locale }
 }: Omit<PropsType, 'children'>) {
   const t = await getTranslations({
     locale,
-    namespace: 'BlogPage.metaData'
+    namespace:
+      'DownloadsPage.content.children.datasheetsPage.metaData'
   });
 
   return {
@@ -25,9 +25,11 @@ export async function generateMetadata({
   };
 }
 
-function InvoiceLayout({ children, params: { locale } }: PropsType) {
+export default async function ProductsLayout({
+  children,
+  params: { locale }
+}: PropsType) {
+  // Enable static rendering
   unstable_setRequestLocale(locale);
-  return <div>{children}</div>;
+  return <section className=''>{children}</section>;
 }
-
-export default InvoiceLayout;

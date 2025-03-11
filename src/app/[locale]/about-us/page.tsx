@@ -48,7 +48,7 @@ async function AboutUsPage({
 }) {
   unstable_setRequestLocale(locale);
 
-  const position = [51.505, -0.09];
+  // const position = [51.505, -0.09];
   const t = await getTranslations('AboutUsPage.content');
 
   const { data, error } = (await fetchGraphql(

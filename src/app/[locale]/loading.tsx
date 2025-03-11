@@ -2,10 +2,16 @@
 import useAddColoredNavClass from '@/hooks/useAddColoredNavClass';
 import { Spin } from 'antd';
 
-function Loading() {
+function Loading({
+  className = 'h-[calc(100vh-64px)]'
+}: {
+  className?: string;
+}) {
   useAddColoredNavClass();
   return (
-    <div className='loader grid h-[calc(100vh-64px)] w-full place-content-center'>
+    <div
+      className={`loader grid ${className} w-full place-content-center`}
+    >
       <Spin size='large' />
     </div>
   );

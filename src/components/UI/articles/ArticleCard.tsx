@@ -1,6 +1,5 @@
 import Btn from '../Btn';
-import { v4 as uuidv4, v4 } from 'uuid';
-import dayjs from 'dayjs';
+import { v4 as uuidv4 } from 'uuid';
 import {
   FaLongArrowAltLeft,
   FaLongArrowAltRight

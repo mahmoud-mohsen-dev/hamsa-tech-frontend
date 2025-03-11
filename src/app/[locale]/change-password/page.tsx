@@ -32,7 +32,8 @@ const changePasswordQuery = ({
   }`;
 };
 
-const ChangePasswordPage = ({ params: { locale } }: PropsType) => {
+// const ChangePasswordPage = ({ params: { locale } }: PropsType) => {
+const ChangePasswordPage = () => {
   const [form] = Form.useForm();
   // const [messageApi, contextHolder] = message.useMessage();
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =

@@ -458,7 +458,7 @@ export default async function Product({
                     {productData?.datasheet?.data?.attributes
                       ?.url && (
                       <DownloadBtn
-                        pdfUrl={
+                        url={
                           productData?.datasheet?.data?.attributes
                             ?.url ?? null
                         }
@@ -475,7 +475,7 @@ export default async function Product({
                     {productData?.user_manual?.data?.attributes
                       ?.url && (
                       <DownloadBtn
-                        pdfUrl={
+                        url={
                           productData?.user_manual?.data?.attributes
                             ?.url ?? null
                         }

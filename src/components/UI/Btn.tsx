@@ -11,6 +11,7 @@ function Btn({
   dir = undefined,
   type = 'button',
   disabled = false,
+  target = '_self',
   // hover = false,
   setHover = () => {}
 }: {
@@ -27,6 +28,7 @@ function Btn({
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   // hover?: boolean;
+  target?: '_blank' | '_self';
   setHover?: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   const btnStyles =
@@ -40,6 +42,7 @@ function Btn({
         onClick={
           onClick as React.MouseEventHandler<HTMLAnchorElement>
         }
+        target={target}
       >
         {children}
       </Link>
