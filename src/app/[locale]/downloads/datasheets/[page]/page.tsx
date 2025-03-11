@@ -65,7 +65,7 @@ const getDatasheetsQuery = (
 
 // // Helper function to recursively fetch all datasheets
 const fetchDatasheetsByLocale = async (locale: string) => {
-  let allDatasheets: {
+  const allDatasheets: {
     page: number;
     // data: { id: string | number }[];
   }[] = [];

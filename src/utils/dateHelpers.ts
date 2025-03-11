@@ -30,6 +30,7 @@ export const convertToMinutes = (time: any): string => {
 
   const [hours, minutes, seconds] = time.split(':').map(Number);
   const minutesBySeconds = hours * 60 + minutes;
+  console.log(seconds);
   return minutesBySeconds.toString(); // Convert hours to minutes and add minutes
 };
 // const strapiTime = "00:45:00.000"; // Strapi output

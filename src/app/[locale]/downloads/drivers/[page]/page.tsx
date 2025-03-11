@@ -60,7 +60,7 @@ const getDriversQuery = (
 `;
 
 const fetchDriversByLocale = async (locale: string) => {
-  let allDrivers: {
+  const allDrivers: {
     page: number;
     // data: { id: string | number }[];
   }[] = [];
