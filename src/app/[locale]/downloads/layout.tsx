@@ -89,7 +89,7 @@ export default async function ProductsLayout({
     <div
       className={`max-w-[1900px] ${locale === 'ar' ? 'font-sans' : 'font-inter'}`}
     >
-      <section className='container grid gap-[4%] py-10 lg:grid-cols-[25%_70%]'>
+      <section className='container grid gap-10 py-10 lg:grid-cols-[25%_70%] lg:gap-20'>
         <aside>
           <SidebarDowmload />
 

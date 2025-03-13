@@ -202,6 +202,8 @@ export default async function DriversPage({
   )) as DriversPageResponse;
   const driversData = data?.products?.data ?? null;
 
+  console.log(JSON.stringify(driversData));
+
   if (error || !driversData) {
     console.error(error);
     return notFound(); // 404 if no data
@@ -210,7 +212,9 @@ export default async function DriversPage({
   return (
     <div className='min-h-screen'>
       <div className='flex flex-col items-center gap-4 border-b border-b-gray-medium-light pb-6'>
-        <h1 className='text-3xl font-bold uppercase tracking-wide text-black-medium'>
+        <h1
+          className={`text-3xl font-bold uppercase ${locale === 'ar' ? '' : 'tracking-wide'} text-black-medium`}
+        >
           {t('title')}
         </h1>
         <div className='flex w-fit items-center gap-5'>
@@ -246,98 +250,102 @@ export default async function DriversPage({
         {driversData && driversData?.length > 0 ?
           <>
             <ul>
-              {driversData.map((driver, i, arr) => (
-                <li
-                  key={driver?.attributes?.driver?.id ?? v4()}
-                  className={`relative ${locale === 'ar' ? 'pl-[140px] pr-[15px]' : 'pl-[15px] pr-[160px]'} pb-2.5 pt-[30px] ${arr.length === i + 1 ? '' : 'border-b border-gray-medium-light'}`}
-                >
-                  <i
-                    className={`absolute ${locale === 'ar' ? 'right-0' : 'left-0'} top-10 h-[6px] w-[6px] rounded-full bg-red-shade-400`}
-                  />
-
-                  <div className={`px-2.5`}>
-                    <DownloadBtn
-                      url={
-                        driver?.attributes?.driver?.file_link ?
-                          driver?.attributes?.driver?.file_link
-                        : '/downloads/drivers'
-                      }
-                      name={driver?.attributes?.driver?.title}
-                      className={`text-lg font-semibold capitalize transition-colors duration-200 hover:text-orange-medium`}
-                      target={
-                        driver?.attributes?.driver?.file_link ?
-                          (
-                            driver?.attributes?.driver?.file_link?.includes(
-                              'filebrowser.hamsatech-eg.com'
-                            )
-                          ) ?
-                            '_self'
-                          : '_blank'
-                        : '_self'
-                      }
-                      autoDownloadFile={false}
+              {driversData.map((driver, i, arr) => {
+                return (
+                  driver?.attributes?.driver &&
+                  driver?.attributes?.driver.length > 0 &&
+                  driver?.attributes?.driver.map((driveItem) => (
+                    <li
+                      key={driveItem?.id ?? v4()}
+                      className={`relative ${locale === 'ar' ? 'pl-[140px] pr-[15px]' : 'pl-[15px] pr-[160px]'} pb-2.5 pt-[30px] ${arr.length === i + 1 ? '' : 'border-b border-gray-medium-light'}`}
                     >
-                      {driver?.attributes?.driver?.title ?? ''}
-                    </DownloadBtn>
+                      <i
+                        className={`absolute ${locale === 'ar' ? 'right-0' : 'left-0'} top-10 h-[6px] w-[6px] rounded-full bg-red-shade-400`}
+                      />
 
-                    {driver?.attributes?.driver?.system && (
-                      <p className='mt-1 text-lg'>
-                        <span className='font-medium capitalize text-red-shade-400'>
-                          {t('listItem.system')}:
-                        </span>{' '}
-                        <span className='text-base uppercase'>
-                          {driver?.attributes?.driver?.system}
-                        </span>
-                      </p>
-                    )}
+                      <div className={`px-2.5`}>
+                        <DownloadBtn
+                          url={
+                            driveItem?.file_link ?
+                              driveItem?.file_link
+                            : '/downloads/drivers'
+                          }
+                          name={driveItem?.title ?? null}
+                          className={`text-lg font-semibold capitalize transition-colors duration-200 hover:text-orange-medium`}
+                          target={
+                            driveItem?.file_link ?
+                              (
+                                driveItem?.file_link?.includes(
+                                  'filebrowser.hamsatech-eg.com'
+                                )
+                              ) ?
+                                '_self'
+                              : '_blank'
+                            : '_self'
+                          }
+                          autoDownloadFile={false}
+                        >
+                          {driveItem?.title ?? ''}
+                        </DownloadBtn>
 
-                    {driver?.attributes?.driver?.applicable_model && (
-                      <div className='mt-1 text-lg'>
-                        <span className='font-medium capitalize text-red-shade-400'>
-                          {t('listItem.applicableModel')}:
-                        </span>{' '}
-                        {driver?.attributes?.driver?.applicable_model.trim() && (
-                          <div className='mt-1 inline font-mono text-base font-normal'>
-                            {driver?.attributes?.driver?.applicable_model
-                              .trim()
-                              .split('\n')
-                              .map((line, index) => (
-                                <p
-                                  key={index}
-                                  className={`text-pretty break-all uppercase ${index === 0 ? 'inline' : ''}`}
-                                >
-                                  {line}
-                                </p>
-                              ))}
+                        {driveItem?.system && (
+                          <p className='mt-1 text-lg'>
+                            <span className='font-medium capitalize text-red-shade-400'>
+                              {t('listItem.system')}:
+                            </span>{' '}
+                            <span className='text-base uppercase'>
+                              {driveItem?.system}
+                            </span>
+                          </p>
+                        )}
+
+                        {driveItem?.applicable_model && (
+                          <div className='mt-1 text-lg'>
+                            <span className='font-medium capitalize text-red-shade-400'>
+                              {t('listItem.applicableModel')}:
+                            </span>{' '}
+                            {driveItem?.applicable_model.trim() && (
+                              <div className='mt-1 inline font-mono text-base font-normal'>
+                                {driveItem?.applicable_model
+                                  .trim()
+                                  .split('\n')
+                                  .map((line, index) => (
+                                    <p
+                                      key={index}
+                                      className={`text-pretty break-all uppercase ${index === 0 ? 'inline' : ''}`}
+                                    >
+                                      {line}
+                                    </p>
+                                  ))}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
-                    )}
-                  </div>
 
-                  {driver?.attributes?.driver?.file_link && (
-                    <DownloadBtn
-                      url={
-                        driver?.attributes?.driver?.file_link ?? null
-                      }
-                      name={driver?.attributes?.driver?.title}
-                      className={`absolute ${locale === 'ar' ? 'left-0 w-[120px]' : 'right-0 w-[140px]'} top-[30px] rounded-sm bg-red-shade-400 py-2 text-white hover:bg-orange-medium`}
-                      target={
-                        (
-                          driver?.attributes?.driver?.file_link.includes(
-                            'filebrowser.hamsatech-eg.com'
-                          )
-                        ) ?
-                          '_self'
-                        : '_blank'
-                      }
-                      autoDownloadFile={false}
-                    >
-                      {d('downloadButtonText')}
-                    </DownloadBtn>
-                  )}
-                </li>
-              ))}
+                      {driveItem?.file_link && (
+                        <DownloadBtn
+                          url={driveItem?.file_link ?? null}
+                          name={driveItem?.title}
+                          className={`absolute ${locale === 'ar' ? 'left-0 w-[120px]' : 'right-0 w-[140px]'} top-[30px] rounded-sm bg-red-shade-400 py-2 text-white hover:bg-orange-medium`}
+                          target={
+                            (
+                              driveItem?.file_link.includes(
+                                'filebrowser.hamsatech-eg.com'
+                              )
+                            ) ?
+                              '_self'
+                            : '_blank'
+                          }
+                          autoDownloadFile={false}
+                        >
+                          {d('downloadButtonText')}
+                        </DownloadBtn>
+                      )}
+                    </li>
+                  ))
+                );
+              })}
             </ul>
             <div>
               {/* <Pagination /> */}

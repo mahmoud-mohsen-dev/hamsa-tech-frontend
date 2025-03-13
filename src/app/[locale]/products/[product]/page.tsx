@@ -32,6 +32,7 @@ import { TbMail } from 'react-icons/tb';
 import { appendAutoplayParameter } from '@/utils/helpers';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { trimText } from '@/utils/helpers';
+import { HiMiniWrenchScrewdriver } from 'react-icons/hi2';
 
 const getItems = (
   allProductsText: string,
@@ -454,8 +455,8 @@ export default async function Product({
                   <h2 className='w-fit text-2xl font-bold text-black-light xl:text-3xl 2xl:mx-auto'>
                     {t('downloadCenterSectionTitle')}
                   </h2>
-                  <div className='mt-5 flex flex-wrap items-center justify-start gap-5 2xl:mt-10 2xl:justify-center'>
-                    {productData?.datasheet?.data?.attributes
+                  <div className='mt-5 flex max-w-[500px] flex-wrap items-center justify-start gap-5 2xl:mt-10 2xl:justify-center'>
+                    {/* {productData?.datasheet?.data?.attributes
                       ?.url && (
                       <DownloadBtn
                         url={
@@ -465,6 +466,26 @@ export default async function Product({
                         name={
                           productData?.datasheet?.data?.attributes
                             ?.name ?? null
+                        }
+                      >
+                        <FaBook size={24} />
+                        <span>{t('dataSheetButtonText')}</span>
+                      </DownloadBtn>
+                    )} */}
+
+                    {productData?.new_datasheet?.datasheet?.data
+                      ?.attributes?.url && (
+                      <DownloadBtn
+                        url={
+                          productData?.new_datasheet?.datasheet?.data
+                            ?.attributes?.url ?? null
+                        }
+                        name={
+                          (productData?.new_datasheet?.datasheet?.data
+                            ?.attributes?.name ||
+                            productData?.new_datasheet?.datasheet
+                              ?.data?.attributes?.alternativeText) ??
+                          null
                         }
                       >
                         <FaBook size={24} />
@@ -488,6 +509,44 @@ export default async function Product({
                         <span>{t('userManualButtonText')}</span>
                       </DownloadBtn>
                     )}
+
+                    {productData?.driver.map((driver, i, arr) => {
+                      return (
+                        driver?.file_link && (
+                          <DownloadBtn
+                            key={driver?.id ?? v4()}
+                            url={driver.file_link ?? null}
+                            name={driver?.title ?? null}
+                            target={
+                              driver?.file_link ?
+                                (
+                                  driver?.file_link?.includes(
+                                    'filebrowser.hamsatech-eg.com'
+                                  )
+                                ) ?
+                                  '_self'
+                                : '_blank'
+                              : '_self'
+                            }
+                            autoDownloadFile={false}
+                          >
+                            <>
+                              <HiMiniWrenchScrewdriver size={24} />
+                              <span>
+                                {/* {arr.length > 1 ?
+                                  driver?.title ?
+                                    `${driver.title} (${i + 1})`
+                                  : `${t('driverButtonText')} (${i + 1})` */}
+
+                                {driver?.title ?
+                                  driver.title
+                                : t('driverButtonText')}
+                              </span>
+                            </>
+                          </DownloadBtn>
+                        )
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -90,6 +90,27 @@ export const getQueryProductPage = (id: string) => `{
                 }
             }
         }
+        new_datasheet {
+            id
+            title
+            applicable_model
+            datasheet {
+                data {
+                    attributes {
+                        name
+                        alternativeText
+                        url
+                    }
+                }
+            }
+        }
+        driver(pagination: { pageSize: 100000 }) {
+            id
+            title
+            system
+            applicable_model
+            file_link
+        }
         youtube_video {
             link_source
             title

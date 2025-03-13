@@ -133,6 +133,27 @@ export interface ProductDataType {
       };
     };
   };
+  new_datasheet: {
+    id: string | null;
+    title: string | null;
+    applicable_model: string | null;
+    datasheet: {
+      data: {
+        attributes: {
+          name: string | null;
+          alternativeText: string | null;
+          url: string | null;
+        };
+      };
+    };
+  };
+  driver: {
+    id: string | null;
+    title: string | null;
+    system: string | null;
+    applicable_model: string | null;
+    file_link: string | null;
+  }[];
   youtube_video: { link_source: string; title: string };
   features: { id: string; feature: string }[];
   long_description: ContentType[];

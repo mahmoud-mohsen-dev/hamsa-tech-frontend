@@ -18,7 +18,7 @@ import { extractPageNumber } from '@/utils/stringHelpers';
 import ControlPagination from '@/components/downloadPage/driversPage/ControlPagination';
 import DownloadBtn from '@/components/UI/DownloadBtn';
 
-const PAGE_SIZE = 1;
+const PAGE_SIZE = 10;
 
 const getDatasheetsQuery = (
   locale: string,
@@ -219,7 +219,9 @@ export default async function DatasheetsPage({
   return (
     <div className='min-h-screen'>
       <div className='flex flex-col items-center gap-4 border-b border-b-gray-medium-light pb-6'>
-        <h1 className='text-3xl font-bold uppercase tracking-wide text-black-medium'>
+        <h1
+          className={`text-3xl font-bold uppercase ${locale === 'ar' ? '' : 'tracking-wide'} text-black-medium`}
+        >
           {t('title')}
         </h1>
         <div className='flex w-fit items-center gap-5'>

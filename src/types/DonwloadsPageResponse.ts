@@ -33,7 +33,7 @@ export interface DriversPageResponse {
       data:
         | {
             attributes: {
-              driver: Driver | null;
+              driver: Driver[] | null;
             } | null;
           }[]
         | null;
