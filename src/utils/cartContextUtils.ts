@@ -249,7 +249,7 @@ export const aggregateCartItems = (
   return Array.from(productMap.values());
 };
 
-export const getCartByLocale = (
+export const modifyCartDataByLocale = (
   locale: string,
   cartItems: CartDataType[]
 ): CartDataType[] => {

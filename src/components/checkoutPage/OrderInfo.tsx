@@ -429,6 +429,13 @@ function OrderInfo({
 
       setLoadingMessage(true);
 
+      if (!cart || cart.length === 0) {
+        setErrorMessage(
+          t('formValidationErrorMessages.cartEmptyValidation')
+        );
+        return;
+      }
+
       const { data: guestUserData, error: guestUserError } =
         (await fetchGraphqlClient(
           updateGuestUserQuery(
@@ -638,7 +645,7 @@ function OrderInfo({
     console.log('Form failed:', errorInfo);
   };
 
-  console.log('addresses', addressesData);
+  // console.log('addresses', addressesData);
   // console.log('default address', defaultAddress);
 
   return (
@@ -702,18 +709,18 @@ function OrderInfo({
           form={form}
           shippingCostData={shippingCostData}
         />
-        <p className='text-lg font-bold text-red-shade-500'>
+        {/* <p className='text-lg font-bold text-red-shade-500'>
           {locale === 'ar' ?
             `الموقع قيد التطوير، ستتمكن من الشراء من الموقع قريبًا جدًا 😊`
           : `The site is under development you will able to buy from the
           site very soon 😊`
           }
-        </p>
+        </p> */}
         <Button
           type='primary'
           htmlType='submit'
           className='mt-3 w-full capitalize'
-          disabled={true}
+          // disabled={true}
           style={{
             paddingBlock: '20px',
             fontSize: '16px',

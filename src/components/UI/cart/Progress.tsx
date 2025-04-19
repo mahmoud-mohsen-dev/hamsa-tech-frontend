@@ -17,11 +17,16 @@ function AppProgress({
   let difference = 0;
   // prettier-ignore
   if (
-    freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals  && freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals > 0 &&
-    freeShippingAt?.enable
+    typeof freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals ===
+      'number' &&
+    freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals >=
+      0 &&
+    freeShippingAt.enable
   ) {
     applyFreeShipping = true;
-    percent = (Number(totalCartCosts || 0) * 100) / freeShippingAt.apply_free_shipping_if_total_cart_cost_equals;
+    percent =
+      (Number(totalCartCosts || 0) * 100) /
+      freeShippingAt.apply_free_shipping_if_total_cart_cost_equals;
     difference =
       freeShippingAt.apply_free_shipping_if_total_cart_cost_equals -
       totalCartCosts;

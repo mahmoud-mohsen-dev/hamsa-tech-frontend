@@ -356,7 +356,13 @@ const CallbackCheckoutPage = () => {
                   {t('orderTotal')}
                 </span>
                 <span className='font-semibold text-black-light'>
-                  {formatCurrencyNumbers(2000, t('currency'), locale)}
+                  {orderData?.attributes?.total_order_cost ?
+                    formatCurrencyNumbers(
+                      orderData.attributes.total_order_cost,
+                      t('currency'),
+                      locale
+                    )
+                  : 'NA'}
                 </span>
               </div>
               <div className='flex justify-between'>

@@ -187,6 +187,23 @@ export interface ProductResponseType {
   error: string | null;
 }
 
+export interface ProductPricesResponseType {
+  data: {
+    product: {
+      data: {
+        attributes: {
+          final_product_price: number;
+          price: number;
+          sale_price: number;
+          stock: number;
+        };
+        id: string;
+      } | null;
+    } | null;
+  } | null;
+  error?: null | string;
+}
+
 export interface RelatedProduct {
   id: string;
   attributes: {

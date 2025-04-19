@@ -28,6 +28,10 @@ function AddressFormItems({
     }
   }, [shippingCostData]);
 
+  useEffect(() => {
+    setSelectedGovernorate(null);
+  }, []);
+
   return (
     <>
       <Form.Item

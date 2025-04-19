@@ -322,11 +322,12 @@
         "selectGovernorate": "Please select your governorate!",
         "couponCodeRequired": "Please enter a copoun code!",
         "apartmentNumberValidation": "Apartment number must be greater than zero",
-        "postalCodeValidation": "Postal code must be a 5-digit number!"
+        "postalCodeValidation": "Postal code must be a 5-digit number!",
+        "cartEmptyValidation": "Your cart is empty"
       },
       "couponCode": {
-        "couponNotValid": "Coupon not valid!",
-        "subtotalCartCostMustBeGreaterThanCouponValue": "Subtotal cart cost must be greater than coupon value!"
+        "couponNotValid": "The coupon is invalid or has expired!",
+        "subtotalCartCostMustBeGreaterThanCouponValue": "The cart total must exceed the coupon value in order to use it."
       },
       "form": {
         "loading": "Action in progress..",

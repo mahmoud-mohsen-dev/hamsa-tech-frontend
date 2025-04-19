@@ -129,7 +129,7 @@ function Review({
       console.error('deleted review id was not found', id);
       return;
     }
-    await revalidateProductLayoutPage({ products: productIds });
+    await revalidateProductLayoutPage({ productIds });
   };
 
   const handleLike = async () => {
@@ -170,7 +170,7 @@ function Review({
       console.error('updated review id was not found', id);
     }
 
-    await revalidateProductLayoutPage({ products: productIds });
+    await revalidateProductLayoutPage({ productIds });
 
     setTimeout(() => {
       setLikeButtonIsLoading(false);
@@ -271,7 +271,7 @@ function Review({
       }
 
       form.resetFields();
-      await revalidateProductLayoutPage({ products: productIds });
+      await revalidateProductLayoutPage({ productIds });
       setIsModalOpen(false);
     } catch (error) {
       console.error('error while submitting a report abuse:', error);
@@ -339,7 +339,7 @@ function Review({
         console.error('updated review id was not found', id);
       }
 
-      await revalidateProductLayoutPage({ products: productIds });
+      await revalidateProductLayoutPage({ productIds });
     } catch (error) {
       console.error('error while cancelling a report abuse:', error);
     } finally {

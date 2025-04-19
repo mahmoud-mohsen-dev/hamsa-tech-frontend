@@ -658,3 +658,34 @@ export const deleteAddress = async (addressId: string | null) => {
     };
   }
 };
+
+export const handleShippingAddresses = async ({
+  setIsAddressIsLoading,
+  setAddressesData
+}: {
+  setIsAddressIsLoading: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  setAddressesData: React.Dispatch<
+    React.SetStateAction<AdressesType[] | null>
+  >;
+}) => {
+  try {
+    setIsAddressIsLoading(true);
+    const { addressesData, addressesError } =
+      await getUserAddressesAuthenticated();
+    if (addressesError || !addressesData) {
+      console.error(addressesError);
+      setAddressesData(null);
+      return null;
+    }
+    // console.log(addressesData);
+    setAddressesData(addressesData);
+  } catch (error) {
+    console.error('Failed to fetch addresses', error);
+    setAddressesData(null);
+    return null;
+  } finally {
+    setIsAddressIsLoading(false);
+  }
+};

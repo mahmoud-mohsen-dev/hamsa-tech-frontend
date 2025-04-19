@@ -1,4 +1,3 @@
-import { fetchGraphql } from '@/services/graphqlCrud';
 import { ProductResponseType } from '@/types/getProduct';
 import {
   getTranslations,
@@ -33,6 +32,7 @@ import { appendAutoplayParameter } from '@/utils/helpers';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { trimText } from '@/utils/helpers';
 import { HiMiniWrenchScrewdriver } from 'react-icons/hi2';
+import PriceComponent from '@/components/productPage/PriceComponent';
 
 const getItems = (
   allProductsText: string,
@@ -134,10 +134,6 @@ export default async function Product({
     productData?.related_product_4?.data
   ];
 
-  const offPercent =
-    ((productData?.price - productData?.sale_price) * 100) /
-    productData?.price;
-
   const productUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/${locale}/products/${product}`;
 
   const getCurrentAndNextProductId = () => {
@@ -234,7 +230,7 @@ export default async function Product({
                   </h6>
                 </div>
 
-                <div className='mt-3 flex items-center gap-3 font-inter'>
+                {/* <div className='mt-3 flex items-center gap-3 font-inter'>
                   {productData?.sale_price > 0 && (
                     <span className='text-xl font-semibold text-red-500'>
                       EGP {productData?.sale_price ?? 0}
@@ -252,7 +248,8 @@ export default async function Product({
                       {offPercent.toFixed(2)}% {t('offText')}
                     </span>
                   : null}
-                </div>
+                </div> */}
+                <PriceComponent />
 
                 {productData?.stock > 0 && (
                   <h4 className='my-2 flex items-center gap-2 text-base font-normal'>

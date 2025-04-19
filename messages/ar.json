@@ -323,11 +323,12 @@
         "selectGovernorate": "يرجى اختيار المحافظة!",
         "couponCodeRequired": "يرجى إدخال رمز القسيمة!",
         "apartmentNumberValidation": "يجب أن يكون رقم الشقة أكبر من صفر",
-        "postalCodeValidation": "يجب أن يكون الرمز البريدي مكونًا من 5 أرقام!"
+        "postalCodeValidation": "يجب أن يكون الرمز البريدي مكونًا من 5 أرقام!",
+        "cartEmptyValidation": "سلة التسوق الخاصة بك فارغة"
       },
       "couponCode": {
-        "couponNotValid": "القسيمة غير صالحة!",
-        "subtotalCartCostMustBeGreaterThanCouponValue": "يجب أن يكون إجمالي تكلفة السلة أكبر من قيمة القسيمة!"
+        "couponNotValid": "القسيمة غير صالحة أو انتهت صلاحيتها!",
+        "subtotalCartCostMustBeGreaterThanCouponValue": "يجب أن تزيد قيمة السلة عن قيمة القسيمة لتتمكن من استخدامها."
       },
       "form": {
         "loading": "جارٍ تنفيذ الإجراء..",

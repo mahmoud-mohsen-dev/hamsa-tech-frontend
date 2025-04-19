@@ -3,15 +3,25 @@
 import { revalidatePath } from 'next/cache';
 
 export async function revalidateProductLayoutPage({
-  products
+  productIds
 }: {
-  products: { arId: string | null; enId: string | null };
+  productIds: { arId: string | null; enId: string | null };
 }) {
-  if (products?.arId) {
-    revalidatePath('/ar/products/' + products.arId);
+  if (productIds?.arId) {
+    revalidatePath('/ar/products/' + productIds.arId);
+    console.log(
+      'Product path /ar/products/' +
+        productIds.arId +
+        ' has been revalidated'
+    );
   }
-  if (products?.enId) {
-    revalidatePath('/en/products/' + products.enId);
+  if (productIds?.enId) {
+    revalidatePath('/en/products/' + productIds.enId);
+    console.log(
+      'Product path /en/products/' +
+        productIds.enId +
+        ' has been revalidated'
+    );
   }
 }
 

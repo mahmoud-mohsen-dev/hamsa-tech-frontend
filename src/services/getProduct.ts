@@ -379,3 +379,17 @@ export const getQueryProductPage = (id: string) => `{
     }
   }
 }`;
+
+export const getQueryProductPricesAndStock = (id: string) => `{
+  product(id: "${id}") {
+    data {
+      id
+      attributes {
+        price
+        sale_price
+        final_product_price
+        stock
+      }
+    }
+  }
+}`;

@@ -4,7 +4,6 @@ import CheckoutCart from './CheckoutCart';
 import OrderInfo from './OrderInfo';
 import { Spin } from 'antd';
 import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
-import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
 import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
 
 function CheckoutWrapper({

@@ -340,7 +340,10 @@ export const StoreContextProvider = ({
   const isApplyFreeShippingEnabled = () => {
     let applyFreeShipping = false;
     if (
-      freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals &&
+      typeof freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals ===
+        'number' &&
+      freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals >=
+        0 &&
       freeShippingAt.enable
     ) {
       const subTotalCost = calculateSubTotalCartCost();

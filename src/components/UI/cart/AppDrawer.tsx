@@ -42,7 +42,17 @@ function AppDrawer() {
         cart.length > 0 ?
           <div
             // dir='ltr'
-            className={`grid h-full grid-cols-1 ${freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals && freeShippingAt.enable ? 'grid-rows-[40px_1fr_140px]' : 'grid-rows-[1fr_140px]'} gap-4`}
+            className={`grid h-full grid-cols-1 ${
+              (
+                typeof freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals ===
+                  'number' &&
+                freeShippingAt?.apply_free_shipping_if_total_cart_cost_equals >=
+                  0 &&
+                freeShippingAt.enable
+              ) ?
+                'grid-rows-[40px_1fr_140px]'
+              : 'grid-rows-[1fr_140px]'
+            } gap-4`}
           >
             {/* Progress bar */}
             <AppProgress

@@ -21,7 +21,7 @@ import Footer from '@/components/AppLayout/Footer';
 import ScrollNavbarListener from '@/components/UI/navbar/ScrollNavbarListener';
 import { NavbarProductsCategoriesResponseType } from '@/types/getNavbarProductsCategories';
 import AppDrawer from '@/components/UI/cart/AppDrawer';
-import CustomSWRConfig from '@/lib/CustomSWRConfig';
+import SWRConfigProvider from '@/lib/SWRConfigProvider';
 // import { getProductsQuery } from '@/services/products';
 // import { ProductsResponseType } from '@/types/getProducts';
 import { UserProvider } from '@/context/UserContext';
@@ -293,7 +293,7 @@ export default async function LocaleLayout({
           >
             <BlogContextProvider>
               <UserProvider>
-                <CustomSWRConfig>
+                <SWRConfigProvider>
                   <AntdRegistry>
                     <ConfigAntThemes>
                       <div
@@ -330,44 +330,12 @@ export default async function LocaleLayout({
                       </div>
                     </ConfigAntThemes>
                   </AntdRegistry>
-                </CustomSWRConfig>
+                </SWRConfigProvider>
               </UserProvider>
             </BlogContextProvider>
           </StoreContextProvider>
         </NextIntlClientProvider>
       </body>
-
-      {/* Chatwoot Script */}
-      {/* <script>
-        {(function (d, t) {
-          var BASE_URL = 'https://chatwoot.hamsatech-eg.com';
-          var g = d.createElement(t),
-            s = d.getElementsByTagName(t)[0];
-          g.src = BASE_URL + '/packs/js/sdk.js';
-          g.defer = true;
-          g.async = true;
-          s.parentNode.insertBefore(g, s);
-          g.onload = function () {
-            window.chatwootSDK.run({
-              websiteToken: 'njojmxPMnLGeqh8L1ycKz1Av',
-              baseUrl: BASE_URL
-            });
-          };
-        })(document, 'script')}
-      </script> */}
-
-      {/* Chatwoot Script */}
-      {/* <Script
-        src='https://chatwoot.hamsatech-eg.com/packs/js/sdk.js'
-        strategy='lazyOnload'
-        defer
-        onLoad={() => {
-          window?.chatwootSDK?.run({
-            websiteToken: 'njojmxPMnLGeqh8L1ycKz1Av',
-            baseUrl: 'https://chatwoot.hamsatech-eg.com'
-          });
-        }}
-      /> */}
       <ChatwootWidget />
 
       {process.env.UMAMI_URL && process.env.UMAMI_WEBSITE_ID && (

@@ -71,7 +71,7 @@ function CreateOrEditReview({
         handleCancel();
       }
 
-      await revalidateProductLayoutPage({ products: productIds });
+      await revalidateProductLayoutPage({ productIds });
       return;
     }
 
@@ -91,7 +91,7 @@ function CreateOrEditReview({
 
     if (typeof response === 'string') {
       form.resetFields();
-      await revalidateProductLayoutPage({ products: productIds });
+      await revalidateProductLayoutPage({ productIds });
       // const scrollBy = JSON.parse(
       //   sessionStorage.getItem('scroll') ?? '0'
       // );

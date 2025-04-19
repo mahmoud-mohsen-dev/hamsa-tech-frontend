@@ -14,13 +14,19 @@ function Main({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const getFreeShippingFunc = async () => {
       const freeShippingData = await getFreeShippingData();
+
       if (
         freeShippingData &&
         typeof freeShippingData === 'object' &&
-        freeShippingData.apply_free_shipping_if_total_cart_cost_equals &&
+        typeof freeShippingData?.apply_free_shipping_if_total_cart_cost_equals ===
+          'number' &&
+        freeShippingData?.apply_free_shipping_if_total_cart_cost_equals >=
+          0 &&
         freeShippingData.enable
       ) {
         setFreeShippingAt(freeShippingData);
+      } else {
+        setFreeShippingAt(null);
       }
     };
 

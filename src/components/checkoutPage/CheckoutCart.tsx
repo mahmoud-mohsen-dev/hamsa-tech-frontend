@@ -7,6 +7,7 @@ import {
   Button,
   ConfigProvider,
   Divider,
+  Empty,
   Form,
   Input,
   Skeleton
@@ -15,7 +16,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import { GetCouponResponseType } from '@/types/getCouponResponseType';
 import { generateISODateForGraphQL } from '@/utils/dateHelpers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { FaDeleteLeft, FaTag } from 'react-icons/fa6';
 import { v4 } from 'uuid';
@@ -81,8 +82,15 @@ function CheckoutCart() {
         getCouponQuery(values.coupon)
       )) as GetCouponResponseType;
 
-      if (error || !data) {
+      if (
+        error ||
+        !data ||
+        !data?.offers?.data ||
+        data?.offers?.data.length === 0
+      ) {
         setErrorMessage(t('couponCode.couponNotValid'));
+        console.log(error);
+        console.log(data);
       } else {
         const couponData = data?.offers?.data[0];
         if (
@@ -115,6 +123,24 @@ function CheckoutCart() {
     }
   };
 
+  useEffect(() => {
+    if (
+      (typeof couponData?.attributes?.deduction_value === 'number' &&
+        (couponData?.attributes?.deduction_value === 0 ||
+          subTotalCost <= couponData.attributes.deduction_value)) ||
+      (typeof couponData?.attributes?.deduction_value_by_percent ===
+        'number' &&
+        (couponData?.attributes?.deduction_value === 0 ||
+          subTotalCost <=
+            calculateCouponDeductionValue(
+              null,
+              couponData.attributes.deduction_value_by_percent
+            )))
+    ) {
+      setCouponData(null);
+    }
+  }, [cart]);
+
   return (
     <ConfigProvider
       theme={{
@@ -135,8 +161,7 @@ function CheckoutCart() {
                 style={{ width: '100%', height: '56px' }}
               />
             ))
-          : cart &&
-            cart.length > 0 &&
+          : cart && cart.length > 0 ?
             cart.map((item) => {
               return (
                 <li
@@ -189,6 +214,17 @@ function CheckoutCart() {
                 </li>
               );
             })
+          : <div className='my-2 flex flex-col items-center justify-center gap-2'>
+              <Image
+                src={'/icons/no-products.png'}
+                alt='no proucts was found'
+                width={64}
+                height={64}
+              />{' '}
+              <h3 className='text-lg font-medium text-red-shade-400'>
+                {t('formValidationErrorMessages.cartEmptyValidation')}
+              </h3>
+            </div>
           }
         </ul>
 
