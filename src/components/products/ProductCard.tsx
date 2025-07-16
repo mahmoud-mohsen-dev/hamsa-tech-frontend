@@ -21,11 +21,13 @@ function ProductCard({
   priceBeforeDeduction,
   badge,
   currentPrice,
+  finalProductPrice,
   stock,
   modalName,
   localeParentName,
   localeChildName,
   localeChildId
+  // finalPackageWeight
 }: {
   id: string;
   linkSrc: string;
@@ -39,11 +41,13 @@ function ProductCard({
   // totalRates: number;
   priceBeforeDeduction: number;
   currentPrice: number;
+  finalProductPrice: number;
   stock: number;
   modalName: string;
   localeParentName: string;
   localeChildName: string;
   localeChildId: string;
+  // finalPackageWeight: number | null;
 }) {
   // const t = useTranslations('ProductsPage.content');
   const locale = useLocale();
@@ -68,7 +72,7 @@ function ProductCard({
       [localeParentName]: id,
       [localeChildName]: localeChildId
     };
-    console.log(productIds);
+    // console.log(productIds);
     updateWishtlistHandler({
       locale,
       productIds,
@@ -77,7 +81,7 @@ function ProductCard({
       wishlistsData
     });
 
-    console.log('Add to Wish Lists clicked');
+    // console.log('Add to Wish Lists clicked');
     // setIsWishlistActive(!isWishlistActive);
   };
 
@@ -167,7 +171,14 @@ function ProductCard({
             }
           </div>
         </div>
-        <AddToCartButton productId={id} stock={stock} />
+        <AddToCartButton
+          productInfo={{
+            id,
+            stock,
+            final_product_price: finalProductPrice
+            // finalPackageWeight
+          }}
+        />
       </div>
     </Link>
   );

@@ -1,8 +1,8 @@
-import { AdressesType } from "@/types/addressResponseTypes";
-import { updateDefaultAddress } from "./shippingAddress";
+import { AdressType } from '@/types/addressResponseTypes';
+import { updateDefaultAddress } from './shippingAddress';
 
 export function getDefaultActiveAddressId(
-  addressesData: AdressesType[] | null
+  addressesData: AdressType[] | null
 ) {
   return addressesData && addressesData.length > 0 ?
       (addressesData
@@ -15,6 +15,26 @@ export function getDefaultActiveAddressId(
   // (addressesData[0].id || null))null
 }
 
+export function getDefaultActiveAddressData(
+  addressesData: AdressType[] | null
+) {
+  if (addressesData && addressesData.length > 0) {
+    const defaultAddress = addressesData.find(
+      (address) =>
+        address?.attributes?.default &&
+        address?.attributes?.delivery_zone?.zone_name_in_arabic &&
+        address?.attributes?.delivery_zone?.zone_name_in_english
+    );
+    if (defaultAddress) {
+      return defaultAddress.attributes;
+    }
+
+    return null;
+  }
+  return null;
+  // (addressesData[0].id || null))null
+}
+
 export const updateDefaultAddressHandler = async ({
   newDefaultAddressId,
   addressesData,
@@ -22,12 +42,12 @@ export const updateDefaultAddressHandler = async ({
   setAddressesData
 }: {
   newDefaultAddressId: string | null;
-  addressesData: AdressesType[] | null;
+  addressesData: AdressType[] | null;
   setErrorMessage: React.Dispatch<
     React.SetStateAction<string | null>
   >;
   setAddressesData: React.Dispatch<
-    React.SetStateAction<AdressesType[] | null>
+    React.SetStateAction<AdressType[] | null>
   >;
 }) => {
   if (

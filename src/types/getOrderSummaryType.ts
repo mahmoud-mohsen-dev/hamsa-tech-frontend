@@ -18,12 +18,16 @@ export type OrderSummaryType = {
     shipping_address: {
       data: {
         attributes: {
-          shipping_cost: {
-            data: {
-              attributes: {
-                delivery_duration_in_days: number;
-              };
-            };
+          // shipping_cost: {
+          //   data: {
+          //     attributes: {
+          //       delivery_duration_in_days: number;
+          //     };
+          //   };
+          // };
+          delivery_zone: {
+            minimum_delivery_duration_in_days: number | null;
+            maximum_delivery_duration_in_days: number | null;
           };
         };
       } | null;

@@ -19,6 +19,20 @@ function ProductItem({
   const [isDataLoading, setIsDataLoading] = useState(false);
   const { attributes } = productData?.product?.data ?? {};
 
+  // console.log('productData in ProductItems.tsx file:');
+  // console.log(productData);
+
+  const productInfo = {
+    id: productData?.product?.data?.id ?? null,
+    stock: productData?.product?.data?.attributes?.stock ?? null,
+    final_product_price:
+      productData?.product?.data?.attributes?.final_product_price ??
+      null
+    // finalPackageWeight:
+    //   productData?.product?.data?.attributes
+    //     ?.final_package_weight_in_grams ?? null
+  };
+
   return (
     <li className='grid grid-cols-[110px_1fr_90px] grid-rows-1 items-center gap-3'>
       {/* <div className='flex h-full items-center gap-7'> */}
@@ -57,7 +71,7 @@ function ProductItem({
           {attributes?.name ?? ''}
         </Link>
         <CartInputNumber
-          productId={productData?.product?.data?.id ?? ''}
+          productInfo={productInfo}
           setIsDataLoading={setIsDataLoading}
           // salePrice={
           //   productData?.product?.data?.attributes?.sale_price
@@ -75,11 +89,11 @@ function ProductItem({
           className='opacity-60 transition-opacity duration-300 hover:opacity-100'
           style={{ cursor: 'pointer' }}
           onClick={() => {
-            updateCartItemQuantity(
-              productData?.product?.data?.id,
-              0,
-              setIsDataLoading
-            );
+            updateCartItemQuantity({
+              productInfo,
+              quantity: 0,
+              setComponentLoader: setIsDataLoading
+            });
           }}
           disabled={drawerIsLoading}
         >

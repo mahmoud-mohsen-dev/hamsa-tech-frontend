@@ -50,13 +50,17 @@ type addressType = {
   first_name: string;
   last_name: string;
   delivery_phone: string;
-  shipping_cost: {
-    data: {
-      attributes: {
-        governorate: string;
-      };
-    };
-  };
+  // shipping_cost: {
+  //   data: {
+  //     attributes: {
+  //       governorate: string;
+  //     };
+  //   };
+  // };
+  delivery_zone: {
+    zone_name_in_arabic: string | null;
+    zone_name_in_english: string | null;
+  } | null;
 } | null;
 
 export interface PaymentDataType {

@@ -106,8 +106,17 @@ export async function POST(req: Request) {
             city: shippingAddressData?.city ?? 'NA',
             floor: shippingAddressData?.floor ?? 'NA',
             state:
-              shippingAddressData?.shipping_cost?.data?.attributes
-                ?.governorate ?? 'NA',
+              (
+                shippingAddressData?.delivery_zone
+                  ?.zone_name_in_arabic
+              ) ?
+                shippingAddressData.delivery_zone.zone_name_in_arabic
+              : (
+                shippingAddressData?.delivery_zone
+                  ?.zone_name_in_english
+              ) ?
+                shippingAddressData.delivery_zone.zone_name_in_english
+              : 'NA',
             postal_code: shippingAddressData?.zip_code ?? 'NA'
           }
         })
@@ -151,8 +160,17 @@ export async function POST(req: Request) {
             city: billingAddressData?.city ?? 'NA',
             floor: billingAddressData?.floor ?? 'NA',
             state:
-              billingAddressData?.shipping_cost?.data?.attributes
-                ?.governorate ?? 'NA',
+              (
+                shippingAddressData?.delivery_zone
+                  ?.zone_name_in_arabic
+              ) ?
+                shippingAddressData.delivery_zone.zone_name_in_arabic
+              : (
+                shippingAddressData?.delivery_zone
+                  ?.zone_name_in_english
+              ) ?
+                shippingAddressData.delivery_zone.zone_name_in_english
+              : 'NA',
             postal_code: billingAddressData?.zip_code ?? 'NA'
           },
           currency: 'EGP',

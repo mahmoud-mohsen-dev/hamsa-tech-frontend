@@ -14,36 +14,15 @@ import {
 } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
-import { GetCouponResponseType } from '@/types/getCouponResponseType';
-import { generateISODateForGraphQL } from '@/utils/dateHelpers';
+import {
+  GetCouponByCodeNameResponseType,
+  GetCouponResponseType
+} from '@/types/getCouponResponseType';
 import { useEffect, useState } from 'react';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { FaDeleteLeft, FaTag } from 'react-icons/fa6';
 import { v4 } from 'uuid';
-
-const getCouponQuery = (name: string): string => {
-  return `{
-    offers(
-      filters: {
-        coupon_code: { eq: "${name}" }
-        expiration_date: { gte: "${generateISODateForGraphQL()}" }
-        start_date: { lte: "${generateISODateForGraphQL()}" }
-      }
-      sort: "createdAt:desc"
-    ) {
-        data {
-            id
-            attributes {
-                coupon_code
-                expiration_date
-                start_date
-                deduction_value
-                deduction_value_by_percent
-            }
-        }
-    }
-  }`;
-};
+import { getCouponsByCodeNameQuery } from '@/services/getCouponsQuery';
 
 function CheckoutCart() {
   const {
@@ -79,20 +58,20 @@ function CheckoutCart() {
       console.log(values.coupon);
       setCouponLoading(true);
       const { data, error } = (await fetchGraphqlClient(
-        getCouponQuery(values.coupon)
-      )) as GetCouponResponseType;
+        getCouponsByCodeNameQuery(values.coupon)
+      )) as GetCouponByCodeNameResponseType;
 
       if (
         error ||
         !data ||
-        !data?.offers?.data ||
-        data?.offers?.data.length === 0
+        !data?.coupons?.data ||
+        data?.coupons?.data.length === 0
       ) {
         setErrorMessage(t('couponCode.couponNotValid'));
         console.log(error);
         console.log(data);
       } else {
-        const couponData = data?.offers?.data[0];
+        const couponData = data?.coupons?.data[0] ?? null;
         if (
           (typeof couponData?.attributes?.deduction_value ===
             'number' &&
@@ -140,6 +119,8 @@ function CheckoutCart() {
       setCouponData(null);
     }
   }, [cart]);
+
+  // console.log(cart);
 
   return (
     <ConfigProvider
@@ -267,7 +248,7 @@ function CheckoutCart() {
                   // borderRadius: '5px',
                   paddingBlock: '11px',
                   paddingInline: '13px',
-                  fontSize: '14px'
+                  fontSize: '13px'
                 }}
               />
             </Form.Item>

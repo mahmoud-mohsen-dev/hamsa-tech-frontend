@@ -42,6 +42,27 @@ export const capitalize = (value: any) => {
     .join(' '); // Join the words back into a string
 };
 
+export const normalize = (value: any) => {
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    return '';
+  }
+
+  // Remove directional control characters like &#x202B; and &#x202C;
+  const directionalControlsRegex = /[\u202A-\u202E]/g;
+
+  return value
+    .replace(directionalControlsRegex, '') // Remove unwanted Unicode
+    .split(/[\s_-]+/) // Split into words
+    .map((word) => {
+      const containsArabic = /[\u0600-\u06FF]/.test(word);
+      if (containsArabic) {
+        return word; // Keep Arabic words as-is
+      }
+      return word.toLowerCase(); // Lowercase English words
+    })
+    .join(' ');
+};
+
 export function truncateSentence(sentence: string, length: number) {
   if (sentence.length > length) {
     return sentence.slice(0, length - 3) + '...'; // Keep 252 characters and add "..."

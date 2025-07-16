@@ -16,6 +16,7 @@ import type { PaginationProps } from 'antd';
 import { v4 } from 'uuid';
 import { FaFilter } from 'react-icons/fa6';
 import Btn from '../Btn';
+import useSWR from 'swr';
 
 function ProductsContent() {
   // const { didMount } = useIsMount();
@@ -86,9 +87,12 @@ function ProductsContent() {
         )
       );
 
+      // console.log(resData);
+
       if (!resData || resError) {
         console.error('Error fetching products');
         console.error(resError);
+        return;
       }
       if (resData?.products?.data) {
         setCompleteProductsApiData(resData.products);
@@ -126,6 +130,22 @@ function ProductsContent() {
     priceMaxParams,
     ratesParams
   ]);
+  useSWR(
+    paramsPage ?
+      [
+        `products-${category ?? null}-${subCategory ?? null}-${locale ?? 'en'}-${paramsPage ?? null}-${paramsPageSize ?? 'en'}-${paramsSortBy ?? 'asc'}-${brandParams ?? null}-${priceMinParams ?? null}-${priceMaxParams ?? null}-${ratesParams ?? null}`,
+        paramsPage
+      ]
+    : null,
+    () => {
+      getProducts();
+    }
+    // {
+    //   revalidateOnFocus: true,
+    //   revalidateIfStale: true,
+    //   revalidateOnReconnect: true
+    // }
+  );
 
   const fetchGoogleCallback = async () => {
     try {
@@ -443,7 +463,13 @@ function ProductsContent() {
                     currentPrice={
                       product?.attributes?.sale_price ?? 0
                     }
+                    finalProductPrice={
+                      product?.attributes?.final_product_price ?? 0
+                    }
                     linkSrc={`/products/${product.id}`}
+                    // finalPackageWeight={
+                    //   product?.attributes?.finalPackageWeight ?? null
+                    // }
                     // totalRates={
                     //   product?.attributes?.total_reviews ?? 0
                     // }

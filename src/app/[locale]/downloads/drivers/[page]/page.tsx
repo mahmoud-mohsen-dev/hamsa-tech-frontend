@@ -210,7 +210,8 @@ export default async function DriversPage({
   }
 
   return (
-    <div className='min-h-screen'>
+    // <div className='min-h-[850px]'>
+    <div>
       <div className='flex flex-col items-center gap-4 border-b border-b-gray-medium-light pb-6'>
         <h1
           className={`text-3xl font-bold uppercase ${locale === 'ar' ? '' : 'tracking-wide'} text-black-medium`}
@@ -284,6 +285,7 @@ export default async function DriversPage({
                             : '_self'
                           }
                           autoDownloadFile={false}
+                          enableBtnStyles={false}
                         >
                           {driveItem?.title ?? ''}
                         </DownloadBtn>
@@ -338,6 +340,7 @@ export default async function DriversPage({
                             : '_blank'
                           }
                           autoDownloadFile={false}
+                          enableBtnStyles={true}
                         >
                           {d('downloadButtonText')}
                         </DownloadBtn>

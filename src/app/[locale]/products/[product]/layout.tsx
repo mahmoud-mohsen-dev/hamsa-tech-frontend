@@ -2,6 +2,7 @@ import { getQueryProductPage } from '@/services/getProduct';
 // import { fetchGraphql } from '@/services/graphqlCrud';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { ProductResponseType } from '@/types/getProduct';
+import { capitalize } from '@/utils/helpers';
 import {
   getTranslations,
   unstable_setRequestLocale
@@ -47,17 +48,21 @@ export async function generateMetadata({
   const isArabic = locale === 'ar';
   const nextProductId = productData?.localizations?.data[0]?.id;
 
-  const title =
+  let title =
     productData?.seo?.metaTitle ||
     productData?.name ||
     productData?.modal_name ||
     '';
-  console.log(title);
+  title = capitalize(title);
+  // console.log(title);
+
   const description =
     productData?.seo?.metaDescription ||
     productData?.description ||
     productData?.brand?.data?.attributes?.name ||
     '';
+
+  // console.log(description);
 
   function cleanString(input: string) {
     if (typeof input !== 'string') return '';

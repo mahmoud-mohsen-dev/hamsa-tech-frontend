@@ -230,62 +230,21 @@ export default async function Product({
                   </h6>
                 </div>
 
-                {/* <div className='mt-3 flex items-center gap-3 font-inter'>
-                  {productData?.sale_price > 0 && (
-                    <span className='text-xl font-semibold text-red-500'>
-                      EGP {productData?.sale_price ?? 0}
-                    </span>
-                  )}
-
-                  <span
-                    className={`${productData?.sale_price > 0 ? 'text-lg font-medium text-blue-sky-dark line-through' : 'text-xl font-semibold text-red-500'}`}
-                  >
-                    EGP {productData?.price ?? 0}
-                  </span>
-
-                  {productData?.sale_price > 0 && offPercent > 10 ?
-                    <span className='rounded border border-red-shade-350 px-3 py-1 font-sans text-base font-medium text-red-shade-300'>
-                      {offPercent.toFixed(2)}% {t('offText')}
-                    </span>
-                  : null}
-                </div> */}
-                <PriceComponent />
-
-                {productData?.stock > 0 && (
-                  <h4 className='my-2 flex items-center gap-2 text-base font-normal'>
-                    <span className='text-blue-gray-medium'>
-                      {t('availabilityText')}:
-                    </span>
-                    <span className='font-semibold text-green-dark'>
-                      {productData?.stock}
-                    </span>
-                    <span className='text-blue-gray-medium'>
-                      {t('stockText')}
-                    </span>
-                  </h4>
-                )}
-
-                {productData?.stock > 0 && (
-                  <OrderProduct
-                    productId={product}
-                    maxQuantity={productData?.stock ?? 0}
-                    minQuantity={productData?.stock > 0 ? 1 : 0}
-                    localeParentName={productData?.locale}
-                    localeChildName={
-                      productData?.localizations?.data[0]?.attributes
-                        ?.locale
-                    }
-                    localeChildId={
-                      productData?.localizations?.data[0]?.id ?? ''
-                    }
-                  />
-                )}
-                {/* <div className='mt-4 text-sm capitalize text-gray-medium'>
-                  <p>-&nbsp;&nbsp;&nbsp;&nbsp;{t('deliveryText')}</p>
-                  <p className='mt-1'>
-                    -&nbsp;&nbsp;&nbsp;&nbsp;{t('returnText')}
-                  </p>
-                </div> */}
+                <PriceComponent
+                  ProductDataSummaryProps={{
+                    productId: product,
+                    price: productData?.price ?? null,
+                    sale_price: productData?.sale_price ?? null,
+                    final_product_price:
+                      productData?.final_product_price ?? null,
+                    stock: productData?.stock ?? null,
+                    locale: productData?.locale ?? null,
+                    localizations: productData?.localizations ?? null,
+                    finalPackageWeight:
+                      productData?.final_package_weight_in_grams ??
+                      null
+                  }}
+                />
               </section>
               <Divider className='bg-gray-lighter' />
 
@@ -327,25 +286,6 @@ export default async function Product({
                     infoKey={`${t('tagsText')}:`}
                     value={
                       <div className='flex flex-wrap items-center'>
-                        {/* {productData?.tags?.data.map(
-                          (tag, i, arr) => (
-                            <div key={tag?.id}>
-                              <Link
-                                href={
-                                  tag?.attributes?.slug ?
-                                    `/products/tags/${tag?.attributes?.slug}`
-                                  : '/'
-                                }
-                                className='transition-colors duration-150 ease-out hover:text-yellow-medium'
-                              >
-                                {tag?.attributes?.name ?? ''}
-                              </Link>
-                              {i < arr.length - 1 && (
-                                <span className='mr-2'>,</span>
-                              )}
-                            </div>
-                          )
-                        )} */}
                         {productData?.tags?.data.map(
                           (tag, i, arr) => (
                             <div key={tag?.id}>
@@ -410,50 +350,64 @@ export default async function Product({
           </section>
         </div>
         {/* More Details */}
-        <section className='container max-w-[1900px] bg-blue-sky-ultralight py-[50px]'>
+        <section className='container bg-blue-sky-ultralight py-[50px] 5xl:max-w-[1900px]'>
           <div
             className={`grid px-6 ${
               (
-                productData?.datasheet?.data?.attributes?.url ||
-                productData?.user_manual?.data?.attributes?.url
+                productData?.new_datasheet?.datasheet?.data
+                  ?.attributes?.url ||
+                productData?.user_manual?.data?.attributes?.url ||
+                (productData?.youtube_video?.link_source &&
+                  productData?.youtube_video?.title)
               ) ?
                 'gap-10 2xl:grid-cols-2 2xl:gap-5'
               : 'justify-center'
             }`}
           >
             {/* Download Center Section */}
-            <div className='flex flex-col items-center justify-center gap-10'>
-              {productData?.youtube_video?.link_source &&
-                productData?.youtube_video?.title && (
-                  <div className='flex flex-col items-center'>
-                    <iframe
-                      width='400'
-                      height='250'
-                      className='aspect-video h-fit max-w-full md:max-w-[400px]'
-                      src={
-                        productData?.youtube_video?.link_source ?
-                          appendAutoplayParameter(
-                            productData.youtube_video.link_source
-                          )
-                        : ''
-                      }
-                      title={productData?.youtube_video?.title ?? ''}
-                      frameBorder='0'
-                      allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                      referrerPolicy='strict-origin-when-cross-origin'
-                      allowFullScreen
-                    />
-                  </div>
-                )}
+            {(productData?.new_datasheet?.datasheet?.data?.attributes
+              ?.url ||
+              productData?.user_manual?.data?.attributes?.url ||
+              (Array.isArray(productData?.driver) &&
+                productData?.driver.length > 0) ||
+              (productData?.youtube_video?.link_source &&
+                productData?.youtube_video?.title)) && (
+              <div className='flex flex-col items-center justify-center gap-10'>
+                {productData?.youtube_video?.link_source &&
+                  productData?.youtube_video?.title && (
+                    <div className='flex flex-col items-center'>
+                      <iframe
+                        width='400'
+                        height='250'
+                        className='aspect-video h-fit max-w-full md:max-w-[400px]'
+                        src={
+                          productData?.youtube_video?.link_source ?
+                            appendAutoplayParameter(
+                              productData.youtube_video.link_source
+                            )
+                          : ''
+                        }
+                        title={
+                          productData?.youtube_video?.title ?? ''
+                        }
+                        frameBorder='0'
+                        allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                        referrerPolicy='strict-origin-when-cross-origin'
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
 
-              {(productData?.datasheet?.data?.attributes?.url ||
-                productData?.user_manual?.data?.attributes?.url) && (
-                <div>
-                  <h2 className='w-fit text-2xl font-bold text-black-light xl:text-3xl 2xl:mx-auto'>
-                    {t('downloadCenterSectionTitle')}
-                  </h2>
-                  <div className='mt-5 flex max-w-[500px] flex-wrap items-center justify-start gap-5 2xl:mt-10 2xl:justify-center'>
-                    {/* {productData?.datasheet?.data?.attributes
+                {(productData?.new_datasheet?.datasheet?.data
+                  ?.attributes?.url ||
+                  productData?.user_manual?.data?.attributes
+                    ?.url) && (
+                  <div>
+                    <h2 className='w-fit text-2xl font-bold text-black-light xl:text-3xl 2xl:mx-auto'>
+                      {t('downloadCenterSectionTitle')}
+                    </h2>
+                    <div className='mt-5 flex max-w-[500px] flex-wrap items-center justify-start gap-5 2xl:mt-10 2xl:justify-center'>
+                      {/* {productData?.datasheet?.data?.attributes
                       ?.url && (
                       <DownloadBtn
                         url={
@@ -470,96 +424,131 @@ export default async function Product({
                       </DownloadBtn>
                     )} */}
 
-                    {productData?.new_datasheet?.datasheet?.data
-                      ?.attributes?.url && (
-                      <DownloadBtn
-                        url={
-                          productData?.new_datasheet?.datasheet?.data
-                            ?.attributes?.url ?? null
-                        }
-                        name={
-                          (productData?.new_datasheet?.datasheet?.data
-                            ?.attributes?.name ||
+                      {productData?.new_datasheet?.datasheet?.data
+                        ?.attributes?.url && (
+                        <DownloadBtn
+                          url={
                             productData?.new_datasheet?.datasheet
-                              ?.data?.attributes?.alternativeText) ??
-                          null
-                        }
-                      >
-                        <FaBook size={24} />
-                        <span>{t('dataSheetButtonText')}</span>
-                      </DownloadBtn>
-                    )}
+                              ?.data?.attributes?.url ?? null
+                          }
+                          name={
+                            (productData?.new_datasheet?.datasheet
+                              ?.data?.attributes?.name ||
+                              productData?.new_datasheet?.datasheet
+                                ?.data?.attributes
+                                ?.alternativeText) ??
+                            null
+                          }
+                        >
+                          <FaBook size={24} />
+                          <span>{t('dataSheetButtonText')}</span>
+                        </DownloadBtn>
+                      )}
 
-                    {productData?.user_manual?.data?.attributes
-                      ?.url && (
-                      <DownloadBtn
-                        url={
-                          productData?.user_manual?.data?.attributes
-                            ?.url ?? null
-                        }
-                        name={
-                          productData?.user_manual?.data?.attributes
-                            ?.name ?? null
-                        }
-                      >
-                        <FaAddressBook size={24} />
-                        <span>{t('userManualButtonText')}</span>
-                      </DownloadBtn>
-                    )}
+                      {productData?.user_manual?.data?.attributes
+                        ?.url && (
+                        <DownloadBtn
+                          url={
+                            productData?.user_manual?.data?.attributes
+                              ?.url ?? null
+                          }
+                          name={
+                            productData?.user_manual?.data?.attributes
+                              ?.name ?? null
+                          }
+                        >
+                          <FaAddressBook size={24} />
+                          <span>{t('userManualButtonText')}</span>
+                        </DownloadBtn>
+                      )}
 
-                    {productData?.driver.map((driver, i, arr) => {
-                      return (
-                        driver?.file_link && (
-                          <DownloadBtn
-                            key={driver?.id ?? v4()}
-                            url={driver.file_link ?? null}
-                            name={driver?.title ?? null}
-                            target={
-                              driver?.file_link ?
-                                (
-                                  driver?.file_link?.includes(
-                                    'filebrowser.hamsatech-eg.com'
-                                  )
-                                ) ?
-                                  '_self'
-                                : '_blank'
-                              : '_self'
-                            }
-                            autoDownloadFile={false}
-                          >
-                            <>
-                              <HiMiniWrenchScrewdriver size={24} />
-                              <span>
-                                {/* {arr.length > 1 ?
+                      {Array.isArray(productData?.driver) &&
+                        productData?.driver.length > 0 &&
+                        productData?.driver.map((driver, i, arr) => {
+                          return (
+                            driver?.file_link && (
+                              <DownloadBtn
+                                key={driver?.id ?? v4()}
+                                url={driver.file_link ?? null}
+                                name={driver?.title ?? null}
+                                target={
+                                  driver?.file_link ?
+                                    (
+                                      driver?.file_link?.includes(
+                                        'filebrowser.hamsatech-eg.com'
+                                      )
+                                    ) ?
+                                      '_self'
+                                    : '_blank'
+                                  : '_self'
+                                }
+                                autoDownloadFile={false}
+                              >
+                                <>
+                                  <HiMiniWrenchScrewdriver
+                                    size={24}
+                                  />
+                                  <span>
+                                    {/* {arr.length > 1 ?
                                   driver?.title ?
                                     `${driver.title} (${i + 1})`
                                   : `${t('driverButtonText')} (${i + 1})` */}
 
-                                {driver?.title ?
-                                  driver.title
-                                : t('driverButtonText')}
-                              </span>
-                            </>
-                          </DownloadBtn>
-                        )
-                      );
-                    })}
+                                    {driver?.title ?
+                                      driver.title
+                                    : t('driverButtonText')}
+                                  </span>
+                                </>
+                              </DownloadBtn>
+                            )
+                          );
+                        })}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             {/* ============================= */}
 
             {/* About Product Section */}
-            <div>
+            <div
+              className={`${
+                (
+                  productData?.new_datasheet?.datasheet?.data
+                    ?.attributes?.url ||
+                  productData?.user_manual?.data?.attributes?.url ||
+                  (Array.isArray(productData?.driver) &&
+                    productData?.driver.length > 0) ||
+                  (productData?.youtube_video?.link_source &&
+                    productData?.youtube_video?.title)
+                ) ?
+                  // `${
+                  //   (
+                  //     productData?.youtube_video?.link_source &&
+                  //     productData?.youtube_video?.title &&
+                  //     !productData?.new_datasheet?.datasheet?.data
+                  //       ?.attributes?.url &&
+                  //     !productData?.user_manual?.data?.attributes
+                  //       ?.url &&
+                  //     (!Array.isArray(productData?.driver) ||
+                  //       productData?.driver.length === 0)
+                  //   ) ?
+                  //     'mt-5'
+                  //   : ''
+                  // }`
+                  ''
+                : 'mx-auto max-w-[75ch]'
+              }`}
+            >
               <h2 className='text-xl font-bold text-black-light xl:text-3xl'>
                 {t('aboutThisProductSectionTitle')}
               </h2>
               <ul
                 className={`${locale === 'ar' ? 'mr-5' : 'ml-5'} list-disc ${
                   (
-                    productData?.datasheet?.data?.attributes?.url ||
+                    productData?.new_datasheet?.datasheet?.data
+                      ?.attributes?.url ||
                     productData?.user_manual?.data?.attributes?.url
                   ) ?
                     'mt-5 2xl:mt-10'
@@ -586,7 +575,11 @@ export default async function Product({
                 specification: productData?.sepcification ?? [],
                 reviews: productData?.reviews?.data ?? [],
                 averageReviews: productData?.average_reviews ?? 0,
-                totalReviews: productData?.total_reviews ?? 0
+                totalReviews: productData?.total_reviews ?? 0,
+                packageDimensions:
+                  productData?.package_dimensions ?? null,
+                finalPackageWeight:
+                  productData?.final_package_weight_in_grams ?? null
               }}
               productIds={{
                 enId:
@@ -666,12 +659,19 @@ export default async function Product({
                     currentPrice={
                       product?.attributes?.sale_price ?? 0
                     }
+                    finalProductPrice={
+                      product?.attributes?.final_product_price ?? 0
+                    }
                     linkSrc={
                       product && product.id ?
                         `/products/${product.id}`
                       : '/products'
                     }
                     stock={product?.attributes?.stock ?? 0}
+                    // finalPackageWeight={
+                    //   product?.attributes
+                    //     ?.final_package_weight_in_grams ?? null
+                    // }
                     // totalRates={
                     //   product?.attributes?.total_reviews ?? 0
                     // }

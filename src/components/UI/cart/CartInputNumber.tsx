@@ -1,14 +1,15 @@
 import { useMyContext } from '@/context/Store';
 import { useState } from 'react';
 import InputChangeQuantity from './InputChangeQuantity';
+import { ProductInfoType } from '@/utils/cartContextUtils';
 
 function CartInputNumber({
-  productId,
+  productInfo,
   setIsDataLoading,
   maxValue,
   minValue
 }: {
-  productId: string;
+  productInfo: ProductInfoType;
   setIsDataLoading?: React.Dispatch<React.SetStateAction<boolean>>;
   minValue: number;
   maxValue: number;
@@ -22,15 +23,23 @@ function CartInputNumber({
   } = useMyContext();
 
   const handleIncrement = () => {
-    incrementCartItem(productId, setIsDataLoading);
+    incrementCartItem({
+      productInfo,
+      setComponentLoader: setIsDataLoading
+    });
   };
 
   const handleDecrement = () => {
-    decrementCartItem(productId, setIsDataLoading);
+    decrementCartItem({
+      productInfo,
+      setComponentLoader: setIsDataLoading
+    });
   };
 
   const product = cart.find(
-    (item) => item.product.data.id === productId
+    (item) =>
+      typeof productInfo?.id === 'string' &&
+      item.product.data.id === productInfo.id
   );
   const quantity = product?.quantity || minValue || 0;
   // console.log('quantity', quantity);
@@ -47,7 +56,11 @@ function CartInputNumber({
   };
   const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = Number(e.target.value);
-    updateCartItemQuantity(productId, newQuantity, setIsDataLoading);
+    updateCartItemQuantity({
+      productInfo,
+      quantity: newQuantity,
+      setComponentLoader: setIsDataLoading
+    });
   };
 
   return (

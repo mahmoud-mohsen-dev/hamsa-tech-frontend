@@ -1,4 +1,3 @@
-
 export const createCartQuery = () => {
   return `mutation {
     createCart(
@@ -32,6 +31,7 @@ export const getCartQuery = (cartId: number) => {
                                 price
                                 sale_price
                                 final_product_price
+                                final_package_weight_in_grams
                                 description
                                 image_thumbnail {
                                     data {

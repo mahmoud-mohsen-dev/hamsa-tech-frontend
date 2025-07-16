@@ -155,12 +155,9 @@ const getOrderQuery = (orderId: string) => {
                             first_name
                             last_name
                             delivery_phone
-                            shipping_cost {
-                                data {
-                                    attributes {
-                                        governorate
-                                    }
-                                }
+                            delivery_zone {
+                              zone_name_in_arabic
+                              zone_name_in_english
                             }
                         }
                     }
@@ -219,6 +216,8 @@ async function InvoicePage({
   const attributes = data?.order?.data?.attributes;
   const shippingAddress =
     attributes?.shipping_address?.data?.attributes;
+
+  console.log('shippingAddress', shippingAddress);
   const invoiceUrl = attributes?.invoice?.data?.attributes?.url;
 
   if (!attributes || error) {
@@ -253,7 +252,7 @@ async function InvoicePage({
               width={45}
               height={45}
               quality={100}
-              className={`${locale === 'ar' ? 'ml-5' : 'mr-5'} block`}
+              className={`${locale === 'ar' ? 'mr-6' : 'ml-6'} block`}
             />
           </div>
           <div className='ml-auto flex items-center gap-1 text-sm font-medium uppercase text-gray-600'>
@@ -294,9 +293,12 @@ async function InvoicePage({
             <br />
             {shippingAddress?.city &&
               `${capitalize(shippingAddress.city)}`}
-            {shippingAddress?.shipping_cost?.data?.attributes
-              ?.governorate &&
-              ` - ${capitalize(shippingAddress.shipping_cost.data.attributes.governorate)}`}
+            {locale === 'ar' ?
+              shippingAddress?.delivery_zone?.zone_name_in_arabic &&
+              ` - ${capitalize(shippingAddress.delivery_zone.zone_name_in_arabic)}`
+            : shippingAddress?.delivery_zone?.zone_name_in_english &&
+              ` - ${capitalize(shippingAddress.delivery_zone.zone_name_in_english)}`
+            }
             {(
               shippingAddress?.zip_code &&
               shippingAddress?.zip_code > 0

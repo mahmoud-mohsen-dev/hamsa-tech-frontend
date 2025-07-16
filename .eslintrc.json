@@ -4,7 +4,9 @@
     "@typescript-eslint/no-explicit-any": "off",
     "no-unused-vars": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
-    "prefer-const": "off",
+    "prefer-const": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "@next/next/no-img-element": "warn",
     "no-restricted-imports": [
       "error",
       {

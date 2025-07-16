@@ -159,6 +159,12 @@
     "specificationSectionTitle": "Specification",
     "reviewsSectionTitle": "Reviews",
     "moreDetailsTitle": "More details",
+    "packageDimensionsText": "Package Dimensions",
+    "cmText": "cm",
+    "kgText": "kg",
+    "gramText": "gram",
+    "gramsText": "grams",
+    "packageWeightText": "Package Weight",
     "reviewsTabSection": {
       "customerReviewsTitle": "Customer Reviews",
       "reviewsText": "reviews",
@@ -337,7 +343,11 @@
         "addressCreationError": "Failed to create address",
         "guestUserError": "Failed to create guest user data",
         "orderCreationError": "Failed to create a new order",
-        "successMessage": "Loading finished"
+        "addressNotFoundError": "Delivery address was not added. Please try again or check the entered information.",
+        "successMessage": "Loading finished",
+        "generalError": "An error occurred during checkout. Please try removing all items from your cart and refreshing the page. If the issue persists, don't hesitate to contact us for assistance.",
+        "invalidProduct": "One or more product in your cart are invalid. Please update or remove the product.",
+        "totalCostError": "total order cost cost should be bigger than zero"
       }
     },
     "metaData": {
@@ -357,6 +367,8 @@
       "paymentMethod": "Payment Method:",
       "paymentStatus": "Payment Status:",
       "estimatedDelivery": "Estimated delivery:",
+      "from": "from",
+      "to": "to",
       "backToShop": "Back to Shop",
       "shippingStandard": "Standard Delivery",
       "paymentCard": "Card",

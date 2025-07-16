@@ -8,7 +8,7 @@ type PropsType = {
   params: { locale: string };
 };
 
-export const revalidate = 120; // invalidate every 60 seconds
+export const revalidate = 30; // invalidate every 60 seconds
 
 export async function generateMetadata({
   params: { locale }

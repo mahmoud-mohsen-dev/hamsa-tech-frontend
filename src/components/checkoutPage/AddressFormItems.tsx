@@ -1,36 +1,49 @@
 import { Form, Input, Select, Tooltip } from 'antd';
 import { IoIosArrowDown } from 'react-icons/io';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { useTranslations } from 'next-intl';
-import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
+import { useLocale, useTranslations } from 'next-intl';
+import {
+  deliveryZoneType,
+  shippingCompanyType
+} from '@/types/shippingCostResponseTypes';
 import { convertShippingCostsToOptions } from '@/utils/getEgyptianGovernorates';
 import { useEffect } from 'react';
 import { useMyContext } from '@/context/Store';
 
 function AddressFormItems({
   name,
-  shippingCostData
+  hidden = false,
+  updateShippingCostsData = true
+  // shippingCompanyData
 }: {
   name: string;
-  shippingCostData: ShippingCostDataType[] | null;
+  hidden: boolean;
+  updateShippingCostsData?: boolean;
+  // shippingCompanyData: shippingCompanyType | null;
 }) {
   const {
-    updateGovernoratesData,
+    // updateGovernoratesData,
     governoratesData,
+    selectedGovernorate,
     setSelectedGovernorate
   } = useMyContext();
-  // const locale = useLocale();
+  const locale = useLocale();
   const t = useTranslations('CheckoutPage.content');
 
-  useEffect(() => {
-    if (shippingCostData && shippingCostData.length > 0) {
-      updateGovernoratesData(shippingCostData);
-    }
-  }, [shippingCostData]);
+  // const deliveryZonesData =
+  //   shippingCompanyData?.delivery_zones ?? null;
+
+  // useEffect(() => {
+  //   if (deliveryZonesData && deliveryZonesData.length > 0) {
+  //     updateGovernoratesData(deliveryZonesData);
+  //   }
+  // }, [deliveryZonesData]);
 
   useEffect(() => {
-    setSelectedGovernorate(null);
-  }, []);
+    if (updateShippingCostsData) {
+      setSelectedGovernorate(null);
+    }
+  }, [updateShippingCostsData]);
 
   return (
     <>
@@ -46,6 +59,7 @@ function AddressFormItems({
             message: t('formValidationErrorMessages.selectCountry')
           }
         ]}
+        hidden={hidden}
       >
         <Select
           options={[{ label: t('countryValueOne'), value: 'egypt' }]}
@@ -53,7 +67,11 @@ function AddressFormItems({
           suffixIcon={<IoIosArrowDown size={18} />}
         />
       </Form.Item>
-      <div className='flex w-full flex-col sm:flex-row sm:gap-4'>
+      <div
+        className={
+          hidden ? '' : 'flex w-full flex-col sm:flex-row sm:gap-4'
+        }
+      >
         <Form.Item
           name={`${name}FirstName`}
           rules={[
@@ -64,6 +82,7 @@ function AddressFormItems({
           ]}
           className='basis-1/2'
           style={{ marginBottom: '20px' }}
+          hidden={hidden}
         >
           <Input type='text' placeholder={t('firstNameTitle')} />
         </Form.Item>
@@ -77,6 +96,7 @@ function AddressFormItems({
           ]}
           className='basis-1/2'
           style={{ marginBottom: '20px' }}
+          hidden={hidden}
         >
           <Input type='text' placeholder={t('lastNameTitle')} />
         </Form.Item>
@@ -90,19 +110,25 @@ function AddressFormItems({
           }
         ]}
         style={{ marginBottom: '20px' }}
+        hidden={hidden}
       >
         <Input type='text' placeholder={t('streetTitle')} />
       </Form.Item>
       <Form.Item
         name={`${name}Address2`}
         style={{ marginBottom: '20px' }}
+        hidden={hidden}
       >
         <Input
           type='text'
           placeholder={t('additionalAddressTitle')}
         />
       </Form.Item>
-      <div className='flex w-full flex-col sm:flex-row sm:gap-4'>
+      <div
+        className={
+          hidden ? '' : 'flex w-full flex-col sm:flex-row sm:gap-4'
+        }
+      >
         <Form.Item
           name={`${name}Building`}
           rules={[
@@ -113,6 +139,7 @@ function AddressFormItems({
           ]}
           style={{ marginBottom: '20px' }}
           className='basis-1/3'
+          hidden={hidden}
         >
           <Input
             type='text'
@@ -130,6 +157,7 @@ function AddressFormItems({
           ]}
           style={{ marginBottom: '20px' }}
           className='basis-1/3'
+          hidden={hidden}
         >
           <Input
             type='text'
@@ -161,6 +189,7 @@ function AddressFormItems({
           ]}
           style={{ marginBottom: '20px' }}
           className='address-form-apartment basis-1/3'
+          hidden={hidden}
         >
           <Input
             type='number'
@@ -172,24 +201,11 @@ function AddressFormItems({
       </div>
 
       {/*  */}
-      <div className='flex w-full flex-col sm:flex-row sm:gap-4'>
-        <Form.Item
-          name={`${name}City`}
-          rules={[
-            {
-              required: true,
-              message: t('formValidationErrorMessages.inputCity')
-            }
-          ]}
-          style={{ marginBottom: '20px' }}
-          className='basis-1/3'
-        >
-          <Input
-            type='text'
-            placeholder={t('cityTitle')}
-            style={{ height: '45px' }}
-          />
-        </Form.Item>
+      <div
+        className={
+          hidden ? '' : 'flex w-full flex-col sm:flex-row sm:gap-4'
+        }
+      >
         <Form.Item
           name={`${name}Governorate`}
           rules={[
@@ -202,20 +218,48 @@ function AddressFormItems({
           ]}
           style={{ marginBottom: '20px' }}
           className='basis-1/3'
+          hidden={hidden}
         >
           <Select
             showSearch
-            options={convertShippingCostsToOptions(governoratesData)}
+            options={convertShippingCostsToOptions(
+              governoratesData,
+              locale
+            )}
             onChange={(value: string) => {
-              governoratesData.map((item) => {
-                if (item?.attributes?.governorate === value) {
-                  setSelectedGovernorate(item);
-                }
-              });
+              if (updateShippingCostsData) {
+                governoratesData.map((item) => {
+                  const currentItemValue =
+                    locale === 'ar' ?
+                      item?.zone_name_in_arabic || 'أخري'
+                    : item?.zone_name_in_english || 'Other';
+                  if (currentItemValue === value) {
+                    setSelectedGovernorate(item);
+                  }
+                });
+              }
             }}
             style={{ height: '45px' }}
             placeholder={t('governorateTitle')}
             suffixIcon={<IoIosArrowDown size={18} />}
+          />
+        </Form.Item>
+        <Form.Item
+          name={`${name}City`}
+          rules={[
+            {
+              required: true,
+              message: t('formValidationErrorMessages.inputCity')
+            }
+          ]}
+          style={{ marginBottom: '20px' }}
+          className='basis-1/3'
+          hidden={hidden}
+        >
+          <Input
+            type='text'
+            placeholder={t('cityTitle')}
+            style={{ height: '45px' }}
           />
         </Form.Item>
         <Form.Item
@@ -230,6 +274,7 @@ function AddressFormItems({
               )
             }
           ]}
+          hidden={hidden}
         >
           <Input
             type='text'
@@ -249,6 +294,7 @@ function AddressFormItems({
             )
           }
         ]}
+        hidden={hidden}
       >
         <Input
           type='text'

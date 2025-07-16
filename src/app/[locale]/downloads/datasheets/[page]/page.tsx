@@ -217,7 +217,8 @@ export default async function DatasheetsPage({
   }
 
   return (
-    <div className='min-h-screen'>
+    // <div className='min-h-screen'>
+    <div>
       <div className='flex flex-col items-center gap-4 border-b border-b-gray-medium-light pb-6'>
         <h1
           className={`text-3xl font-bold uppercase ${locale === 'ar' ? '' : 'tracking-wide'} text-black-medium`}
@@ -286,6 +287,7 @@ export default async function DatasheetsPage({
                       }
                       className={`text-lg font-semibold capitalize transition-colors duration-200 hover:text-orange-medium`}
                       target={'_self'}
+                      enableBtnStyles={true}
                     >
                       {datasheet?.attributes?.new_datasheet?.title ??
                         ''}
@@ -338,6 +340,7 @@ export default async function DatasheetsPage({
                           '_self'
                         : '_blank'
                       }
+                      enableBtnStyles={false}
                     >
                       {d('downloadButtonText')}
                     </DownloadBtn>

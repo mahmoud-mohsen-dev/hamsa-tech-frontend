@@ -39,6 +39,12 @@ export type ProductType = {
     image_thumbnail: ImageThumbnail;
     average_reviews: number;
     total_reviews: number;
+    packageDimensions: {
+      length_in_cm: number | null;
+      width_in_cm: number | null;
+      height_in_cm: number | null;
+    } | null;
+    finalPackageWeight: number | null;
     locale: string;
     localizations: {
       data: {

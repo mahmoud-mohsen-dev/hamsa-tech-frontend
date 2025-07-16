@@ -29,6 +29,12 @@ interface TypeProps {
     reviews: reviewType[];
     averageReviews: number;
     totalReviews: number;
+    packageDimensions: {
+      length_in_cm: number | null;
+      width_in_cm: number | null;
+      height_in_cm: number | null;
+    } | null;
+    finalPackageWeight: number | null;
   };
   productIds: { enId: string | null; arId: string | null };
 }
@@ -82,11 +88,53 @@ interface TypeProps {
 // }
 
 async function ConentOfSpecification({
-  specification
+  specification,
+  packageDimensions,
+  finalPackageWeight
 }: {
   specification: specificationType[];
+  packageDimensions: {
+    length_in_cm: number | null;
+    width_in_cm: number | null;
+    height_in_cm: number | null;
+  } | null;
+  finalPackageWeight: number | null;
 }) {
   const t = await getTranslations('ProductPage');
+
+  if (specification.length === 0) return null;
+
+  specification.push({
+    id: 'package-dimensions',
+    name: t('packageDimensionsText'),
+    value:
+      (
+        typeof packageDimensions?.length_in_cm === 'number' &&
+        packageDimensions?.length_in_cm > 0 &&
+        typeof packageDimensions?.width_in_cm === 'number' &&
+        packageDimensions?.width_in_cm > 0 &&
+        typeof packageDimensions?.height_in_cm === 'number' &&
+        packageDimensions?.height_in_cm > 0
+      ) ?
+        `${packageDimensions.length_in_cm} x ${packageDimensions.width_in_cm} x ${packageDimensions.height_in_cm} ${t('cmText')}`
+      : 'N/A'
+  });
+  specification.push({
+    id: 'package-weight',
+    name: t('packageWeightText'),
+    value: `${
+      (
+        typeof finalPackageWeight === 'number' &&
+        finalPackageWeight > 0
+      ) ?
+        finalPackageWeight === 1 ?
+          `${finalPackageWeight} ${t('gramText')}`
+        : finalPackageWeight > 1000 ?
+          `${Number(finalPackageWeight / 1000).toFixed(2)} ${t('kgText')}`
+        : `${finalPackageWeight} ${t('gramsText')}`
+      : 'N/A'
+    }`
+  });
 
   const halfLength = Math.ceil(specification.length / 2);
 
@@ -96,7 +144,7 @@ async function ConentOfSpecification({
     specification.length
   );
 
-  const leftSideItems = leftSide.map((item, i) => {
+  const leftSideItems = leftSide.map((item, i, arr) => {
     const lines = item?.value ? item?.value.split('\n') : [''];
     return (
       <li
@@ -106,7 +154,16 @@ async function ConentOfSpecification({
         <span className='font-semibold capitalize'>
           {item?.name ?? ''}:
         </span>
-        <span className='capitalize'>
+        <span
+          className={
+            (
+              item.id === 'package-weight' ||
+              item.id === 'package-dimensions'
+            ) ?
+              ''
+            : 'capitalize'
+          }
+        >
           {lines.map((line, index) => (
             <span key={index} className='block w-full'>
               {line}
@@ -127,7 +184,16 @@ async function ConentOfSpecification({
         <span className='font-semibold capitalize'>
           {item?.name ?? ''}:
         </span>
-        <span className='capitalize'>
+        <span
+          className={
+            (
+              item.id === 'package-weight' ||
+              item.id === 'package-dimensions'
+            ) ?
+              ''
+            : 'capitalize'
+          }
+        >
           {lines.map((line, index) => (
             <span key={index} className='block w-full'>
               {line}
@@ -393,6 +459,8 @@ async function TabsSection({ moreDetails, productIds }: TypeProps) {
       children: (
         <ConentOfSpecification
           specification={moreDetails.specification}
+          packageDimensions={moreDetails.packageDimensions}
+          finalPackageWeight={moreDetails.finalPackageWeight}
         />
       )
     },

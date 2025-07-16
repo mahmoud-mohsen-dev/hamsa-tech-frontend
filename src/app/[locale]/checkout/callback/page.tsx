@@ -17,7 +17,11 @@ import {
 import DownloadButton from '@/components/invoice/DownloadButton';
 import Btn from '@/components/UI/Btn';
 import { IoStorefrontSharp } from 'react-icons/io5';
-import { getCookie, getIdFromToken } from '@/utils/cookieUtils';
+import {
+  getCartIdFromCookie,
+  getCookie,
+  getIdFromToken
+} from '@/utils/cookieUtils';
 import { capitalize } from '@/utils/helpers';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 import { emptyCart } from '@/services/cart';
@@ -46,13 +50,10 @@ const getOrderSummaryByIdQuery = (orderId: string) => {
                     shipping_address {
                         data {
                             attributes {
-                                shipping_cost {
-                                    data {
-                                        attributes {
-                                            delivery_duration_in_days
-                                        }
-                                    }
-                                }
+                               delivery_zone {
+                                  minimum_delivery_duration_in_days
+                                  maximum_delivery_duration_in_days
+                              }
                             }
                         }
                     }
@@ -111,7 +112,7 @@ const CallbackCheckoutPage = () => {
   const [orderData, setOrderData] = useState<OrderSummaryType | null>(
     null
   );
-  const { setCart } = useMyContext();
+  const { setCart, setTotalCartCost } = useMyContext();
 
   useEffect(() => {
     const queryString =
@@ -187,11 +188,8 @@ const CallbackCheckoutPage = () => {
           const userResponseID =
             data?.order?.data?.attributes?.user?.data?.id ?? null;
 
-          const cartId = getCookie('cartId');
-          const updatedCartId = await emptyCart(cartId);
-          if (updatedCartId) {
-            setCart([]);
-          }
+          const cartId = getCartIdFromCookie();
+          await emptyCart({ cartId, setCart, setTotalCartCost });
 
           if (
             (userResponseID && userId && userResponseID === userId) ||
@@ -219,8 +217,33 @@ const CallbackCheckoutPage = () => {
     return notFound();
   }
 
+  // console.log(orderData ?? null);
+
+  // console.log(
+  //   orderData?.attributes?.shipping_address?.data?.attributes
+  //     ?.delivery_zone?.minimum_delivery_duration_in_days ?? null
+  // );
+  // console.log(
+  //   addDaysToIsoDate(
+  //     orderData?.attributes?.createdAt ?? null,
+  //     orderData?.attributes?.shipping_address?.data?.attributes
+  //       ?.delivery_zone?.minimum_delivery_duration_in_days ?? null
+  //   )
+  // );
+  // console.log(
+  //   orderData?.attributes?.shipping_address?.data?.attributes
+  //     ?.delivery_zone?.maximum_delivery_duration_in_days ?? null
+  // );
+  // console.log(
+  //   addDaysToIsoDate(
+  //     orderData?.attributes?.createdAt ?? null,
+  //     orderData?.attributes?.shipping_address?.data?.attributes
+  //       ?.delivery_zone?.maximum_delivery_duration_in_days ?? null
+  //   )
+  // );
+
   return (
-    <section className='flex min-h-[calc(100vh-64px)] flex-col items-center justify-center bg-gray-100 py-5'>
+    <section className='flex min-h-[calc(100vh-64px)] flex-col items-center justify-center bg-gray-100 py-10'>
       <div className='w-full max-w-lg rounded-lg bg-white p-6 shadow-lg'>
         {loading || !orderId ?
           <div className='flex flex-col items-center justify-center gap-1 text-lg'>
@@ -408,21 +431,35 @@ const CallbackCheckoutPage = () => {
                 </span>
               </div>
 
-              <div className='flex justify-between'>
+              <div className='flex flex-wrap justify-between'>
                 <span className='text-gray-600'>
                   {t('estimatedDelivery')}
                 </span>
-                <span className='font-semibold text-green-dark'>
-                  {formatDateByLocale(
-                    addDaysToIsoDate(
-                      orderData?.attributes?.createdAt ?? null,
-                      orderData?.attributes?.shipping_address?.data
-                        ?.attributes?.shipping_cost?.data?.attributes
-                        ?.delivery_duration_in_days ?? null
-                    ),
-
-                    locale
-                  )}
+                <span className='flex items-center gap-2'>
+                  <span className='text-gray-600'>{t('from')}</span>
+                  <span className='font-semibold text-gray-600'>
+                    {formatDateByLocale(
+                      addDaysToIsoDate(
+                        orderData?.attributes?.createdAt ?? null,
+                        orderData?.attributes?.shipping_address?.data
+                          ?.attributes?.delivery_zone
+                          ?.minimum_delivery_duration_in_days ?? null
+                      ),
+                      locale
+                    )}
+                  </span>
+                  <span className='text-gray-600'>{t('to')}</span>
+                  <span className='font-semibold text-gray-600'>
+                    {formatDateByLocale(
+                      addDaysToIsoDate(
+                        orderData?.attributes?.createdAt ?? null,
+                        orderData?.attributes?.shipping_address?.data
+                          ?.attributes?.delivery_zone
+                          ?.maximum_delivery_duration_in_days ?? null
+                      ),
+                      locale
+                    )}
+                  </span>
                 </span>
               </div>
             </div>

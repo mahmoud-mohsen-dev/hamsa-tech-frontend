@@ -1,14 +1,14 @@
 // Your PDF Component
 import type { OrderInfoType } from '@/types/orderResponseTypes';
 
-const generatePdfBlob = async (orderData: OrderInfoType) => {
+const generatePdfBlob = async (orderData: OrderInfoType,locale: string) => {
   const { pdf } = await import('@react-pdf/renderer');
   // console.log(pdf);
   const { InvoiceDocument } = await import(
     '../components/invoice/InvoiceDocument'
   );
   // Create a React element with props
-  const element = <InvoiceDocument orderData={orderData} />;
+  const element = <InvoiceDocument orderData={orderData} locale={locale} />;
   // console.log(element);
 
   // Generate PDF blob from the React element
@@ -17,14 +17,14 @@ const generatePdfBlob = async (orderData: OrderInfoType) => {
   return blob;
 };
 
-export const uploadInvoicePdf = async (orderData: OrderInfoType) => {
+export const uploadInvoicePdf = async (orderData: OrderInfoType, locale: string) => {
   // console.log('uploadInvoicePdf orderData before:', orderData);
   if (!orderData?.id) {
     console.log("orderData id don't exist exists");
     return; // exit early if orderData.id does not exist
   }
   // console.log('uploadInvoicePdf orderData', orderData);
-  const pdfBlob = await generatePdfBlob(orderData);
+  const pdfBlob = await generatePdfBlob(orderData,locale);
   // console.log(pdfBlob);
 
   const formData = new FormData();

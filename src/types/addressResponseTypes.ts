@@ -20,7 +20,7 @@ export interface updateAddressResponseType {
   error: string | null;
 }
 
-export interface AdressesType {
+export interface AdressType {
   id: string;
   attributes: {
     city: string;
@@ -35,23 +35,12 @@ export interface AdressesType {
     apartment: number;
     address_name: string;
     default: boolean;
-    shipping_cost: {
-      data: {
-        attributes: {
-          governorate: string;
-          delivery_cost: number;
-          localizations: {
-            data: Array<{
-              attributes: {
-                governorate: string;
-                locale: string;
-              };
-            }>;
-          };
-          locale: string;
-        };
-      };
-    };
+    delivery_zone: {
+      zone_name_in_arabic: string | null;
+      zone_name_in_english: string | null;
+      minimum_delivery_duration_in_days: number | null;
+      maximum_delivery_duration_in_days: number | null;
+    } | null;
     updatedAt: string; // ISO date string
   };
 }
@@ -62,7 +51,7 @@ export interface GetAddressesResponseType {
       data: {
         attributes: {
           addresses: {
-            data: AdressesType[] | null;
+            data: AdressType[] | null;
           };
         };
       } | null;
@@ -77,7 +66,7 @@ export interface updateUserAddressesResponseType {
       data: {
         attributes: {
           addresses: {
-            data: AdressesType[] | null;
+            data: AdressType[] | null;
           };
         };
       } | null;
@@ -86,13 +75,13 @@ export interface updateUserAddressesResponseType {
   error: string | null;
 }
 
-export interface GetAddressResponseType {
+export interface getAddressResponseType {
   data: {
     usersPermissionsUser: {
       data: {
         attributes: {
           addresses: {
-            data: AdressesType[] | null;
+            data: AdressType[] | null;
           };
         };
       } | null;
@@ -104,7 +93,7 @@ export interface GetAddressResponseType {
 export interface updateDefaultAddressResponseType {
   data: {
     updateAddress: {
-      data: AdressesType | null;
+      data: AdressType | null;
     };
   } | null;
   error: string | null;

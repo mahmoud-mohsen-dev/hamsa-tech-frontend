@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ConfigProvider, Form } from 'antd';
+import { Button, ConfigProvider, Form, Skeleton } from 'antd';
 import AddressFormItems from './AddressFormItems';
 import BillingAddress from './BillingAddress';
 import PaymentMethods from './PaymentMethods';
@@ -8,12 +8,18 @@ import Contact from './Contact';
 import { useLocale, useTranslations } from 'next-intl';
 import ShippingCost from './ShippingCost';
 import { useForm } from 'antd/es/form/Form';
-import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
+import {
+  ShippingCostsDataType,
+  shppingConfigDataType
+} from '@/types/shippingCostResponseTypes';
 import { useMyContext } from '@/context/Store';
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface';
-import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
-  getCartId,
+  fetchGraphqlClient,
+  fetchGraphqlClientAuthenticated
+} from '@/services/graphqlCrud';
+import {
+  getCartIdFromCookie,
   getCookie,
   getIdFromToken
 } from '@/utils/cookieUtils';
@@ -25,9 +31,20 @@ import { capitalize } from '@/utils/helpers';
 import { useRouter } from '@/navigation';
 import { PaymentDataType } from '@/types/paymentResonseType';
 import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
-import { createAddress } from '@/services/shippingAddress';
+import {
+  createAddress,
+  getUserAddressesData
+} from '@/services/shippingAddress';
 import { useUser } from '@/context/UserContext';
-import { getDefaultActiveAddressId } from '@/services/handleAddresses';
+import {
+  getDefaultActiveAddressData,
+  getDefaultActiveAddressId
+} from '@/services/handleAddresses';
+import { validateOrder } from '@/utils/cartUtils';
+import { useEffect, useState } from 'react';
+import { getShippingCosts } from '@/services/getShippingCostsData';
+import Addresses from '@/app/[locale]/account/addresses/page';
+import { v4 } from 'uuid';
 
 const updateGuestUserQuery = (
   guestUserId: string,
@@ -50,63 +67,6 @@ const updateGuestUserQuery = (
     }
   }`;
 };
-
-// const createAddressQuery = ({
-//   userId,
-//   // shippingAddressId,
-//   city,
-//   address1,
-//   address2,
-//   building,
-//   floor,
-//   apartment,
-//   zipCode,
-//   guestUserId,
-//   firstName,
-//   lastName,
-//   deliveryPhone,
-//   shippingCostId
-// }: {
-//   userId: string | null;
-//   // shippingAddressId: string;
-//   city: string;
-//   address1: string;
-//   address2?: string;
-//   building: string;
-//   floor: string;
-//   apartment: string;
-//   zipCode?: string;
-//   guestUserId: string;
-//   firstName: string;
-//   lastName: string;
-//   deliveryPhone?: string;
-//   shippingCostId: string;
-// }) => {
-//   return `mutation CreateAddress {
-//     createAddress(
-//         data: {
-//             city: "${city}"
-//             address_1: "${address1}"
-//             address_2: "${address2 ?? ''}"
-//             zip_code: ${!isNaN(Number(zipCode)) ? Number(zipCode) : 0}
-//             apartment: ${!isNaN(Number(apartment)) ? Number(apartment) : 0}
-//             guest_user: ${guestUserId ? `"${guestUserId}"` : null}
-//             first_name: "${firstName}"
-//             last_name: "${lastName}"
-//             delivery_phone: "${deliveryPhone ?? ''}"
-//             shipping_cost: ${shippingCostId}
-//             user: ${userId ? `"${userId}"` : null}
-//             building: "${building}"
-//             floor: "${floor}"
-//             publishedAt: "${new Date().toISOString()}"
-//         }
-//     ) {
-//         data {
-//             id
-//         }
-//     }
-//   }`;
-// };
 
 const createOrderQuery = ({
   cart,
@@ -142,9 +102,10 @@ const createOrderQuery = ({
     .map((cartItem) => {
       if (
         cartItem &&
-        cartItem?.quantity &&
+        typeof cartItem?.quantity === 'number' &&
+        cartItem.quantity > 0 &&
         cartItem?.product?.data?.id &&
-        cartItem?.total_cost
+        typeof cartItem?.total_cost === 'number'
         // this was on the last line on the return down after the parenthesis // description: "${cartItem?.product?.data?.attributes?.description ?? ''}"
       ) {
         return `{
@@ -158,7 +119,7 @@ const createOrderQuery = ({
     })
     .join(', ')}]`;
 
-  console.log(cartString);
+  // console.log(cartString);
 
   return `mutation CreateOrder {
     createOrder(
@@ -213,12 +174,9 @@ const createOrderQuery = ({
                             first_name
                             last_name
                             delivery_phone
-                            shipping_cost {
-                              data {
-                                  attributes {
-                                      governorate
-                                  }
-                              }
+                            delivery_zone {
+                              zone_name_in_arabic
+                              zone_name_in_english
                             }
                         }
                     }
@@ -236,12 +194,9 @@ const createOrderQuery = ({
                             first_name
                             last_name
                             delivery_phone
-                            shipping_cost {
-                              data {
-                                  attributes {
-                                      governorate
-                                  }
-                              }
+                            delivery_zone {
+                              zone_name_in_arabic
+                              zone_name_in_english
                             }
                         }
                     }
@@ -300,9 +255,9 @@ interface OrderFormValuesType {
 }
 
 function OrderInfo({
-  shippingCostData
+  shippingConfigData
 }: {
-  shippingCostData: ShippingCostDataType[] | [];
+  shippingConfigData: shppingConfigDataType | null;
 }) {
   const [form] = useForm();
   const {
@@ -318,23 +273,36 @@ function OrderInfo({
     setErrorMessage,
     setSuccessMessage,
     isCartCheckoutLoading,
-    isAddressIsLoading
+    isAddressIsLoading,
+    setSelectedGovernorate,
+    selectedGovernorate,
+    updateGovernoratesData
   } = useMyContext();
   const { addressesData } = useUser();
-  // const [defaultAddress, setDefaultAddress] =
-  //   useState<null | AdressesType>(null);
+  const [userId, setUserId] = useState<null | string>(null);
+
+  // console.log(shippingConfigData);
+
+  // const [defaultAddressData, setDefaultAddressData] =
+  //   useState<null | AdressType>(null);
 
   // const [messageApi, contextHolder] = message.useMessage();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('CheckoutPage.content');
   // const [loading, setLoading] = useState(false);
-  const defaultActiveAddressId =
-    getDefaultActiveAddressId(addressesData);
-
-  console.log('defaultActiveAddressId', defaultActiveAddressId);
+  // const defaultActiveAddressId =
+  //   getDefaultActiveAddressId(addressesData);
+  const defaultActiveAddressData =
+    getDefaultActiveAddressData(addressesData);
 
   const isPageLoading = isAddressIsLoading || isCartCheckoutLoading;
+
+  const shippingCompanyData =
+    shippingConfigData?.default_shipping_company?.data?.attributes ??
+    null;
+
+  const totalOrderCost = calculateTotalOrderCost();
 
   const handlePayment = async ({
     emailOrPhone,
@@ -366,7 +334,7 @@ function OrderInfo({
       items === null ||
       order_id === null
     ) {
-      console.error('Invalid order details', {
+      console.log('Invalid order details', {
         emailOrPhone,
         shippingAddressData,
         billingAddressData,
@@ -391,9 +359,9 @@ function OrderInfo({
         order_id
       })
     });
-    console.log(response);
+    // console.log(response);
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     // setLoadingMessage(false);
 
     if (data.success) {
@@ -401,7 +369,7 @@ function OrderInfo({
       // window.location.href = data.paymentUrl;
       window.location.replace(data.paymentUrl);
     } else {
-      console.error('Payment gateway failed', data.error);
+      console.log('Payment gateway failed', data.error);
       setErrorMessage('Payment gateway failed');
     }
   };
@@ -409,8 +377,8 @@ function OrderInfo({
   // Function to handle form submission
   const onFinish = async (formValues: OrderFormValuesType) => {
     try {
-      console.log('Received values of form: ', formValues);
-      const cartId = getCartId() ?? '';
+      console.log('Received values of form order info: ', formValues);
+      const cartId = getCartIdFromCookie() ?? '';
       const {
         emailOrPhone,
         sendNewsLetter,
@@ -436,6 +404,79 @@ function OrderInfo({
         return;
       }
 
+      console.log(
+        'shippingDetailsGovernorate',
+        shippingDetailsGovernorate
+      );
+      console.log('selectedGovernorate', selectedGovernorate);
+
+      const alreadySelectedShippingDeliveryZone =
+        governoratesData.find((item) => {
+          if (
+            item?.zone_name_in_english &&
+            defaultActiveAddressData?.delivery_zone
+              ?.zone_name_in_english &&
+            item.zone_name_in_english ===
+              defaultActiveAddressData?.delivery_zone
+                ?.zone_name_in_english
+          ) {
+            return true;
+          }
+          if (
+            item?.zone_name_in_arabic &&
+            defaultActiveAddressData?.delivery_zone
+              ?.zone_name_in_arabic &&
+            item.zone_name_in_arabic ===
+              defaultActiveAddressData?.delivery_zone
+                ?.zone_name_in_arabic
+          ) {
+            return true;
+          }
+          if (
+            item?.zone_name_in_english &&
+            selectedGovernorate?.zone_name_in_english &&
+            item.zone_name_in_english ===
+              selectedGovernorate.zone_name_in_english
+          ) {
+            return true;
+          }
+          if (
+            item?.zone_name_in_arabic &&
+            selectedGovernorate?.zone_name_in_arabic &&
+            item.zone_name_in_english ===
+              selectedGovernorate.zone_name_in_arabic
+          ) {
+            return true;
+          }
+
+          return false;
+        }) ?? null;
+
+      console.log('*/*'.repeat(50));
+      console.log('governoratesData', governoratesData);
+      console.log(
+        'defaultActiveAddressData',
+        defaultActiveAddressData
+      );
+      console.log(
+        'alreadySelectedShippingDeliveryZone',
+        alreadySelectedShippingDeliveryZone
+      );
+      console.log('*/*'.repeat(50));
+
+      if (alreadySelectedShippingDeliveryZone === null) {
+        console.log(
+          'Delivery address was not added. Please try again or check the entered information.'
+        );
+        console.log(
+          'alreadySelectedShippingDeliveryZone',
+          alreadySelectedShippingDeliveryZone
+        );
+        setLoadingMessage(false);
+        setErrorMessage(t('form.addressNotFoundError'));
+        return;
+      }
+
       const { data: guestUserData, error: guestUserError } =
         (await fetchGraphqlClient(
           updateGuestUserQuery(
@@ -446,38 +487,83 @@ function OrderInfo({
           )
         )) as UpdateGuestUserResponseType;
 
-      const shippingCostId =
-        governoratesData.find(
-          (item) =>
-            item?.attributes?.governorate &&
-            item?.attributes?.governorate ===
-              shippingDetailsGovernorate
-        )?.id ?? '';
+      console.log(getCookie('guestUserId'));
+      console.log(guestUserData);
 
       // Create a new address
       const {
         addressData: deliveryAddressId,
         addressError: deliveryAddressError
       } = await createAddress({
-        firstName: capitalize(shippingDetailsFirstName ?? ''),
-        lastName: capitalize(shippingDetailsLastName ?? ''),
-        address1: capitalize(shippingDetailsAddress ?? ''),
-        address2: capitalize(shippingDetailsAddress2 ?? ''),
-        building: shippingDetailsBuilding,
-        floor: shippingDetailsFloor,
-        apartment: shippingDetailsApartment,
-        city: capitalize(shippingDetailsCity ?? ''),
-        shippingCostId: shippingCostId,
-        zipCode: shippingDetailsPostalCode,
-        deliveryPhone: shippingDetailsPhone ?? ''
+        userId: userId,
+        guestUserId: getCookie('guestUserId'),
+        firstName: capitalize(
+          userId && defaultActiveAddressData?.first_name ?
+            defaultActiveAddressData.first_name
+          : (shippingDetailsFirstName ?? '')
+        ),
+        lastName: capitalize(
+          userId && defaultActiveAddressData?.last_name ?
+            defaultActiveAddressData.last_name
+          : (shippingDetailsLastName ?? '')
+        ),
+        address1: capitalize(
+          userId && defaultActiveAddressData?.address_1 ?
+            defaultActiveAddressData.address_1
+          : (shippingDetailsAddress ?? '')
+        ),
+        address2: capitalize(
+          userId && defaultActiveAddressData?.address_2 ?
+            defaultActiveAddressData?.address_2
+          : (shippingDetailsAddress2 ?? '')
+        ),
+        building:
+          userId && defaultActiveAddressData?.building ?
+            defaultActiveAddressData.building
+          : shippingDetailsBuilding,
+        floor:
+          userId && defaultActiveAddressData?.floor ?
+            defaultActiveAddressData.floor
+          : shippingDetailsFloor,
+        apartment:
+          userId && defaultActiveAddressData?.apartment ?
+            `${defaultActiveAddressData.apartment}`
+          : `${shippingDetailsApartment}`,
+        city: capitalize(
+          userId && defaultActiveAddressData?.city ?
+            defaultActiveAddressData.city
+          : (shippingDetailsCity ?? '')
+        ),
+        deliveryZone: {
+          zoneNameInArabic:
+            alreadySelectedShippingDeliveryZone?.zone_name_in_arabic ??
+            null,
+          zoneNameInEnglish:
+            alreadySelectedShippingDeliveryZone?.zone_name_in_english ??
+            null,
+          minimumDeliveryDurationInDays:
+            alreadySelectedShippingDeliveryZone?.minimum_delivery_duration_in_days ??
+            null,
+          maximumDeliveryDurationInDays:
+            alreadySelectedShippingDeliveryZone?.maximum_delivery_duration_in_days ??
+            null
+        },
+        zipCode:
+          userId && defaultActiveAddressData?.zip_code ?
+            `${defaultActiveAddressData?.zip_code}`
+          : shippingDetailsPostalCode,
+        deliveryPhone:
+          userId && defaultActiveAddressData?.delivery_phone ?
+            defaultActiveAddressData.delivery_phone
+          : (shippingDetailsPhone ?? '')
         // userId: getIdFromToken(),
         // guestUserId: getCookie('guestUserId')
       });
 
       if (deliveryAddressError || !deliveryAddressId) {
-        console.error('Failed to create delivery address data');
-        console.error(deliveryAddressError);
-        console.error(deliveryAddressId);
+        console.log('Failed to create delivery address data');
+        console.log(deliveryAddressError);
+        console.log(deliveryAddressId);
         setLoadingMessage(false);
         setErrorMessage(t('form.orderCreationError'));
         return;
@@ -488,10 +574,39 @@ function OrderInfo({
 
       let billingAddressId = deliveryAddressId ?? null;
       if (formValues?.billingMethod === 'different') {
+        const alreadySelectedBillingDeliveryZone =
+          governoratesData.find((item) => {
+            if (
+              item?.zone_name_in_english &&
+              formValues?.billingDetailsGovernorate &&
+              item.zone_name_in_english ===
+                formValues.billingDetailsGovernorate
+            ) {
+              return true;
+            }
+            if (
+              item?.zone_name_in_arabic &&
+              formValues?.billingDetailsGovernorate &&
+              item.zone_name_in_arabic ===
+                formValues.billingDetailsGovernorate
+            ) {
+              return true;
+            }
+
+            return false;
+          }) ?? null;
+
+        console.log(
+          'alreadySelectedBillingDeliveryZone',
+          alreadySelectedBillingDeliveryZone
+        );
+
         const {
           addressData: billingAddressResponseId,
           addressError: billingAddressError
         } = await createAddress({
+          userId: getIdFromToken(),
+          guestUserId: getCookie('guestUserId'),
           firstName: capitalize(
             formValues?.billingDetailsFirstName ?? ''
           ),
@@ -508,7 +623,20 @@ function OrderInfo({
           floor: formValues?.billingDetailsFloor ?? '',
           apartment: formValues?.billingDetailsApartment ?? '0',
           city: capitalize(formValues?.billingDetailsCity ?? ''),
-          shippingCostId: shippingCostId,
+          deliveryZone: {
+            zoneNameInArabic:
+              alreadySelectedBillingDeliveryZone?.zone_name_in_arabic ??
+              null,
+            zoneNameInEnglish:
+              alreadySelectedBillingDeliveryZone?.zone_name_in_english ??
+              null,
+            minimumDeliveryDurationInDays:
+              alreadySelectedBillingDeliveryZone?.minimum_delivery_duration_in_days ??
+              null,
+            maximumDeliveryDurationInDays:
+              alreadySelectedBillingDeliveryZone?.maximum_delivery_duration_in_days ??
+              null
+          },
           zipCode: formValues?.billingDetailsPostalCode ?? '',
           deliveryPhone: formValues?.billingDetailsPhone ?? ''
           // userId: getIdFromToken(),
@@ -516,11 +644,11 @@ function OrderInfo({
         });
 
         if (billingAddressError || !billingAddressResponseId) {
-          console.error(
+          console.log(
             'Failed to create billing address',
             billingAddressError
           );
-          console.error(billingAddressResponseId);
+          console.log(billingAddressResponseId);
           setLoadingMessage(false);
           setErrorMessage(t('form.addressCreationError'));
           return;
@@ -528,6 +656,35 @@ function OrderInfo({
         if (billingAddressResponseId) {
           billingAddressId = billingAddressResponseId;
         }
+      }
+      try {
+        await validateOrder({
+          cart,
+          subTotalCartCost: calculateSubTotalCartCost(),
+          userId: getIdFromToken(),
+          guestUserId: getCookie('guestUserId'),
+          shippingAddressId: deliveryAddressId,
+          billingAddressId,
+          deliveryCost: calculateNetDeliveryCost(),
+          couponAppliedValue: calculateCouponDeductionValue(),
+          totalOrderCost,
+          generalErrorMessage: t('form.generalError'),
+          invalidProductErrorMessage: t('form.invalidProduct'),
+          totalCostErrorMessage: t('form.totalCostError')
+        });
+      } catch (err: any) {
+        console.log('Error during form submission:', err);
+        console.log('Error message:', err?.message);
+        setLoadingMessage(false);
+        setErrorMessage(
+          err?.message ?? 'Error during form submission'
+        );
+        // throw new Error(
+        //   err?.message ?? 'Error during form submission'
+        // );
+        return;
+      } finally {
+        setLoadingMessage(false);
       }
 
       const { data: orderData, error: orderError } =
@@ -543,7 +700,7 @@ function OrderInfo({
             couponId: couponData?.id ?? null, // 2. TODO: get coupon ID value
             deliveryCost: calculateNetDeliveryCost(),
             couponAppliedValue: calculateCouponDeductionValue(),
-            totalOrderCost: calculateTotalOrderCost(),
+            totalOrderCost,
             deliveryStatus: 'pending',
             paymentStatus: 'pending'
           })
@@ -553,18 +710,18 @@ function OrderInfo({
         guestUserError ||
         !guestUserData?.updateGuestUser?.data?.id
       ) {
-        console.error('Failed to create guest user data');
-        console.error(guestUserError);
-        console.error(guestUserData);
+        console.log('Failed to create guest user data');
+        console.log(guestUserError);
+        console.log(guestUserData);
         setLoadingMessage(false);
         setErrorMessage(t('form.guestUserError'));
         return;
       }
 
       // if (addressError || !addressData?.updateAddress?.data?.id) {
-      //   console.error('Failed to update address');
-      //   console.error(addressError);
-      //   console.error(addressData);
+      //   console.log('Failed to update address');
+      //   console.log(addressError);
+      //   console.log(addressData);
       //   setLoadingMessage(false);
       //   setErrorMessage(t('form.addressCreationError'));
       //   return;
@@ -575,21 +732,20 @@ function OrderInfo({
         !orderData?.createOrder?.data?.id ||
         !orderData?.createOrder?.data
       ) {
-        console.error('Failed to create a new order');
-        console.error(orderError);
-        console.error(orderData);
+        console.log('Failed to create a new order');
+        console.log(orderError);
+        console.log(orderData);
         setLoadingMessage(false);
         setErrorMessage(t('form.orderCreationError'));
         return;
-      } else {
-        console.log(orderData);
       }
-      console.log(orderData?.createOrder?.data);
       if (orderData?.createOrder?.data) {
+        console.log(orderData?.createOrder?.data);
         const response = await uploadInvoicePdf(
-          orderData?.createOrder?.data ?? null
+          orderData?.createOrder?.data ?? null,
+          locale
         );
-        console.log(response);
+        // console.log(response);
       }
 
       const paymentData: PaymentDataType = {
@@ -611,7 +767,7 @@ function OrderInfo({
         orderData?.createOrder?.data?.attributes?.payment_method ===
         'card'
       ) {
-        console.log('handlePayment was called');
+        // console.log('handlePayment was called');
         await handlePayment(paymentData);
       }
 
@@ -622,13 +778,13 @@ function OrderInfo({
         orderData?.createOrder?.data?.attributes?.payment_method ===
         'cash_on_delivery'
       ) {
-        router.push(
+        router.replace(
           `/checkout/callback?oid=${orderData.createOrder.data.id}`
         );
       }
       // success();
     } catch (err) {
-      console.error('Error during form submission:', err);
+      console.log('Error during form submission:', err);
       setLoadingMessage(false);
       setErrorMessage(t('form.orderError'));
     } finally {
@@ -642,9 +798,88 @@ function OrderInfo({
       errorInfo?.errorFields[0]?.errors[0] ??
         t('form.formSubmissionFailed')
     );
-    console.log('Form failed:', errorInfo);
+    // console.log('Form failed:', errorInfo);
   };
 
+  // useEffect(() => {
+  //   const defaultAddress = async () => {
+  //     const userAddressesData = await getUserAddressesData();
+  //     console.log(userAddressesData);
+
+  // const defaultAddressData =
+  //   (
+  //     Array.isArray(userAddressesData) &&
+  //     userAddressesData?.length > 0
+  //   ) ?
+  //     (userAddressesData?.find(
+  //       (address) => address?.attributes?.default === true
+  //     ) ?? null)
+  //   : null;
+  //     if (defaultAddressData) {
+  //       console.log(defaultAddressData);
+  //       setDefaultAddressData(defaultAddressData);
+  //     }
+  //   };
+
+  //   defaultAddress();
+  // }, []);
+
+  useEffect(() => {
+    if (
+      cart.length > 0 &&
+      Array.isArray(addressesData) &&
+      addressesData.length > 0 &&
+      defaultActiveAddressData
+    ) {
+      setSelectedGovernorate(
+        governoratesData.find(
+          (governorate) =>
+            (governorate?.zone_name_in_arabic &&
+              governorate.zone_name_in_arabic ===
+                defaultActiveAddressData?.delivery_zone
+                  ?.zone_name_in_arabic) ||
+            (governorate?.zone_name_in_english &&
+              governorate.zone_name_in_english ===
+                defaultActiveAddressData?.delivery_zone
+                  ?.zone_name_in_english)
+        ) ?? null
+      );
+    }
+    // else {
+    //   setSelectedGovernorate(null);
+    // }
+  }, [
+    cart,
+    governoratesData,
+    defaultActiveAddressData,
+    addressesData
+  ]);
+
+  // console.log('=-='.repeat(10));
+  // console.log(JSON.stringify(selectedGovernorate));
+  // console.log('=-='.repeat(10));
+
+  useEffect(() => {
+    const userLoggedInId = getIdFromToken();
+    setUserId(userLoggedInId);
+    if (cart) {
+      const shippingCostsData = getShippingCosts({
+        shippingCompanyData,
+        shippingConfigData,
+        totalOrderCost,
+        cart
+      });
+
+      if (shippingCostsData && shippingCostsData.length > 0) {
+        updateGovernoratesData(shippingCostsData);
+      }
+    } else {
+      console.log('no cart');
+      updateGovernoratesData([]);
+    }
+  }, [cart]);
+
+  // console.log(JSON.stringify(governoratesData));
   // console.log('addresses', addressesData);
   // console.log('default address', defaultAddress);
 
@@ -686,51 +921,303 @@ function OrderInfo({
           // paymentMethod: 'card',
           paymentMethod: 'cash_on_delivery',
           billingMethod: 'same'
+          // Apply default Address if found
         }}
       >
         {/* Deliver Section */}
         <Contact isPageLoading={isPageLoading} />
         {/* Deliver Section */}
-        <h2 className='mt-4 text-xl font-semibold'>
-          {t('deliveryTitle')}
-        </h2>
-        <AddressFormItems
-          name='shippingDetails'
-          shippingCostData={shippingCostData}
-        />
+        {isPageLoading ?
+          <Skeleton.Node
+            key={v4()}
+            active={true}
+            style={{
+              width: '120px',
+              height: '32px',
+              marginTop: '24px',
+              marginBottom: '16px'
+            }}
+          />
+        : <h2 className='mt-4 text-xl font-semibold'>
+            {t('deliveryTitle')}
+          </h2>
+        }
+
+        {userId ?
+          isPageLoading ?
+            <>
+              <div className='mt-4 flex items-center justify-between'>
+                <Skeleton.Node
+                  key={v4()}
+                  active={true}
+                  style={{
+                    width: '70px',
+                    height: '28px'
+                  }}
+                />
+                <Skeleton.Node
+                  key={v4()}
+                  active={true}
+                  style={{
+                    width: '120px',
+                    height: '32px'
+                  }}
+                />
+              </div>
+              <div className='mt-5 grid w-full grid-cols-[repeat(auto-fill,minmax(315px,1fr))] gap-5'>
+                <Skeleton.Node
+                  key={v4()}
+                  active={true}
+                  style={{
+                    width: '100%',
+                    height: '295px',
+                    borderRadius: '6px'
+                  }}
+                />
+                <Skeleton.Node
+                  key={v4()}
+                  active={true}
+                  style={{
+                    width: '100%',
+                    height: '295px',
+                    borderRadius: '6px'
+                  }}
+                />
+              </div>
+            </>
+          : <div className='mt-4'>
+              <Addresses
+                params={{
+                  locale,
+                  isAComponent: true
+                  // name: 'shippingDetails'
+                }}
+              />
+              {/* <AddressFormItems name='shippingDetails' hidden={false} /> */}
+            </div>
+
+        : isPageLoading ?
+          <div className='flex w-full flex-col gap-3'>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '43px',
+                marginBottom: '12px'
+              }}
+            />
+            <div className='mb-3 grid grid-cols-2 sm:gap-4'>
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '100%', height: '43px' }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{ width: '100%', height: '43px' }}
+              />
+            </div>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '43px',
+                marginBottom: '12px'
+              }}
+            />
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '43px',
+                marginBottom: '12px'
+              }}
+            />
+            <div className='mb-3 grid grid-cols-3 sm:gap-4'>
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{
+                  width: '100%',
+                  height: '43px'
+                }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{
+                  width: '100%',
+                  height: '43px'
+                }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{
+                  width: '100%',
+                  height: '43px'
+                }}
+              />
+            </div>
+            <div className='mb-3 grid grid-cols-3 sm:gap-4'>
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{
+                  width: '100%',
+                  height: '43px'
+                }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{
+                  width: '100%',
+                  height: '43px'
+                }}
+              />
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{
+                  width: '100%',
+                  height: '43px'
+                }}
+              />
+            </div>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '43px'
+              }}
+            />
+          </div>
+        : <AddressFormItems name='shippingDetails' hidden={false} />}
 
         {/* Shipping Cost*/}
-        <ShippingCost />
+        {isPageLoading ?
+          <div className='mt-6 flex flex-col gap-4'>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '145px',
+                height: '32px'
+              }}
+            />
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '48px'
+              }}
+            />
+          </div>
+        : <ShippingCost />}
 
         {/* Payment Methods*/}
-        <PaymentMethods form={form} />
+        {isPageLoading ?
+          <div className='mt-6 flex flex-col gap-4'>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '145px',
+                height: '32px'
+              }}
+            />
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '110px'
+              }}
+            />
+          </div>
+        : <PaymentMethods form={form} />}
+
         {/* Billing Address */}
-        <BillingAddress
-          form={form}
-          shippingCostData={shippingCostData}
-        />
-        {/* <p className='text-lg font-bold text-red-shade-500'>
-          {locale === 'ar' ?
-            `الموقع قيد التطوير، ستتمكن من الشراء من الموقع قريبًا جدًا 😊`
-          : `The site is under development you will able to buy from the
+        {isPageLoading ?
+          <div className='mb-8 mt-6 flex flex-col gap-4'>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '145px',
+                height: '32px'
+              }}
+            />
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '48px'
+              }}
+            />
+          </div>
+        : <BillingAddress form={form} />}
+
+        {!shippingConfigData?.enable_checkout ?
+          isPageLoading ?
+            <div className='mb-5 flex flex-col'>
+              <Skeleton.Node
+                key={v4()}
+                active={true}
+                style={{
+                  width: '100%',
+                  height: '48px'
+                }}
+              />
+            </div>
+          : <p className='text-lg font-bold text-red-shade-500'>
+              {locale === 'ar' ?
+                `الموقع قيد التطوير، ستتمكن من الشراء من الموقع قريبًا جدًا 😊`
+              : `The site is under development you will able to buy from the
           site very soon 😊`
-          }
-        </p> */}
-        <Button
-          type='primary'
-          htmlType='submit'
-          className='mt-3 w-full capitalize'
-          // disabled={true}
-          style={{
-            paddingBlock: '20px',
-            fontSize: '16px',
-            lineHeight: '24px',
-            fontWeight: '600',
-            borderRadius: 2
-          }}
-        >
-          {t('submitButtonText')}
-        </Button>
+              }
+            </p>
+
+        : null}
+
+        {isPageLoading ?
+          <div className='flex flex-col'>
+            <Skeleton.Node
+              key={v4()}
+              active={true}
+              style={{
+                width: '100%',
+                height: '48px',
+                borderRadius: '2px'
+              }}
+            />
+          </div>
+        : <Button
+            type='primary'
+            htmlType='submit'
+            className='mt-3 w-full capitalize'
+            disabled={
+              !shippingConfigData?.enable_checkout ? true : false
+            }
+            style={{
+              paddingBlock: '20px',
+              fontSize: '16px',
+              lineHeight: '24px',
+              fontWeight: '600',
+              borderRadius: 2
+            }}
+          >
+            {t('submitButtonText')}
+          </Button>
+        }
       </Form>
     </ConfigProvider>
   );

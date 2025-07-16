@@ -2,6 +2,7 @@
 
 import { OrderInfoType } from '@/types/orderResponseTypes';
 import { convertIsoStringToDateFormat } from '@/utils/dateHelpers';
+import { normalize } from '@/utils/helpers';
 import { formatEnglishNumbers } from '@/utils/numbersFormating';
 // import { reverseArabicWords } from '@/utils/stringHelpers';
 import {
@@ -158,14 +159,16 @@ const styles = StyleSheet.create({
 
 // Create Invoice component for PDF
 export function InvoiceDocument({
-  orderData
+  orderData,
+  locale
 }: {
   orderData: OrderInfoType;
+  locale: string;
 }) {
   // console.log('orderData at InvoiceDocument component', orderData);
   const billTo =
     orderData?.attributes?.shipping_address?.data?.attributes ?? null;
-  // console.log(billTo);
+  console.log(billTo);
   return (
     <Document>
       <Page size='A4' style={styles.page}>
@@ -222,16 +225,22 @@ export function InvoiceDocument({
               } ${billTo?.address_2 ? ` - ${billTo?.address_2}` : ''}`}
             </Text>
             <Text style={styles.billToAddress}>
-              {`${billTo?.building ? `Building: ${billTo.building}` : ''} ${billTo?.floor ? ` - Floor: ${billTo?.floor}` : ''} ${
-                billTo?.apartment ?
+              {`${typeof billTo?.building === 'string' ? `Building: ${billTo.building}` : ''} ${typeof billTo?.floor === 'string' ? ` - Floor: ${billTo?.floor}` : ''} ${
+                typeof billTo?.apartment === 'number' ?
                   ` - Apartment: ${billTo?.apartment}`
                 : ''
               }`}
             </Text>
             <Text style={styles.billToAddress}>
-              {`${billTo?.city ? `${billTo.city}` : ''} ${billTo?.shipping_cost?.data?.attributes?.governorate ? ` - ${billTo?.shipping_cost?.data?.attributes?.governorate}` : ''} ${
-                billTo?.zip_code ? ` - ${billTo?.zip_code}` : ''
-              }`}
+              {`${billTo?.city ? `${billTo.city}` : ''} ${
+                locale === 'ar' ?
+                  billTo?.delivery_zone?.zone_name_in_arabic ?
+                    ` - ${billTo.delivery_zone.zone_name_in_arabic}`
+                  : ''
+                : billTo?.delivery_zone?.zone_name_in_english ?
+                  ` - ${billTo.delivery_zone.zone_name_in_english}`
+                : ''
+              } ${billTo?.zip_code ? ` - ${billTo?.zip_code}` : ''}`}
             </Text>
             <Text style={styles.billToAddress}>
               {billTo?.delivery_phone ?? ''}
@@ -264,7 +273,9 @@ export function InvoiceDocument({
                   <Text
                     style={[styles.tableCell, styles.flexBasis40]}
                   >
-                    {item?.product?.data?.attributes?.name ?? ''}
+                    {normalize(
+                      item?.product?.data?.attributes?.name ?? ''
+                    )}
                   </Text>
                   <Text
                     style={[styles.tableCell, styles.flexBasis20]}

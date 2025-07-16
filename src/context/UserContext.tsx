@@ -6,14 +6,14 @@ import {
   useState
 } from 'react';
 import { getIdFromToken } from '@/utils/cookieUtils';
-import { AdressesType } from '@/types/addressResponseTypes';
+import { AdressType } from '@/types/addressResponseTypes';
 
 const UserContext = createContext<null | {
   userId: string | null;
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
-  addressesData: AdressesType[] | null;
+  addressesData: AdressType[] | null;
   setAddressesData: React.Dispatch<
-    React.SetStateAction<AdressesType[] | null>
+    React.SetStateAction<AdressType[] | null>
   >;
   otpVerification: string | null;
   setOtpVerification: React.Dispatch<
@@ -28,7 +28,7 @@ export const UserProvider = ({
 }) => {
   const [userId, setUserId] = useState<null | string>(null);
   const [addressesData, setAddressesData] = useState<
-    null | AdressesType[]
+    null | AdressType[]
   >(null);
   const [otpVerification, setOtpVerification] = useState<
     null | string
@@ -50,7 +50,7 @@ export const UserProvider = ({
         addressesData,
         setAddressesData,
         otpVerification,
-        setOtpVerification,
+        setOtpVerification
       }}
     >
       {children}

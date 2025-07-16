@@ -32,28 +32,32 @@ function ShippingCost() {
         {t('shippingTitle')}
       </h2>
       <div className='mt-4 flex flex-wrap items-center justify-between rounded border border-solid border-blue-sky-dark bg-blue-sky-ultralight px-4 py-3'>
-        {selectedGovernorate?.attributes?.delivery_cost ?
+        {(
+          selectedGovernorate?.zone_name_in_arabic ||
+          selectedGovernorate?.zone_name_in_english
+        ) ?
           <>
             <p
               className={`${applyFreeShipping ? 'line-through' : ''}`}
             >
               {t('onlyCost', {
                 shippingCost:
-                  selectedGovernorate?.attributes?.delivery_cost
+                  selectedGovernorate?.final_calculated_delivery_cost
               })}
             </p>
             <p
               className={`${applyFreeShipping ? 'line-through' : ''} font-bold`}
             >
               {formatCurrencyNumbers(
-                selectedGovernorate?.attributes?.delivery_cost,
+                selectedGovernorate?.final_calculated_delivery_cost ??
+                  0,
                 t('currency'),
                 locale
               )}
             </p>
           </>
         : <p>{t('selectGovernorateForShippingCosts')}</p>}
-        {selectedGovernorate?.attributes?.delivery_cost && (
+        {selectedGovernorate?.final_calculated_delivery_cost && (
           <p className='mt-1 basis-full font-semibold'>
             {applyFreeShipping && t('freeShippingMessage')}
           </p>

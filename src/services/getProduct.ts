@@ -104,6 +104,12 @@ export const getQueryProductPage = (id: string) => `{
                 }
             }
         }
+        package_dimensions {
+            length_in_cm
+            width_in_cm
+            height_in_cm
+        }
+        final_package_weight_in_grams
         driver(pagination: { pageSize: 100000 }) {
             id
             title
@@ -181,6 +187,7 @@ export const getQueryProductPage = (id: string) => `{
                     name
                     price
                     sale_price
+                    final_product_price
                     stock
                     modal_name
                     brand {
@@ -208,6 +215,7 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    final_package_weight_in_grams
                     localizations {
                         data {
                             id
@@ -228,6 +236,7 @@ export const getQueryProductPage = (id: string) => `{
                     name
                     price
                     sale_price
+                    final_product_price
                     stock
                     modal_name
                     brand {
@@ -255,6 +264,7 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    final_package_weight_in_grams
                     localizations {
                         data {
                             id
@@ -275,6 +285,7 @@ export const getQueryProductPage = (id: string) => `{
                     name
                     price
                     sale_price
+                    final_product_price
                     stock
                     modal_name
                     brand {
@@ -302,6 +313,7 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    final_package_weight_in_grams
                     localizations {
                         data {
                             id
@@ -322,6 +334,7 @@ export const getQueryProductPage = (id: string) => `{
                     name
                     price
                     sale_price
+                    final_product_price
                     stock
                     modal_name
                     brand {
@@ -349,6 +362,7 @@ export const getQueryProductPage = (id: string) => `{
                     }
                     average_reviews
                     total_reviews
+                    final_package_weight_in_grams
                     localizations {
                         data {
                             id
@@ -389,6 +403,21 @@ export const getQueryProductPricesAndStock = (id: string) => `{
         sale_price
         final_product_price
         stock
+        package_dimensions {
+            length_in_cm
+            width_in_cm
+            height_in_cm
+        }
+        final_package_weight_in_grams
+        localizations {
+            data {
+                id
+                attributes {
+                    locale
+                }
+            }
+        }
+        locale
       }
     }
   }

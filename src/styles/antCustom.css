@@ -439,6 +439,16 @@ body:has(.ant-modal-mask) {
   flex-direction: column;
 }
 
+.wishtlist-table.ant-table-wrapper .ant-table-pagination-right {
+  justify-content: center;
+}
+
+.wishtlist-table.table-in-arabic.ant-table-wrapper
+  .ant-table-ping-right:not(.ant-table-has-fix-right)
+  .ant-table-container::after {
+  box-shadow: inset 10px 0 8px -8px rgba(5, 5, 5, 0.06);
+}
+
 /* Product page pagination */
 .pagination-in-arabic .anticon-right svg,
 .pagination-in-arabic .anticon-left svg {
@@ -659,6 +669,12 @@ body:has(.ant-modal-mask) {
   ):hover {
   background-color: #1d4ed833;
   color: #1677ff;
+}
+
+.chekoutPage .ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+  border-color: #1773b0;
+  color: #1773b0;
+  background-color: #1773b0;
 }
 
 .addresses-page .ant-radio-wrapper {

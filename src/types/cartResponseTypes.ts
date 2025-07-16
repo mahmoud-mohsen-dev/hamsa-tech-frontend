@@ -33,6 +33,7 @@ export type CartDataType = {
           };
         };
         stock: number;
+        final_package_weight_in_grams: number | null;
         localizations: {
           data: {
             id: string;

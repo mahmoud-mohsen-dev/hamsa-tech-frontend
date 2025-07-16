@@ -86,3 +86,7 @@ export function formatEnglishNumbers(
 //     false
 //   )
 // ); // Output: "9,876,543,210.00 ج.م"
+
+export function roundToTwo(num: number) {
+  return Math.round(num * 100) / 100;
+}

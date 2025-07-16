@@ -70,34 +70,39 @@ const saveAndCreateWishlistIdsInCookie = async (arId: string) => {
   }
 };
 
-export const createWishlistInTheBackend = async (
-  guestUserId: string | null,
-  userId: string | null
-) => {
-  try {
-    const { data: wishlistData, error: wishlistError } =
-      (await fetchGraphqlClient(
-        getCreateWishlistQuery(guestUserId, userId)
-      )) as WishlistResponseType;
+export const createWishlistInTheBackend = async () =>
+  // guestUserId: string | null,
+  // userId: string | null
+  {
+    try {
+      const userId = getIdFromToken();
 
-    if (wishlistError || !wishlistData?.createWishlist?.data?.id) {
-      console.error('Failed to create wishlist');
-      return;
+      const guestUserIdAuthenticated =
+        await handleGuestUserAuthentication();
+
+      const { data: wishlistData, error: wishlistError } =
+        (await fetchGraphqlClient(
+          getCreateWishlistQuery(guestUserIdAuthenticated, userId)
+        )) as WishlistResponseType;
+
+      if (wishlistError || !wishlistData?.createWishlist?.data?.id) {
+        console.error('Failed to create wishlist');
+        return;
+      }
+
+      // if (wishlistData?.createWishlist?.data?.id) {
+      //   setCookie(
+      //     'wishlistId',
+      //     wishlistData?.createWishlist?.data?.id
+      //   );
+      // }
+      saveAndCreateWishlistIdsInCookie(
+        wishlistData?.createWishlist?.data?.id
+      );
+    } catch (e) {
+      console.error('Failed to create wishlist', e);
     }
-
-    // if (wishlistData?.createWishlist?.data?.id) {
-    //   setCookie(
-    //     'wishlistId',
-    //     wishlistData?.createWishlist?.data?.id
-    //   );
-    // }
-    saveAndCreateWishlistIdsInCookie(
-      wishlistData?.createWishlist?.data?.id
-    );
-  } catch (e) {
-    console.error('Failed to create wishlist', e);
-  }
-};
+  };
 
 export const getWishlistsData = async (
   locale: string,
@@ -168,10 +173,9 @@ export const fetchWishlistData = async ({
     if (!wishlistIdExists) {
       // const guestUserId = getCookie('guestUserId');
 
-      await createWishlistInTheBackend(
-        guestUserIdAuthenticated,
-        userId
-      );
+      await createWishlistInTheBackend();
+      // guestUserIdAuthenticated,
+      // userId
     } else {
       const wishlistEnData = await getWishlistsData(
         'en',
@@ -185,10 +189,9 @@ export const fetchWishlistData = async ({
       );
 
       if (!wishlistArData || !wishlistEnData) {
-        await createWishlistInTheBackend(
-          guestUserIdAuthenticated,
-          userId
-        );
+        await createWishlistInTheBackend();
+        // guestUserIdAuthenticated,
+        // userId
         const data = await getWishlistsData(
           locale,
           setIsWishlistLoading

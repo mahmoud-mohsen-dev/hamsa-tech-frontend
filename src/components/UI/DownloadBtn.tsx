@@ -8,7 +8,8 @@ function DownloadBtn({
   children,
   className,
   target = '_self',
-  autoDownloadFile = true
+  autoDownloadFile = true,
+  enableBtnStyles = true
 }: {
   url: string | null;
   name?: string | null;
@@ -16,6 +17,7 @@ function DownloadBtn({
   className?: string | null;
   target?: '_self' | '_blank';
   autoDownloadFile?: boolean;
+  enableBtnStyles?: boolean;
 }) {
   const handleDownload = () => {
     if (!url) {
@@ -40,7 +42,7 @@ function DownloadBtn({
 
   const handleAutoDownload = async (
     urlArg: string | null,
-    name?: string | null
+    name?: string | null // Set defaultBtnStyles=true
   ) => {
     try {
       if (!urlArg) {
@@ -79,6 +81,8 @@ function DownloadBtn({
           handleAutoDownload(url, name)
         : handleDownload();
       }}
+      href={url ?? '#'}
+      enableBtnStyles={enableBtnStyles}
       // href={url ?? null}
       // target={target}
     >

@@ -4,19 +4,26 @@ import { useMyContext } from '@/context/Store';
 import { useLocale, useTranslations } from 'next-intl';
 import { Spin } from 'antd';
 import { HiShoppingCart } from 'react-icons/hi';
+import { ProductInfoType } from '@/utils/cartContextUtils';
 
 interface PropsType {
-  productId: string;
-  stock: number;
+  // productId: string;
+  // stock: number;
+  productInfo: ProductInfoType;
 }
 
-function AddToCartButton({ productId, stock }: PropsType) {
+function AddToCartButton({ productInfo }: PropsType) {
   const t = useTranslations('ProductPage');
-  const locale = useLocale();
+  // const locale = useLocale();
   // console.log(data);
 
+  // console.log('productInfo @AddToCartButton', productInfo);
+
   const { incrementCartItem, addToCartIsLoading } = useMyContext();
-  const isLoading = addToCartIsLoading === productId;
+  const isLoading =
+    typeof productInfo?.id === 'string' &&
+    addToCartIsLoading === productInfo?.id;
+  const stock = productInfo?.stock ?? 0;
 
   const handleClick = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -24,7 +31,9 @@ function AddToCartButton({ productId, stock }: PropsType) {
     event.stopPropagation(); // Prevent Link from triggering
     event.preventDefault(); // Prevent default link behavior (if necessary).
 
-    await incrementCartItem(productId); // Call incrementCartItem (assuming it's asynchronous)
+    await incrementCartItem({
+      productInfo
+    }); // Call incrementCartItem (assuming it's asynchronous)
   };
 
   return (

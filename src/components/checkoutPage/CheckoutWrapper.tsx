@@ -3,13 +3,18 @@
 import CheckoutCart from './CheckoutCart';
 import OrderInfo from './OrderInfo';
 import { Spin } from 'antd';
-import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
 import useHandleMessagePopup from '@/hooks/useHandleMessagePopup';
+import {
+  GetShippingCostResponseType,
+  shippingCompanyType,
+  shppingConfigDataType
+} from '@/types/shippingCostResponseTypes';
+// import { deliveryZoneType } from '@/types/shippingCostResponseTypes';
 
 function CheckoutWrapper({
-  shippingCostData
+  shippingConfigData
 }: {
-  shippingCostData: ShippingCostDataType[] | [];
+  shippingConfigData: shppingConfigDataType | null;
 }) {
   const { loadingMessage } = useHandleMessagePopup();
 
@@ -21,7 +26,7 @@ function CheckoutWrapper({
           <Spin size='large' />
         </div>
       : <div className='grid text-black 2xl:mx-10 2xl:grid-cols-checkout'>
-          <OrderInfo shippingCostData={shippingCostData} />
+          <OrderInfo shippingConfigData={shippingConfigData} />
           <CheckoutCart />
         </div>
       }

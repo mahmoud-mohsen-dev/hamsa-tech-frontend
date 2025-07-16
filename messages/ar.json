@@ -159,6 +159,12 @@
     "specificationSectionTitle": "المواصفات",
     "reviewsSectionTitle": "المراجعات",
     "moreDetailsTitle": "مزيد من التفاصيل",
+    "packageDimensionsText": "أبعاد العبوة",
+    "cmText": "سم",
+    "kgText": "كجم",
+    "gramText": "جرام",
+    "gramsText": " جرامات",
+    "packageWeightText": "وزن العبوة",
     "reviewsTabSection": {
       "customerReviewsTitle": "مراجعات العملاء",
       "reviewsText": "مراجعات",
@@ -338,7 +344,11 @@
         "addressCreationError": "فشل في إنشاء العنوان",
         "guestUserError": "فشل في إنشاء بيانات المستخدم الضيف",
         "orderCreationError": "فشل في إنشاء طلب جديد",
-        "successMessage": "تم الانتهاء من التحميل"
+        "addressNotFoundError": "لم يتم إضافة عنوان التوصيل. يرجى المحاولة مرة أخرى أو التحقق من المعلومات المدخلة.",
+        "successMessage": "تم الانتهاء من التحميل",
+        "generalError": "حدث خطأ أثناء إتمام عملية الدفع. يرجى إزالة جميع العناصر من سلة التسوق وتحديث الصفحة. إذا استمرت المشكلة، لا تتردد في التواصل معنا للحصول على المساعدة.",
+        "invalidProduct": "أحد المنتجات في سلة التسوق غير صالح. يرجى تحديث أو إزالة المنتج.",
+        "totalCostError": "يجب أن يكون إجمالي تكلفة الطلب أكبر من صفر."
       }
     },
     "metaData": {
@@ -358,6 +368,8 @@
       "paymentMethod": "طريقة الدفع:",
       "paymentStatus": "حالة الدفع:",
       "estimatedDelivery": "التوصيل المتوقع:",
+      "from": "من",
+      "to": "إلي",
       "backToShop": "العودة إلى المتجر",
       "shippingStandard": "توصيل قياسي",
       "paymentCard": "بطاقة",
@@ -543,7 +555,7 @@
     "AddressPage": {
       "content": {
         "title": "العناوين",
-        "addNewAddressButton": "إضافة عنوان جديد",
+        "addNewAddressButton": "أضف عنوان جديد",
         "card": {
           "building": "المبنى",
           "floor": "الطابق",

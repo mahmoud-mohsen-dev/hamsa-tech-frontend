@@ -147,6 +147,12 @@ export interface ProductDataType {
       };
     };
   };
+  package_dimensions: {
+    length_in_cm: number | null;
+    width_in_cm: number | null;
+    height_in_cm: number | null;
+  } | null;
+  final_package_weight_in_grams: number | null;
   driver: {
     id: string | null;
     title: string | null;
@@ -196,6 +202,23 @@ export interface ProductPricesResponseType {
           price: number;
           sale_price: number;
           stock: number;
+          package_dimensions: {
+            length_in_cm: number | null;
+            width_in_cm: number | null;
+            height_in_cm: number | null;
+          } | null;
+          final_package_weight_in_grams: number | null;
+          localizations: {
+            data:
+              | {
+                  id: string;
+                  attributes: {
+                    locale: string;
+                  };
+                }[]
+              | null;
+          };
+          locale: string;
         };
         id: string;
       } | null;
@@ -211,6 +234,7 @@ export interface RelatedProduct {
     name: string;
     price: number;
     sale_price: number;
+    final_product_price: number;
     stock: number;
     modal_name: string;
     brand: {
@@ -231,6 +255,7 @@ export interface RelatedProduct {
     };
     average_reviews: number;
     total_reviews: number;
+    final_package_weight_in_grams: number | null;
     localizations: {
       data: { id: string; attributes: { locale: string } }[];
     };

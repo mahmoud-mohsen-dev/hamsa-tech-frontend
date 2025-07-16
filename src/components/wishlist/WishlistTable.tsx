@@ -44,6 +44,8 @@ function WishlistTable() {
     setIsWishlistLoading,
     setWishlistsData
   } = useMyContext();
+
+  // console.log('wishlistsData @WishlistTable', wishlistsData);
   const dataSource = wishlistsData.map((item) => ({
     ...item,
     key: item.id
@@ -97,23 +99,22 @@ function WishlistTable() {
       title: t('header.name'),
       dataIndex: 'name',
       showSorterTooltip: { target: 'full-header' },
-      filters: [
-        {
-          text: 'Joe',
-          value: 'Joe'
-        },
-        {
-          text: 'Jim',
-          value: 'Jim'
-        }
-      ],
+      // filters: [
+      //   {
+      //     text: 'Joe',
+      //     value: 'Joe'
+      //   },
+      //   {
+      //     text: 'Jim',
+      //     value: 'Jim'
+      //   }
+      // ],
       // specify the condition of filtering result
       // here is that finding the name started with `value`
-      onFilter: (value, record) =>
-        record.attributes.name.indexOf(value as string) === 0,
+      // onFilter: (value, record) =>
+      //   record.attributes.name.indexOf(value as string) === 0,
       sorter: (a, b) =>
-        a.attributes.name.charCodeAt(0) -
-        b.attributes.name.charCodeAt(0),
+        a.attributes.name.localeCompare(b.attributes.name),
       render: (_, record) => (
         <Link
           href={record?.id ? `/products/${record?.id}` : '/products'}
@@ -128,16 +129,13 @@ function WishlistTable() {
       title: t('header.price'),
       dataIndex: 'price',
       align: 'center',
-      sorter: (a, b) => a.attributes.price - b.attributes.price,
+      sorter: (a, b) =>
+        a.attributes.final_product_price -
+        b.attributes.final_product_price,
       render: (_, record) => (
         <p className='font-medium text-black-light'>
           {formatCurrencyNumbers(
-            (
-              record?.attributes?.sale_price &&
-                record?.attributes?.sale_price > 0
-            ) ?
-              record.attributes.sale_price
-            : record.attributes.price,
+            record?.attributes?.final_product_price ?? 0,
             t('body.currency'),
             locale
           )}
@@ -175,8 +173,13 @@ function WishlistTable() {
       dataIndex: 'productId',
       render: (_, record) => (
         <AddToCartButton
-          productId={record.id}
-          stock={record.attributes.stock}
+          // productId={record.id}
+          // stock={record.attributes.stock}
+          productInfo={{
+            id: record.id,
+            stock: record.attributes.stock,
+            final_product_price: record.attributes.final_product_price
+          }}
         />
       )
     },
@@ -214,7 +217,7 @@ function WishlistTable() {
       )
     }
   ];
-  console.log(isWishlistLoading);
+  // console.log(isWishlistLoading);
 
   return (
     <Table<WishlistDataType>
@@ -222,9 +225,10 @@ function WishlistTable() {
       dataSource={dataSource}
       onChange={onChange}
       showSorterTooltip={{ target: 'sorter-icon' }}
-      className={`wishtlist-table mt-8 w-[calc(100%)] ${locale === 'ar' ? 'pagination-in-arabic' : ''}`}
+      className={`wishtlist-table mt-8 w-[calc(100%)] ${locale === 'ar' ? 'pagination-in-arabic table-in-arabic' : ''}`}
       loading={isWishlistLoading}
       scroll={{ x: 'max-content' }}
+      // pagination={{ align: 'center' }}
       // style={{ minHeight: '750px' }}
     />
   );

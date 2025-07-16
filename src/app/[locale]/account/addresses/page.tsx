@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from '@/navigation';
-import { getIdFromToken } from '@/utils/cookieUtils';
+import { getCookie, getIdFromToken } from '@/utils/cookieUtils';
 import {
   Button,
   Checkbox,
@@ -25,6 +25,7 @@ import {
   getShippingQuery,
   getUserAddressAuthenticated,
   getUserAddressesAuthenticated,
+  getUserAddressesData,
   updateAddress,
   updateUserAddresses
 } from '@/services/shippingAddress';
@@ -33,7 +34,8 @@ import { useTranslations } from 'next-intl';
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import {
   GetShippingCostResponseType,
-  ShippingCostDataType
+  ShippingCostsDataType,
+  shppingConfigDataType
 } from '@/types/shippingCostResponseTypes';
 import type { RadioChangeEvent } from 'antd';
 import { useUser } from '@/context/UserContext';
@@ -41,6 +43,7 @@ import {
   getDefaultActiveAddressId,
   updateDefaultAddressHandler
 } from '@/services/handleAddresses';
+import { fetchGraphqlServerWebAuthenticated } from '@/services/graphqlCrudServerOnly';
 
 interface AddressFormValuesType {
   addressName: string;
@@ -59,10 +62,10 @@ interface AddressFormValuesType {
   shippingDetailsPostalCode?: string;
 }
 
-function SettingsPage({
-  params: { locale }
+function Addresses({
+  params: { locale, isAComponent }
 }: {
-  params: { locale: string };
+  params: { locale: string; isAComponent?: boolean };
 }) {
   const [isLoading, setIsloading] = useState(true);
   const t = useTranslations('AccountLayoutPage.AddressPage.content');
@@ -71,8 +74,12 @@ function SettingsPage({
   const pathname = usePathname();
   const router = useRouter();
 
-  const { governoratesData, setErrorMessage, setSuccessMessage } =
-    useMyContext();
+  const {
+    governoratesData,
+    setErrorMessage,
+    setSuccessMessage,
+    updateGovernoratesData
+  } = useMyContext();
   const { addressesData, setAddressesData } = useUser();
 
   // const { contextHolder } = useHandleMessagePopup();
@@ -81,9 +88,8 @@ function SettingsPage({
   const [open, setOpen] = useState<boolean>(false);
   const [formAddress] = useForm<AddressFormValuesType>();
 
-  const [shippingCostData, setShippingCostData] = useState<
-    null | ShippingCostDataType[]
-  >(null);
+  // const [shippingCostData, setShippingCostData] =
+  //   useState<null | shppingConfigDataType>(null);
   // const [defaultActiveAddress, setDefaultActiveAddress] = useState<
   //   string | null
   // >(null);
@@ -137,20 +143,39 @@ function SettingsPage({
   useEffect(() => {
     const getShippingCostData = async () => {
       const { data: shippingCostData, error: shippingCostError } =
-        (await fetchGraphqlClient(
-          getShippingQuery(locale)
+        (await fetchGraphqlServerWebAuthenticated(
+          getShippingQuery()
         )) as GetShippingCostResponseType;
       if (shippingCostError || !shippingCostData) {
         console.error(shippingCostError);
         return;
       }
 
-      setShippingCostData(
-        shippingCostData?.shippingCosts?.data ?? []
-      );
+      const shippingConfigData =
+        shippingCostData?.shippingConfig?.data?.attributes ?? null;
+      const governoratesData =
+        shippingConfigData?.default_shipping_company?.data?.attributes
+          ?.delivery_zones ?? [];
+
+      if (shippingConfigData) {
+        // setShippingCostData(shippingConfigData);
+        updateGovernoratesData(governoratesData);
+      }
+      // const { data: shippingCostData, error: shippingCostError } =
+      //   (await fetchGraphqlClient(
+      //     getShippingQuery(locale)
+      //   )) as GetShippingCostResponseType;
+      // if (shippingCostError || !shippingCostData) {
+      //   console.error(shippingCostError);
+      //   return;
+      // }
+
+      // setShippingCostData(
+      //   shippingCostData?.shippingCosts?.data ?? []
+      // );
     };
 
-    getShippingCostData();
+    if (!isAComponent) getShippingCostData();
   }, [locale]);
 
   useEffect(() => {
@@ -241,19 +266,22 @@ function SettingsPage({
         shippingDetailsPostalCode
       } = formValues;
 
-      const shippingCostId =
-        governoratesData.find(
-          (item) =>
-            item?.attributes?.governorate &&
-            item?.attributes?.governorate ===
-              shippingDetailsGovernorate
-        )?.id ?? '';
+      const selectedDeliveryZone =
+        governoratesData.find((item) =>
+          locale === 'ar' ?
+            item?.zone_name_in_arabic &&
+            item?.zone_name_in_arabic === shippingDetailsGovernorate
+          : item?.zone_name_in_english &&
+            item?.zone_name_in_english === shippingDetailsGovernorate
+        ) ?? null;
 
       // Create a new address
       const {
         addressData: deliveryAddressId,
         addressError: deliveryAddressError
       } = await createAddress({
+        userId: getIdFromToken(),
+        guestUserId: getCookie('guestUserId'),
         addressName: capitalize(addressName ?? ''),
         isDefault: isDefault ?? false,
         firstName: capitalize(shippingDetailsFirstName ?? ''),
@@ -264,7 +292,21 @@ function SettingsPage({
         floor: shippingDetailsFloor,
         apartment: shippingDetailsApartment,
         city: capitalize(shippingDetailsCity ?? ''),
-        shippingCostId: shippingCostId,
+        deliveryZone:
+          selectedDeliveryZone !== null ?
+            {
+              zoneNameInArabic:
+                selectedDeliveryZone?.zone_name_in_arabic ?? null,
+              zoneNameInEnglish:
+                selectedDeliveryZone?.zone_name_in_english ?? null,
+              minimumDeliveryDurationInDays:
+                selectedDeliveryZone?.minimum_delivery_duration_in_days ??
+                0,
+              maximumDeliveryDurationInDays:
+                selectedDeliveryZone?.maximum_delivery_duration_in_days ??
+                0
+            }
+          : null,
         zipCode: shippingDetailsPostalCode,
         deliveryPhone: shippingDetailsPhone ?? ''
         // userId: getIdFromToken(),
@@ -312,13 +354,14 @@ function SettingsPage({
 
       setModalLoading(true);
 
-      const shippingCostId =
-        governoratesData.find(
-          (item) =>
-            item?.attributes?.governorate &&
-            item?.attributes?.governorate ===
-              shippingDetailsGovernorate
-        )?.id ?? '';
+      const selectedDeliveryZone =
+        governoratesData.find((item) =>
+          locale === 'ar' ?
+            item?.zone_name_in_arabic &&
+            item?.zone_name_in_arabic === shippingDetailsGovernorate
+          : item?.zone_name_in_english &&
+            item?.zone_name_in_english === shippingDetailsGovernorate
+        ) ?? null;
 
       // update address
       const {
@@ -339,7 +382,21 @@ function SettingsPage({
             Number(shippingDetailsApartment)
           : 0,
         city: capitalize(shippingDetailsCity ?? ''),
-        shippingCostId: shippingCostId,
+        deliveryZone:
+          selectedDeliveryZone !== null ?
+            {
+              zoneNameInArabic:
+                selectedDeliveryZone?.zone_name_in_arabic ?? null,
+              zoneNameInEnglish:
+                selectedDeliveryZone?.zone_name_in_english ?? null,
+              minimumDeliveryDurationInDays:
+                selectedDeliveryZone?.minimum_delivery_duration_in_days ??
+                null,
+              maximumDeliveryDurationInDays:
+                selectedDeliveryZone?.maximum_delivery_duration_in_days ??
+                null
+            }
+          : null,
         zipCode:
           !isNaN(Number(shippingDetailsPostalCode)) ?
             Number(shippingDetailsPostalCode)
@@ -377,17 +434,6 @@ function SettingsPage({
         'Failed to apply your changes'
     );
     console.error('Address update form failed:', errorInfo);
-  };
-
-  const getAddressesData = async () => {
-    const { addressesData, addressesError } =
-      await getUserAddressesAuthenticated();
-    if (addressesError || !addressesData) {
-      console.error(addressesError);
-      return null;
-    }
-    console.log(addressesData);
-    return addressesData;
   };
 
   const handleSubmit = async () => {
@@ -483,7 +529,7 @@ function SettingsPage({
 
       const isDefaultChecked = fields?.isDefault ?? false;
       console.log(isDefaultChecked);
-      const newAddressesData = await getAddressesData();
+      const newAddressesData = await getUserAddressesData();
       console.log(newAddressesData);
       if (!isDefaultChecked) {
         setAddressesData(newAddressesData);
@@ -559,23 +605,19 @@ function SettingsPage({
               shippingDetailsGovernorate:
                 locale === 'ar' ?
                   (
-                    addressData?.attributes?.shipping_cost?.data
-                      ?.attributes?.locale === 'ar'
+                    addressData?.attributes?.delivery_zone
+                      ?.zone_name_in_arabic
                   ) ?
-                    addressData?.attributes?.shipping_cost?.data
-                      ?.attributes?.governorate || ''
-                  : addressData?.attributes?.shipping_cost?.data
-                      ?.attributes?.localizations?.data[0]?.attributes
-                      ?.governorate || ''
+                    addressData?.attributes?.delivery_zone
+                      ?.zone_name_in_arabic
+                  : ''
                 : (
-                  addressData?.attributes?.shipping_cost?.data
-                    ?.attributes?.locale === 'ar'
+                  addressData?.attributes?.delivery_zone
+                    ?.zone_name_in_english
                 ) ?
-                  addressData?.attributes?.shipping_cost?.data
-                    ?.attributes?.localizations?.data[0]?.attributes
-                    ?.governorate || ''
-                : addressData?.attributes?.shipping_cost?.data
-                    ?.attributes?.governorate || '',
+                  addressData?.attributes?.delivery_zone
+                    ?.zone_name_in_english
+                : '',
               shippingDetailsCity:
                 addressData?.attributes?.city ?? '',
               shippingDetailsPostalCode: `${addressData?.attributes?.zip_code || ''}`
@@ -616,7 +658,7 @@ function SettingsPage({
       return;
     }
 
-    const newAddresses = await getAddressesData();
+    const newAddresses = await getUserAddressesData();
     setAddressesData(newAddresses);
     setSuccessMessage('Address was deleted successfully');
   };
@@ -667,22 +709,36 @@ function SettingsPage({
         }}
       >
         {/* {contextHolder} */}
-        <section className='addresses-page min-h-screen w-full font-inter'>
-          <div className='w-full pb-8'>
+        <section
+          className={`addresses-page ${isAComponent ? '' : 'min-h-screen'} w-full font-inter`}
+        >
+          <div className={`w-full ${isAComponent ? 'pb-4' : 'pb-8'}`}>
             <div className='flex flex-wrap items-center justify-between gap-4'>
-              <h2 className='text-xl font-semibold text-blue-darker'>
+              <h2
+                className={`${isAComponent ? 'text-lg text-blue-sky-dark' : 'text-xl text-blue-darker'} font-semibold`}
+              >
                 {t('title')}
               </h2>
 
               {addressesData && addressesData.length <= 100 && (
-                <Button type='primary' onClick={showModal}>
+                <Button
+                  type='primary'
+                  onClick={showModal}
+                  size={isAComponent ? 'small' : 'middle'}
+                  style={{
+                    paddingBlock: isAComponent ? '15px' : '10px',
+                    paddingInline: isAComponent ? '15px' : '20px',
+                    backgroundColor:
+                      isAComponent ? '#1773b0' : '#1d4ed8'
+                  }}
+                >
                   {t('addNewAddressButton')}
                 </Button>
               )}
             </div>
 
             {/* content addresses */}
-            <div className='mt-8'>
+            <div className={isAComponent ? 'mt-4' : 'mt-8'}>
               {addressesData && addressesData.length > 0 ?
                 <Radio.Group
                   style={{
@@ -702,20 +758,24 @@ function SettingsPage({
                     const comma = locale === 'ar' ? '،' : ',';
                     return (
                       <div
-                        className={`${defaultActiveAddressId === address.id ? 'border-blue-light shadow-featuredHovered' : 'border-gray-light shadow-featured'} rounded-md border p-4`}
+                        className={`${defaultActiveAddressId === address.id ? `${isAComponent ? 'chekoutPage border-blue-sky-dark' : 'border-blue-light'} shadow-featuredHovered` : 'border-gray-light shadow-featured'} rounded-md border p-4`}
                         key={i}
                       >
                         <Radio
                           value={address.id}
-                          style={{ width: '100%' }}
+                          style={{
+                            width: '100%'
+                            // backgroundColor:
+                            //   isAComponent ? '#1773b0' : '##1d4ed8'
+                          }}
                         >
                           <div className='flex h-full w-full flex-col justify-between'>
                             <div className='flex flex-col flex-wrap gap-1 pl-2 font-inter'>
-                              <h3 className='font-semibold'>
+                              <h3 className='font-semibold capitalize'>
                                 {address?.attributes?.address_name ??
                                   ''}
                               </h3>
-                              <p>
+                              <p className='capitalize'>
                                 <span>
                                   {address?.attributes?.first_name ??
                                     ''}
@@ -725,7 +785,7 @@ function SettingsPage({
                                     ''}
                                 </span>
                               </p>
-                              <p>
+                              <p className='capitalize'>
                                 <span>
                                   {address?.attributes?.address_1 ??
                                     ''}
@@ -738,7 +798,7 @@ function SettingsPage({
                                   </span>
                                 )}
                               </p>
-                              <p>
+                              <p className='capitalize'>
                                 <span>
                                   {t('card.building')}{' '}
                                   {address?.attributes?.building ??
@@ -758,7 +818,16 @@ function SettingsPage({
                                 </span>
                               </p>
                               <p>
-                                <span>
+                                <span className='capitalize'>
+                                  {locale === 'ar' ?
+                                    address?.attributes?.delivery_zone
+                                      ?.zone_name_in_arabic || ''
+                                  : address?.attributes?.delivery_zone
+                                      ?.zone_name_in_english || ''
+                                  }
+                                  {comma}{' '}
+                                </span>
+                                <span className='capitalize'>
                                   {address?.attributes?.city ?? ''}
                                   {comma}{' '}
                                 </span>
@@ -767,7 +836,7 @@ function SettingsPage({
                                     'مصر' + comma + ' '
                                   : 'Egypt' + comma + ' '}
                                 </span>
-                                <span>
+                                <span className='capitalize'>
                                   {t('card.postalCode')}{' '}
                                   {address?.attributes?.zip_code ??
                                     ''}{' '}
@@ -913,7 +982,9 @@ function SettingsPage({
                 </Form.Item>
                 <AddressFormItems
                   name='shippingDetails'
-                  shippingCostData={shippingCostData}
+                  hidden={false}
+                  updateShippingCostsData={false}
+                  // shippingCostData={shippingCostData}
                 />
 
                 <Form.Item
@@ -938,4 +1009,4 @@ function SettingsPage({
       </ConfigProvider>;
 }
 
-export default SettingsPage;
+export default Addresses;

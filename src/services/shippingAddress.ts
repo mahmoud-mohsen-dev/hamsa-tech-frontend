@@ -1,8 +1,8 @@
 import {
-  AdressesType,
+  AdressType,
   CreateAddressResponseType,
   GetAddressesResponseType,
-  GetAddressResponseType,
+  getAddressResponseType,
   updateAddressResponseType,
   updateDefaultAddressResponseType,
   updateUserAddressesResponseType
@@ -12,15 +12,110 @@ import { capitalize } from '@/utils/helpers';
 import { getIdFromToken } from '@/utils/cookieUtils';
 import dayjs from 'dayjs';
 
-export const getShippingQuery = (locale: string) => {
+export const getShippingQuery = () => {
+  const firstDay = dayjs().startOf('month'); // local time
+  const lastDay = dayjs().endOf('month'); // local time
+
+  const firstDayISO = firstDay.format();
+  const lastDayISO = lastDay.format();
+
+  console.log('First day ISO:', firstDayISO); // '2025-05-01T00:00:00+03:00'
+  console.log('Last day ISO:', lastDayISO); // '2025-05-31T23:59:59+03:00'
+
   return `{
-    shippingCosts(locale: "${locale ?? 'en'}", pagination: { pageSize: 100 }, sort: "governorate:asc") {
+    shippingConfig {
         data {
-            id
             attributes {
-                governorate
-                delivery_cost
-                delivery_duration_in_days
+                default_shipping_company {
+                    data {
+                        id
+                        attributes {
+                            delivery_zones(pagination: { page: 1, pageSize: 1000 }) {
+                                zone_name_in_arabic
+                                zone_name_in_english
+                                id
+                                minimum_delivery_duration_in_days
+                                maximum_delivery_duration_in_days
+                                calculated_delivery_cost
+                            }
+                            cash_on_delivery_cost
+                            include_cash_on_delivery_in_total_shipping_cost
+                            bank_fees_for_each_transfer(pagination: { page: 1, pageSize: 1000 }) {
+                                id
+                                include_the_fee_in_total_shipping_cost
+                                minimum_total_order_price_to_apply_fee
+                                fixed_fee_amount
+                                percentage_based_fee
+                                comment
+                                money_increment_amount
+                                fixed_extra_fee_per_increment
+                                VAT
+                                add_base_fees_to_total_increment_fee
+                                apply_difference_based_fee
+                            }
+                            extra_shipping_company_fees_for_cash_on_delivery(
+                                pagination: { page: 1, pageSize: 1000 }
+                            ) {
+                                id
+                                include_the_fee_in_total_shipping_cost
+                                minimum_total_order_price_to_apply_fee
+                                fixed_fee_amount
+                                percentage_based_fee
+                                comment
+                                money_increment_amount
+                                fixed_extra_fee_per_increment
+                                VAT
+                                add_base_fees_to_total_increment_fee
+                                apply_difference_based_fee
+                            }
+                            flyers {
+                                include_flyer_cost_in_total_shipping_cost
+                                total_flyers_free_every_month
+                                average_cost_per_flyer
+                            }
+                            weight {
+                                enable_maximum_weight_fee_for_standard_shipping_in_grams
+                                maximum_weight_for_standard_shipping_in_grams
+                                volumetric_weight_applied_if_needed
+                                volumetric_weight_applied_if_needed_in_grams
+                                fixed_extra_fee_per_increment
+                                weight_increment_for_fixed_fee_in_grams
+                                VAT
+                                apply_difference_based_fee
+                            }
+                            shipping_company_name
+                            other_compnay_fees(pagination: { page: 1, pageSize: 1000 }) {
+                                id
+                                include_the_fee_in_total_shipping_cost
+                                minimum_total_order_price_to_apply_fee
+                                fixed_fee_amount
+                                percentage_based_fee
+                                comment
+                                money_increment_amount
+                                fixed_extra_fee_per_increment
+                                VAT
+                                add_base_fees_to_total_increment_fee
+                                apply_difference_based_fee
+                            }
+                            orders(
+                                filters: {
+                                    createdAt: {
+                                        gte: ${dayjs(firstDayISO).isValid() ? `"${firstDayISO}"` : null}
+                                        lte: ${dayjs(lastDayISO).isValid() ? `"${lastDayISO}"` : null}
+                                    }
+                                }
+                                pagination: { page: 1, pageSize: 100000 }
+                            ) {
+                                data {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+                add_to_total_shipping_cost
+                deduct_from_total_shipping_cost
+                enable_checkout
             }
         }
     }
@@ -28,6 +123,8 @@ export const getShippingQuery = (locale: string) => {
 };
 
 interface CreateAddressProps {
+  userId: string | null;
+  guestUserId: string | null;
   addressName?: string;
   isDefault?: boolean;
   city: string;
@@ -42,10 +139,18 @@ interface CreateAddressProps {
   firstName: string;
   lastName: string;
   deliveryPhone: string;
-  shippingCostId: string | null;
+  // shippingCostId: string | null;
+  deliveryZone: {
+    zoneNameInArabic: string | null;
+    zoneNameInEnglish: string | null;
+    minimumDeliveryDurationInDays: number | null;
+    maximumDeliveryDurationInDays: number | null;
+  } | null;
 }
 
 export const getCreateShippingAddressQuery = ({
+  userId,
+  guestUserId,
   addressName,
   isDefault,
   city,
@@ -60,15 +165,15 @@ export const getCreateShippingAddressQuery = ({
   firstName,
   lastName,
   deliveryPhone,
-  shippingCostId
+  deliveryZone
 }: CreateAddressProps) => {
   // console.log(userId);
   // console.log(guestUserId);
-  // user: ${userId ? `"${userId}"` : null}
-  // guest_user: ${guestUserId ? `"${guestUserId}"` : null}
   return `mutation CreateAddress {
     createAddress(
         data: {
+            user: ${userId ? `"${userId}"` : null}
+            guest_user: ${guestUserId ? `"${guestUserId}"` : null}
             address_name: "${capitalize(addressName ?? '')}"
             default: ${isDefault ?? false}
             city: "${capitalize(city ?? '')}"
@@ -81,7 +186,20 @@ export const getCreateShippingAddressQuery = ({
             first_name: "${capitalize(firstName ?? '')}"
             last_name: "${capitalize(lastName ?? '')}"
             delivery_phone: "${deliveryPhone ?? ''}"
-            shipping_cost: ${shippingCostId ? `"${shippingCostId}"` : null}
+            delivery_zone:  ${
+              (
+                deliveryZone?.zoneNameInArabic ||
+                deliveryZone?.zoneNameInEnglish
+              ) ?
+                `{
+                  zone_name_in_arabic: ${deliveryZone?.zoneNameInArabic ? `"${deliveryZone.zoneNameInArabic}"` : null},
+                  zone_name_in_english: ${deliveryZone?.zoneNameInEnglish ? `"${deliveryZone.zoneNameInEnglish}"` : null}
+                  ${deliveryZone?.minimumDeliveryDurationInDays ? `, minimum_delivery_duration_in_days: ${deliveryZone.minimumDeliveryDurationInDays}` : ''}
+                  ${deliveryZone?.maximumDeliveryDurationInDays ? `, maximum_delivery_duration_in_days: ${deliveryZone.maximumDeliveryDurationInDays}` : ''}
+                }
+                `
+              : null
+            }
             publishedAt: "${new Date().toISOString()}"
         }
     ) {
@@ -93,6 +211,8 @@ export const getCreateShippingAddressQuery = ({
 };
 
 export const createAddress = async ({
+  userId,
+  guestUserId,
   addressName,
   isDefault,
   city,
@@ -107,12 +227,15 @@ export const createAddress = async ({
   firstName,
   lastName,
   deliveryPhone,
-  shippingCostId
+  // shippingCostId
+  deliveryZone
 }: CreateAddressProps) => {
   try {
     const { data: addressData, error: addressError } =
       (await fetchGraphqlClientAuthenticated(
         getCreateShippingAddressQuery({
+          userId,
+          guestUserId,
           addressName: addressName ?? '',
           isDefault: isDefault ?? false,
           city,
@@ -127,7 +250,7 @@ export const createAddress = async ({
           firstName,
           lastName,
           deliveryPhone,
-          shippingCostId
+          deliveryZone
         })
       )) as CreateAddressResponseType;
 
@@ -167,22 +290,11 @@ export const getShippingAddressesQuery = (userId: string | null) => {
                             apartment
                             address_name
                             default
-                            shipping_cost {
-                                data {
-                                    attributes {
-                                        governorate
-                                        delivery_cost
-                                        localizations {
-                                            data {
-                                                attributes {
-                                                    governorate
-                                                    locale
-                                                }
-                                            }
-                                        }
-                                        locale
-                                    }
-                                }
+                            delivery_zone {
+                                zone_name_in_arabic
+                                zone_name_in_english
+                                minimum_delivery_duration_in_days
+                                maximum_delivery_duration_in_days
                             }
                             updatedAt
                         }
@@ -197,6 +309,14 @@ export const getShippingAddressesQuery = (userId: string | null) => {
 export const getUserAddressesAuthenticated = async () => {
   try {
     const userId = getIdFromToken();
+
+    if (!userId) {
+      return {
+        addressesData: null,
+        addressesError: 'The user is not logged in.'
+      };
+    }
+
     const { data: addressData, error: addressError } =
       (await fetchGraphqlClientAuthenticated(
         getShippingAddressesQuery(userId)
@@ -213,7 +333,7 @@ export const getUserAddressesAuthenticated = async () => {
         addressesError: null
       };
     }
-    console.error(addressError);
+    // console.error(addressError);
     return { addressesData: null, addressesError: addressError };
   } catch (err) {
     console.error('Error fetching user addresses:', err);
@@ -222,6 +342,17 @@ export const getUserAddressesAuthenticated = async () => {
       addressesError: err ?? 'Error fetching user addresses'
     };
   }
+};
+
+export const getUserAddressesData = async () => {
+  const { addressesData, addressesError } =
+    await getUserAddressesAuthenticated();
+  if (addressesError || !addressesData) {
+    console.error(addressesError);
+    return null;
+  }
+  console.log(addressesData);
+  return addressesData;
 };
 
 const updateUserAddressQuery = ({
@@ -251,22 +382,9 @@ const updateUserAddressQuery = ({
                             apartment
                             address_name
                             default
-                            shipping_cost {
-                                data {
-                                    attributes {
-                                        governorate
-                                        delivery_cost
-                                        localizations {
-                                            data {
-                                                attributes {
-                                                    governorate
-                                                    locale
-                                                }
-                                            }
-                                        }
-                                        locale
-                                    }
-                                }
+                            delivery_zone {
+                                zone_name_in_arabic
+                                zone_name_in_english
                             }
                             updatedAt
                         }
@@ -330,22 +448,9 @@ export const getShippingAddressQuery = (
                             apartment
                             address_name
                             default
-                            shipping_cost {
-                                data {
-                                    attributes {
-                                        governorate
-                                        delivery_cost
-                                        localizations {
-                                            data {
-                                                attributes {
-                                                    governorate
-                                                    locale
-                                                }
-                                            }
-                                        }
-                                        locale
-                                    }
-                                }
+                            delivery_zone {
+                                zone_name_in_arabic
+                                zone_name_in_english
                             }
                             updatedAt
                         }
@@ -365,7 +470,7 @@ export const getUserAddressAuthenticated = async (
     const { data: addressData, error: addressError } =
       (await fetchGraphqlClientAuthenticated(
         getShippingAddressQuery(userId, addressId)
-      )) as GetAddressResponseType;
+      )) as getAddressResponseType;
 
     if (
       addressData?.usersPermissionsUser?.data?.attributes?.addresses
@@ -397,7 +502,7 @@ interface UpdateAddressProps {
   address1: string;
   address2: string;
   zipCode: number | undefined;
-  shippingCostId: string;
+  // shippingCostId: string;
   firstName: string;
   lastName: string;
   deliveryPhone: string;
@@ -406,6 +511,12 @@ interface UpdateAddressProps {
   apartment: number;
   addressName: string;
   isDefault: boolean;
+  deliveryZone: {
+    zoneNameInArabic: string | null;
+    zoneNameInEnglish: string | null;
+    minimumDeliveryDurationInDays: number | null;
+    maximumDeliveryDurationInDays: number | null;
+  } | null;
 }
 
 const updateAddressQuery = ({
@@ -414,7 +525,7 @@ const updateAddressQuery = ({
   address1,
   address2,
   zipCode,
-  shippingCostId,
+  // shippingCostId,
   firstName,
   lastName,
   deliveryPhone,
@@ -422,7 +533,8 @@ const updateAddressQuery = ({
   floor,
   apartment,
   addressName,
-  isDefault
+  isDefault,
+  deliveryZone
 }: UpdateAddressProps) => {
   return `mutation UpdateAddress {
     updateAddress(
@@ -432,7 +544,18 @@ const updateAddressQuery = ({
             address_1: "${address1}"
             address_2: "${address2}"
             zip_code: ${zipCode}
-            shipping_cost: ${shippingCostId ? `${shippingCostId}` : null}
+            delivery_zone:  ${
+              (
+                deliveryZone?.zoneNameInArabic ||
+                deliveryZone?.zoneNameInEnglish
+              ) ?
+                `{
+                  zone_name_in_arabic: ${deliveryZone?.zoneNameInArabic ? `"${deliveryZone.zoneNameInArabic}"` : null},
+                  zone_name_in_english: ${deliveryZone?.zoneNameInEnglish ? `"${deliveryZone.zoneNameInEnglish}"` : null}
+                }
+                `
+              : null
+            }
             first_name: "${firstName ?? ''}"
             last_name: "${lastName ?? ''}"
             delivery_phone: "${deliveryPhone ?? ''}"
@@ -504,22 +627,9 @@ const updateDefaultAddressQuery = ({
                 apartment
                 address_name
                 default
-                shipping_cost {
-                    data {
-                        attributes {
-                            governorate
-                            delivery_cost
-                            localizations {
-                                data {
-                                    attributes {
-                                        governorate
-                                        locale
-                                    }
-                                }
-                            }
-                            locale
-                        }
-                    }
+                delivery_zone {
+                  zone_name_in_arabic
+                  zone_name_in_english
                 }
                 updatedAt
             }
@@ -528,7 +638,7 @@ const updateDefaultAddressQuery = ({
   }`;
 };
 
-function sortAndValidateData(data: AdressesType[]) {
+function sortAndValidateData(data: AdressType[]) {
   if (!Array.isArray(data)) {
     throw new Error('The input data must be an array.');
   }
@@ -667,7 +777,7 @@ export const handleShippingAddresses = async ({
     React.SetStateAction<boolean>
   >;
   setAddressesData: React.Dispatch<
-    React.SetStateAction<AdressesType[] | null>
+    React.SetStateAction<AdressType[] | null>
   >;
 }) => {
   try {

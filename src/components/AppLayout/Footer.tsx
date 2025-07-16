@@ -28,7 +28,7 @@ function Footer({ data }: PropsType) {
       // data-aos-duration='300'
       // data-aos-easing='linear'
       // data-aos-once='true'
-      className='mx-auto w-full max-w-[1900px] bg-blue-gray-medium shadow'
+      className='mx-auto w-full bg-blue-gray-medium shadow'
     >
       <section className='container grid grid-cols-1 gap-8 py-10 shadow md:grid-cols-2 xl:grid-cols-footer xl:gap-5'>
         <div>
@@ -210,16 +210,22 @@ function Footer({ data }: PropsType) {
 
             <div className='flex flex-wrap items-center gap-5'>
               <Image
+                src='/payment-methods/COD.svg'
+                alt='cash on delivery logo'
+                width={60}
+                height={40}
+              />
+              <Image
                 src='/payment-methods/mastercard.svg'
                 alt='mastercard logo'
-                width={50}
-                height={30}
+                width={60}
+                height={40}
               />
               <Image
                 src='/payment-methods/visa.svg'
                 alt='visa logo'
-                width={50}
-                height={30}
+                width={60}
+                height={40}
               />
               {/* <Image
             src='/payment-methods/valu.svg'
@@ -230,8 +236,8 @@ function Footer({ data }: PropsType) {
               <Image
                 src='/payment-methods/meeza.svg'
                 alt='meeza logo'
-                width={50}
-                height={30}
+                width={60}
+                height={40}
               />
             </div>
           </div>

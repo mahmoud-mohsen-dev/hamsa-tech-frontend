@@ -2,98 +2,125 @@ import { CartDataType } from '@/types/cartResponseTypes';
 import { ProductType } from '@/types/getProducts';
 // import { formatForGraphQL } from './helpers';
 
-export const updateCartInTheBackend = (
-  cartId: string,
-  productDetails: CartDataType[],
-  productId: string,
-  quantity: number,
-  productsData: ProductType[] | []
-) => {
-  let cart = '[]';
+export type ProductInfoType =
+  | {
+      id: string | null;
+      stock: number | null;
+      final_product_price: number | null;
+      // finalPackageWeight: number | null;
+    }
+  | null
+  | undefined;
+
+export type ProductInfoWithPackageWeightType =
+  | {
+      id: string | null;
+      stock: number | null;
+      final_product_price: number | null;
+      finalPackageWeight: number | null;
+    }
+  | null
+  | undefined;
+
+export const updateCartByClientAndSendItToTheBackend = ({
+  cartId,
+  cart,
+  quantity,
+  productInfo
+}: {
+  cartId: string;
+  cart: CartDataType[];
+  quantity: number;
+  productInfo: ProductInfoType;
+}) => {
+  'use client';
+
+  console.log({
+    cartId,
+    cart,
+    quantity,
+    productInfo
+  });
+
   let productFound = false;
 
   // Step 1: Update product quantity or add new product if not found
-  const updatedProductDetails = productDetails
+  const updatedCartSummary = cart
     .map((cartItem) => {
       if (
         cartItem?.product?.data?.id &&
-        cartItem.product.data.id === productId
+        productInfo?.id &&
+        cartItem.product.data.id === productInfo?.id
       ) {
         productFound = true; // Mark the product as found
         if (quantity <= 0) {
           return null; // If quantity is 0 or less, remove the product
         }
+        const updatedQuantity =
+          quantity <= cartItem?.product?.data?.attributes?.stock ?
+            quantity
+          : cartItem.quantity; // Use the provided quantity
+
         return {
-          quantity:
-            quantity <= cartItem?.product?.data?.attributes?.stock ?
-              quantity
-            : cartItem.quantity, // Use the provided quantity
+          quantity: updatedQuantity,
           product: cartItem.product.data.id,
-          // cost: cartItem.product.data.attributes.final_product_price,
           total_cost:
             cartItem.product.data.attributes.final_product_price *
-            quantity,
+            updatedQuantity,
           description: cartItem?.product?.data?.id ?? ''
-          // description:
-          //   cartItem?.product?.data?.attributes?.description ?? ''
         };
       }
       // the rest of the all product that didn't change
       return {
         quantity: cartItem.quantity,
         product: cartItem.product.data.id,
-        // cost: cartItem.cost,
         total_cost: cartItem.total_cost,
-        // description:
-        //   cartItem?.product?.data?.attributes?.description ?? ''
         description: cartItem?.product?.data?.id ?? ''
       };
     })
     .filter((cartItem) => cartItem !== null); // Remove nulls (deleted products)
 
-  console.log('productDetails', productDetails);
-  console.log('productsData', productDetails);
-  console.log('updatedProductDetails', updatedProductDetails);
+  console.log('cart', cart);
+  console.log('productInfo', productInfo);
+  console.log('updatedCartSummary', updatedCartSummary);
 
   // Step 2: If productId is not found, add it with the given quantity
-  if (productsData.length > 0 && !productFound && quantity > 0) {
-    const product = productsData.find(
-      (product) => product.id === productId
-    );
-    updatedProductDetails.push({
-      quantity:
-        (
-          product?.attributes?.stock &&
-          quantity <= product?.attributes?.stock
-        ) ?
-          quantity
-        : 1,
-      product: productId,
-      total_cost:
-        (
-          product?.attributes?.sale_price &&
-          product?.attributes?.sale_price > 0
-        ) ?
-          product.attributes.sale_price * quantity
-        : (product?.attributes?.price ?? 0) * quantity,
-      // description: product?.attributes?.description ?? ''
-      description: productId ?? ''
+  if (
+    !productFound &&
+    quantity > 0 &&
+    typeof productInfo?.stock === 'number' &&
+    productInfo?.stock > 0 &&
+    productInfo?.id &&
+    typeof productInfo?.final_product_price === 'number' &&
+    productInfo.final_product_price > 0
+  ) {
+    const updatedQuantity =
+      quantity <= productInfo.stock ? quantity : productInfo.stock;
+    updatedCartSummary.push({
+      quantity: updatedQuantity,
+      product: productInfo.id,
+      total_cost: productInfo.final_product_price * updatedQuantity,
+      description: productInfo.id
     });
   }
 
-  const total_cart_cost = updatedProductDetails.reduce(
+  console.log('cart', cart);
+  console.log('productInfo', productInfo);
+  console.log('updatedCartSummary', updatedCartSummary);
+
+  const total_cart_cost = updatedCartSummary.reduce(
     (acc, cur) => (acc += cur.total_cost),
     0
   );
 
   // Step 3: aggregate products details data
   const aggregatedProductsDetails = aggregateProductsDetails(
-    updatedProductDetails
+    updatedCartSummary
   );
   console.log('aggregatedProductsDetails', aggregatedProductsDetails);
 
   // Step 4: Convert updated product details to GraphQL-friendly string
-  cart = `[${aggregatedProductsDetails
+  const cartStr = `[${aggregatedProductsDetails
     .map((cartItem) => {
       if (
         cartItem &&
@@ -112,11 +139,11 @@ export const updateCartInTheBackend = (
     })
     .join(', ')}]`;
 
-  console.log('cart', cart);
+  console.log('cartStr', cartStr);
 
   // Step 4: Return the complete mutation query
   return `mutation {
-    updateCart(id: ${cartId}, data: { product_details: ${cart}, total_cart_cost: ${total_cart_cost}}) {
+    updateCart(id: ${cartId}, data: { product_details: ${cartStr}, total_cart_cost: ${total_cart_cost}}) {
       data {
         id
         attributes {
@@ -143,6 +170,7 @@ export const updateCartInTheBackend = (
                     }
                   }
                   stock
+                  final_package_weight_in_grams
                   localizations {
                       data {
                           id
@@ -189,6 +217,7 @@ export const aggregateProductsDetails = (
   total_cost: number;
   description: string;
 }[] => {
+  'use client';
   // Create a map to store unique products by their ID
   const productMap = new Map<
     string,
@@ -253,6 +282,7 @@ export const modifyCartDataByLocale = (
   locale: string,
   cartItems: CartDataType[]
 ): CartDataType[] => {
+  'use client';
   const newCartItems: CartDataType[] = [];
   // Filter the cart items based on the given locale
   cartItems.forEach((item) => {
@@ -274,6 +304,9 @@ export const modifyCartDataByLocale = (
                   id: localization.id,
                   attributes: {
                     ...localization.attributes,
+                    final_package_weight_in_grams:
+                      item?.product?.data?.attributes
+                        ?.final_package_weight_in_grams ?? null,
                     locale,
                     localizations: {
                       data: [
@@ -295,7 +328,7 @@ export const modifyCartDataByLocale = (
                                 ?.sale_price,
                             image_thumbnail:
                               item?.product?.data?.attributes
-                                ?.image_thumbnail,
+                                ?.image_thumbnail ?? null,
                             locale
                           }
                         }

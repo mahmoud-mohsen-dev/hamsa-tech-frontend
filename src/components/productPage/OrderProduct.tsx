@@ -1,7 +1,7 @@
 'use client';
 import { Spin } from 'antd';
 import Btn from '../UI/Btn';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   HiHeart,
   HiOutlineHeart,
@@ -18,9 +18,10 @@ import {
 import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import AppProgress from '../UI/cart/Progress';
 import AddToCartQuantityChanger from './AddToCartQuantityChanger';
+import { ProductInfoWithPackageWeightType } from '@/utils/cartContextUtils';
 
 interface PropsType {
-  productId: string;
+  productInfo: ProductInfoWithPackageWeightType;
   maxQuantity: number;
   minQuantity: number;
   localeParentName: string;
@@ -29,7 +30,7 @@ interface PropsType {
 }
 
 interface UpdateWishlistProps {
-  newAddedProductId: string;
+  newAddedProductId: string | null;
   allWishlistData: WishlistsDataType;
   currentLocaleName?: 'en' | 'ar';
   nextLocaleName?: 'en' | 'ar';
@@ -43,6 +44,8 @@ const getUpdateWishlistParentQuery = ({
   allWishlistData,
   currentLocaleName
 }: UpdateWishlistProps) => {
+  if (!newAddedProductId) return null;
+
   const getWishlistId = getCookie('wishlistIds');
   const wishlistId = getWishlistId ? JSON.parse(getWishlistId) : null;
 
@@ -57,8 +60,8 @@ const getUpdateWishlistParentQuery = ({
   } else {
     newProducts.splice(foundIndex, 1);
   }
-  console.log('new Products parent');
-  console.log(newProducts);
+  // console.log('new Products parent');
+  // console.log(newProducts);
 
   return `mutation UpdateWishlist {
     updateWishlist(id: ${wishlistId[currentLocaleName ?? ''] ? `"${wishlistId[currentLocaleName ?? '']}"` : null} , data: { products: ${newProducts.length > 0 ? `[${newProducts}]` : null}}) {
@@ -104,6 +107,8 @@ const getUpdateWishlistChildQuery = ({
   allWishlistData,
   nextLocaleName
 }: UpdateWishlistProps) => {
+  if (!newAddedProductId) return null;
+
   const getWishlistId = getCookie('wishlistIds');
   const wishlistId = getWishlistId ? JSON.parse(getWishlistId) : null;
 
@@ -120,8 +125,8 @@ const getUpdateWishlistChildQuery = ({
   } else {
     newProducts.splice(foundIndex, 1);
   }
-  console.log('new Products child');
-  console.log(newProducts);
+  // console.log('new Products child');
+  // console.log(newProducts);
 
   return `mutation UpdateWishlist {
     updateWishlist(id: ${wishlistId[nextLocaleName ?? ''] ? `"${wishlistId[nextLocaleName ?? '']}"` : null}, data: { products: ${newProducts.length > 0 ? `[${newProducts}]` : null}}) {
@@ -169,12 +174,19 @@ const updateWishlistParentData = async ({
   currentLocaleName
 }: UpdateWishlistProps) => {
   try {
+    const query = getUpdateWishlistParentQuery({
+      newAddedProductId,
+      allWishlistData,
+      currentLocaleName
+    });
+    if (!query) {
+      console.error(
+        'Error updating wishlist data: newAddedProductId was not found'
+      );
+      return [];
+    }
     const { data, error } = (await fetchGraphqlClient(
-      getUpdateWishlistParentQuery({
-        newAddedProductId,
-        allWishlistData,
-        currentLocaleName
-      })
+      query
     )) as UpdateWishlistDataType;
 
     if (
@@ -203,12 +215,19 @@ const updateWishlistChildData = async ({
   nextLocaleName
 }: UpdateWishlistProps) => {
   try {
+    const query = getUpdateWishlistChildQuery({
+      newAddedProductId,
+      allWishlistData,
+      nextLocaleName
+    });
+    if (!query) {
+      console.error(
+        'Error updating wishlist data: newAddedProductId was not found'
+      );
+      return [];
+    }
     const { data, error } = (await fetchGraphqlClient(
-      getUpdateWishlistChildQuery({
-        newAddedProductId,
-        allWishlistData,
-        nextLocaleName
-      })
+      query
     )) as UpdateWishlistDataType;
 
     if (
@@ -242,7 +261,7 @@ export const updateWishtlistHandler = ({
   locale: string;
   setIsWishlistLoading: React.Dispatch<React.SetStateAction<boolean>>;
   productIds: {
-    [x: string]: string;
+    [x: string]: string | null;
   };
   wishlistsData: WishlistsDataType;
   setWishlistsData: React.Dispatch<
@@ -289,7 +308,7 @@ export const updateWishtlistHandler = ({
 };
 
 function OrderProduct({
-  productId,
+  productInfo,
   localeParentName,
   localeChildName,
   localeChildId,
@@ -312,6 +331,17 @@ function OrderProduct({
   const [quantity, setQuantity] = useState(minQuantity);
   const [isHovered, setIsHovered] = useState(false);
 
+  // console.log({
+  //   id: productInfo?.id,
+  //   localeParentName,
+  //   localeChildName,
+  //   localeChildId,
+  //   maxQuantity,
+  //   minQuantity
+  // });
+
+  const productId = productInfo?.id ?? null;
+
   // const [isAddToCartActive, setIsAddToCartActive] = useState(false);
   // const [isWishlistActive, setIsWishlistActive] = useState(false);
 
@@ -330,11 +360,15 @@ function OrderProduct({
   // };
   const handleAddToCart = () => {
     console.log('Add to cart clicked');
-    // setIsAddToCartActive(!isAddToCartActive);
-    updateCartItemQuantity(
-      productId,
-      isAddedToCartActive ? 0 : quantity
-    );
+    console.log(`quantity: ${isAddedToCartActive ? 0 : quantity}`);
+    // console.log({
+    //   productId,
+    //   isAddedToCartActive: isAddedToCartActive ? 0 : quantity
+    // });
+    updateCartItemQuantity({
+      productInfo,
+      quantity: isAddedToCartActive ? 0 : quantity
+    });
   };
 
   const handleAddToWishList = () => {
@@ -342,7 +376,7 @@ function OrderProduct({
       [localeParentName]: productId,
       [localeChildName]: localeChildId
     };
-    console.log(productIds);
+    // console.log(productIds);
     updateWishtlistHandler({
       locale,
       productIds,
@@ -351,9 +385,13 @@ function OrderProduct({
       wishlistsData
     });
 
-    console.log('Add to Wish Lists clicked');
+    // console.log('Add to Wish Lists clicked');
     // setIsWishlistActive(!isWishlistActive);
   };
+
+  useEffect(() => {
+    setQuantity(minQuantity);
+  }, [maxQuantity]);
 
   return (
     <>

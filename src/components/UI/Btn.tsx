@@ -7,6 +7,7 @@ function Btn({
   onClick,
   className = 'bg-white text-gray-normal text-lg',
   defaultPadding = true,
+  enableBtnStyles = true,
   outlined = false,
   dir = undefined,
   type = 'button',
@@ -24,6 +25,7 @@ function Btn({
     | React.MouseEventHandler<HTMLAnchorElement>;
   className?: string;
   defaultPadding?: boolean;
+  enableBtnStyles?: boolean;
   outlined?: boolean;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
@@ -38,7 +40,7 @@ function Btn({
     return (
       <Link
         href={href}
-        className={` ${btnStyles} ${outlined ? 'border-2 border-white text-white' : ''} ${className}`}
+        className={`${enableBtnStyles ? btnStyles : ''} ${outlined ? 'border-2 border-white text-white' : ''} ${defaultPadding ? 'px-[1rem] py-[.55rem]' : ''} ${className}`}
         onClick={
           onClick as React.MouseEventHandler<HTMLAnchorElement>
         }
@@ -50,7 +52,7 @@ function Btn({
   }
   return (
     <button
-      className={`${btnStyles} ${outlined ? 'border-2 border-white text-white' : ''} ${defaultPadding ? 'px-[1rem] py-[.55rem]' : ''} ${className}`}
+      className={`${enableBtnStyles ? btnStyles : ''} ${outlined ? 'border-2 border-white text-white' : ''} ${defaultPadding ? 'px-[1rem] py-[.55rem]' : ''} ${className}`}
       onClick={onClick as React.MouseEventHandler<HTMLButtonElement>}
       onMouseMove={() => {
         setHover(true);

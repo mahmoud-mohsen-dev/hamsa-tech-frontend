@@ -11,7 +11,7 @@ import SelectLanguage from '../UI/navbar/SelectLanguage';
 import { Link, usePathname } from '@/navigation';
 import { NavbarLink } from '@/types/getIndexLayout';
 import { CategoryType } from '@/types/getNavbarProductsCategories';
-import { getCartId } from '@/utils/cookieUtils';
+import { getCartIdFromCookie, getCookie } from '@/utils/cookieUtils';
 import { useMyContext } from '@/context/Store';
 import ProfileDropdownMenu from '../UI/navbar/ProfileDropdownMenu';
 import { useUser } from '@/context/UserContext';
@@ -24,7 +24,10 @@ import {
   createCart,
   fetchCartData
 } from '@/services/cart';
-import { fetchWishlistData } from '@/services/wishlist';
+import {
+  createWishlistInTheBackend,
+  fetchWishlistData
+} from '@/services/wishlist';
 import useWishlist from '@/hooks/useWishlist';
 
 interface PropsType {
@@ -45,8 +48,8 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     setIsWishlistLoading,
     setIsAddressIsLoading
   } = useMyContext();
-  const [cartId, setCardId] = useState<string | null>(null);
-  const [wishlistIds, setWishlistIds] = useState<string | null>(null);
+  const [cartId, setCartId] = useState<string | null>(null);
+  const [wishlistId, setWishlistId] = useState<string | null>(null);
   const [linkHovered, setLinkHovered] = useState('');
   const { userId, setAddressesData } = useUser();
   const locale = useLocale();
@@ -55,56 +58,82 @@ function Header({ navLinks, productsSubNav }: PropsType) {
   const t = useTranslations('HomePage.Header');
 
   const {
-    data: cartData,
+    // data: cartData,
     mutate: mutateCart,
     isValidating: cartIsValidating
-  } = useSWR(
-    cartId ? ['cart', cartId] : null,
-    () =>
-      fetchCartData(
-        Number(cartId),
-        locale,
-        setCart,
-        setTotalCartCost,
-        setIsCartCheckoutLoading
-      ),
-    {
-      revalidateOnFocus: true,
-      revalidateIfStale: true,
-      revalidateOnReconnect: true
-    }
+  } = useSWR(cartId ? ['cart', cartId] : null, () =>
+    fetchCartData({
+      cartId: !isNaN(Number(cartId)) ? Number(cartId) : null,
+      locale,
+      setCart,
+      setTotalCartCost,
+      setIsCartCheckoutLoading,
+      setCartId
+    })
   );
 
-  const { wishlistData, mutate, isValidating } = useWishlist(
-    wishlistIds,
-    locale
-  );
+  const {
+    mutate: mutateWishlist,
+    isValidating: wishlistIsValidating
+  } = useWishlist({
+    locale,
+    setIsWishlistLoading,
+    wishlistId,
+    setWishlistsData
+  });
+
+  // const { wishlistData, mutate, isValidating } = useWishlist(
+  //   wishlistIds,
+  //   locale
+  // );
 
   useScrollHandler();
 
   useEffect(() => {
-    setCardId(getCartId());
+    try {
+      setCartId(getCartIdFromCookie());
+      const wishlistIdsStr = getCookie('wishlistIds');
+      const wishlistIds = JSON.parse(wishlistIdsStr ?? '');
+      setWishlistId(
+        (
+          (locale === 'ar' || locale === 'en') &&
+            typeof wishlistIds[locale] === 'string'
+        ) ?
+          wishlistIds[locale]
+        : null
+      );
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
-  useEffect(() => {
-    const handleCart = async () => {
-      const cartId = getCartId();
+  // console.log('wishlistId @Header', wishlistId);
 
-      if (!cartId) {
-        createCart(setCart, setCardId).then(() => mutateCart()); // Creates a cart & refreshes data
+  useEffect(() => {
+    const cartIdFromCookie = getCartIdFromCookie();
+    const handleCart = async () => {
+      if (!cartIdFromCookie) {
+        createCart({ setCart, setCartId, setTotalCartCost }).then(
+          () => mutateCart()
+        ); // Creates a cart & refreshes data
       } else {
         mutateCart(); // Refresh cart data if it exists
+      }
+    };
+
+    const wishlistIdsStr = getCookie('wishlistIds');
+    const handleWishlist = async () => {
+      if (!wishlistIdsStr) {
+        createWishlistInTheBackend().then(() => mutateWishlist()); // Creates a wishlist & refreshes data
+      } else {
+        mutateWishlist(); // Refresh wishlist data if it exists
       }
     };
 
     const handleRequests = async () => {
       handleCart();
 
-      fetchWishlistData({
-        locale,
-        setIsWishlistLoading,
-        setWishlistsData
-      });
+      handleWishlist();
 
       handleShippingAddresses({
         setIsAddressIsLoading,
@@ -113,11 +142,11 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     };
 
     handleRequests();
-  }, [cartId, mutateCart]);
+  }, [cartId, wishlistId]);
 
   return (
     <header
-      className={`header fixed left-0 top-0 z-[100] flex h-[48px] w-full max-w-[100vw] items-center bg-transparent md:h-[64px] 2xl:left-1/2 2xl:max-w-[1900px] 2xl:-translate-x-1/2 ${pathname === '/' ? 'bg-transparent' : 'colored-navbar'} ${linkHovered ? 'colored-navbar' : 'bg-transparent'}`}
+      className={`header fixed left-0 top-0 z-[100] flex h-[48px] w-full items-center bg-transparent md:h-[64px] 2xl:left-1/2 2xl:-translate-x-1/2 ${pathname === '/' ? 'bg-transparent' : 'colored-navbar'} ${linkHovered ? 'colored-navbar' : 'bg-transparent'}`}
     >
       <div className='container flex h-full items-stretch justify-between'>
         <div className='flex h-full items-center 2xl:gap-5 3xl:gap-10'>
@@ -145,19 +174,29 @@ function Header({ navLinks, productsSubNav }: PropsType) {
         </div>
 
         <div className='flex items-center'>
-          <Link
-            href='/wishlist'
-            className='wishlist relative ml-3 hidden text-white 2xl:ml-4 2xl:block'
-          >
-            {wishlistsData.length > 0 && (
-              <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
-                <p className='text-[.5rem] leading-[1rem] text-white'>
-                  {wishlistsData.length}
-                </p>
-              </div>
-            )}
-            <HiOutlineHeart size={22} className='text-inherit' />
-          </Link>
+          {wishlistIsValidating ?
+            <div
+              className={`relative ${locale === 'ar' ? 'ml-5' : 'mr-5 2xl:ml-5 2xl:mr-0'}`}
+            >
+              <Spin
+                indicator={<LoadingOutlined spin />}
+                className='wishlist'
+              />
+            </div>
+          : <Link
+              href='/wishlist'
+              className='wishlist relative ml-3 hidden text-white 2xl:ml-4 2xl:block'
+            >
+              {wishlistsData.length > 0 && (
+                <div className='absolute right-0 top-0 z-[200] flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-red-shade-350 bg-opacity-80'>
+                  <p className='text-[.5rem] leading-[1rem] text-white'>
+                    {wishlistsData.length}
+                  </p>
+                </div>
+              )}
+              <HiOutlineHeart size={22} className='text-inherit' />
+            </Link>
+          }
 
           <Link
             href={userId ? '/account/settings' : '/signin'}
@@ -172,7 +211,6 @@ function Header({ navLinks, productsSubNav }: PropsType) {
             >
               <Spin
                 indicator={<LoadingOutlined spin />}
-                // size='small'
                 className='shopping-cart'
               />
             </div>

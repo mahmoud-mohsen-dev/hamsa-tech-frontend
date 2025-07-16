@@ -8,21 +8,22 @@ import {
   updateCartResponseType
 } from '@/types/cartResponseTypes';
 import { FreeShippingAttributesType } from '@/types/freeShippingResponseType';
-import { CouponDataType } from '@/types/getCouponResponseType';
+import { CouponByCodeNameDataType } from '@/types/getCouponResponseType';
 import {
   ProductsResponseDataType,
   ProductType
 } from '@/types/getProducts';
-import { ShippingCostDataType } from '@/types/shippingCostResponseTypes';
+import { ShippingCostsDataType } from '@/types/shippingCostResponseTypes';
 import {
   WishlistDataType,
   WishlistsDataType
 } from '@/types/wishlistReponseTypes';
 import {
   aggregateCartItems,
-  updateCartInTheBackend
+  ProductInfoType,
+  updateCartByClientAndSendItToTheBackend
 } from '@/utils/cartContextUtils';
-import { getCartId } from '@/utils/cookieUtils';
+import { getCartIdFromCookie } from '@/utils/cookieUtils';
 import { MultiSearchResponse } from 'meilisearch';
 import { createContext, useContext, useState } from 'react';
 
@@ -40,41 +41,59 @@ const MyContext = createContext<{
   drawerIsLoading: boolean;
   setDrawerIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   cart: CartDataType[];
-  findProductInCart: (productId: string) => CartDataType | undefined;
+  findProductInCart: (
+    productId: string | null
+  ) => CartDataType | null | undefined;
   setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
-  incrementCartItem: (
-    productId: string,
-    setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
-  ) => Promise<void>;
-  decrementCartItem: (
-    productId: string,
-    setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
-  ) => Promise<void>;
-  updateCartItemQuantity: (
-    productId: string,
-    quantity: number,
-    setComponentLoader?: React.Dispatch<React.SetStateAction<boolean>>
-  ) => Promise<void>;
+  incrementCartItem: ({
+    productInfo,
+    setComponentLoader
+  }: {
+    productInfo: ProductInfoType;
+    setComponentLoader?: React.Dispatch<
+      React.SetStateAction<boolean>
+    > | null;
+  }) => Promise<void>;
+  decrementCartItem: ({
+    productInfo,
+    setComponentLoader
+  }: {
+    productInfo: ProductInfoType;
+    setComponentLoader?: React.Dispatch<
+      React.SetStateAction<boolean>
+    > | null;
+  }) => Promise<void>;
+  updateCartItemQuantity: ({
+    productInfo,
+    quantity,
+    setComponentLoader
+  }: {
+    productInfo: ProductInfoType;
+    quantity: number;
+    setComponentLoader?: React.Dispatch<
+      React.SetStateAction<boolean>
+    > | null;
+  }) => Promise<void>;
   setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
   calculateSubTotalCartCost: () => number;
   calculateTotalCartItems: () => number;
   addToCartIsLoading: string;
   setAddToCartIsLoading: React.Dispatch<React.SetStateAction<string>>;
-  governoratesData: ShippingCostDataType[];
+  governoratesData: ShippingCostsDataType[];
   updateGovernoratesData: (
-    newShippingCostData: ShippingCostDataType[]
+    newShippingCostData: ShippingCostsDataType[]
   ) => void;
-  selectedGovernorate: ShippingCostDataType | null;
+  selectedGovernorate: ShippingCostsDataType | null;
   setSelectedGovernorate: React.Dispatch<
-    React.SetStateAction<ShippingCostDataType | null>
+    React.SetStateAction<ShippingCostsDataType | null>
   >;
   freeShippingAt: null | FreeShippingAttributesType;
   setFreeShippingAt: React.Dispatch<
     React.SetStateAction<null | FreeShippingAttributesType>
   >;
-  couponData: CouponDataType | null;
+  couponData: CouponByCodeNameDataType | null;
   setCouponData: React.Dispatch<
-    React.SetStateAction<CouponDataType | null>
+    React.SetStateAction<CouponByCodeNameDataType | null>
   >;
   calculateDeliveryCost: () => number | null;
   isApplyFreeShippingEnabled: () => boolean;
@@ -89,8 +108,8 @@ const MyContext = createContext<{
     React.SetStateAction<WishlistsDataType>
   >;
   findProductInWishlist: (
-    productId: string
-  ) => WishlistDataType | undefined;
+    productId: string | null
+  ) => WishlistDataType | undefined | null;
   isWishlistLoading: boolean;
   setIsWishlistLoading: React.Dispatch<React.SetStateAction<boolean>>;
   completeProductsApiData: ProductsResponseDataType;
@@ -155,15 +174,14 @@ export const StoreContextProvider = ({
   const [addToCartIsLoading, setAddToCartIsLoading] =
     useState<string>('');
   const [governoratesData, setGovernoratesData] = useState<
-    ShippingCostDataType[]
+    ShippingCostsDataType[]
   >([]);
   const [selectedGovernorate, setSelectedGovernorate] =
-    useState<ShippingCostDataType | null>(null);
+    useState<ShippingCostsDataType | null>(null);
   const [freeShippingAt, setFreeShippingAt] =
     useState<null | FreeShippingAttributesType>(null);
-  const [couponData, setCouponData] = useState<CouponDataType | null>(
-    null
-  );
+  const [couponData, setCouponData] =
+    useState<CouponByCodeNameDataType | null>(null);
   const [wishlistsData, setWishlistsData] =
     useState<WishlistsDataType>([]);
   const [isWishlistLoading, setIsWishlistLoading] = useState(false);
@@ -187,40 +205,48 @@ export const StoreContextProvider = ({
   const [isAddressIsLoading, setIsAddressIsLoading] = useState(true);
 
   // Utility to find product in the cart
-  const findProductInCart = (productId: string) =>
-    cart.find((item) =>
+  const findProductInCart = (productId: string | null) => {
+    if (productId === null) return null;
+    return cart.find((item) =>
       item?.product?.data?.id ?
         item.product.data.id === productId
       : null
     );
+  };
 
-  // Function to update the cart in the backend and set the new cart data
-  const updateCartContextFromBackend = async (
-    productId: string,
-    quantity: number,
-    setComponentLoader: React.Dispatch<
+  // Function to update the cart in the client and send it's data to the backend
+  const updateCartContextByClientAndSendItToTheBackend = async ({
+    quantity,
+    productInfo,
+    setComponentLoader = null
+  }: {
+    quantity: number;
+    productInfo: ProductInfoType;
+    setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
-    > | null = null
-  ) => {
-    const cartId = getCartId() || ''; // Assuming you have a function to get the cartId
-
+    > | null;
+  }) => {
+    const cartId = getCartIdFromCookie() || ''; // Assuming you have a function to get the cartId
+    // console.log('productInfo', productInfo);
+    // console.log('quantity', quantity);
     try {
       if (!!setComponentLoader) {
-        console.log('setComponentLoader');
-        console.log(!!setComponentLoader);
+        // console.log('setComponentLoader');
+        // console.log(!!setComponentLoader);
         setComponentLoader(true);
       }
-      setAddToCartIsLoading(productId);
+      setAddToCartIsLoading(productInfo?.id ?? '');
       setDrawerIsLoading(true);
       const { data, error } = (await fetchGraphqlClient(
-        updateCartInTheBackend(
+        updateCartByClientAndSendItToTheBackend({
           cartId,
           cart,
-          productId,
           quantity,
-          productsData
-        )
+          productInfo
+        })
       )) as updateCartResponseType;
+
+      // console.log('dataResponseOfCartFromTheBackend', data);
 
       if (data && !error) {
         const updatedCartItems = data?.updateCart?.data?.attributes;
@@ -228,7 +254,7 @@ export const StoreContextProvider = ({
           const updatedCartData = aggregateCartItems(
             updatedCartItems.product_details
           );
-          console.log(updatedCartData);
+          // console.log(updatedCartData);
           setCart(updatedCartData); // Update cart context with the response data
           setTotalCartCost(updatedCartItems?.total_cart_cost ?? 0);
           setOpenDrawer(true);
@@ -248,67 +274,77 @@ export const StoreContextProvider = ({
   };
 
   // Increment the quantity of a product in the cart
-  const incrementCartItem = async (
-    productId: string,
-    setComponentLoader: React.Dispatch<
+  const incrementCartItem = async ({
+    productInfo,
+    setComponentLoader = null
+  }: {
+    productInfo: ProductInfoType;
+    setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
-    > | null = null
-  ) => {
-    const product = findProductInCart(productId);
-    console.log(!!setComponentLoader);
-    if (product) {
-      await updateCartContextFromBackend(
-        productId,
-        product.quantity + 1,
+    > | null;
+  }) => {
+    // console.log('productInfo @incrementCartItem', productInfo);
+    const product = findProductInCart(productInfo?.id ?? null);
+    // console.log(!!setComponentLoader);
+    if (product && product?.quantity) {
+      await updateCartContextByClientAndSendItToTheBackend({
+        productInfo,
+        quantity: product.quantity + 1,
         setComponentLoader
-      );
+      });
     } else {
-      await updateCartContextFromBackend(
-        productId,
-        1,
+      await updateCartContextByClientAndSendItToTheBackend({
+        productInfo,
+        quantity: 1,
         setComponentLoader
-      );
+      });
     }
   };
 
   // Decrement the quantity of a product in the cart
-  const decrementCartItem = async (
-    productId: string,
-    setComponentLoader: React.Dispatch<
+  const decrementCartItem = async ({
+    productInfo,
+    setComponentLoader = null
+  }: {
+    productInfo: ProductInfoType;
+    setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
-    > | null = null
-  ) => {
-    const product = findProductInCart(productId);
+    > | null;
+  }) => {
+    const product = findProductInCart(productInfo?.id ?? null);
     if (product && product.quantity > 1) {
-      await updateCartContextFromBackend(
-        productId,
-        product.quantity - 1,
-
+      await updateCartContextByClientAndSendItToTheBackend({
+        productInfo,
+        quantity: product.quantity - 1,
         setComponentLoader
-      );
+      });
     } else {
-      await updateCartContextFromBackend(
-        productId,
-        0,
+      await updateCartContextByClientAndSendItToTheBackend({
+        productInfo,
+        quantity: 0,
         setComponentLoader
-      ); // Remove item if quantity is zero
+      }); // Remove item if quantity is zero
     }
   };
 
   // Update the quantity of a product directly via input
-  const updateCartItemQuantity = async (
-    productId: string,
-    quantity: number,
-    setComponentLoader: React.Dispatch<
+  const updateCartItemQuantity = async ({
+    productInfo,
+    quantity,
+    setComponentLoader = null
+  }: {
+    productInfo: ProductInfoType;
+    quantity: number;
+    setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
-    > | null = null
-  ) => {
+    > | null;
+  }) => {
     if (quantity < 0) return; // Prevent negative values
-    await updateCartContextFromBackend(
-      productId,
+    await updateCartContextByClientAndSendItToTheBackend({
+      productInfo,
       quantity,
       setComponentLoader
-    );
+    });
   };
 
   // Calaulate total product qunatites in cart
@@ -324,16 +360,20 @@ export const StoreContextProvider = ({
 
   // update shipping cost
   const updateGovernoratesData = (
-    newShippingCost: ShippingCostDataType[]
+    newShippingCost: ShippingCostsDataType[]
   ) => {
-    if (newShippingCost.length > 0) {
+    if (newShippingCost && newShippingCost.length > 0) {
       setGovernoratesData(newShippingCost);
     }
   };
 
   const calculateDeliveryCost = () => {
-    return selectedGovernorate?.attributes?.delivery_cost ?
-        selectedGovernorate?.attributes?.delivery_cost
+    return (
+        typeof selectedGovernorate?.final_calculated_delivery_cost ===
+          'number' &&
+          selectedGovernorate?.final_calculated_delivery_cost > 0
+      ) ?
+        selectedGovernorate.final_calculated_delivery_cost
       : null;
   };
 
@@ -371,16 +411,14 @@ export const StoreContextProvider = ({
     if (deductionValue || deductionValueByPercent) {
       if (deductionValue) {
         couponDeductionValue = deductionValue;
-      }
-      if (deductionValueByPercent) {
+      } else if (deductionValueByPercent) {
         couponDeductionValue = subTotalCost / deductionValueByPercent;
       }
     } else {
       if (couponData?.attributes?.deduction_value) {
         couponDeductionValue =
           couponData?.attributes?.deduction_value;
-      }
-      if (couponData?.attributes?.deduction_value_by_percent) {
+      } else if (couponData?.attributes?.deduction_value_by_percent) {
         couponDeductionValue =
           subTotalCost /
           couponData?.attributes?.deduction_value_by_percent;
@@ -394,12 +432,13 @@ export const StoreContextProvider = ({
     return (
       calculateSubTotalCartCost() -
       calculateCouponDeductionValue() +
-      calculateNetDeliveryCost()
+      (calculateNetDeliveryCost() ?? 0)
     );
   };
 
   // Utility to find product in the wishlist
-  const findProductInWishlist = (productId: string) => {
+  const findProductInWishlist = (productId: string | null) => {
+    if (!productId) return null;
     return wishlistsData.find((item) =>
       item?.id ? item.id === productId : null
     );

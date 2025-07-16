@@ -40,6 +40,12 @@ export const getProductsQuery = (queryArgs: string) => {
                   }
                   average_reviews
                   total_reviews
+                  package_dimensions {
+                      length_in_cm
+                      width_in_cm
+                      height_in_cm
+                  }
+                  final_package_weight_in_grams
                   locale
                   localizations {
                       data {

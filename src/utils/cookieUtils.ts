@@ -4,18 +4,18 @@
  * @param days - The number of days until the cookie expires.
  * @returns The cart ID if it was successfully set, otherwise null.
  */
-export const setCartId = (cartId: string): string | null => {
+export const setCartIdInCookie = (cartId: string): string | null => {
   const days = 30;
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   document.cookie = `cartId=${cartId}; expires=${expires}; path=/`;
-  return getCartId();
+  return getCartIdFromCookie();
 };
 
 /**
  * Get the cart ID from cookies.
  * @returns The cart ID if it exists, otherwise null.
  */
-export const getCartId = (): string | null => {
+export const getCartIdFromCookie = (): string | null => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; cartId=`);
 
@@ -27,7 +27,7 @@ export const getCartId = (): string | null => {
 /**
  * Remove the cart ID from cookies.
  */
-export const removeCartId = (): void => {
+export const removeCartIdFromCookie = (): void => {
   document.cookie = `cartId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
 };
 
@@ -35,7 +35,7 @@ export const removeCartId = (): void => {
  * Check if the cart ID exists in cookies.
  * @returns True if the cart ID exists, otherwise false.
  */
-export const doesCartIdExist = (): boolean => {
+export const doesCartIdExistInCookie = (): boolean => {
   return document.cookie
     .split('; ')
     .some((row) => row.startsWith('cartId='));
