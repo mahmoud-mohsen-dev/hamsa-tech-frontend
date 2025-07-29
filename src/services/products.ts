@@ -15,6 +15,7 @@ export const getProductsQuery = (queryArgs: string) => {
                   description
                   stock
                   modal_name
+                  sort_by_order
                   sub_category {
                       data {
                           attributes {
@@ -84,7 +85,7 @@ export async function fetchProducts(
   // console.log('sliderValues', sliderValues);
   // console.log('rateCheckedList', rateCheckedList);
   // Build the query based on the filters
-  let queryArgs = `locale: "${locale ?? 'en'}", pagination: { page: ${page ?? 1}, pageSize: ${pageSize ?? 20} }, sort: ${sortBy && sortBy !== 'featured' ? `["${sortBy}"]` : `[]`} `;
+  let queryArgs = `locale: "${locale ?? 'en'}", pagination: { page: ${page ?? 1}, pageSize: ${pageSize ?? 20} }, sort: ${sortBy && sortBy !== 'featured' ? `["${sortBy}"]` : `["sort_by_order:asc"]`} `;
 
   let filtersValues = '';
   if (category && !subcategory) {
