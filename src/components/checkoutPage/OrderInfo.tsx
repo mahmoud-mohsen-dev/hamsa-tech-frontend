@@ -684,8 +684,6 @@ function OrderInfo({
         //   err?.message ?? 'Error during form submission'
         // );
         return;
-      } finally {
-        setLoadingMessage(false);
       }
 
       const { data: orderData, error: orderError } =
@@ -772,7 +770,7 @@ function OrderInfo({
         await handlePayment(paymentData);
       }
 
-      setLoadingMessage(false);
+      // setLoadingMessage(false);
       setSuccessMessage(t('form.successMessage')); // Trigger success
 
       if (
