@@ -39,11 +39,11 @@ function AddressFormItems({
   //   }
   // }, [deliveryZonesData]);
 
-  useEffect(() => {
-    if (updateShippingCostsData) {
-      setSelectedGovernorate(null);
-    }
-  }, [updateShippingCostsData]);
+  // useEffect(() => {
+  //   if (updateShippingCostsData) {
+  //     setSelectedGovernorate(null);
+  //   }
+  // }, [updateShippingCostsData]);
 
   return (
     <>
@@ -133,7 +133,7 @@ function AddressFormItems({
           name={`${name}Building`}
           rules={[
             {
-              required: true,
+              required: false, // required: true,
               message: t('formValidationErrorMessages.inputBuilding')
             }
           ]}
@@ -151,7 +151,7 @@ function AddressFormItems({
           name={`${name}Floor`}
           rules={[
             {
-              required: true,
+              required: false, // required: true,
               message: t('formValidationErrorMessages.inputFloor')
             }
           ]}
@@ -169,12 +169,12 @@ function AddressFormItems({
           name={`${name}Apartment`}
           rules={[
             {
-              required: true,
+              required: false, // required: true,
               message: t('formValidationErrorMessages.inputApartment')
             },
             {
               validator: (_, value) => {
-                if (value && value > 0) {
+                if ((value && value > 0) || value === undefined) {
                   return Promise.resolve();
                 }
                 return Promise.reject(

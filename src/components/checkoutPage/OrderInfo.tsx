@@ -131,7 +131,7 @@ const createOrderQuery = ({
             shipping_address: ${shippingAddressId ? `"${shippingAddressId}"` : null}
             payment_method: ${paymentMethod}
             billing_address: ${billingAddressId ? `"${billingAddressId}"` : null}
-            coupon: ${couponId ? `"${couponId}"` : null}
+            coupon_applied: ${couponId ? `"${couponId}"` : null}
             delivery_cost: ${deliveryCost}
             coupon_applied_value: ${couponAppliedValue}
             total_order_cost: ${totalOrderCost}
@@ -266,6 +266,7 @@ function OrderInfo({
     cart,
     calculateSubTotalCartCost,
     couponData,
+    setCouponData,
     calculateNetDeliveryCost,
     calculateCouponDeductionValue,
     calculateTotalOrderCost,
@@ -466,7 +467,7 @@ function OrderInfo({
 
       if (alreadySelectedShippingDeliveryZone === null) {
         console.log(
-          'Delivery address was not added. Please try again or check the entered information.'
+          'Please select a governorate name. If the issue persists, try refreshing the page.'
         );
         console.log(
           'alreadySelectedShippingDeliveryZone',
@@ -824,6 +825,7 @@ function OrderInfo({
   //   defaultAddress();
   // }, []);
 
+  // if the user logged in and there was at least an address find the default address and update selected governorate to it and if there is a reload on the cart and addresses changed update the selected governorate to the default address
   useEffect(() => {
     if (
       cart.length > 0 &&
@@ -845,6 +847,19 @@ function OrderInfo({
         ) ?? null
       );
     }
+    if (cart.length > 0) {
+      setSelectedGovernorate(
+        governoratesData.find(
+          (governorate) =>
+            (governorate?.zone_name_in_arabic &&
+              governorate.zone_name_in_arabic ===
+                selectedGovernorate?.zone_name_in_arabic) ||
+            (governorate?.zone_name_in_english &&
+              governorate.zone_name_in_english ===
+                selectedGovernorate?.zone_name_in_english)
+        ) ?? null
+      );
+    }
     // else {
     //   setSelectedGovernorate(null);
     // }
@@ -862,7 +877,8 @@ function OrderInfo({
   useEffect(() => {
     const userLoggedInId = getIdFromToken();
     setUserId(userLoggedInId);
-    if (cart) {
+
+    if (Array.isArray(cart) && cart.length > 0) {
       const shippingCostsData = getShippingCosts({
         shippingCompanyData,
         shippingConfigData,
@@ -870,14 +886,33 @@ function OrderInfo({
         cart
       });
 
+      // console.log('__*__'.repeat(10));
+      // console.log('shippingCostsData', shippingCostsData);
+      // console.log('__*__'.repeat(10));
+
       if (shippingCostsData && shippingCostsData.length > 0) {
         updateGovernoratesData(shippingCostsData);
+        // setSelectedGovernorate(null);
       }
     } else {
       console.log('no cart');
       updateGovernoratesData([]);
+      // setSelectedGovernorate(null);
     }
+
+    return () => {
+      updateGovernoratesData([]);
+      setSelectedGovernorate(null);
+      setCouponData(null);
+    };
   }, [cart]);
+
+  // // To make governate select button has no selection when the cart is updated
+  // useEffect(() => {
+  //   if (!selectedGovernorate) {
+  //     form.setFieldValue('shippingDetailsGovernorate', undefined);
+  //   }
+  // }, [cart, selectedGovernorate]);
 
   // console.log(JSON.stringify(governoratesData));
   // console.log('addresses', addressesData);
@@ -921,7 +956,6 @@ function OrderInfo({
           // paymentMethod: 'card',
           paymentMethod: 'cash_on_delivery',
           billingMethod: 'same'
-          // Apply default Address if found
         }}
       >
         {/* Deliver Section */}

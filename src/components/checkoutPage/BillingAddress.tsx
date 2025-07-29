@@ -54,6 +54,7 @@ function BillingAddress({
           <AddressFormItems
             name='billingDetails'
             hidden={false}
+            updateShippingCostsData={false}
             // shippingCostData={shippingCostData}
           />
         : <></>

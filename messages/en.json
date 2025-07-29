@@ -343,7 +343,7 @@
         "addressCreationError": "Failed to create address",
         "guestUserError": "Failed to create guest user data",
         "orderCreationError": "Failed to create a new order",
-        "addressNotFoundError": "Delivery address was not added. Please try again or check the entered information.",
+        "addressNotFoundError": "Please select a governorate name. If the issue persists, try refreshing the page.",
         "successMessage": "Loading finished",
         "generalError": "An error occurred during checkout. Please try removing all items from your cart and refreshing the page. If the issue persists, don't hesitate to contact us for assistance.",
         "invalidProduct": "One or more product in your cart are invalid. Please update or remove the product.",

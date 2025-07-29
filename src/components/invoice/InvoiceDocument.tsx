@@ -225,10 +225,13 @@ export function InvoiceDocument({
               } ${billTo?.address_2 ? ` - ${billTo?.address_2}` : ''}`}
             </Text>
             <Text style={styles.billToAddress}>
-              {`${typeof billTo?.building === 'string' ? `Building: ${billTo.building}` : ''} ${typeof billTo?.floor === 'string' ? ` - Floor: ${billTo?.floor}` : ''} ${
-                typeof billTo?.apartment === 'number' ?
-                  ` - Apartment: ${billTo?.apartment}`
-                : ''
+              {`Building: ${typeof billTo?.building === 'string' && billTo?.building !== 'undefined' ? `${billTo.building}` : 'N/A'} - Floor: ${typeof billTo?.floor === 'string' && billTo?.floor !== 'undefined' ? `${billTo?.floor}` : 'N/A'} - Apartment: ${
+                (
+                  typeof billTo?.apartment === 'number' &&
+                  billTo?.apartment !== 0
+                ) ?
+                  `${billTo?.apartment}`
+                : 'N/A'
               }`}
             </Text>
             <Text style={styles.billToAddress}>
