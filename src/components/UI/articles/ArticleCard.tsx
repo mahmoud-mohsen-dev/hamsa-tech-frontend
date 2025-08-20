@@ -47,7 +47,7 @@ function ArticleCard({
   const locale = useLocale();
   const t = useTranslations('HomePage.articles');
   return (
-    <div className='article-card overflow-hidden shadow-featured'>
+    <div className='article-card grid min-h-full grid-rows-[auto_1fr_auto] overflow-hidden shadow-featured'>
       <div>
         <img
           src={imgSrc}
@@ -98,7 +98,7 @@ function ArticleCard({
           })}
         </div>
         <Link href={articleUrl}>
-          <h2 className='my-4 text-lg font-medium text-black-medium transition-colors duration-200 hover:text-blue-950'>
+          <h2 className='my-4 min-h-[56px] text-lg font-medium text-black-medium transition-colors duration-200 hover:text-blue-950'>
             {content.title}
           </h2>
         </Link>
