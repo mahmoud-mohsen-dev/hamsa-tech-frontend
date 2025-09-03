@@ -107,7 +107,7 @@ const itemsWhenLoggedOut: ({
 
 const ProfileDropdownMenu: React.FC = () => {
   const t = useTranslations('HomePage.Header');
-  const { userId, setUserId } = useUser();
+  const { userId, setUserId, setAddressesData } = useUser();
   const router = useRouter(); // Initialize useRouter
   const [items, setItems] = React.useState<MenuProps['items']>(
     itemsWhenLoggedOut({
@@ -121,6 +121,7 @@ const ProfileDropdownMenu: React.FC = () => {
     e.preventDefault();
     removeCookie('token');
     setUserId(null);
+    setAddressesData(null);
     router.push('/signin'); // Use router to redirect to the login page
   };
 

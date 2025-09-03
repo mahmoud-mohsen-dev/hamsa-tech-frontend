@@ -782,6 +782,13 @@ export const handleShippingAddresses = async ({
 }) => {
   try {
     setIsAddressIsLoading(true);
+    const userId = getIdFromToken();
+
+    if (!userId) {
+      setAddressesData(null);
+      return null;
+    }
+
     const { addressesData, addressesError } =
       await getUserAddressesAuthenticated();
     if (addressesError || !addressesData) {

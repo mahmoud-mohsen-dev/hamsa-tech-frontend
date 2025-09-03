@@ -42,7 +42,7 @@ import {
 } from '@/services/handleAddresses';
 import { validateOrder } from '@/utils/cartUtils';
 import { useEffect, useState } from 'react';
-import { getShippingCosts } from '@/services/getShippingCostsData';
+import { getShippingCosts } from '@/services/calculateShippingCostsData';
 import Addresses from '@/app/[locale]/account/addresses/page';
 import { v4 } from 'uuid';
 
@@ -825,42 +825,60 @@ function OrderInfo({
 
   // if the user logged in and there was at least an address find the default address and update selected governorate to it and if there is a reload on the cart and addresses changed update the selected governorate to the default address
   useEffect(() => {
-    if (
+    console.log('=_OrederInfo_='.repeat(20));
+    console.log('governoratesData', governoratesData);
+    console.log('cart', cart);
+    console.log('addressesData', addressesData);
+    console.log('defaultActiveAddressData', defaultActiveAddressData);
+    console.log(
+      'is user has addresses and cart has at least one item and defaultActiveAddressData is not null and addressesData is an array and addressesData has at least one item',
       cart.length > 0 &&
-      Array.isArray(addressesData) &&
-      addressesData.length > 0 &&
-      defaultActiveAddressData
-    ) {
-      setSelectedGovernorate(
-        governoratesData.find(
-          (governorate) =>
-            (governorate?.zone_name_in_arabic &&
-              governorate.zone_name_in_arabic ===
-                defaultActiveAddressData?.delivery_zone
-                  ?.zone_name_in_arabic) ||
-            (governorate?.zone_name_in_english &&
-              governorate.zone_name_in_english ===
-                defaultActiveAddressData?.delivery_zone
-                  ?.zone_name_in_english)
-        ) ?? null
-      );
+        Array.isArray(addressesData) &&
+        addressesData.length > 0 &&
+        defaultActiveAddressData
+    );
+    console.log('=_OrederInfo_='.repeat(20));
+
+    const userId = getIdFromToken();
+
+    if (userId) {
+      if (
+        cart.length > 0 &&
+        Array.isArray(addressesData) &&
+        addressesData.length > 0 &&
+        defaultActiveAddressData
+      ) {
+        setSelectedGovernorate(
+          governoratesData.find(
+            (governorate) =>
+              (governorate?.zone_name_in_arabic &&
+                governorate.zone_name_in_arabic ===
+                  defaultActiveAddressData?.delivery_zone
+                    ?.zone_name_in_arabic) ||
+              (governorate?.zone_name_in_english &&
+                governorate.zone_name_in_english ===
+                  defaultActiveAddressData?.delivery_zone
+                    ?.zone_name_in_english)
+          ) ?? null
+        );
+      }
+    } else {
+      if (cart.length > 0) {
+        setSelectedGovernorate(
+          governoratesData.find(
+            (governorate) =>
+              (governorate?.zone_name_in_arabic &&
+                governorate.zone_name_in_arabic ===
+                  selectedGovernorate?.zone_name_in_arabic) ||
+              (governorate?.zone_name_in_english &&
+                governorate.zone_name_in_english ===
+                  selectedGovernorate?.zone_name_in_english)
+          ) ?? null
+        );
+      } else {
+        setSelectedGovernorate(null);
+      }
     }
-    if (cart.length > 0) {
-      setSelectedGovernorate(
-        governoratesData.find(
-          (governorate) =>
-            (governorate?.zone_name_in_arabic &&
-              governorate.zone_name_in_arabic ===
-                selectedGovernorate?.zone_name_in_arabic) ||
-            (governorate?.zone_name_in_english &&
-              governorate.zone_name_in_english ===
-                selectedGovernorate?.zone_name_in_english)
-        ) ?? null
-      );
-    }
-    // else {
-    //   setSelectedGovernorate(null);
-    // }
   }, [
     cart,
     governoratesData,

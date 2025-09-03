@@ -226,6 +226,11 @@ function AddressFormItems({
               governoratesData,
               locale
             )}
+            // value={
+            //   locale === 'ar' ?
+            //     selectedGovernorate?.zone_name_in_arabic || 'أخري'
+            //   : selectedGovernorate?.zone_name_in_english || 'Other'
+            // }
             onChange={(value: string) => {
               if (updateShippingCostsData) {
                 governoratesData.map((item) => {

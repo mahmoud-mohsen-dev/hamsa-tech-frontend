@@ -142,7 +142,7 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     };
 
     handleRequests();
-  }, [cartId, wishlistId]);
+  }, [cartId, userId, wishlistId]);
 
   return (
     <header

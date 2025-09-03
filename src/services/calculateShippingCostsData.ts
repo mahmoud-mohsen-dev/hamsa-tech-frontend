@@ -21,18 +21,38 @@ function calculateTotalFees(
 
   return feeComponentData.reduce((acc, cur) => {
     const includeTheFee =
-      cur?.include_the_fee_in_total_shipping_cost ?? false;
+      (
+        typeof cur?.include_the_fee_in_total_shipping_cost ===
+          'boolean' && cur?.include_the_fee_in_total_shipping_cost
+      ) ?
+        true
+      : false;
     const minOrderPrice =
       cur?.minimum_total_order_price_to_apply_fee ?? 0;
     const addBaseFeesToTotalIncrementFee =
-      cur?.add_base_fees_to_total_increment_fee ?? false;
+      (
+        typeof cur?.add_base_fees_to_total_increment_fee ===
+          'boolean' && cur?.add_base_fees_to_total_increment_fee
+      ) ?
+        true
+      : false;
     const incrementAmount = cur?.money_increment_amount ?? 0;
     const extraFeePerIncrement =
       cur?.fixed_extra_fee_per_increment ?? 0;
     const fixedFee = cur?.fixed_fee_amount ?? 0;
     const percentageFee = cur?.percentage_based_fee ?? 0;
     const VAT = cur?.VAT ?? 0;
-    const useDifference = cur?.apply_difference_based_fee ?? true;
+    const useDifference =
+      (
+        typeof cur?.apply_difference_based_fee === 'boolean' &&
+        cur?.apply_difference_based_fee
+      ) ?
+        true
+      : false;
+
+    console.log(
+      `{includeTheFee: ${includeTheFee}, minOrderPrice: ${minOrderPrice},addBaseFeesToTotalIncrementFee: ${addBaseFeesToTotalIncrementFee}, incrementAmount: ${incrementAmount}, extraFeePerIncrement: ${extraFeePerIncrement}, fixedFee: ${fixedFee}, percentageFee: ${percentageFee}, VAT: ${VAT}, useDifference: ${useDifference}}`
+    );
 
     let totalFee = 0;
 
@@ -43,23 +63,34 @@ function calculateTotalFees(
         difference / incrementAmount
       : 0;
 
+    console.log(
+      `{difference: ${difference}, increments: ${increments}}`
+    );
+
     if (includeTheFee && totalOrderCost > minOrderPrice) {
-      if (increments === 0 && !addBaseFeesToTotalIncrementFee) {
+      // if (increments === 0 && !addBaseFeesToTotalIncrementFee) {
+      if (increments <= 0) {
         totalFee = 0;
       } else if (increments > 0) {
         const totalIncrements = Math.ceil(increments);
-        const incrementFee = totalIncrements * extraFeePerIncrement;
+        const totalIncrementFees =
+          totalIncrements * extraFeePerIncrement;
 
         const netFees =
           (addBaseFeesToTotalIncrementFee ?
             fixedFee + (totalOrderCost * percentageFee) / 100
-          : 0) + incrementFee;
+          : 0) + totalIncrementFees;
 
         totalFee = netFees + (netFees * VAT) / 100;
+        console.log(
+          `totalIncrements: ${totalIncrements},totalIncrementFees: ${totalIncrementFees},netFees: ${netFees}, totalFee: ${totalFee}`
+        );
       } else {
         const netFees =
           fixedFee + (totalOrderCost * percentageFee) / 100;
         totalFee = netFees + (netFees * VAT) / 100;
+
+        console.log(`netFees: ${netFees}, totalFee: ${totalFee}`);
       }
 
       return acc + totalFee;
@@ -145,6 +176,7 @@ export const getShippingCosts = ({
   totalOrderCost: number;
   cart: CartDataType[] | null;
 }): ShippingCostsDataType[] => {
+  console.log('-*/*-'.repeat(10));
   return (
       Array.isArray(shippingCompanyData?.delivery_zones) &&
         shippingCompanyData?.delivery_zones.length > 0

@@ -47,6 +47,7 @@ function CheckoutCart() {
   const subTotalCost = calculateSubTotalCartCost();
 
   const deliveryCost = calculateDeliveryCost();
+  console.log('deliveryCost @checkout cart', deliveryCost);
   const checkIfApplyFreeShippingEnabled =
     isApplyFreeShippingEnabled();
 
