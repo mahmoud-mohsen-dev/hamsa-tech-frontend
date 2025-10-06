@@ -112,3 +112,24 @@ export type updateCartResponseType = {
   };
   error: string | null;
 };
+
+export type UpdateCartWithUserIdOrGuestIdResponseType = {
+  data: {
+    updateCart: {
+      data: {
+        id: string;
+        attributes: {
+          guest_user: {
+            data: string | null;
+          } | null;
+          users_permissions_user: {
+            data: {
+              id: string | null;
+            } | null;
+          };
+        };
+      } | null;
+    };
+  };
+  error: string | null;
+};

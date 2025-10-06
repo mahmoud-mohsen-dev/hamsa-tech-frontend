@@ -2,14 +2,16 @@ import {
   CartDataType,
   CreateCartResponseType,
   GetCartResponseType,
-  GetUserCartIdResponseType
+  GetUserCartIdResponseType,
+  UpdateCartWithUserIdOrGuestIdResponseType
 } from '@/types/cartResponseTypes';
 import {
   createCartQuery,
   deleteCartQuery,
   emptyCartQuery,
   getCartQuery,
-  getUserCartIdQuery
+  getUserCartIdQuery,
+  updateCartWithUserIdOrQuestIdQuery
 } from './headerQueries';
 import {
   aggregateCartItems,
@@ -61,15 +63,20 @@ export const clearCartAndId = ({
 };
 
 export const createCart = async ({
-  setCartId
+  setCartId,
+  setIsCartCheckoutLoading,
+  setCart,
+  setTotalCartCost
 }: {
-  setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
   setCartId: React.Dispatch<React.SetStateAction<string | null>>;
+  setIsCartCheckoutLoading: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
   setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
-  retryCount?: number;
-  maxRetries?: number;
 }): Promise<{ data: string | null; error: string | null }> => {
   try {
+    setIsCartCheckoutLoading(true);
     const cartId = getCookie('cartId');
 
     if (cartId) return { data: cartId, error: null };
@@ -88,11 +95,26 @@ export const createCart = async ({
     }
   } catch (error) {
     console.error('Failed to create cart', error);
+    await removeCart({
+      setCart,
+      setCartId,
+      setTotalCartCost
+    });
+
+    // await createCart({
+    //   setCartId,
+    //   setIsCartCheckoutLoading,
+    //   setCart,
+    //   setTotalCartCost
+    // });
+
     return {
       data: null,
       error: 'Failed to create cart'
     };
     // }
+  } finally {
+    setIsCartCheckoutLoading(false);
   }
 };
 
@@ -101,10 +123,7 @@ export const fetchCartData = async ({
   locale,
   setCart,
   setTotalCartCost,
-  setIsCartCheckoutLoading,
-  setCartId,
-  retryCount = 0,
-  maxRetries = 3
+  setIsCartCheckoutLoading
 }: {
   cartId: string | null;
   locale: string;
@@ -113,9 +132,6 @@ export const fetchCartData = async ({
   setIsCartCheckoutLoading: React.Dispatch<
     React.SetStateAction<boolean>
   >;
-  setCartId: React.Dispatch<React.SetStateAction<string | null>>;
-  retryCount?: number;
-  maxRetries?: number;
 }): Promise<{
   data: {
     cart: CartDataType[];
@@ -123,6 +139,7 @@ export const fetchCartData = async ({
   } | null;
   error: string | null;
 }> => {
+  console.log('🟢 fetchUserCartData start');
   if (!cartId) {
     throw new Error('No cart id found');
   }
@@ -168,6 +185,7 @@ export const fetchCartData = async ({
   } finally {
     setIsCartCheckoutLoading(false);
   }
+  console.log('🟢 fetchUserCartData end');
 };
 
 export const fetchUserCartData = async ({
@@ -175,7 +193,8 @@ export const fetchUserCartData = async ({
   setCart,
   setTotalCartCost,
   setIsCartCheckoutLoading,
-  setCartId
+  setCartId,
+  logout
 }: {
   locale: string;
   setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
@@ -184,6 +203,11 @@ export const fetchUserCartData = async ({
     React.SetStateAction<boolean>
   >;
   setCartId: React.Dispatch<React.SetStateAction<string | null>>;
+  logout: ({
+    setCartId
+  }?: {
+    setCartId?: React.Dispatch<React.SetStateAction<string | null>>;
+  }) => void;
 }): Promise<{
   data: {
     cart: CartDataType[];
@@ -197,6 +221,7 @@ export const fetchUserCartData = async ({
     const userId = getIdFromToken();
 
     if (!userId) {
+      logout();
       throw new Error('No user ID found in token');
     }
 
@@ -208,20 +233,134 @@ export const fetchUserCartData = async ({
       await fetchGraphqlServerWebAuthenticated(
         getUserCartIdQuery(userId)
       );
-    const userCartId =
+    let userCartId =
       userCartIdData?.usersPermissionsUsers?.data?.[0]?.attributes
         ?.cart?.data?.id ?? null;
 
     if (userCartIdError || !userCartId) {
-      console.error(
+      const cartId = getCookie('cartId');
+      const guestUserId = getCookie('guestUserId');
+
+      console.log(
         'Error occurred while fetching user cart:',
         userCartIdError ?? null
       );
-      console.error(userCartIdError ?? null);
-      console.error('userCartId:', userCartId ?? null);
-      throw new Error(
-        userCartIdError ?? 'Error occurred while fetching user cart'
+      console.log(
+        'No user ID was found in fetched cart ID:',
+        cartId ?? null
       );
+
+      // Update cart with user ID or guest ID if available when cart has no user ID
+      if (cartId) {
+        console.log('Updating cart with user ID...', userId);
+        const {
+          data: updatedCartData,
+          error: updatedCartError
+        }: UpdateCartWithUserIdOrGuestIdResponseType =
+          await fetchGraphqlServerWebAuthenticated(
+            updateCartWithUserIdOrQuestIdQuery(
+              cartId,
+              userId,
+              guestUserId
+            )
+          );
+
+        const responseUpdatedCartUserId =
+          updatedCartData?.updateCart?.data?.attributes
+            ?.users_permissions_user.data?.id ?? null;
+
+        const responseUpdatedUserCartId =
+          updatedCartData?.updateCart?.data?.id ?? null;
+
+        if (
+          updatedCartError ||
+          !responseUpdatedCartUserId ||
+          !responseUpdatedUserCartId
+        ) {
+          console.log(
+            'Error occurred while updating cart with user ID:',
+            updatedCartError ?? null
+          );
+          // throw new Error(
+          //   updatedCartError ??
+          //     'Error occurred while updating cart @fetchUserCartData'
+          // );
+          return {
+            data: { cart: [], totalCartCost: 0 },
+            error:
+              'Error occurred while updating cart @fetchUserCartData'
+          };
+        }
+
+        userCartId = responseUpdatedUserCartId;
+        console.log(
+          'Updated cart with user ID:',
+          responseUpdatedUserCartId
+        );
+      } else {
+        console.log('No cart ID found, creating new cart...');
+        await removeCart({
+          setCart,
+          setCartId,
+          setTotalCartCost
+        });
+
+        const { data: responseCartId } = await createCart({
+          setCartId,
+          setIsCartCheckoutLoading,
+          setCart,
+          setTotalCartCost
+        });
+
+        if (responseCartId) {
+          const {
+            data: updatedCartData,
+            error: updatedCartError
+          }: UpdateCartWithUserIdOrGuestIdResponseType =
+            await fetchGraphqlServerWebAuthenticated(
+              updateCartWithUserIdOrQuestIdQuery(
+                responseCartId,
+                userId,
+                guestUserId
+              )
+            );
+
+          const responseUpdatedCartUserId =
+            updatedCartData?.updateCart?.data?.attributes
+              ?.users_permissions_user.data?.id ?? null;
+
+          const responseUpdatedUserCartId =
+            updatedCartData?.updateCart?.data?.id ?? null;
+
+          if (
+            updatedCartError ||
+            !responseUpdatedCartUserId ||
+            !responseUpdatedUserCartId
+          ) {
+            console.log(
+              'Error occurred while updating cart with user ID:',
+              updatedCartError ?? null
+            );
+            throw new Error(
+              updatedCartError ??
+                'Error occurred while updating cart @fetchUserCartData'
+            );
+          }
+
+          userCartId = responseUpdatedUserCartId;
+
+          console.log(
+            'Updated cart with user cart ID:',
+            responseUpdatedUserCartId
+          );
+        }
+      }
+
+      if (!userCartId) {
+        throw new Error(
+          userCartIdError ?? 'Error occurred while fetching user cart'
+        );
+      }
     }
 
     console.log('userCartId:', userCartId);
@@ -233,8 +372,8 @@ export const fetchUserCartData = async ({
         locale,
         setCart,
         setTotalCartCost,
-        setIsCartCheckoutLoading,
-        setCartId
+        setIsCartCheckoutLoading
+        // setCartId
         // retryCount,
         // maxRetries
       });

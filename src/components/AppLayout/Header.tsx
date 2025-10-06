@@ -29,6 +29,7 @@ import { createWishlistInTheBackend } from '@/services/wishlist';
 import useWishlist from '@/hooks/useWishlist';
 import { useSyncAuth } from '@/hooks/useSyncAuth';
 import { useSyncAcrossTabs } from '@/hooks/useSyncAcrossTabs';
+import { CartDataType } from '@/types/cartResponseTypes';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -52,23 +53,35 @@ function Header({ navLinks, productsSubNav }: PropsType) {
   } = useMyContext();
   const [wishlistId, setWishlistId] = useState<string | null>(null);
   const [linkHovered, setLinkHovered] = useState('');
-  const { userId, setAddressesData } = useUser();
+  const { userId, setAddressesData, logout } = useUser();
   const locale = useLocale();
   const defaultValue = locale;
   const pathname = usePathname();
   const t = useTranslations('HomePage.Header');
 
   const fetchCart = async () => {
+    console.log('🔵 fetchCart start', { userId, cartId });
+    let result: {
+      data:
+        | { cart: CartDataType[]; totalCartCost: number }
+        | string
+        | null;
+      error: string | null;
+    } = {
+      data: { cart: [], totalCartCost: 0 },
+      error: 'fetchCart failed'
+    };
     if (userId) {
       // console.log('userId in fetchCart', userId);
       console.log('fetchUserCartData was called, userId:', userId);
       // Logged in → fetch server cart
-      return await fetchUserCartData({
+      result = await fetchUserCartData({
         locale,
         setCart,
         setTotalCartCost,
         setIsCartCheckoutLoading,
-        setCartId
+        setCartId,
+        logout
       });
     }
 
@@ -77,13 +90,13 @@ function Header({ navLinks, productsSubNav }: PropsType) {
 
       console.log('fetchCartData was called, cartId:', cartId);
       // Guest with cartId → fetch guest cart
-      return await fetchCartData({
+      result = await fetchCartData({
         cartId,
         locale,
         setCart,
         setTotalCartCost,
-        setIsCartCheckoutLoading,
-        setCartId
+        setIsCartCheckoutLoading
+        // setCartId
       });
     }
 
@@ -91,7 +104,16 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     console.log('createCart was called');
 
     // Guest without cart → create new cart
-    return await createCart({ setCart, setCartId, setTotalCartCost });
+    // return await createCart({ setCart, setCartId, setTotalCartCost });
+    result = await createCart({
+      setCartId,
+      setIsCartCheckoutLoading,
+      setCart,
+      setTotalCartCost
+    });
+
+    console.log('🔵 fetchCart end');
+    return result;
   };
 
   console.log('USERID', userId);
@@ -187,6 +209,8 @@ function Header({ navLinks, productsSubNav }: PropsType) {
 
     handleRequests();
   }, [cartId, userId, wishlistId]);
+
+  console.log('cartIsValidating', cartIsValidating);
 
   return (
     <header

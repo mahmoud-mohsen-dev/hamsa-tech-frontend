@@ -24,6 +24,7 @@ import { getIdFromToken, setCookie } from '@/utils/cookieUtils';
 import { useUser } from '@/context/UserContext';
 import { capitalize } from '@/utils/helpers';
 import { useMyContext } from '@/context/Store';
+import { Router } from 'next/router';
 const { Option } = Select;
 
 const signupQUery = ({
@@ -85,7 +86,7 @@ function SignupForm() {
   const e = useTranslations('CheckoutPage.content');
   const router = useRouter();
   const [form] = useForm();
-  const { setUserId } = useUser();
+  const { setUserId, login } = useUser();
   const locale = useLocale();
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
@@ -182,12 +183,10 @@ function SignupForm() {
           return;
         }
 
-        setSuccessMessage(
-          t(
-            'successfulRegistrationMessage'
-          )
-        );
-        router.push('/products');
+        setSuccessMessage(t('successfulRegistrationMessage'));
+        login({ isSignedUp: true });
+
+        // router.push('/products');
       } catch (error) {
         console.log(error);
       } finally {
@@ -418,9 +417,7 @@ function SignupForm() {
               rules={[
                 {
                   required: true,
-                  message: t(
-                    'selectCountryCode'
-                  )
+                  message: t('selectCountryCode')
                 }
               ]}
             >

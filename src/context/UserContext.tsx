@@ -27,7 +27,7 @@ const UserContext = createContext<null | {
   }?: {
     setCartId?: React.Dispatch<React.SetStateAction<string | null>>;
   }) => void;
-  login: () => void;
+  login: ({ isSignedUp }?: { isSignedUp?: boolean }) => void;
 }>(null);
 
 export const UserProvider = ({
@@ -71,11 +71,19 @@ export const UserProvider = ({
     router.push('/signin');
   };
 
-  const login = () => {
+  const login = ({
+    isSignedUp = false
+  }: {
+    isSignedUp?: boolean;
+  } = {}) => {
     // 2. Notify other tabs
     localStorage.setItem('signin', Date.now().toString());
 
-    router.push('/products');
+    if (isSignedUp) {
+      window.location.pathname = '/products';
+    } else {
+      router.push('/products');
+    }
   };
 
   return (

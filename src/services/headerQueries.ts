@@ -12,14 +12,27 @@ export const createCartQuery = () => {
   }`;
 };
 
-export const updateCartWithUserIdQuery = (
+export const updateCartWithUserIdOrQuestIdQuery = (
   cartId: string,
-  userId: string
+  userId?: string | null,
+  guestUserId?: string | null
 ) => {
   return `mutation {
-        updateCart(id: ${cartId}, data: { userId: ${userId ? `"${userId}"` : null} }) {
+        updateCart(id: ${cartId}, data: { users_permissions_user: ${userId ? `"${userId}"` : null} , guest_user: ${guestUserId ? `"${guestUserId}"` : null} }) {
             data {
                 id
+                attributes {
+                    guest_user {
+                        data {
+                            id
+                        }
+                    }
+                    users_permissions_user {
+                        data {
+                            id
+                        }
+                    }
+                }
             }
         }
     }`;
