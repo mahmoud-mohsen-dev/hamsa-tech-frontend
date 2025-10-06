@@ -40,6 +40,8 @@ const MyContext = createContext<{
   setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
   drawerIsLoading: boolean;
   setDrawerIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  cartId: string | null;
+  setCartId: React.Dispatch<React.SetStateAction<string | null>>;
   cart: CartDataType[];
   findProductInCart: (
     productId: string | null
@@ -169,6 +171,7 @@ export const StoreContextProvider = ({
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [drawerIsLoading, setDrawerIsLoading] =
     useState<boolean>(false);
+  const [cartId, setCartId] = useState<string | null>(null);
   const [cart, setCart] = useState<CartDataType[]>([]);
   const [totalCartCost, setTotalCartCost] = useState(0);
   const [addToCartIsLoading, setAddToCartIsLoading] =
@@ -227,12 +230,8 @@ export const StoreContextProvider = ({
     > | null;
   }) => {
     const cartId = getCartIdFromCookie() || ''; // Assuming you have a function to get the cartId
-    // console.log('productInfo', productInfo);
-    // console.log('quantity', quantity);
     try {
       if (!!setComponentLoader) {
-        // console.log('setComponentLoader');
-        // console.log(!!setComponentLoader);
         setComponentLoader(true);
       }
       setAddToCartIsLoading(productInfo?.id ?? '');
@@ -270,6 +269,8 @@ export const StoreContextProvider = ({
         setComponentLoader(false);
       }
       setAddToCartIsLoading('');
+      // When cart changes in *any* tab (e.g., after add/remove):
+      localStorage.setItem('cart-updated', Date.now().toString());
     }
   };
 
@@ -457,6 +458,8 @@ export const StoreContextProvider = ({
         setOpenDrawer,
         drawerIsLoading,
         setDrawerIsLoading,
+        cartId,
+        setCartId,
         cart,
         setCart,
         findProductInCart,

@@ -975,7 +975,7 @@ function OrderInfo({
         }}
       >
         {/* Deliver Section */}
-        <Contact isPageLoading={isPageLoading} />
+        {!userId && <Contact isPageLoading={isPageLoading} />}
         {/* Deliver Section */}
         {isPageLoading ?
           <Skeleton.Node

@@ -3,11 +3,9 @@ import React, { useEffect } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Dropdown } from 'antd';
-// import { FiLogOut } from 'react-icons/fi';
 import { FaSignInAlt } from 'react-icons/fa';
 import { CgProfile } from 'react-icons/cg';
 import { Link, useRouter } from '@/navigation';
-import { removeCookie } from '@/utils/cookieUtils';
 import { useTranslations } from 'next-intl';
 import { useUser } from '@/context/UserContext';
 
@@ -21,6 +19,7 @@ interface LoggedOutProps {
   account: string;
   // profile: string;
   signIn: string;
+  onClick: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
 const itemsWhenLoggedIn: ({
@@ -78,7 +77,8 @@ const itemsWhenLoggedOut: ({
 }: LoggedOutProps) => MenuProps['items'] = ({
   account,
   // profile,
-  signIn
+  signIn,
+  onClick
 }) => {
   return [
     {
@@ -93,36 +93,46 @@ const itemsWhenLoggedOut: ({
     {
       key: '2',
       label: (
-        <Link
-          href='/signin'
+        <a
+          onClick={onClick}
           className='when-logged-out-list-item flex items-center gap-3'
         >
           <FaSignInAlt size={14} />
           <span>{signIn}</span>
-        </Link>
+        </a>
       )
     }
   ];
 };
 
-const ProfileDropdownMenu: React.FC = () => {
+const ProfileDropdownMenu = () => {
+  const { userId, logout } = useUser();
   const t = useTranslations('HomePage.Header');
-  const { userId, setUserId, setAddressesData } = useUser();
   const router = useRouter(); // Initialize useRouter
+
+  const handleLogin: React.MouseEventHandler<HTMLAnchorElement> = (
+    e
+  ) => {
+    e.preventDefault();
+
+    router.push('/signin');
+  };
+
   const [items, setItems] = React.useState<MenuProps['items']>(
     itemsWhenLoggedOut({
       account: t('accountLabel'),
       // profile: t('profileLabel'),
-      signIn: t('signinLabel')
+      signIn: t('signinLabel'),
+      onClick: handleLogin
     })
   );
 
-  const logout: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
+  const handleLogout: React.MouseEventHandler<HTMLAnchorElement> = (
+    e
+  ) => {
     e.preventDefault();
-    removeCookie('token');
-    setUserId(null);
-    setAddressesData(null);
-    router.push('/signin'); // Use router to redirect to the login page
+
+    logout();
   };
 
   useEffect(() => {
@@ -132,15 +142,15 @@ const ProfileDropdownMenu: React.FC = () => {
           account: t('accountLabel'),
           profile: t('profileLabel'),
           signOut: t('signoutLabel'),
-          onClick: logout
+          onClick: handleLogout
         })
       );
     } else {
       setItems(
         itemsWhenLoggedOut({
           account: t('accountLabel'),
-          // profile: t('profileLabel'),
-          signIn: t('signinLabel')
+          signIn: t('signinLabel'),
+          onClick: handleLogin
         })
       );
     }

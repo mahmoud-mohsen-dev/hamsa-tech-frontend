@@ -12,7 +12,53 @@ export const createCartQuery = () => {
   }`;
 };
 
-export const getCartQuery = (cartId: number) => {
+export const updateCartWithUserIdQuery = (
+  cartId: string,
+  userId: string
+) => {
+  return `mutation {
+        updateCart(id: ${cartId}, data: { userId: ${userId ? `"${userId}"` : null} }) {
+            data {
+                id
+            }
+        }
+    }`;
+};
+
+export const getUserCartIdQuery = (userId: string) => {
+  return `query UsersPermissionsUsers {
+        usersPermissionsUsers(filters: { id: { eq: "${userId}" } }) {
+            data {
+                id
+                attributes {
+                    cart {
+                        data {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+    }`;
+};
+
+export const getGuestUserCartIdQuery = (userId: string) => {
+  return `query GuestUser {
+        guestUser(id: "${userId}") {
+            data {
+                attributes {
+                    cart {
+                        data {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+    }`;
+};
+
+export const getCartQuery = (cartId: string) => {
   return `{
     cart(id: ${cartId}) {
         data {
@@ -71,6 +117,26 @@ export const getCartQuery = (cartId: number) => {
                     }
                 }
             }
+        }
+    }
+  }`;
+};
+
+export const emptyCartQuery = (cartId: string | null) => {
+  return `mutation {
+    updateCart(id: ${cartId ? `"${cartId}"` : null}, data: { product_details: [], total_cart_cost: 0 }) {
+      data {
+        id
+      }
+    }
+  }`;
+};
+
+export const deleteCartQuery = (cartId: string | null) => {
+  return `mutation DeleteCart {
+    deleteCart(id: ${cartId ? `"${cartId}"` : null}) {
+        data {
+            id
         }
     }
   }`;

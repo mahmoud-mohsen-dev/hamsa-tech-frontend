@@ -18,7 +18,10 @@ export async function fetchGraphqlServerWebAuthenticated(
     }
   );
 
+  console.log('response', JSON.stringify(response));
+
   const data = await response.json();
+  console.log('data', JSON.stringify(data));
   return {
     data: data?.data || null,
     error: data?.errors ? data?.errors[0].message || null : null

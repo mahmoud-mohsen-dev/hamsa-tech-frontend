@@ -1,20 +1,30 @@
 import {
   CartDataType,
   CreateCartResponseType,
-  GetCartResponseType
+  GetCartResponseType,
+  GetUserCartIdResponseType
 } from '@/types/cartResponseTypes';
-import { fetchGraphqlClient } from './graphqlCrud';
-import { createCartQuery, getCartQuery } from './headerQueries';
+import {
+  createCartQuery,
+  deleteCartQuery,
+  emptyCartQuery,
+  getCartQuery,
+  getUserCartIdQuery
+} from './headerQueries';
 import {
   aggregateCartItems,
   modifyCartDataByLocale
 } from '@/utils/cartContextUtils';
 import {
+  getCookie,
+  getIdFromToken,
   removeCartIdFromCookie,
-  setCartIdInCookie
+  setCartIdInCookie,
+  setCookie
 } from '@/utils/cookieUtils';
+import { fetchGraphqlServerWebAuthenticated } from './graphqlCrudServerOnly';
 
-const restCart = ({
+const resetCart = ({
   setCart,
   setTotalCartCost
 }: {
@@ -25,33 +35,64 @@ const restCart = ({
   setTotalCartCost(0);
 };
 
-export const createCart = async ({
+const removeCartIdFromApp = ({
+  setCartId
+}: {
+  setCartId?: React.Dispatch<React.SetStateAction<string | null>>;
+} = {}) => {
+  removeCartIdFromCookie();
+
+  if (typeof setCartId === 'function') {
+    setCartId(null);
+  }
+};
+
+export const clearCartAndId = ({
   setCart,
-  setCartId,
-  setTotalCartCost
+  setTotalCartCost,
+  setCartId
+}: {
+  setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
+  setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
+  setCartId?: React.Dispatch<React.SetStateAction<string | null>>;
+}) => {
+  resetCart({ setCart, setTotalCartCost });
+  removeCartIdFromApp({ setCartId });
+};
+
+export const createCart = async ({
+  setCartId
 }: {
   setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
   setCartId: React.Dispatch<React.SetStateAction<string | null>>;
   setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
-}) => {
+  retryCount?: number;
+  maxRetries?: number;
+}): Promise<{ data: string | null; error: string | null }> => {
   try {
-    restCart({ setCart, setTotalCartCost });
-    removeCartIdFromCookie();
+    const cartId = getCookie('cartId');
+
+    if (cartId) return { data: cartId, error: null };
 
     const { data, error }: CreateCartResponseType =
-      await fetchGraphqlClient(createCartQuery());
+      await fetchGraphqlServerWebAuthenticated(createCartQuery());
 
-    // if (error || !data || data.createCart.data === null)
     if (data?.createCart?.data?.id) {
       setCartIdInCookie(data.createCart.data.id);
       setCartId(data.createCart.data.id);
+
+      return { data: data.createCart.data.id, error: null };
     } else {
       console.error(error);
-      restCart({ setCart, setTotalCartCost });
-      removeCartIdFromCookie();
+      throw new Error(`Error creating cart: ${error}`);
     }
   } catch (error) {
     console.error('Failed to create cart', error);
+    return {
+      data: null,
+      error: 'Failed to create cart'
+    };
+    // }
   }
 };
 
@@ -61,9 +102,11 @@ export const fetchCartData = async ({
   setCart,
   setTotalCartCost,
   setIsCartCheckoutLoading,
-  setCartId
+  setCartId,
+  retryCount = 0,
+  maxRetries = 3
 }: {
-  cartId: number | null;
+  cartId: string | null;
   locale: string;
   setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
   setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
@@ -71,39 +114,152 @@ export const fetchCartData = async ({
     React.SetStateAction<boolean>
   >;
   setCartId: React.Dispatch<React.SetStateAction<string | null>>;
-}) => {
+  retryCount?: number;
+  maxRetries?: number;
+}): Promise<{
+  data: {
+    cart: CartDataType[];
+    totalCartCost: number;
+  } | null;
+  error: string | null;
+}> => {
   if (!cartId) {
-    restCart({ setCart, setTotalCartCost });
-    return;
+    throw new Error('No cart id found');
   }
+
+  setIsCartCheckoutLoading(true);
+
   try {
-    setIsCartCheckoutLoading(true);
     const { data, error }: GetCartResponseType =
-      await fetchGraphqlClient(getCartQuery(cartId));
+      await fetchGraphqlServerWebAuthenticated(getCartQuery(cartId));
 
     if (error || !data || !data?.cart?.data?.id) {
-      console.error('Error fetching cart:', error);
-      throw new Error(`Error fetching cart: ${error}`);
-    } else {
-      if (data?.cart?.data?.attributes?.product_details) {
-        const updatedCartData = aggregateCartItems(
-          data.cart.data.attributes.product_details
-        );
-
-        const localeCart = modifyCartDataByLocale(
-          locale,
-          updatedCartData
-        );
-
-        setCart(localeCart);
-        setTotalCartCost(data.cart.data.attributes.total_cart_cost);
-      }
+      console.error('Invalid cart response:', error);
+      throw new Error(error ?? 'Invalid cart response');
     }
-  } catch (error) {
-    console.error('Failed to fetch cart', error);
-    restCart({ setCart, setTotalCartCost });
-    removeCartIdFromCookie();
-    createCart({ setCart, setCartId, setTotalCartCost });
+
+    const productDetails =
+      data.cart.data.attributes?.product_details ?? [];
+    const convertedCartData = aggregateCartItems(productDetails);
+    const cloudCart = modifyCartDataByLocale(
+      locale,
+      convertedCartData
+    );
+    const totalCartCost =
+      data.cart.data.attributes?.total_cart_cost ?? 0;
+
+    setCart(cloudCart);
+    setTotalCartCost(data.cart.data.attributes.total_cart_cost);
+
+    return {
+      data: {
+        cart: cloudCart,
+        totalCartCost
+      },
+      error: null
+    };
+  } catch (err) {
+    console.error('Failed to fetch cart', err);
+
+    return {
+      data: { cart: [], totalCartCost: 0 },
+      error: 'Failed to fetch or create cart'
+    };
+  } finally {
+    setIsCartCheckoutLoading(false);
+  }
+};
+
+export const fetchUserCartData = async ({
+  locale,
+  setCart,
+  setTotalCartCost,
+  setIsCartCheckoutLoading,
+  setCartId
+}: {
+  locale: string;
+  setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
+  setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
+  setIsCartCheckoutLoading: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  setCartId: React.Dispatch<React.SetStateAction<string | null>>;
+}): Promise<{
+  data: {
+    cart: CartDataType[];
+    totalCartCost: number;
+  } | null;
+  error: string | null;
+}> => {
+  try {
+    setIsCartCheckoutLoading(true);
+
+    const userId = getIdFromToken();
+
+    if (!userId) {
+      throw new Error('No user ID found in token');
+    }
+
+    // Get user’s cart ID
+    const {
+      data: userCartIdData,
+      error: userCartIdError
+    }: GetUserCartIdResponseType =
+      await fetchGraphqlServerWebAuthenticated(
+        getUserCartIdQuery(userId)
+      );
+    const userCartId =
+      userCartIdData?.usersPermissionsUsers?.data?.[0]?.attributes
+        ?.cart?.data?.id ?? null;
+
+    if (userCartIdError || !userCartId) {
+      console.error(
+        'Error occurred while fetching user cart:',
+        userCartIdError ?? null
+      );
+      console.error(userCartIdError ?? null);
+      console.error('userCartId:', userCartId ?? null);
+      throw new Error(
+        userCartIdError ?? 'Error occurred while fetching user cart'
+      );
+    }
+
+    console.log('userCartId:', userCartId);
+
+    // ✅ Reuse fetchCartData instead of duplicating logic
+    const { data: cartResponseData, error: cartResponseError } =
+      await fetchCartData({
+        cartId: userCartId,
+        locale,
+        setCart,
+        setTotalCartCost,
+        setIsCartCheckoutLoading,
+        setCartId
+        // retryCount,
+        // maxRetries
+      });
+
+    if (cartResponseError || !cartResponseData) {
+      console.error(cartResponseError);
+      throw new Error('Error occurred while fetching user cart');
+    }
+
+    console.log('cartResponseData:', cartResponseData);
+
+    setCookie('cartId', userCartId);
+    setCartId(userCartId);
+
+    return {
+      data: cartResponseData,
+      error: null
+    };
+  } catch (err) {
+    console.error('Failed to fetch user cart', err);
+
+    return {
+      data: { cart: [], totalCartCost: 0 },
+      error: 'Failed to fetch or create user cart'
+    };
   } finally {
     setIsCartCheckoutLoading(false);
   }
@@ -118,16 +274,6 @@ export const countCartItems = (cart: CartDataType[]) => {
   return 0;
 };
 
-const emptyCartQuery = (cartId: string | null) => {
-  return `mutation {
-    updateCart(id: ${cartId ? `"${cartId}"` : null}, data: { product_details: [], total_cart_cost: 0 }) {
-      data {
-        id
-      }
-    }
-  }`;
-};
-
 export const emptyCart = async ({
   cartId,
   setCart,
@@ -138,21 +284,78 @@ export const emptyCart = async ({
   setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   try {
-    const { data, error } = await fetchGraphqlClient(
+    if (!cartId) {
+      console.error('No cart id provided to emptyCart');
+      return {
+        data: null,
+        error: 'No cart id provided to emptyCart'
+      };
+    }
+
+    const { data, error } = await fetchGraphqlServerWebAuthenticated(
       emptyCartQuery(cartId)
     );
 
-    // console.log('emptycart was called, data:', data);
-    // console.log('emptycart was called, error:', error);
-    if (!data?.updateCart?.data?.id && error) {
+    if (!data?.updateCart?.data?.id || error) {
       console.error('Error occurred while emptying cart:', error);
-      return null;
+      return {
+        data: null,
+        error: 'Error occurred while emptying cart'
+      };
     }
 
-    restCart({ setCart, setTotalCartCost });
-    return data.updateCart.data.id as string;
+    resetCart({ setCart, setTotalCartCost });
+    return { data: data.updateCart.data.id as string, error: null };
   } catch (err) {
     console.error('Error emptying cart:', err);
-    return null;
+    return {
+      data: null,
+      error: 'Error occurred while emptying cart'
+    };
+  }
+};
+
+export const removeCart = async ({
+  setCart,
+  setCartId,
+  setTotalCartCost
+}: {
+  setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
+  setCartId: React.Dispatch<React.SetStateAction<string | null>>;
+  setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
+}) => {
+  try {
+    const cartId = getCookie('cartId');
+    if (!cartId) {
+      resetCart({ setCart, setTotalCartCost });
+      setCartId(null);
+
+      return {
+        data: null,
+        error: 'No cart id found'
+      };
+    }
+
+    const { data, error } = await fetchGraphqlServerWebAuthenticated(
+      deleteCartQuery(cartId)
+    );
+
+    if (!data?.deleteCart?.data?.id || error) {
+      throw new Error(`Error occurred while deleting cart: ${error}`);
+    }
+
+    return {
+      data: data.deleteCart.data.id as string,
+      error: null
+    };
+  } catch (err) {
+    console.error('Error deleting cart:', err);
+
+    return {
+      data: null,
+      error: 'Error occurred while deleting cart'
+    };
+  } finally {
+    clearCartAndId({ setCart, setTotalCartCost, setCartId });
   }
 };

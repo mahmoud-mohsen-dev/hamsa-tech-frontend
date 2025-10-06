@@ -74,7 +74,7 @@ function SettingsPage({
   const { loadingMessage } = useHandleMessagePopup();
   const { setErrorMessage, setSuccessMessage, setLoadingMessage } =
     useMyContext();
-  const { setUserId } = useUser();
+  const { setUserId, logout } = useUser();
 
   // const birthDateStamp = dayjs('2024-10-30T11:59:33.310Z').valueOf();
 
@@ -92,9 +92,10 @@ function SettingsPage({
               console.log('response', response);
               setSuccessMessage(t('messages.accountDeleted'));
 
-              removeCookie('token');
-              setUserId(null);
-              router.push('/signin');
+              // removeCookie('token');
+              // setUserId(null);
+              // router.push('/signin');
+              logout();
             })
             .catch((error) => {
               console.error(error);

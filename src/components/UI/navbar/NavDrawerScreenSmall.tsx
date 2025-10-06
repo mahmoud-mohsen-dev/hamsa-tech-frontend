@@ -67,7 +67,7 @@ function NavDrawerScreenSmall({
       ) ?? ''
     ]
   ); // State for open keys
-  const { userId, setUserId } = useUser();
+  const { userId, logout } = useUser();
   const locale = useLocale();
   const t = useTranslations('NavbarDrawer');
   const languageTranslation = useTranslations('LocaleSwitcher');
@@ -212,9 +212,10 @@ function NavDrawerScreenSmall({
           <button
             onClick={() => {
               onClose();
-              removeCookie('token');
-              setUserId(null);
-              router.push('/signin');
+              logout();
+              // removeCookie('token');
+              // setUserId(null);
+              // router.push('/signin');
             }}
             className='w-full text-start text-black-light'
           >

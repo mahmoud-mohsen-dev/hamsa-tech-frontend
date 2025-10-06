@@ -75,7 +75,7 @@ export async function fetchGraphqlServerAuthenticated(query: string) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Add token to headers if it exists
+        ...(token && { Authorization: `Bearer ${token}` }) // Add token to headers if it exists
       },
       body: JSON.stringify({
         query: query
@@ -83,9 +83,9 @@ export async function fetchGraphqlServerAuthenticated(query: string) {
     }
   );
 
+  console.log('response', response);
   const data = await response.json();
-  // console.log(response);
-  // console.log(JSON.stringify(data));
+  console.log('data', data);
   // console.log(data?.errors ?? null);
   // console.log(data?.error ?? null);
   // console.log(data.errors[0].message);

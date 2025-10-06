@@ -22,13 +22,13 @@ import { LoadingOutlined } from '@ant-design/icons';
 import {
   countCartItems,
   createCart,
-  fetchCartData
+  fetchCartData,
+  fetchUserCartData
 } from '@/services/cart';
-import {
-  createWishlistInTheBackend,
-  fetchWishlistData
-} from '@/services/wishlist';
+import { createWishlistInTheBackend } from '@/services/wishlist';
 import useWishlist from '@/hooks/useWishlist';
+import { useSyncAuth } from '@/hooks/useSyncAuth';
+import { useSyncAcrossTabs } from '@/hooks/useSyncAcrossTabs';
 
 interface PropsType {
   navLinks: NavbarLink[];
@@ -37,6 +37,8 @@ interface PropsType {
 
 function Header({ navLinks, productsSubNav }: PropsType) {
   const {
+    cartId,
+    setCartId,
     cart,
     setCart,
     setIsCartCheckoutLoading,
@@ -48,7 +50,6 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     setIsWishlistLoading,
     setIsAddressIsLoading
   } = useMyContext();
-  const [cartId, setCartId] = useState<string | null>(null);
   const [wishlistId, setWishlistId] = useState<string | null>(null);
   const [linkHovered, setLinkHovered] = useState('');
   const { userId, setAddressesData } = useUser();
@@ -57,20 +58,53 @@ function Header({ navLinks, productsSubNav }: PropsType) {
   const pathname = usePathname();
   const t = useTranslations('HomePage.Header');
 
-  const {
-    // data: cartData,
-    mutate: mutateCart,
-    isValidating: cartIsValidating
-  } = useSWR(cartId ? ['cart', cartId] : null, () =>
-    fetchCartData({
-      cartId: !isNaN(Number(cartId)) ? Number(cartId) : null,
-      locale,
-      setCart,
-      setTotalCartCost,
-      setIsCartCheckoutLoading,
-      setCartId
-    })
-  );
+  const fetchCart = async () => {
+    if (userId) {
+      // console.log('userId in fetchCart', userId);
+      console.log('fetchUserCartData was called, userId:', userId);
+      // Logged in → fetch server cart
+      return await fetchUserCartData({
+        locale,
+        setCart,
+        setTotalCartCost,
+        setIsCartCheckoutLoading,
+        setCartId
+      });
+    }
+
+    if (cartId) {
+      // console.log('cartId in fetchCart', cartId);
+
+      console.log('fetchCartData was called, cartId:', cartId);
+      // Guest with cartId → fetch guest cart
+      return await fetchCartData({
+        cartId,
+        locale,
+        setCart,
+        setTotalCartCost,
+        setIsCartCheckoutLoading,
+        setCartId
+      });
+    }
+
+    // console.log('Guest without cart in fetchCart');
+    console.log('createCart was called');
+
+    // Guest without cart → create new cart
+    return await createCart({ setCart, setCartId, setTotalCartCost });
+  };
+
+  console.log('USERID', userId);
+  const cartKey =
+    userId ? `/cart/user/${userId}?locale=${locale}`
+    : cartId ? `/cart/guest/${cartId}?locale=${locale}`
+    : `/cart/guest/new?locale=${locale}`;
+
+  // console.log(`cartKey`, cartKey);
+  const { mutate: mutateCart, isValidating: cartIsValidating } =
+    useSWR(cartKey, fetchCart);
+
+  // console.log(`tempData`, tempData);
 
   const {
     mutate: mutateWishlist,
@@ -88,12 +122,26 @@ function Header({ navLinks, productsSubNav }: PropsType) {
   // );
 
   useScrollHandler();
+  // useSyncLogout({ setCartId });
+  useSyncAuth({ setCartId });
 
   useEffect(() => {
     try {
-      setCartId(getCartIdFromCookie());
+      const cartIdFromCookie = getCartIdFromCookie();
+      setCartId(cartIdFromCookie ?? null);
+
+      let wishlistIds: Record<string, string> = {};
+
       const wishlistIdsStr = getCookie('wishlistIds');
-      const wishlistIds = JSON.parse(wishlistIdsStr ?? '');
+      if (wishlistIdsStr) {
+        try {
+          wishlistIds = JSON.parse(wishlistIdsStr);
+        } catch (e) {
+          console.error('Invalid wishlistIds cookie JSON', e);
+        }
+      }
+      // const wishlistIds = JSON.parse(wishlistIdsStr ?? '');
+
       setWishlistId(
         (
           (locale === 'ar' || locale === 'en') &&
@@ -107,20 +155,14 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     }
   }, []);
 
+  // ⚡ Revalidate cart in all tabs
+  useSyncAcrossTabs('cart-updated', () => {
+    mutateCart(); // refresh cart data in this tab
+  });
+
   // console.log('wishlistId @Header', wishlistId);
 
   useEffect(() => {
-    const cartIdFromCookie = getCartIdFromCookie();
-    const handleCart = async () => {
-      if (!cartIdFromCookie) {
-        createCart({ setCart, setCartId, setTotalCartCost }).then(
-          () => mutateCart()
-        ); // Creates a cart & refreshes data
-      } else {
-        mutateCart(); // Refresh cart data if it exists
-      }
-    };
-
     const wishlistIdsStr = getCookie('wishlistIds');
     const handleWishlist = async () => {
       if (!wishlistIdsStr) {
@@ -131,7 +173,9 @@ function Header({ navLinks, productsSubNav }: PropsType) {
     };
 
     const handleRequests = async () => {
-      handleCart();
+      // handleCart();
+      // handleCartOnAuthChange();
+      mutateCart();
 
       handleWishlist();
 

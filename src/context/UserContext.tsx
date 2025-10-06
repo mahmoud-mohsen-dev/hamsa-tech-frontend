@@ -5,8 +5,11 @@ import {
   useEffect,
   useState
 } from 'react';
-import { getIdFromToken } from '@/utils/cookieUtils';
+import { getIdFromToken, removeCookie } from '@/utils/cookieUtils';
 import { AdressType } from '@/types/addressResponseTypes';
+import { useRouter } from '@/navigation';
+import { clearCartAndId } from '@/services/cart';
+import { useMyContext } from './Store';
 
 const UserContext = createContext<null | {
   userId: string | null;
@@ -19,6 +22,12 @@ const UserContext = createContext<null | {
   setOtpVerification: React.Dispatch<
     React.SetStateAction<string | null>
   >;
+  logout: ({
+    setCartId
+  }?: {
+    setCartId?: React.Dispatch<React.SetStateAction<string | null>>;
+  }) => void;
+  login: () => void;
 }>(null);
 
 export const UserProvider = ({
@@ -33,6 +42,9 @@ export const UserProvider = ({
   const [otpVerification, setOtpVerification] = useState<
     null | string
   >(null);
+  const { setWishlistsData, setCart, setTotalCartCost, setCartId } =
+    useMyContext();
+  const router = useRouter();
   // const [emailResetPassword, setEmailResetPassword] = useState<
   //   null | string
   // >(null);
@@ -42,6 +54,30 @@ export const UserProvider = ({
     setUserId(id);
   }, []);
 
+  const logout = () => {
+    // 2. Notify other tabs
+    localStorage.setItem('logout', Date.now().toString());
+
+    // Clear client state in store
+    removeCookie('token');
+
+    setUserId(null);
+    setAddressesData(null);
+
+    setWishlistsData([]); // Todo: View if this makes a problem and it does Clear wishlist data
+
+    clearCartAndId({ setCart, setTotalCartCost, setCartId });
+
+    router.push('/signin');
+  };
+
+  const login = () => {
+    // 2. Notify other tabs
+    localStorage.setItem('signin', Date.now().toString());
+
+    router.push('/products');
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -50,7 +86,9 @@ export const UserProvider = ({
         addressesData,
         setAddressesData,
         otpVerification,
-        setOtpVerification
+        setOtpVerification,
+        logout,
+        login
       }}
     >
       {children}

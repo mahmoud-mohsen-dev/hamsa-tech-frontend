@@ -77,6 +77,28 @@ export type GetCartResponseType = {
   error: string | null;
 };
 
+export type GetUserCartIdResponseType = {
+  data: {
+    usersPermissionsUsers: {
+      data:
+        | [
+            {
+              id: string;
+              attributes: {
+                cart: {
+                  data: {
+                    id: string;
+                  } | null;
+                };
+              } | null;
+            }
+          ]
+        | null;
+    };
+  };
+  error: string | null;
+};
+
 export type updateCartResponseType = {
   data: {
     updateCart: {

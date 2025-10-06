@@ -17,6 +17,7 @@ import { v4 } from 'uuid';
 import { FaFilter } from 'react-icons/fa6';
 import Btn from '../Btn';
 import useSWR from 'swr';
+import { getUserAddressesAuthenticated } from '@/services/shippingAddress';
 
 function ProductsContent() {
   // const { didMount } = useIsMount();
@@ -29,11 +30,12 @@ function ProductsContent() {
     // globaLoading,
     // setGlobalLoading,
     setToggleFilters,
-    setErrorMessage
+    setErrorMessage,
+    setSuccessMessage
   } = useMyContext();
   const [contentIsLoading, setContentIsLoading] = useState(true);
 
-  const { setUserId } = useUser();
+  const { setUserId, logout, login, setAddressesData } = useUser();
   const locale = useLocale();
   const t = useTranslations('ProductsPage.filtersSidebar');
   const signinTranslation = useTranslations('SigninPage.content');
@@ -160,8 +162,36 @@ function ProductsContent() {
         const jwt = data.jwt; // Extract only the jwt from the response
         // console.warn('JWT Token:', jwt);
         setCookie('token', jwt, 1);
-        const id = getIdFromToken();
-        setUserId(id);
+
+        const userId = getIdFromToken();
+        if (!userId) {
+          setErrorMessage(
+            t('formValidationErrorMessages.invalidCredentials')
+          );
+          return;
+        }
+        setUserId(userId);
+
+        const { addressesData, addressesError } =
+          await getUserAddressesAuthenticated();
+        if (addressesError || !addressesData) {
+          console.error(
+            'Error while fetching user address:',
+            addressesError
+          );
+          setErrorMessage(
+            t('formValidationErrorMessages.invalidCredentials')
+          );
+          logout();
+          return;
+        }
+        // console.log(addressesData);
+        setAddressesData(addressesData);
+
+        setSuccessMessage(
+          t('formValidationErrorMessages.signinSuccessMessage')
+        );
+        login();
 
         return jwt;
       } else {
@@ -208,9 +238,37 @@ function ProductsContent() {
         const jwt = data.jwt; // Extract only the jwt from the response
         // console.warn('JWT Token:', jwt);
         setCookie('token', jwt, 1);
-        const id = getIdFromToken();
-        setUserId(id);
-        router.replace('/products');
+
+        const userId = getIdFromToken();
+        if (!userId) {
+          setErrorMessage(
+            t('formValidationErrorMessages.invalidCredentials')
+          );
+          return;
+        }
+        setUserId(userId);
+
+        const { addressesData, addressesError } =
+          await getUserAddressesAuthenticated();
+        if (addressesError || !addressesData) {
+          console.error(
+            'Error while fetching user address:',
+            addressesError
+          );
+          setErrorMessage(
+            t('formValidationErrorMessages.invalidCredentials')
+          );
+          logout();
+          return;
+        }
+        // console.log(addressesData);
+        setAddressesData(addressesData);
+
+        setSuccessMessage(
+          t('formValidationErrorMessages.signinSuccessMessage')
+        );
+        login();
+
         return jwt;
       } else {
         console.error('Failed to fetch JWT:', data?.error?.message);

@@ -37,7 +37,7 @@ function LoginForm() {
     setSuccessMessage,
     setLoadingMessage
   } = useMyContext();
-  const { setUserId, setAddressesData } = useUser();
+  const { setUserId, setAddressesData, logout, login } = useUser();
   const t = useTranslations('SigninPage.content');
   const e = useTranslations('CheckoutPage.content');
   const x = useTranslations('SignupPage.content');
@@ -68,6 +68,7 @@ function LoginForm() {
           );
           return;
         }
+
         // Store JWT in cookie
         if (values.rememberMe) {
           setCookie('token', loginData.login.jwt, 30);
@@ -94,9 +95,10 @@ function LoginForm() {
           setErrorMessage(
             t('formValidationErrorMessages.invalidCredentials')
           );
-          removeCookie('token');
-          setUserId(null);
-          setAddressesData(null);
+          // removeCookie('token');
+          // setUserId(null);
+          // setAddressesData(null);
+          logout();
           return;
         }
         // console.log(addressesData);
@@ -105,9 +107,11 @@ function LoginForm() {
         setSuccessMessage(
           t('formValidationErrorMessages.signinSuccessMessage')
         );
-        setTimeout(() => {
-          router.replace('/products');
-        }, 1000); // Delay by 1 second
+
+        login();
+        // setTimeout(() => {
+        //   router.replace('/products');
+        // }, 1000); // Delay by 1 second
       } catch (err) {
         console.error('Error during form submission:', err);
         setErrorMessage(
@@ -133,10 +137,11 @@ function LoginForm() {
   useEffect(() => {
     const userId = getIdFromToken();
     if (userId) {
-      setUserId(null);
-      removeCookie('token');
-      setAddressesData(null);
-      setWishlistsData([]);
+      logout();
+      // setUserId(null);
+      // removeCookie('token');
+      // setAddressesData(null);
+      // setWishlistsData([]);
     }
   }, []);
 
