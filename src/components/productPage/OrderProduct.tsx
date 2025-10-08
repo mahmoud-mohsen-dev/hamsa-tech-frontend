@@ -19,6 +19,7 @@ import { fetchGraphqlClient } from '@/services/graphqlCrud';
 import AppProgress from '../UI/cart/Progress';
 import AddToCartQuantityChanger from './AddToCartQuantityChanger';
 import { ProductInfoWithPackageWeightType } from '@/utils/cartContextUtils';
+import { Link, useRouter } from '@/navigation';
 
 interface PropsType {
   productInfo: ProductInfoWithPackageWeightType;
@@ -330,34 +331,23 @@ function OrderProduct({
   } = useMyContext();
   const [quantity, setQuantity] = useState(minQuantity);
   const [isHovered, setIsHovered] = useState(false);
+  const [
+    isNavigateToCheckoutLoading,
+    setIsNavigateToCheckoutLoading
+  ] = useState(false);
 
-  // console.log({
-  //   id: productInfo?.id,
-  //   localeParentName,
-  //   localeChildName,
-  //   localeChildId,
-  //   maxQuantity,
-  //   minQuantity
-  // });
+  const router = useRouter();
 
   const productId = productInfo?.id ?? null;
 
-  // const [isAddToCartActive, setIsAddToCartActive] = useState(false);
-  // const [isWishlistActive, setIsWishlistActive] = useState(false);
-
   const t = useTranslations('ProductPage');
+  const a = useTranslations('CartDrawer');
   const locale = useLocale();
 
   const isAddedToWishlistActive = findProductInWishlist(productId);
   const isAddedToCartActive = findProductInCart(productId);
   const isLoading = addToCartIsLoading === productId;
 
-  // const onChange: InputNumberProps['onChange'] = (value) => {
-  //   console.log('changed', value);
-  //   if (typeof value === 'number') {
-  //     setQuantity(value);
-  //   }
-  // };
   const handleAddToCart = () => {
     console.log('Add to cart clicked');
     console.log(`quantity: ${isAddedToCartActive ? 0 : quantity}`);
@@ -368,6 +358,14 @@ function OrderProduct({
     updateCartItemQuantity({
       productInfo,
       quantity: isAddedToCartActive ? 0 : quantity
+    });
+  };
+  const handleAddToCheckout = () => {
+    setIsNavigateToCheckoutLoading(true);
+    updateCartItemQuantity({
+      productInfo,
+      quantity,
+      disableOpenDrawer: true
     });
   };
 
@@ -392,6 +390,13 @@ function OrderProduct({
   useEffect(() => {
     setQuantity(minQuantity);
   }, [maxQuantity]);
+
+  useEffect(() => {
+    if (isNavigateToCheckoutLoading && isLoading) {
+      setIsNavigateToCheckoutLoading(false);
+      router.push('/checkout');
+    }
+  }, [isLoading, isNavigateToCheckoutLoading]);
 
   return (
     <>
@@ -446,27 +451,39 @@ function OrderProduct({
               </>
             }
           </Btn>
+          <Btn
+            onClick={() => {
+              handleAddToCheckout();
+            }}
+            className={`flex w-full items-center justify-center rounded-md border border-transparent bg-yellow-medium px-[1rem] py-[.55rem] text-base text-white duration-200 hover:border-yellow-medium hover:bg-white hover:text-yellow-medium active:border-transparent active:bg-yellow-medium active:text-white`}
+          >
+            {isNavigateToCheckoutLoading ?
+              <Spin className='white' />
+            : a('checkoutMessage')}
+          </Btn>
         </div>
-        <Btn
-          className={`w-fit px-1 text-base text-red-shade-350 !shadow-none !duration-0 hover:text-red-shade-250 active:text-red-shade-350`}
-          onClick={handleAddToWishList}
-        >
-          {isWishlistLoading ?
-            <Spin
-              className='white'
-              style={{ marginInline: '40px', marginBlock: '2px' }}
-            />
-          : isAddedToWishlistActive ?
-            <>
-              <HiHeart size={20} />
-              <span>{t('AddedToWhishListText')}</span>
-            </>
-          : <>
-              <HiOutlineHeart size={20} />
-              <span>{t('AddToWhishListText')}</span>
-            </>
-          }
-        </Btn>
+        <div className='flex w-full items-center gap-4'>
+          <Btn
+            className={`min-w-max px-1 text-base text-red-shade-350 !shadow-none !duration-0 hover:text-red-shade-250 active:text-red-shade-350`}
+            onClick={handleAddToWishList}
+          >
+            {isWishlistLoading ?
+              <Spin
+                className='white'
+                style={{ marginInline: '40px', marginBlock: '2px' }}
+              />
+            : isAddedToWishlistActive ?
+              <>
+                <HiHeart size={20} />
+                <span>{t('AddedToWhishListText')}</span>
+              </>
+            : <>
+                <HiOutlineHeart size={20} />
+                <span>{t('AddToWhishListText')}</span>
+              </>
+            }
+          </Btn>
+        </div>
       </div>
     </>
   );

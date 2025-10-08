@@ -49,32 +49,38 @@ const MyContext = createContext<{
   setCart: React.Dispatch<React.SetStateAction<CartDataType[]>>;
   incrementCartItem: ({
     productInfo,
-    setComponentLoader
+    setComponentLoader,
+    disableOpenDrawer
   }: {
     productInfo: ProductInfoType;
     setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
     > | null;
+    disableOpenDrawer?: boolean;
   }) => Promise<void>;
   decrementCartItem: ({
     productInfo,
-    setComponentLoader
+    setComponentLoader,
+    disableOpenDrawer
   }: {
     productInfo: ProductInfoType;
     setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
     > | null;
+    disableOpenDrawer?: boolean;
   }) => Promise<void>;
   updateCartItemQuantity: ({
     productInfo,
     quantity,
-    setComponentLoader
+    setComponentLoader,
+    disableOpenDrawer
   }: {
     productInfo: ProductInfoType;
     quantity: number;
     setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
     > | null;
+    disableOpenDrawer?: boolean;
   }) => Promise<void>;
   setTotalCartCost: React.Dispatch<React.SetStateAction<number>>;
   calculateSubTotalCartCost: () => number;
@@ -221,13 +227,15 @@ export const StoreContextProvider = ({
   const updateCartContextByClientAndSendItToTheBackend = async ({
     quantity,
     productInfo,
-    setComponentLoader = null
+    setComponentLoader = null,
+    disableOpenDrawer = false
   }: {
     quantity: number;
     productInfo: ProductInfoType;
     setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
     > | null;
+    disableOpenDrawer?: boolean;
   }) => {
     const cartId = getCartIdFromCookie() || ''; // Assuming you have a function to get the cartId
     try {
@@ -256,7 +264,10 @@ export const StoreContextProvider = ({
           // console.log(updatedCartData);
           setCart(updatedCartData); // Update cart context with the response data
           setTotalCartCost(updatedCartItems?.total_cart_cost ?? 0);
-          setOpenDrawer(true);
+
+          if (!disableOpenDrawer) {
+            setOpenDrawer(true);
+          }
         }
       } else {
         console.error('Failed to update cart in the backend:', error);
@@ -277,12 +288,14 @@ export const StoreContextProvider = ({
   // Increment the quantity of a product in the cart
   const incrementCartItem = async ({
     productInfo,
-    setComponentLoader = null
+    setComponentLoader = null,
+    disableOpenDrawer = false
   }: {
     productInfo: ProductInfoType;
     setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
     > | null;
+    disableOpenDrawer?: boolean;
   }) => {
     // console.log('productInfo @incrementCartItem', productInfo);
     const product = findProductInCart(productInfo?.id ?? null);
@@ -291,13 +304,15 @@ export const StoreContextProvider = ({
       await updateCartContextByClientAndSendItToTheBackend({
         productInfo,
         quantity: product.quantity + 1,
-        setComponentLoader
+        setComponentLoader,
+        disableOpenDrawer
       });
     } else {
       await updateCartContextByClientAndSendItToTheBackend({
         productInfo,
         quantity: 1,
-        setComponentLoader
+        setComponentLoader,
+        disableOpenDrawer
       });
     }
   };
@@ -305,25 +320,29 @@ export const StoreContextProvider = ({
   // Decrement the quantity of a product in the cart
   const decrementCartItem = async ({
     productInfo,
-    setComponentLoader = null
+    setComponentLoader = null,
+    disableOpenDrawer = false
   }: {
     productInfo: ProductInfoType;
     setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
     > | null;
+    disableOpenDrawer?: boolean;
   }) => {
     const product = findProductInCart(productInfo?.id ?? null);
     if (product && product.quantity > 1) {
       await updateCartContextByClientAndSendItToTheBackend({
         productInfo,
         quantity: product.quantity - 1,
-        setComponentLoader
+        setComponentLoader,
+        disableOpenDrawer
       });
     } else {
       await updateCartContextByClientAndSendItToTheBackend({
         productInfo,
         quantity: 0,
-        setComponentLoader
+        setComponentLoader,
+        disableOpenDrawer
       }); // Remove item if quantity is zero
     }
   };
@@ -332,19 +351,22 @@ export const StoreContextProvider = ({
   const updateCartItemQuantity = async ({
     productInfo,
     quantity,
-    setComponentLoader = null
+    setComponentLoader = null,
+    disableOpenDrawer = false
   }: {
     productInfo: ProductInfoType;
     quantity: number;
     setComponentLoader?: React.Dispatch<
       React.SetStateAction<boolean>
     > | null;
+    disableOpenDrawer?: boolean;
   }) => {
     if (quantity < 0) return; // Prevent negative values
     await updateCartContextByClientAndSendItToTheBackend({
       productInfo,
       quantity,
-      setComponentLoader
+      setComponentLoader,
+      disableOpenDrawer
     });
   };
 
