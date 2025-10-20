@@ -11,7 +11,7 @@ export async function PATCH(
   const authHeader = req.headers.get('Authorization');
 
   console.warn(params);
-  console.warn(authHeader);
+  // console.warn(authHeader);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return NextResponse.json(

@@ -7,12 +7,14 @@ function ControlPagination({
   page,
   pageSize,
   total,
-  pageName
+  pageName,
+  setPageSize
 }: {
   page: number;
   pageSize: number;
   total: number;
   pageName: string;
+  setPageSize?: (size: number) => void;
 }) {
   // console.log('total', total);
   const locale = useLocale();
@@ -43,6 +45,15 @@ function ControlPagination({
         total={total ?? 0}
         pageSize={pageSize}
         onChange={onPaginationChange}
+        pageSizeOptions={[10, 20, 50, 100]}
+        showSizeChanger={false}
+        onShowSizeChange={(current, size) => {
+          console.log('current', current);
+          console.log('size', size);
+          if (setPageSize) {
+            setPageSize(size);
+          }
+        }}
         style={{ marginTop: 40 }}
       />
     </ConfigProvider>

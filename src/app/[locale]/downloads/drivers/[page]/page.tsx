@@ -14,7 +14,7 @@ import { extractPageNumber } from '@/utils/stringHelpers';
 import ControlPagination from '@/components/downloadPage/driversPage/ControlPagination';
 import DownloadBtn from '@/components/UI/DownloadBtn';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 50;
 
 const getDriversQuery = (
   locale: string,
@@ -258,7 +258,7 @@ export default async function DriversPage({
                   driver?.attributes?.driver.map((driveItem) => (
                     <li
                       key={driveItem?.id ?? v4()}
-                      className={`relative ${locale === 'ar' ? 'pl-[140px] pr-[15px]' : 'pl-[15px] pr-[160px]'} pb-2.5 pt-[30px] ${arr.length === i + 1 ? '' : 'border-b border-gray-medium-light'}`}
+                      className={`relative ${locale === 'ar' ? 'pl-[140px] pr-[15px]' : 'pl-[15px] pr-[160px]'} pt-[30px] ${arr.length === i + 1 ? 'pb-2.5' : 'border-b border-gray-medium-light pb-[30px]'}`}
                     >
                       <i
                         className={`absolute ${locale === 'ar' ? 'right-0' : 'left-0'} top-10 h-[6px] w-[6px] rounded-full bg-red-shade-400`}
@@ -355,7 +355,8 @@ export default async function DriversPage({
               <ControlPagination
                 pageSize={PAGE_SIZE}
                 page={pageID ?? 1}
-                total={data?.products?.meta?.pagination?.total ?? 0}
+                // total={data?.products?.meta?.pagination?.total ?? 0}
+                total={500}
                 pageName='drivers'
               />
             </div>

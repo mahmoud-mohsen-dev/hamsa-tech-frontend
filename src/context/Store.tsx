@@ -242,7 +242,9 @@ export const StoreContextProvider = ({
       if (!!setComponentLoader) {
         setComponentLoader(true);
       }
-      setAddToCartIsLoading(productInfo?.id ?? '');
+      if (!disableOpenDrawer) {
+        setAddToCartIsLoading(productInfo?.id ?? '');
+      }
       setDrawerIsLoading(true);
       const { data, error } = (await fetchGraphqlClient(
         updateCartByClientAndSendItToTheBackend({
@@ -279,7 +281,9 @@ export const StoreContextProvider = ({
       if (!!setComponentLoader) {
         setComponentLoader(false);
       }
-      setAddToCartIsLoading('');
+      if (!disableOpenDrawer) {
+        setAddToCartIsLoading('');
+      }
       // When cart changes in *any* tab (e.g., after add/remove):
       localStorage.setItem('cart-updated', Date.now().toString());
     }
