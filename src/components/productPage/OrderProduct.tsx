@@ -360,13 +360,15 @@ function OrderProduct({
       quantity: isAddedToCartActive ? 0 : quantity
     });
   };
-  const handleAddToCheckout = () => {
-    setIsNavigateToCheckoutLoading(true);
-    updateCartItemQuantity({
+  const handleAddToCheckout = async () => {
+    await updateCartItemQuantity({
       productInfo,
       quantity,
-      disableOpenDrawer: true
+      disableOpenDrawer: true,
+      setComponentLoader: setIsNavigateToCheckoutLoading
     });
+
+    router.push('/checkout');
   };
 
   const handleAddToWishList = () => {
@@ -391,12 +393,12 @@ function OrderProduct({
     setQuantity(minQuantity);
   }, [maxQuantity]);
 
-  useEffect(() => {
-    if (isNavigateToCheckoutLoading && isLoading) {
-      setIsNavigateToCheckoutLoading(false);
-      router.push('/checkout');
-    }
-  }, [isLoading, isNavigateToCheckoutLoading]);
+  // useEffect(() => {
+  //   if (isNavigateToCheckoutLoading && !isLoading) {
+  //     setIsNavigateToCheckoutLoading(false);
+  //     router.push('/checkout');
+  //   }
+  // }, [isLoading, isNavigateToCheckoutLoading]);
 
   return (
     <>
