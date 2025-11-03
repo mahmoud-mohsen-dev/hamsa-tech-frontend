@@ -456,10 +456,10 @@ function OrderProduct({
               handleAddToCheckout();
             }}
             disabled={quantity === 0 || isNavigateToCheckoutLoading}
-            className={`group flex w-full items-center justify-center rounded-md border border-transparent bg-red-shade-300 px-[1rem] py-[.55rem] text-base text-white duration-200 hover:border-red-shade-300 hover:bg-white active:border-transparent active:bg-red-shade-300 active:text-white`}
+            className={`group flex w-full items-center justify-center rounded-md border border-transparent bg-red-shade-300 px-[1rem] py-[.55rem] text-base text-white duration-200 hover:border-red-shade-300 hover:bg-white hover:text-red-shade-300 active:border-transparent active:bg-red-shade-300 active:text-white`}
           >
-            {true ?
-              <Spin className='white transition-colors duration-200 group-hover:!text-red-shade-300' />
+            {isNavigateToCheckoutLoading ?
+              <Spin className='transition-colors duration-200 [&_span]:!text-white group-hover:[&_span]:!text-red-shade-300' />
             : a('checkoutMessage')}
           </Btn>
         </div>
